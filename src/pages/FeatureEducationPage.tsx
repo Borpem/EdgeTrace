@@ -613,13 +613,13 @@ function WorkflowStageCard({ stage, offset }: { stage: WorkflowStage; offset: bo
 
 function CapabilityGroup({ group, planId }: { group: (typeof capabilityGroups)[number]; planId: PlanId }) {
   return (
-    <section className="grid gap-5 border-t border-white/[0.09] pt-6 lg:grid-cols-[230px_1fr]">
-      <div>
+    <section className="grid gap-5 py-2 lg:grid-cols-[230px_1fr]">
+      <div className="bg-transparent lg:pt-4">
         <div className={`mb-4 h-px w-16 ${toneClasses[group.accent].gradient}`} />
         <h3 className="text-2xl font-semibold tracking-[-0.04em] text-ink">{group.title}</h3>
         <p className="mt-3 text-sm leading-6 text-muted">{group.summary}</p>
       </div>
-      <div className="grid gap-3 md:grid-cols-3">
+      <div className="grid gap-3 border-t border-white/[0.075] pt-5 md:grid-cols-3">
         {group.features.map((feature) => {
           const Icon = feature.icon;
           const included = feature.feature ? canUseFeature(getPlanConfig(planId), feature.feature) : true;
