@@ -61,13 +61,16 @@ export function HomePage({
       <HomeBackdrop />
 
       <section className="EdgeTrace-shell relative pb-12 pt-12 md:pb-16 md:pt-16 lg:pb-20 lg:pt-20">
-        <div className="grid items-center gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:gap-10 xl:gap-12">
-          <div className="max-w-2xl">
-            <h1 className="overflow-visible text-[clamp(3.3rem,6.7vw,6.75rem)] font-semibold leading-[1.02] tracking-[-0.048em] text-ink md:tracking-[-0.052em]">
-              Know exactly why your strategy{" "}
-              <span className="inline-block overflow-visible bg-gradient-to-r from-cyan to-accent bg-clip-text pr-2 text-transparent">wins</span>{" "}
-              or{" "}
-              <span className="inline-block overflow-visible bg-gradient-to-r from-violet to-fuchsia-400 bg-clip-text pr-1 text-transparent">fails.</span>
+        <div className="grid items-center gap-10 lg:grid-cols-[0.88fr_1.12fr] lg:gap-10 xl:gap-12">
+          <div className="max-w-[760px]">
+            <h1 className="overflow-visible text-[clamp(3.2rem,5.7vw,6rem)] font-semibold leading-[1.02] tracking-[-0.048em] text-ink md:tracking-[-0.052em]">
+              <span className="block">Know exactly why your</span>
+              <span className="block">
+                strategy{" "}
+                <span className="inline-block overflow-visible bg-gradient-to-r from-cyan to-accent bg-clip-text pr-2 text-transparent">wins</span>{" "}
+                or{" "}
+                <span className="inline-block overflow-visible bg-gradient-to-r from-violet to-fuchsia-400 bg-clip-text pr-1 text-transparent">fails.</span>
+              </span>
             </h1>
 
             <p className="mt-7 max-w-xl text-lg leading-8 text-slate-300 md:text-xl md:leading-9">
