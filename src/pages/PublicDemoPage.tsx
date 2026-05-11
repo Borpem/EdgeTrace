@@ -2,10 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, Check } from "lucide-react";
 import Papa from "papaparse";
 import { DisclosurePanel } from "../components/DisclosurePanel";
-import { CinematicDashboardVisual } from "../components/marketing/CinematicDashboardVisual";
-import { DiagnosticLeakVisual } from "../components/marketing/DiagnosticLeakVisual";
-import { MonitoringVisual } from "../components/marketing/MonitoringVisual";
-import { StrategyEvolutionVisual } from "../components/marketing/StrategyEvolutionVisual";
+import { WorkflowDiagram } from "../components/visuals/WorkflowDiagram";
 import {
   breakdownLabels,
   buildBreakdown,
@@ -261,7 +258,12 @@ export function PublicDemoPage({
           <div className="h-px bg-white/[0.1]">
             <div className="h-px bg-cyan transition-all" style={{ width: `${progressPct}%` }} />
           </div>
-          <DemoStageVisual step={activeStep} />
+          <WorkflowDiagram
+            steps={["Diagnose", "Inspect", "Compare", "Monitor", "Start"]}
+            activeIndex={activeIndex}
+            compact
+            className="border-x-0 border-t-0"
+          />
 
           <section className="grid gap-0 xl:grid-cols-[360px_1fr]">
             <StepContextPanel
@@ -370,14 +372,6 @@ function GuidedStepper({
       })}
     </div>
   );
-}
-
-function DemoStageVisual({ step }: { step: DemoStep }) {
-  if (step === "diagnose") return <CinematicDashboardVisual compact className="border-x-0 border-t-0" />;
-  if (step === "inspect") return <DiagnosticLeakVisual compact className="border-x-0 border-t-0" />;
-  if (step === "compare") return <StrategyEvolutionVisual compact className="border-x-0 border-t-0" />;
-  if (step === "monitor") return <MonitoringVisual compact className="border-x-0 border-t-0" />;
-  return <StrategyEvolutionVisual compact className="border-x-0 border-t-0" />;
 }
 
 function StepContextPanel({

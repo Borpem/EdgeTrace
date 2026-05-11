@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, Check, Minus } from "lucide-react";
 import { DisclosurePanel } from "../components/DisclosurePanel";
-import { CinematicDashboardVisual } from "../components/marketing/CinematicDashboardVisual";
-import { StrategyEvolutionVisual } from "../components/marketing/StrategyEvolutionVisual";
 import { PlanAccessGraphic } from "../components/visuals/PlanAccessGraphic";
+import { WorkflowDiagram } from "../components/visuals/WorkflowDiagram";
 import { trackEvent } from "../lib/analytics";
 import { getActivationSummary, listReports } from "../lib/api";
 import { canUseFeature, getPlanConfig } from "../lib/entitlements";
@@ -266,7 +265,6 @@ export function FeatureEducationPage({
             </p>
           </div>
         </div>
-        <CinematicDashboardVisual compact className="mt-10" />
       </section>
 
       <section className="mt-10">
@@ -274,7 +272,10 @@ export function FeatureEducationPage({
           <p className="EdgeTrace-eyebrow">Workflow</p>
           <h2 className="mt-2 text-3xl font-semibold tracking-[-0.055em] text-ink">From import to strategy monitoring.</h2>
         </div>
-        <StrategyEvolutionVisual compact className="mb-5" />
+        <WorkflowDiagram
+          steps={["Import", "Report", "Diagnose", "Inspect", "Compare", "Strategy Set", "Monitor"]}
+          className="mb-5"
+        />
         <div className="grid border border-white/[0.1] md:grid-cols-2 xl:grid-cols-7">
           {workflowSteps.map(([number, title, description, includedPlan]) => (
             <article key={title} className="min-h-52 border-b border-r border-white/[0.08] p-4 last:border-r-0 md:last:border-b-0">
@@ -297,7 +298,6 @@ export function FeatureEducationPage({
               key={feature.id}
               className="scroll-mt-28 border border-white/[0.1] bg-white/[0.025] p-5"
             >
-              <FeatureThumbnail id={feature.id} />
               <div className="flex items-start justify-between gap-3">
                 <h3 className="text-xl font-semibold tracking-[-0.04em] text-ink">{feature.title}</h3>
                 <PlanBadge label={feature.plan} active={feature.feature ? canUseFeature(plan, feature.feature) : true} />
@@ -421,43 +421,4 @@ function isAdvancedOnlyFeature(feature: FeatureKey) {
 function shortFeatureCopy(text: string) {
   const firstSentence = text.split(".")[0]?.trim();
   return firstSentence ? `${firstSentence}.` : text;
-}
-
-function FeatureThumbnail({ id }: { id: string }) {
-  const visualType = id.includes("drilldown") || id.includes("provenance") ? "leak" : id.includes("compare") || id.includes("strategy") ? "trend" : "dashboard";
-  return (
-    <div className="mb-5 h-28 overflow-hidden border border-white/[0.08] bg-black/28">
-      {visualType === "dashboard" && (
-        <svg viewBox="0 0 360 112" className="h-full w-full" fill="none" aria-hidden="true">
-          <path d="M0 0H360V112H0z" fill="url(#dashboardGlow)" />
-          <rect x="24" y="24" width="92" height="56" stroke="#58D6FF" strokeOpacity=".45" />
-          <rect x="132" y="24" width="92" height="56" stroke="white" strokeOpacity=".18" />
-          <rect x="240" y="24" width="92" height="56" stroke="#FFB84D" strokeOpacity=".45" />
-          <path d="M36 68L58 58L80 62L104 42" stroke="#58D6FF" strokeWidth="3" strokeLinecap="round" />
-          <defs>
-            <radialGradient id="dashboardGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(266 20) rotate(143) scale(160 90)">
-              <stop stopColor="#58D6FF" stopOpacity=".16" />
-              <stop offset="1" stopColor="#050505" stopOpacity=".05" />
-            </radialGradient>
-          </defs>
-        </svg>
-      )}
-      {visualType === "leak" && (
-        <svg viewBox="0 0 360 112" className="h-full w-full" fill="none" aria-hidden="true">
-          <path d="M34 32C118 32 136 32 186 32C238 32 248 22 326 20" stroke="#58D6FF" strokeWidth="3" strokeLinecap="round" />
-          <path d="M34 56C122 56 142 56 186 56C236 56 252 70 326 74" stroke="#FFB84D" strokeWidth="3" strokeLinecap="round" />
-          <path d="M34 82C126 82 144 82 186 82C238 82 254 92 326 94" stroke="#7861FF" strokeWidth="3" strokeLinecap="round" />
-          <rect x="224" y="44" width="86" height="34" stroke="#FFB84D" strokeOpacity=".48" fill="#FFB84D" fillOpacity=".08" />
-        </svg>
-      )}
-      {visualType === "trend" && (
-        <svg viewBox="0 0 360 112" className="h-full w-full" fill="none" aria-hidden="true">
-          <path d="M28 84C82 72 112 78 150 58C196 34 224 46 262 32C302 18 326 24 342 14" stroke="#58D6FF" strokeWidth="4" strokeLinecap="round" />
-          <rect x="30" y="66" width="50" height="24" stroke="white" strokeOpacity=".14" />
-          <rect x="154" y="46" width="50" height="36" stroke="#58D6FF" strokeOpacity=".38" />
-          <rect x="278" y="18" width="50" height="48" stroke="#7861FF" strokeOpacity=".48" />
-        </svg>
-      )}
-    </div>
-  );
 }
