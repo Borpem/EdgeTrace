@@ -35,7 +35,7 @@ const brokerPills = ["Interactive Brokers", "Robinhood", "Thinkorswim", "Fidelit
 
 const trustItems: Array<{ icon: LucideIcon; title: string; body: string }> = [
   { icon: Shield, title: "Privacy first", body: "Your data is yours. Raw files are not stored." },
-  { icon: Lock, title: "Bank-grade security", body: "Encrypted in transit and at rest." },
+  { icon: Lock, title: "Secure infrastructure", body: "Encrypted in transit and at rest." },
   { icon: BarChart3, title: "Transparent analysis", body: "See how every report is calculated." },
   { icon: Send, title: "Built by traders", body: "For traders who want real answers." }
 ];
