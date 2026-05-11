@@ -351,33 +351,134 @@ function AttributionVisual() {
   );
 }
 
-function EvolutionLineVisual({ compact = false }: { compact?: boolean }) {
+function StrategyTimelineReviewVisual() {
+  const previousMetrics = [
+    ["Expectancy", "+0.18R"],
+    ["Cost drag", "31.4%"],
+    ["R capture", "0.51R"],
+    ["Health", "68"]
+  ];
+  const currentMetrics = [
+    ["Expectancy", "+0.31R"],
+    ["Cost drag", "22.6%"],
+    ["R capture", "0.74R"],
+    ["Health", "82"]
+  ];
+  const changes = [
+    ["Expectancy improved", "+0.13R", "cyan" as Tone],
+    ["Cost drag reduced", "-8.8 pts", "purple" as Tone],
+    ["Execution improved", "Watchlist clear", "amber" as Tone]
+  ];
+
   return (
-    <div className="relative overflow-hidden border border-white/[0.1] bg-[#050a12]/94 p-6">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(245,166,35,0.1),transparent_32%),radial-gradient(circle_at_16%_86%,rgba(34,197,245,0.1),transparent_32%)]" />
+    <div className="relative overflow-hidden border border-white/[0.1] bg-[linear-gradient(145deg,rgba(7,12,20,0.98),rgba(5,9,16,0.94))] p-5 shadow-[0_20px_72px_-56px_rgba(124,92,255,0.65)]">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_76%_18%,rgba(124,92,255,0.14),transparent_34%),radial-gradient(circle_at_18%_84%,rgba(34,197,245,0.12),transparent_34%)]" />
       <div className="relative">
-        <div className="flex items-center justify-between gap-4">
-          {[
-            ["V1", "Baseline"],
-            ["V2", "Improved"],
-            ["V3", "Monitor"]
-          ].map(([version, label], index) => (
-            <div key={version} className="relative flex-1">
-              {index < 2 && <div className="absolute left-[54%] top-5 hidden h-px w-[92%] bg-white/[0.14] sm:block" />}
-              <div className={`relative z-10 grid h-11 w-11 place-items-center border ${index === 0 ? "border-cyan/35 text-cyan" : index === 1 ? "border-violet/35 text-violet" : "border-warning/35 text-warning"} bg-black/35`}>
-                {version}
-              </div>
-              <p className="mt-3 text-sm font-semibold text-ink">{label}</p>
-              {!compact && <p className="mt-1 text-xs text-muted">Strategy iteration</p>}
-            </div>
-          ))}
+        <div className="mb-5 flex flex-col gap-3 border-b border-white/[0.08] pb-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-sm font-semibold text-ink">Strategy timeline review</p>
+            <p className="mt-1 text-xs text-muted">Compare what changed between saved reports.</p>
+          </div>
+          <span className="w-fit border border-warning/30 bg-warning/[0.045] px-3 py-1 text-xs font-semibold text-warning">
+            Monitoring active
+          </span>
         </div>
-        <svg className="mt-8 h-32 w-full overflow-visible" viewBox="0 0 420 130" role="img" aria-label="Strategy evolution line">
-          <path d="M8 98 C68 92, 106 84, 150 72 S224 36, 284 48 S356 74, 412 44" fill="none" stroke="rgba(88,214,255,0.85)" strokeWidth="3" />
-          <path d="M8 106 C88 105, 156 96, 220 88 S324 82, 412 78" fill="none" stroke="rgba(255,255,255,0.16)" strokeWidth="2" />
-          <circle cx="150" cy="72" r="4" fill="rgba(124,92,255,1)" />
-          <circle cx="412" cy="44" r="4" fill="rgba(245,166,35,1)" />
-        </svg>
+
+        <div className="grid gap-4 lg:grid-cols-[1fr_0.78fr_1fr] lg:items-stretch">
+          <IterationMetricPanel
+            label="Previous iteration"
+            title="ORB V2"
+            subtitle="Lower cost experiment"
+            metrics={previousMetrics}
+            tone="cyan"
+          />
+
+          <div className="relative border border-white/[0.08] bg-black/25 p-4">
+            <div className="absolute left-1/2 top-0 hidden h-full w-px -translate-x-1/2 bg-white/[0.06] lg:block" />
+            <p className="relative text-center text-xs font-semibold uppercase tracking-[0.16em] text-muted">What changed</p>
+            <div className="relative mt-4 space-y-3">
+              {changes.map(([label, value, tone]) => {
+                const toneClass = toneClasses[tone as Tone];
+                return (
+                  <div key={label} className="border border-white/[0.08] bg-[#050a12]/92 p-3">
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-sm text-muted">{label}</span>
+                      <span className={`text-sm font-semibold ${toneClass.text}`}>{value}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="relative mt-5 hidden items-center justify-center gap-2 text-xs text-muted lg:flex">
+              <span className="h-px w-10 bg-cyan/45" />
+              <ArrowRight size={14} className="text-cyan" />
+              <span className="h-px w-10 bg-violet/45" />
+            </div>
+          </div>
+
+          <IterationMetricPanel
+            label="Current iteration"
+            title="ORB V3"
+            subtitle="May live review"
+            metrics={currentMetrics}
+            tone="purple"
+            emphasized
+          />
+        </div>
+
+        <div className="mt-4 border border-white/[0.08] bg-black/20 p-4">
+          <div className="grid gap-4 md:grid-cols-[1fr_auto] md:items-center">
+            <div>
+              <p className="text-sm font-semibold text-ink">Monitoring insight</p>
+              <p className="mt-1 text-sm leading-6 text-muted">
+                V3 improved because cost drag fell and R capture expanded, but opening-session trades remain the next
+                review target.
+              </p>
+            </div>
+            <div className="flex items-center gap-2 text-xs text-warning">
+              <span className="h-2 w-2 bg-warning" />
+              Watch opening session
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function IterationMetricPanel({
+  label,
+  title,
+  subtitle,
+  metrics,
+  tone,
+  emphasized = false
+}: {
+  label: string;
+  title: string;
+  subtitle: string;
+  metrics: string[][];
+  tone: Tone;
+  emphasized?: boolean;
+}) {
+  const toneClass = toneClasses[tone];
+  return (
+    <div className={`border p-4 ${emphasized ? `${toneClass.border} bg-violet/[0.045]` : "border-white/[0.08] bg-black/25"}`}>
+      <p className={`text-xs font-semibold uppercase tracking-[0.16em] ${toneClass.text}`}>{label}</p>
+      <div className="mt-4 flex items-start justify-between gap-4">
+        <div>
+          <h3 className="text-2xl font-semibold tracking-[-0.04em] text-ink">{title}</h3>
+          <p className="mt-1 text-sm text-muted">{subtitle}</p>
+        </div>
+        {emphasized && <span className="border border-cyan/25 bg-cyan/[0.04] px-2.5 py-1 text-xs font-semibold text-cyan">Current</span>}
+      </div>
+      <div className="mt-5 space-y-3">
+        {metrics.map(([metric, value]) => (
+          <div key={metric} className="flex items-center justify-between border-b border-white/[0.07] pb-2 text-sm">
+            <span className="text-muted">{metric}</span>
+            <span className="font-semibold text-ink">{value}</span>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -437,8 +538,8 @@ function StrategyEvolution() {
             Track whether your edge is improving or deteriorating.
           </h2>
           <p className="mt-4 max-w-2xl text-base leading-7 text-muted">
-            EdgeTrace helps traders compare iterations, monitor stability, and identify degradation before weak behavior
-            compounds.
+            Compare strategy iterations, identify regression risk, and monitor whether changes are improving performance
+            or introducing leakage.
           </p>
           <div className="mt-7 space-y-3">
             {["Compare the current report against prior iterations.", "Group related reports into strategy sets.", "Review stability and regression risk over time."].map((item) => (
@@ -449,7 +550,7 @@ function StrategyEvolution() {
             ))}
           </div>
         </div>
-        <EvolutionLineVisual />
+        <StrategyTimelineReviewVisual />
       </div>
     </section>
   );
