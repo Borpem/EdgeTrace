@@ -4,9 +4,9 @@ export default {
   theme: {
     extend: {
       colors: {
-        graphite: "#050505",
-        panel: "#101010",
-        line: "#272727",
+        graphite: "#03060C",
+        panel: "#0B111C",
+        line: "#223047",
         ink: "#F7F7F3",
         muted: "#9B9B95",
         accent: "#4F8CFF",

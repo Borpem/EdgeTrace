@@ -15,12 +15,13 @@
     overflow: visible;
     border-radius: 0;
     border: 0;
-    border-top: 1px solid rgba(247, 247, 243, 0.1);
-    border-bottom: 1px solid rgba(247, 247, 243, 0.1);
+    border-top: 1px solid rgba(88, 214, 255, 0.13);
+    border-bottom: 1px solid rgba(247, 247, 243, 0.11);
     background:
-      radial-gradient(circle at 100% 0%, rgba(88, 214, 255, 0.04), transparent 24rem),
+      radial-gradient(circle at 100% 0%, rgba(88, 214, 255, 0.11), transparent 26rem),
+      radial-gradient(circle at 0% 100%, rgba(120, 97, 255, 0.07), transparent 22rem),
       transparent;
-    padding: 2.25rem 0;
+    padding: 2.5rem 0;
     box-shadow: none;
   }
 
@@ -62,11 +63,14 @@
 
   .EdgeTrace-card {
     border-radius: 0.125rem;
-    border: 1px solid rgba(247, 247, 243, 0.11);
+    border: 1px solid rgba(88, 214, 255, 0.15);
     background:
-      radial-gradient(circle at 100% 0%, rgba(88, 214, 255, 0.06), transparent 24rem),
-      rgba(247, 247, 243, 0.032);
-    box-shadow: none;
+      radial-gradient(circle at 100% 0%, rgba(88, 214, 255, 0.105), transparent 24rem),
+      linear-gradient(135deg, rgba(247, 247, 243, 0.06), rgba(79, 140, 255, 0.025)),
+      rgba(7, 12, 20, 0.88);
+    box-shadow:
+      inset 0 1px 0 rgba(247, 247, 243, 0.045),
+      0 24px 80px -64px rgba(88, 214, 255, 0.48);
     transition:
       border-color 160ms ease,
       background-color 160ms ease;
@@ -74,10 +78,11 @@
 
   .EdgeTrace-card-soft {
     border-radius: 0.125rem;
-    border: 1px solid rgba(247, 247, 243, 0.11);
+    border: 1px solid rgba(247, 247, 243, 0.12);
     background:
-      radial-gradient(circle at 100% 0%, rgba(120, 97, 255, 0.04), transparent 20rem),
-      rgba(247, 247, 243, 0.032);
+      radial-gradient(circle at 100% 0%, rgba(120, 97, 255, 0.105), transparent 22rem),
+      linear-gradient(135deg, rgba(247, 247, 243, 0.055), rgba(88, 214, 255, 0.018)),
+      rgba(7, 12, 20, 0.82);
   }
 
   .EdgeTrace-primary-button {
@@ -86,16 +91,20 @@
     justify-content: center;
     gap: 0.55rem;
     border-radius: 0.125rem;
-    background: #f7f7f3;
-    color: #050505;
+    border: 1px solid rgba(88, 214, 255, 0.64);
+    background: linear-gradient(135deg, #58d6ff 0%, #4f8cff 48%, #7861ff 100%);
+    color: #ffffff;
     padding: 0.65rem 1.1rem;
     font-weight: 780;
     white-space: nowrap;
-    box-shadow: 0 18px 42px -28px rgba(247, 247, 243, 0.44);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.24),
+      0 22px 58px -36px rgba(88, 214, 255, 0.95);
   }
 
   .EdgeTrace-primary-button:hover {
-    background: #ffffff;
+    border-color: rgba(88, 214, 255, 0.9);
+    filter: brightness(1.08);
     transform: translateY(-1px);
   }
 
@@ -105,8 +114,8 @@
     justify-content: center;
     gap: 0.5rem;
     border-radius: 0.125rem;
-    border: 1px solid rgba(247, 247, 243, 0.16);
-    background: rgba(247, 247, 243, 0.08);
+    border: 1px solid rgba(88, 214, 255, 0.18);
+    background: linear-gradient(135deg, rgba(247, 247, 243, 0.09), rgba(88, 214, 255, 0.035));
     color: #f7f7f3;
     padding: 0.6rem 0.95rem;
     font-size: 0.875rem;
@@ -115,8 +124,8 @@
   }
 
   .EdgeTrace-secondary-button:hover {
-    border-color: rgba(247, 247, 243, 0.32);
-    background: rgba(247, 247, 243, 0.12);
+    border-color: rgba(88, 214, 255, 0.42);
+    background: linear-gradient(135deg, rgba(247, 247, 243, 0.12), rgba(88, 214, 255, 0.07));
   }
 
   .EdgeTrace-compact-primary {
@@ -125,17 +134,18 @@
     justify-content: center;
     gap: 0.45rem;
     border-radius: 0.125rem;
-    background: #f7f7f3;
-    color: #050505;
+    border: 1px solid rgba(88, 214, 255, 0.64);
+    background: linear-gradient(135deg, #58d6ff 0%, #4f8cff 48%, #7861ff 100%);
+    color: #ffffff;
     padding: 0.55rem 1rem;
     font-size: 0.875rem;
     font-weight: 760;
     white-space: nowrap;
-    box-shadow: 0 14px 34px -24px rgba(247, 247, 243, 0.4);
+    box-shadow: 0 18px 44px -32px rgba(88, 214, 255, 0.86);
   }
 
   .EdgeTrace-compact-primary:hover {
-    background: #ffffff;
+    filter: brightness(1.08);
   }
 
   .EdgeTrace-compact-secondary {
@@ -144,8 +154,8 @@
     justify-content: center;
     gap: 0.45rem;
     border-radius: 0.125rem;
-    border: 1px solid rgba(247, 247, 243, 0.16);
-    background: rgba(247, 247, 243, 0.08);
+    border: 1px solid rgba(88, 214, 255, 0.18);
+    background: linear-gradient(135deg, rgba(247, 247, 243, 0.09), rgba(88, 214, 255, 0.035));
     color: #f7f7f3;
     padding: 0.55rem 1rem;
     font-size: 0.875rem;
@@ -154,8 +164,8 @@
   }
 
   .EdgeTrace-compact-secondary:hover {
-    border-color: rgba(247, 247, 243, 0.32);
-    background: rgba(247, 247, 243, 0.12);
+    border-color: rgba(88, 214, 255, 0.42);
+    background: linear-gradient(135deg, rgba(247, 247, 243, 0.12), rgba(88, 214, 255, 0.07));
   }
 
   .EdgeTrace-command-button {
@@ -165,19 +175,19 @@
     gap: 0.55rem;
     border-radius: 0.125rem;
     border: 1px solid rgba(88, 214, 255, 0.7);
-    background: #f7f7f3;
-    color: #050505;
+    background: linear-gradient(135deg, #58d6ff 0%, #4f8cff 48%, #7861ff 100%);
+    color: #ffffff;
     padding: 0.72rem 1rem;
     font-size: 0.875rem;
     font-weight: 800;
     white-space: nowrap;
     box-shadow:
-      0 0 0 1px rgba(88, 214, 255, 0.12),
-      0 22px 54px -30px rgba(88, 214, 255, 0.86);
+      inset 0 1px 0 rgba(255, 255, 255, 0.24),
+      0 22px 54px -30px rgba(88, 214, 255, 0.9);
   }
 
   .EdgeTrace-command-button:hover {
-    background: #ffffff;
+    filter: brightness(1.08);
     border-color: rgba(88, 214, 255, 1);
     transform: translateY(-1px);
   }
@@ -225,18 +235,62 @@
 
 body {
   margin: 0;
-  background: #050505;
+  background: #03060c;
 }
 
 .EdgeTrace-contours {
   min-height: 100vh;
-  background-color: #050505;
+  background-color: #03060c;
   background-image:
-    radial-gradient(circle at 50% -10%, rgba(247, 247, 243, 0.11), transparent 34rem),
-    radial-gradient(circle at 16% 18%, rgba(79, 140, 255, 0.12), transparent 28rem),
-    radial-gradient(circle at 88% 26%, rgba(120, 97, 255, 0.12), transparent 30rem),
-    linear-gradient(180deg, rgba(5, 5, 5, 0), #050505 62%);
-  background-repeat: no-repeat;
+    linear-gradient(rgba(88, 214, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(88, 214, 255, 0.025) 1px, transparent 1px),
+    radial-gradient(circle at 50% -8%, rgba(247, 247, 243, 0.1), transparent 32rem),
+    radial-gradient(circle at 12% 18%, rgba(88, 214, 255, 0.15), transparent 28rem),
+    radial-gradient(circle at 88% 22%, rgba(120, 97, 255, 0.16), transparent 30rem),
+    linear-gradient(180deg, rgba(3, 6, 12, 0), #03060c 62%);
+  background-position:
+    center top,
+    center top,
+    center top,
+    center top,
+    center top,
+    center top;
+  background-size:
+    96px 96px,
+    96px 96px,
+    auto,
+    auto,
+    auto,
+    auto;
+  background-repeat: repeat, repeat, no-repeat, no-repeat, no-repeat, no-repeat;
+}
+
+.EdgeTrace-topbar {
+  border-bottom: 1px solid rgba(88, 214, 255, 0.12);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(88, 214, 255, 0.09), transparent 28rem),
+    rgba(3, 6, 12, 0.88);
+  box-shadow:
+    inset 0 -1px 0 rgba(247, 247, 243, 0.035),
+    0 18px 60px -48px rgba(88, 214, 255, 0.42);
+  backdrop-filter: blur(22px);
+}
+
+.EdgeTrace-nav-link {
+  border-bottom: 1px solid transparent;
+  padding: 0.4rem 0;
+  color: #9b9b95;
+  font-weight: 720;
+}
+
+.EdgeTrace-nav-link:hover {
+  border-color: rgba(88, 214, 255, 0.34);
+  color: #f7f7f3;
+}
+
+.EdgeTrace-nav-link-active {
+  border-color: #58d6ff;
+  color: #f7f7f3;
 }
 
 .EdgeTrace-contours .rounded-lg,
@@ -280,15 +334,30 @@ body {
 }
 
 .EdgeTrace-contours .bg-panel {
-  background-color: rgba(247, 247, 243, 0.035);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(88, 214, 255, 0.075), transparent 18rem),
+    rgba(11, 17, 28, 0.86);
 }
 
 .EdgeTrace-contours .bg-graphite {
-  background-color: rgba(5, 5, 5, 0.72);
+  background-color: rgba(3, 6, 12, 0.82);
 }
 
 .EdgeTrace-contours .border-line {
-  border-color: rgba(247, 247, 243, 0.11);
+  border-color: rgba(88, 214, 255, 0.14);
+}
+
+.EdgeTrace-contours input,
+.EdgeTrace-contours select,
+.EdgeTrace-contours textarea {
+  border-color: rgba(88, 214, 255, 0.16);
+  background-color: rgba(3, 6, 12, 0.72);
+}
+
+.EdgeTrace-contours input:focus,
+.EdgeTrace-contours select:focus,
+.EdgeTrace-contours textarea:focus {
+  border-color: rgba(88, 214, 255, 0.72);
 }
 
 .EdgeTrace-contours table {
@@ -296,7 +365,7 @@ body {
 }
 
 .EdgeTrace-contours thead {
-  background-color: rgba(247, 247, 243, 0.035);
+  background-color: rgba(88, 214, 255, 0.055);
 }
 
 .EdgeTrace-hero-logo {

@@ -588,7 +588,7 @@ export function App() {
 
   return (
     <div className="EdgeTrace-contours min-h-screen text-ink">
-      <header className="sticky top-0 z-40 border-b border-white/[0.06] bg-graphite/88 backdrop-blur-2xl">
+      <header className="EdgeTrace-topbar sticky top-0 z-40">
         <div className="EdgeTrace-shell relative flex h-auto flex-col items-center gap-4 py-4 lg:h-16 lg:flex-row lg:justify-between lg:py-0">
           <button
             className={
@@ -620,11 +620,7 @@ export function App() {
               return (
               <button
                 key={target}
-                className={`border-b py-1.5 font-semibold ${
-                  isActive
-                    ? "border-ink text-ink"
-                    : "border-transparent text-muted hover:border-white/20 hover:text-ink"
-                }`}
+                className={`EdgeTrace-nav-link ${isActive ? "EdgeTrace-nav-link-active" : ""}`}
                 onClick={() => {
                   if (target === "compare") setInitialComparePair(null);
                   navigate(target);
@@ -638,43 +634,31 @@ export function App() {
           ) : (
             <nav className="flex flex-wrap items-center justify-center gap-6 text-sm lg:ml-auto lg:justify-end">
               <button
-                className={`border-b py-1.5 font-semibold ${
-                  page === "home" ? "border-cyan text-ink" : "border-transparent text-muted hover:border-white/20 hover:text-ink"
-                }`}
+                className={`EdgeTrace-nav-link ${page === "home" ? "EdgeTrace-nav-link-active" : ""}`}
                 onClick={() => navigate("home")}
               >
                 Product
               </button>
               <button
-                className={`border-b py-1.5 font-semibold ${
-                  page === "features" ? "border-ink text-ink" : "border-transparent text-muted hover:border-white/20 hover:text-ink"
-                }`}
+                className={`EdgeTrace-nav-link ${page === "features" ? "EdgeTrace-nav-link-active" : ""}`}
                 onClick={() => navigate("features", "/how-it-works")}
               >
                 How It Works
               </button>
               <button
-                className={`border-b py-1.5 font-semibold ${
-                  page === "pricing" ? "border-ink text-ink" : "border-transparent text-muted hover:border-white/20 hover:text-ink"
-                }`}
+                className={`EdgeTrace-nav-link ${page === "pricing" ? "EdgeTrace-nav-link-active" : ""}`}
                 onClick={() => navigate("pricing")}
               >
                 Pricing
               </button>
               <button
-                className={`border-b py-1.5 font-semibold ${
-                  page === "login" ? "border-ink text-ink" : "border-transparent text-muted hover:border-white/20 hover:text-ink"
-                }`}
+                className={`EdgeTrace-nav-link ${page === "login" ? "EdgeTrace-nav-link-active" : ""}`}
                 onClick={() => navigate("login")}
               >
                 Login
               </button>
               <button
-                className={`border px-4 py-2 font-semibold ${
-                  page === "signup"
-                    ? "border-cyan text-ink"
-                    : "border-accent/55 text-ink hover:border-cyan hover:bg-cyan/[0.06]"
-                }`}
+                className={`EdgeTrace-secondary-button px-4 py-2 ${page === "signup" ? "border-cyan/70" : ""}`}
                 onClick={() => navigate("signup")}
               >
                 Sign Up
