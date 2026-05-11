@@ -1,12 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, type ReactNode } from "react";
 import {
   ArrowRight,
   Check,
-  FileSearch,
+  FileText,
   Gauge,
-  GitCompare,
   Layers,
-  LineChart,
   Minus,
   Search,
   UploadCloud,
@@ -31,79 +29,40 @@ type FeatureEducationPageProps = {
 
 type Tone = "cyan" | "purple" | "amber";
 
-type WorkflowStep = {
-  title: string;
-  description: string;
-  plan: "Free" | "Pro" | "Advanced";
-  icon: LucideIcon;
-  tone: Tone;
-};
-
-const workflowSteps: WorkflowStep[] = [
-  {
-    title: "Import Trades",
-    description: "Upload broker exports or CSV history.",
-    plan: "Free",
-    icon: UploadCloud,
-    tone: "cyan"
-  },
-  {
-    title: "Create Diagnostic Report",
-    description: "Generate health, expectancy, cost drag, and R-capture analysis.",
-    plan: "Free",
-    icon: FileSearch,
-    tone: "cyan"
-  },
-  {
-    title: "Inspect Leaks",
-    description: "Break down symbols, setups, time windows, and strategy segments.",
-    plan: "Pro",
-    icon: Search,
-    tone: "purple"
-  },
-  {
-    title: "Compare Iterations",
-    description: "Measure whether changes improved or degraded the edge.",
-    plan: "Pro",
-    icon: GitCompare,
-    tone: "purple"
-  },
-  {
-    title: "Monitor Strategy Health",
-    description: "Identify instability, regression risk, and deterioration.",
-    plan: "Advanced",
-    icon: LineChart,
-    tone: "amber"
-  }
-];
-
-const capabilityGroups: Array<{
+const insightGroups: Array<{
   title: string;
   body: string;
   tone: Tone;
   icon: LucideIcon;
-  capabilities: string[];
+  bullets: string[];
+  anchorIds: string[];
 }> = [
   {
     title: "Diagnostics",
-    body: "Start with a summary of the current report: what is healthy, what is leaking, and which metric deserves attention first.",
+    body:
+      "Understand strategy health, expectancy, cost drag, and R capture from completed trade history before you inspect individual segments.",
     tone: "cyan",
     icon: Gauge,
-    capabilities: ["Strategy Health", "Cost Drag", "Expectancy", "R Capture"]
+    bullets: ["Strategy health", "Cost drag analysis", "Expectancy breakdowns", "R-multiple analysis"],
+    anchorIds: ["diagnostic-reports", "import-provenance", "broker-imports", "full-report-access"]
   },
   {
     title: "Attribution",
-    body: "Separate where performance is being created or lost so review starts with evidence instead of broad assumptions.",
+    body:
+      "Separate where performance is being created or lost across symbols, setups, time windows, and strategy comparisons.",
     tone: "purple",
     icon: Search,
-    capabilities: ["Symbol performance", "Setup breakdowns", "Time-window analysis", "Strategy comparisons"]
+    bullets: ["Symbol performance", "Setup breakdowns", "Time-window attribution", "Report comparisons"],
+    anchorIds: ["drilldowns", "compare", "full-drilldowns", "full-compare", "reconstruction-audit"]
   },
   {
     title: "Monitoring",
-    body: "Group reports over time to understand whether a strategy is improving, weakening, or becoming unstable.",
+    body:
+      "Group related reports into strategy sets so the review becomes a repeatable process instead of a one-time diagnosis.",
     tone: "amber",
     icon: Layers,
-    capabilities: ["Strategy Sets", "Iteration tracking", "Regression monitoring", "Stability analysis"]
+    bullets: ["Strategy sets", "Iteration tracking", "Regression monitoring", "Stability analysis"],
+    anchorIds: ["strategy-sets", "strategy-monitoring", "exports", "strategy-health-monitoring"]
   }
 ];
 
@@ -122,10 +81,22 @@ const featureRows: Array<{ label: string; feature?: FeatureKey; access: Record<P
   { label: "Edge Stability Score", feature: "edge_stability_score", access: { free: "-", pro: "-", advanced: "Coming soon" } }
 ];
 
-const planDepth: Record<PlanId, number> = {
-  free: 32,
-  pro: 70,
-  advanced: 100
+const planSummaries: Record<PlanId, { title: string; body: string; bullets: string[] }> = {
+  free: {
+    title: "Explore the first diagnostic.",
+    body: "Create one full report and preview how EdgeTrace explains completed trade history.",
+    bullets: ["1 full diagnostic report", "Generic CSV import", "Preview deeper insights"]
+  },
+  pro: {
+    title: "Full strategy workflow.",
+    body: "Unlock the practical loop: full reports, drilldowns, comparisons, strategy sets, and monitoring.",
+    bullets: ["Unlimited full reports", "All supported broker imports", "Full attribution and compare"]
+  },
+  advanced: {
+    title: "Continuous strategy intelligence.",
+    body: "Coming soon: advanced monitoring tools for ongoing strategy review.",
+    bullets: ["Recurring reviews", "Regression alerts", "Edge Stability Score"]
+  }
 };
 
 export function FeatureEducationPage({
@@ -156,10 +127,10 @@ export function FeatureEducationPage({
   return (
     <PageShell className="relative z-10 pb-16">
       <HeroSection accountAction={accountAction} accountLabel={accountLabel} onDemo={onDemo ?? onAnalyze} onPricing={onPricing} />
-      <WorkflowStory />
-      <CoreCapabilities />
+      <WorkflowWalkthrough />
+      <DiagnosticInsight />
       <StrategyEvolution />
-      <PlanAccess currentPlan={plan.id} isAuthenticated={isAuthenticated} onPricing={onPricing} />
+      <PlansSection currentPlan={plan.id} isAuthenticated={isAuthenticated} onPricing={onPricing} />
       <FinalCta accountAction={accountAction} accountLabel={accountLabel} onDemo={onDemo ?? onAnalyze} />
     </PageShell>
   );
@@ -178,15 +149,15 @@ function HeroSection({
 }) {
   return (
     <section className="relative z-10 overflow-hidden border-b border-white/[0.08] py-12 md:py-16">
-      <div className="pointer-events-none absolute left-1/2 top-0 h-80 w-[54rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(34,197,245,0.11),rgba(124,92,255,0.06)_44%,transparent_72%)] blur-[118px]" />
-      <div className="relative grid gap-9 lg:grid-cols-[0.96fr_0.9fr] lg:items-center">
+      <div className="pointer-events-none absolute left-1/2 top-0 h-80 w-[54rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(34,197,245,0.12),rgba(124,92,255,0.06)_44%,transparent_72%)] blur-[118px]" />
+      <div className="relative grid gap-10 lg:grid-cols-[0.95fr_0.9fr] lg:items-center">
         <div>
           <h1 className="max-w-4xl text-5xl font-semibold leading-[1.08] tracking-[-0.035em] text-ink md:text-6xl xl:text-7xl">
             Understand every layer of your trading performance.
           </h1>
           <p className="mt-5 max-w-2xl text-base leading-7 text-muted md:text-lg md:leading-8">
             EdgeTrace turns completed trade history into diagnostics, attribution, comparisons, and strategy monitoring
-            so you can understand what actually drives performance.
+            so traders can understand what actually drives performance.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <button className="EdgeTrace-primary-button" onClick={onDemo}>
@@ -200,196 +171,291 @@ function HeroSection({
             </button>
           </div>
         </div>
-        <DiagnosticFlowVisual />
+        <WorkspaceVisual />
       </div>
     </section>
   );
 }
 
-function DiagnosticFlowVisual() {
+function WorkspaceVisual() {
   return (
-    <div className="relative overflow-hidden border border-white/[0.1] bg-[linear-gradient(145deg,rgba(7,12,20,0.96),rgba(5,10,18,0.9))] p-5 shadow-[0_24px_72px_-56px_rgba(88,214,255,0.6)]">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_85%_12%,rgba(124,92,255,0.16),transparent_34%),radial-gradient(circle_at_14%_88%,rgba(34,197,245,0.13),transparent_34%)]" />
+    <div className="relative overflow-hidden border border-white/[0.1] bg-[linear-gradient(145deg,rgba(8,13,22,0.98),rgba(4,8,15,0.94))] p-5 shadow-[0_24px_84px_-58px_rgba(88,214,255,0.65)]">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_10%,rgba(124,92,255,0.16),transparent_35%),radial-gradient(circle_at_16%_86%,rgba(34,197,245,0.14),transparent_34%)]" />
       <div className="relative">
-        <div className="grid gap-3">
-          {workflowSteps.map((step, index) => {
-            const Icon = step.icon;
-            const toneClass = toneClasses[step.tone];
-            return (
-              <div key={step.title} className="grid grid-cols-[42px_1fr_auto] items-center gap-4">
-                <div className="relative">
-                  <div className={`grid h-10 w-10 place-items-center border ${toneClass.border} ${toneClass.bg} ${toneClass.text}`}>
-                    <Icon size={18} strokeWidth={1.8} />
-                  </div>
-                  {index < workflowSteps.length - 1 && (
-                    <div className="absolute left-1/2 top-10 h-3 w-px -translate-x-1/2 bg-white/[0.14]" />
-                  )}
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-ink">{step.title}</p>
-                  <p className="mt-0.5 text-xs text-muted">{step.description}</p>
-                </div>
-                <span className={`border px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] ${toneClass.border} ${toneClass.text}`}>
-                  {step.plan}
-                </span>
-              </div>
-            );
-          })}
+        <div className="flex items-center justify-between border-b border-white/[0.08] pb-4">
+          <div>
+            <p className="text-sm font-semibold text-ink">Diagnostic workspace</p>
+            <p className="mt-1 text-xs text-muted">Completed trades to strategy review</p>
+          </div>
+          <span className="border border-cyan/30 bg-cyan/[0.05] px-3 py-1 text-xs font-semibold text-cyan">
+            Report ready
+          </span>
         </div>
-        <div className="mt-5 grid grid-cols-3 gap-2 border-t border-white/[0.1] pt-4">
-          <MiniReadout label="Cost drag" value="↓" tone="amber" />
-          <MiniReadout label="Expectancy" value="+0.31" tone="cyan" />
-          <MiniReadout label="R capture" value="0.74R" tone="purple" />
+
+        <div className="mt-5 grid gap-4 md:grid-cols-[0.9fr_1.1fr]">
+          <div className="space-y-3">
+            <div className="border border-white/[0.08] bg-black/25 p-4">
+              <div className="flex items-center gap-3">
+                <FileText className="text-cyan" size={22} />
+                <div>
+                  <p className="text-sm font-semibold text-ink">broker-export.csv</p>
+                  <p className="text-xs text-muted">1,248 completed trades</p>
+                </div>
+              </div>
+              <div className="mt-4 h-2 bg-white/[0.08]">
+                <div className="h-full w-[86%] bg-gradient-to-r from-cyan to-accent" />
+              </div>
+            </div>
+            <div className="border border-violet/25 bg-violet/[0.045] p-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-violet">Leak attribution</p>
+              <p className="mt-3 text-xl font-semibold tracking-[-0.04em] text-ink">Opening session cost drag</p>
+              <p className="mt-2 text-sm leading-6 text-muted">Largest remaining drag after normalization.</p>
+            </div>
+          </div>
+
+          <div className="border border-white/[0.08] bg-[#050a12]/92 p-4">
+            <div className="flex items-end justify-between">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-cyan">Strategy health</p>
+                <p className="mt-3 text-6xl font-semibold tracking-[-0.07em] text-ink">82</p>
+              </div>
+              <p className="pb-2 text-sm font-semibold text-cyan">Improving</p>
+            </div>
+            <svg className="mt-5 h-28 w-full overflow-visible" viewBox="0 0 320 112" role="img" aria-label="Strategy trend line">
+              <path d="M8 88 C54 76, 68 94, 108 66 S168 52, 206 42 S266 35, 312 20" fill="none" stroke="rgba(88,214,255,0.92)" strokeWidth="3" />
+              <path d="M8 96 C62 90, 86 82, 130 82 S202 62, 312 48" fill="none" stroke="rgba(255,255,255,0.16)" strokeWidth="2" />
+              <circle cx="312" cy="20" r="4" fill="rgba(88,214,255,1)" />
+            </svg>
+            <div className="mt-4 grid grid-cols-3 gap-2 text-xs text-muted">
+              <span>Import</span>
+              <span>Compare</span>
+              <span>Monitor</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-function WorkflowStory() {
+function WorkflowWalkthrough() {
   return (
-    <section className="relative z-10 py-11 md:py-14">
-      <div className="mb-7">
-        <h2 className="max-w-3xl text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl">
+    <section className="relative z-10 py-12 md:py-16">
+      <div className="mb-10 max-w-3xl">
+        <h2 className="text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl">
           From broker export to strategy intelligence.
         </h2>
-        <p className="mt-4 max-w-2xl text-base leading-7 text-muted">
-          Follow how completed trade history becomes a diagnostic workflow.
+        <p className="mt-4 text-base leading-7 text-muted">
+          The workflow is intentionally linear: import the file, isolate what changed, then monitor whether the strategy
+          keeps improving.
         </p>
       </div>
-      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
-        {workflowSteps.map((step, index) => (
-          <WorkflowStepCard key={step.title} step={step} number={index + 1} showConnector={index < workflowSteps.length - 1} />
+      <div className="space-y-14">
+        <WalkthroughSection
+          title="Import completed trade history."
+          body="Upload broker exports or generic CSV files. EdgeTrace normalizes completed trades into a structured diagnostic workflow."
+          visual={<ImportReportVisual />}
+        />
+        <WalkthroughSection
+          title="Identify what actually drives performance."
+          body="EdgeTrace separates expectancy, cost drag, R capture, symbol performance, setup behavior, and time-window attribution so traders can isolate the largest source of edge or leakage."
+          visual={<AttributionVisual />}
+          reverse
+        />
+        <WalkthroughSection
+          title="Track whether strategy quality is improving or deteriorating."
+          body="Compare iterations, monitor strategy sets, and identify regression risk before weak behavior compounds."
+          visual={<EvolutionLineVisual compact />}
+        />
+      </div>
+    </section>
+  );
+}
+
+function WalkthroughSection({
+  title,
+  body,
+  visual,
+  reverse = false
+}: {
+  title: string;
+  body: string;
+  visual: ReactNode;
+  reverse?: boolean;
+}) {
+  return (
+    <section className={`grid gap-7 lg:grid-cols-[0.82fr_1.18fr] lg:items-center ${reverse ? "lg:[&>*:first-child]:order-2" : ""}`}>
+      <div>
+        <h3 className="max-w-2xl text-3xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-4xl">
+          {title}
+        </h3>
+        <p className="mt-4 max-w-xl text-base leading-7 text-muted">{body}</p>
+      </div>
+      {visual}
+    </section>
+  );
+}
+
+function ImportReportVisual() {
+  return (
+    <div className="relative overflow-hidden border border-white/[0.1] bg-[#050a12]/94 p-6">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_16%_20%,rgba(34,197,245,0.12),transparent_30%),radial-gradient(circle_at_86%_82%,rgba(124,92,255,0.1),transparent_36%)]" />
+      <div className="relative grid gap-5 md:grid-cols-[0.8fr_auto_1.1fr] md:items-center">
+        <div className="border border-white/[0.09] bg-black/25 p-5">
+          <FileText className="text-cyan" size={30} />
+          <p className="mt-5 text-2xl font-semibold tracking-[-0.04em] text-ink">CSV export</p>
+          <p className="mt-2 text-sm text-muted">Broker rows, fills, costs, and timestamps</p>
+        </div>
+        <ArrowRight className="hidden text-cyan/70 md:block" size={28} />
+        <div className="border border-cyan/20 bg-cyan/[0.035] p-5">
+          <p className="text-sm font-semibold text-cyan">Normalized report input</p>
+          <div className="mt-5 space-y-3">
+            {["Trades mapped", "Costs detected", "Risk fields checked"].map((label, index) => (
+              <div key={label} className="flex items-center justify-between border-b border-white/[0.07] pb-3 text-sm">
+                <span className="text-muted">{label}</span>
+                <span className={index === 2 ? "text-warning" : "text-cyan"}>{index === 2 ? "Review" : "Ready"}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AttributionVisual() {
+  return (
+    <div className="relative overflow-hidden border border-white/[0.1] bg-[#050a12]/94 p-6">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(124,92,255,0.12),transparent_34%)]" />
+      <div className="relative grid gap-5 md:grid-cols-[1fr_auto_1fr] md:items-center">
+        <div>
+          <p className="text-sm font-semibold text-muted">Gross edge</p>
+          <p className="mt-2 text-4xl font-semibold tracking-[-0.06em] text-ink">$6.1k</p>
+          <div className="mt-5 h-2 bg-white/[0.08]">
+            <div className="h-full w-[78%] bg-gradient-to-r from-cyan to-accent" />
+          </div>
+        </div>
+        <div className="grid h-32 w-32 place-items-center border border-warning/35 bg-warning/[0.045]">
+          <div className="text-center">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-warning">Leak</p>
+            <p className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-ink">22.6%</p>
+          </div>
+        </div>
+        <div>
+          <p className="text-sm font-semibold text-muted">After-cost return</p>
+          <p className="mt-2 text-4xl font-semibold tracking-[-0.06em] text-cyan">$4.8k</p>
+          <p className="mt-5 text-sm leading-6 text-muted">Opening-session costs remain the largest attribution drag.</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function EvolutionLineVisual({ compact = false }: { compact?: boolean }) {
+  return (
+    <div className="relative overflow-hidden border border-white/[0.1] bg-[#050a12]/94 p-6">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(245,166,35,0.1),transparent_32%),radial-gradient(circle_at_16%_86%,rgba(34,197,245,0.1),transparent_32%)]" />
+      <div className="relative">
+        <div className="flex items-center justify-between gap-4">
+          {[
+            ["V1", "Baseline"],
+            ["V2", "Improved"],
+            ["V3", "Monitor"]
+          ].map(([version, label], index) => (
+            <div key={version} className="relative flex-1">
+              {index < 2 && <div className="absolute left-[54%] top-5 hidden h-px w-[92%] bg-white/[0.14] sm:block" />}
+              <div className={`relative z-10 grid h-11 w-11 place-items-center border ${index === 0 ? "border-cyan/35 text-cyan" : index === 1 ? "border-violet/35 text-violet" : "border-warning/35 text-warning"} bg-black/35`}>
+                {version}
+              </div>
+              <p className="mt-3 text-sm font-semibold text-ink">{label}</p>
+              {!compact && <p className="mt-1 text-xs text-muted">Strategy iteration</p>}
+            </div>
+          ))}
+        </div>
+        <svg className="mt-8 h-32 w-full overflow-visible" viewBox="0 0 420 130" role="img" aria-label="Strategy evolution line">
+          <path d="M8 98 C68 92, 106 84, 150 72 S224 36, 284 48 S356 74, 412 44" fill="none" stroke="rgba(88,214,255,0.85)" strokeWidth="3" />
+          <path d="M8 106 C88 105, 156 96, 220 88 S324 82, 412 78" fill="none" stroke="rgba(255,255,255,0.16)" strokeWidth="2" />
+          <circle cx="150" cy="72" r="4" fill="rgba(124,92,255,1)" />
+          <circle cx="412" cy="44" r="4" fill="rgba(245,166,35,1)" />
+        </svg>
+      </div>
+    </div>
+  );
+}
+
+function DiagnosticInsight() {
+  return (
+    <section className="relative z-10 border-y border-white/[0.08] bg-[radial-gradient(circle_at_20%_0%,rgba(34,197,245,0.035),transparent_32rem),rgba(3,6,12,0.24)] py-12 md:py-16">
+      <div className="mb-9 max-w-3xl">
+        <h2 className="text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl">
+          What EdgeTrace analyzes.
+        </h2>
+        <p className="mt-4 text-base leading-7 text-muted">
+          Each layer answers a different question about completed trade performance.
+        </p>
+      </div>
+      <div className="grid gap-5 lg:grid-cols-3">
+        {insightGroups.map((group) => (
+          <InsightPanel key={group.title} group={group} />
         ))}
       </div>
     </section>
   );
 }
 
-function WorkflowStepCard({ step, number, showConnector }: { step: WorkflowStep; number: number; showConnector: boolean }) {
-  const Icon = step.icon;
-  const toneClass = toneClasses[step.tone];
+function InsightPanel({ group }: { group: (typeof insightGroups)[number] }) {
+  const Icon = group.icon;
+  const toneClass = toneClasses[group.tone];
   return (
-    <article className="relative z-10 border border-white/[0.12] bg-[#050a12] p-4 shadow-[0_0_0_1px_rgba(3,6,12,0.92),0_18px_44px_-36px_rgba(0,0,0,0.95)]">
-      {showConnector && (
-        <ArrowRight className="pointer-events-none absolute -right-3 top-8 z-20 hidden text-muted/45 xl:block" size={16} strokeWidth={1.6} />
-      )}
-      <div className="flex items-start justify-between gap-3">
-        <div className={`grid h-11 w-11 place-items-center border ${toneClass.border} ${toneClass.bg} ${toneClass.text}`}>
-          <Icon size={21} strokeWidth={1.7} />
-        </div>
-        <PlanBadge label={step.plan} />
+    <article className="relative overflow-hidden border border-white/[0.1] bg-[#050a12]/94 p-6">
+      {group.anchorIds.map((id) => (
+        <span key={id} id={id} className="absolute -top-24" aria-hidden="true" />
+      ))}
+      <div className={`mb-7 grid h-14 w-14 place-items-center border ${toneClass.border} ${toneClass.bg} ${toneClass.text}`}>
+        <Icon size={27} strokeWidth={1.7} />
       </div>
-      <p className="mt-5 text-sm font-semibold text-muted">{String(number).padStart(2, "0")}</p>
-      <h3 className="mt-2 text-xl font-semibold leading-tight tracking-[-0.04em] text-ink">{step.title}</h3>
-      <p className="mt-3 text-sm leading-6 text-muted">{step.description}</p>
+      <h3 className="text-3xl font-semibold tracking-[-0.05em] text-ink">{group.title}</h3>
+      <p className="mt-4 min-h-24 text-base leading-7 text-muted">{group.body}</p>
+      <ul className="mt-6 space-y-3">
+        {group.bullets.map((bullet) => (
+          <li key={bullet} className="flex gap-3 text-sm leading-5 text-muted">
+            <Check className={`mt-0.5 shrink-0 ${toneClass.text}`} size={15} />
+            <span>{bullet}</span>
+          </li>
+        ))}
+      </ul>
     </article>
   );
 }
 
-function CoreCapabilities() {
-  return (
-    <section className="relative z-10 border-y border-white/[0.08] bg-[radial-gradient(circle_at_20%_0%,rgba(34,197,245,0.035),transparent_32rem),rgba(3,6,12,0.28)] py-12 md:py-14">
-      <div className="mb-8 max-w-4xl">
-        <h2 className="text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl">
-          What EdgeTrace analyzes.
-        </h2>
-        <p className="mt-4 max-w-2xl text-base leading-7 text-muted">
-          Each layer isolates a different source of strategy performance.
-        </p>
-      </div>
-      <div className="space-y-7">
-        {capabilityGroups.map((group) => (
-          <CapabilityGroup key={group.title} group={group} />
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function CapabilityGroup({ group }: { group: (typeof capabilityGroups)[number] }) {
-  const Icon = group.icon;
-  const toneClass = toneClasses[group.tone];
-  return (
-    <section className="grid gap-5 py-2 lg:grid-cols-[260px_1fr]">
-      <div className="lg:pt-3">
-        <div className={`mb-4 h-px w-16 ${toneClass.gradient}`} />
-        <div className="flex items-center gap-3">
-          <Icon className={toneClass.text} size={24} strokeWidth={1.7} />
-          <h3 className="text-2xl font-semibold tracking-[-0.04em] text-ink">{group.title}</h3>
-        </div>
-        <p className="mt-3 text-sm leading-6 text-muted">{group.body}</p>
-      </div>
-      <div className="grid gap-3 border-t border-white/[0.075] pt-5 sm:grid-cols-2 xl:grid-cols-4">
-        {group.capabilities.map((capability) => (
-          <div key={capability} className="border border-white/[0.08] bg-[#050a12]/92 p-4">
-            <p className={`text-xs font-semibold uppercase tracking-[0.16em] ${toneClass.text}`}>{capability}</p>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
 function StrategyEvolution() {
-  const versions = [
-    { label: "V1", title: "Baseline", health: "68", note: "Cost drag visible", tone: "cyan" as Tone },
-    { label: "V2", title: "Lower Costs", health: "76", note: "Execution drag reduced", tone: "purple" as Tone },
-    { label: "V3", title: "Monitoring", health: "82", note: "Current vs best tracked", tone: "amber" as Tone }
-  ];
-
   return (
-    <section className="relative z-10 py-12 md:py-14">
-      <div className="grid gap-8 lg:grid-cols-[0.78fr_1.22fr] lg:items-center">
+    <section className="relative z-10 py-12 md:py-16">
+      <div className="grid gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
         <div>
           <h2 className="max-w-3xl text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl">
             Track whether your edge is improving or deteriorating.
           </h2>
           <p className="mt-4 max-w-2xl text-base leading-7 text-muted">
-            EdgeTrace helps traders compare iterations, identify regression risk, and monitor strategy stability over
-            time.
+            EdgeTrace helps traders compare iterations, monitor stability, and identify degradation before weak behavior
+            compounds.
           </p>
-          <div className="mt-6 grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
-            {["Strategy Sets", "Iteration tracking", "Recurring review concepts"].map((item) => (
-              <div key={item} className="flex items-center gap-3 text-sm text-muted">
-                <Check className="text-violet" size={16} />
+          <div className="mt-7 space-y-3">
+            {["Compare the current report against prior iterations.", "Group related reports into strategy sets.", "Review stability and regression risk over time."].map((item) => (
+              <div key={item} className="flex gap-3 text-sm leading-6 text-muted">
+                <Check className="mt-1 shrink-0 text-violet" size={15} />
                 <span>{item}</span>
               </div>
             ))}
           </div>
         </div>
-        <div className="relative overflow-hidden border border-white/[0.1] bg-[linear-gradient(145deg,rgba(7,12,20,0.95),rgba(5,10,18,0.9))] p-5">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_18%,rgba(124,92,255,0.13),transparent_34%),radial-gradient(circle_at_16%_84%,rgba(34,197,245,0.1),transparent_30%)]" />
-          <div className="relative grid gap-3 md:grid-cols-3">
-            {versions.map((version, index) => {
-              const toneClass = toneClasses[version.tone];
-              return (
-                <article key={version.label} className="relative border border-white/[0.09] bg-[#050a12] p-4">
-                  {index < versions.length - 1 && (
-                    <ArrowRight className="absolute -right-3 top-8 hidden text-muted/45 md:block" size={16} strokeWidth={1.6} />
-                  )}
-                  <p className={`text-xs font-semibold uppercase tracking-[0.16em] ${toneClass.text}`}>{version.label}</p>
-                  <h3 className="mt-4 text-xl font-semibold tracking-[-0.04em] text-ink">{version.title}</h3>
-                  <p className="mt-4 text-5xl font-semibold tracking-[-0.06em] text-ink">{version.health}</p>
-                  <p className="mt-3 text-sm leading-6 text-muted">{version.note}</p>
-                  <div className="mt-5 h-1.5 bg-white/[0.08]">
-                    <div className={`h-full ${toneClass.gradient}`} style={{ width: `${55 + index * 18}%` }} />
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-          <p className="relative mt-5 border-t border-white/[0.08] pt-4 text-sm leading-6 text-muted">
-            Advanced monitoring features are marked Coming Soon. Pro focuses on the live workflow: full reports,
-            drilldowns, comparisons, strategy sets, and monitoring.
-          </p>
-        </div>
+        <EvolutionLineVisual />
       </div>
     </section>
   );
 }
 
-function PlanAccess({
+function PlansSection({
   currentPlan,
   isAuthenticated,
   onPricing
@@ -399,14 +465,15 @@ function PlanAccess({
   onPricing: () => void;
 }) {
   return (
-    <section className="relative z-10 border-y border-white/[0.08] bg-[radial-gradient(circle_at_80%_0%,rgba(124,92,255,0.035),transparent_30rem),rgba(3,6,12,0.28)] py-12 md:py-14">
-      <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+    <section className="relative z-10 border-y border-white/[0.08] bg-[radial-gradient(circle_at_80%_0%,rgba(124,92,255,0.035),transparent_30rem),rgba(3,6,12,0.24)] py-12 md:py-16">
+      <div className="mb-7 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
           <h2 className="max-w-3xl text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl">
             Choose how deep you want to inspect performance.
           </h2>
           <p className="mt-4 max-w-2xl text-base leading-7 text-muted">
-            Free previews the diagnostic layer. Pro unlocks the full workflow. Advanced is the monitoring roadmap.
+            The plans move from one full diagnostic to a complete strategy review workflow, with Advanced monitoring
+            marked as coming soon.
           </p>
         </div>
         {isAuthenticated && (
@@ -415,43 +482,77 @@ function PlanAccess({
           </p>
         )}
       </div>
-      <div className="grid gap-3 lg:grid-cols-3">
+
+      <div className="grid gap-4 lg:grid-cols-3">
         {planOrder.map((planId) => (
-          <PlanProgressCard key={planId} planId={planId} active={currentPlan === planId} />
+          <PlanCard key={planId} planId={planId} active={currentPlan === planId} />
         ))}
       </div>
-      <div className="mt-8 overflow-x-auto border border-white/[0.08] bg-[#050a12]/94">
-        <table className="min-w-full text-sm">
-          <thead className="border-b border-white/[0.1] bg-white/[0.03] text-left text-muted">
-            <tr>
-              <th className="px-5 py-4 font-medium">Feature</th>
-              {planOrder.map((planId) => (
-                <th key={planId} className={`px-5 py-4 font-medium ${currentPlanTableClass(currentPlan, planId, "head")}`}>
-                  {planConfigs[planId].displayName}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-white/[0.07]">
-            {featureRows.map((row, index) => (
-              <tr key={row.label} className={index % 2 === 1 ? "bg-white/[0.018]" : ""}>
-                <td className="px-5 py-4 font-semibold text-ink">{row.label}</td>
+
+      <div className="mt-8">
+        <p className="mb-3 text-sm font-semibold text-muted">Feature access by plan</p>
+        <div className="overflow-x-auto border border-white/[0.08] bg-[#050a12]/92">
+          <table className="min-w-full text-sm">
+            <thead className="border-b border-white/[0.09] bg-white/[0.025] text-left text-muted">
+              <tr>
+                <th className="px-5 py-4 font-medium">Feature</th>
                 {planOrder.map((planId) => (
-                  <td key={planId} className={`px-5 py-4 ${currentPlanTableClass(currentPlan, planId, "body")}`}>
-                    <AccessValue value={row.access[planId]} planId={planId} />
-                  </td>
+                  <th key={planId} className={`px-5 py-4 font-medium ${currentPlanTableClass(currentPlan, planId, "head")}`}>
+                    {planConfigs[planId].displayName}
+                  </th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-white/[0.06]">
+              {featureRows.map((row, index) => (
+                <tr key={row.label} className={index % 2 === 1 ? "bg-white/[0.016]" : ""}>
+                  <td className="px-5 py-4 font-semibold text-ink">{row.label}</td>
+                  {planOrder.map((planId) => (
+                    <td key={planId} className={`px-5 py-4 ${currentPlanTableClass(currentPlan, planId, "body")}`}>
+                      <AccessValue value={row.access[planId]} planId={planId} />
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
+
       {!isAuthenticated && (
         <button className="EdgeTrace-secondary-button mt-5" onClick={onPricing}>
           Compare Pricing
         </button>
       )}
     </section>
+  );
+}
+
+function PlanCard({ planId, active }: { planId: PlanId; active: boolean }) {
+  const config = planConfigs[planId];
+  const summary = planSummaries[planId];
+  const toneClass = toneClasses[planToneFromId(planId)];
+
+  return (
+    <article className={`border p-6 ${active ? `${toneClass.border} bg-[#07101c]` : "border-white/[0.1] bg-[#050a12]/92"}`}>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h3 className="text-2xl font-semibold tracking-[-0.04em] text-ink">{config.displayName}</h3>
+          <p className={`mt-2 text-sm font-semibold ${toneClass.text}`}>{config.monthlyPriceLabel}</p>
+        </div>
+        {active && <span className={`border px-3 py-1 text-xs font-semibold ${toneClass.border} ${toneClass.text}`}>Current</span>}
+      </div>
+      <p className="mt-5 text-lg font-semibold leading-6 text-ink">{summary.title}</p>
+      <p className="mt-3 text-sm leading-6 text-muted">{summary.body}</p>
+      <ul className="mt-6 space-y-3">
+        {summary.bullets.map((bullet) => (
+          <li key={bullet} className="flex gap-3 text-sm leading-5 text-muted">
+            <Check className={`mt-0.5 shrink-0 ${toneClass.text}`} size={15} />
+            <span>{bullet}</span>
+          </li>
+        ))}
+      </ul>
+    </article>
   );
 }
 
@@ -486,58 +587,6 @@ function FinalCta({
   );
 }
 
-function MiniReadout({ label, value, tone }: { label: string; value: string; tone: Tone }) {
-  const toneClass = toneClasses[tone];
-  return (
-    <div className="border border-white/[0.08] bg-black/25 p-3">
-      <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-muted">{label}</p>
-      <p className={`mt-2 text-lg font-semibold tracking-[-0.04em] ${toneClass.text}`}>{value}</p>
-    </div>
-  );
-}
-
-function PlanProgressCard({ planId, active }: { planId: PlanId; active: boolean }) {
-  const config = planConfigs[planId];
-  const toneClass = toneClasses[planToneFromId(planId)];
-  const bullets =
-    planId === "advanced"
-      ? ["Recurring strategy reviews", "Regression alerts", "Edge Stability Score", "Future team/API support"]
-      : config.featureBullets.slice(0, 4);
-
-  return (
-    <article className={`border p-5 ${active ? `${toneClass.border} bg-[#07101c]` : "border-white/[0.1] bg-[#050a12]/92"}`}>
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h3 className="text-2xl font-semibold tracking-[-0.04em] text-ink">{config.displayName}</h3>
-          <p className={`mt-2 text-sm font-semibold ${toneClass.text}`}>{config.monthlyPriceLabel}</p>
-        </div>
-        {active && <span className={`border px-3 py-1 text-xs font-semibold ${toneClass.border} ${toneClass.text}`}>Current</span>}
-      </div>
-      <p className="mt-4 text-base font-semibold text-ink">{config.description}</p>
-      <div className="mt-4 h-2 bg-white/[0.08]">
-        <div className={`h-full ${toneClass.gradient}`} style={{ width: `${planDepth[planId]}%` }} />
-      </div>
-      <ul className="mt-4 space-y-2.5">
-        {bullets.map((bullet) => (
-          <li key={bullet} className="flex gap-3 text-sm leading-5 text-muted">
-            <Check className={`mt-0.5 shrink-0 ${toneClass.text}`} size={15} />
-            <span>{bullet}</span>
-          </li>
-        ))}
-      </ul>
-    </article>
-  );
-}
-
-function PlanBadge({ label }: { label: string }) {
-  const toneClass = toneClasses[planToneFromLabel(label)];
-  return (
-    <span className={`border px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] ${toneClass.border} ${toneClass.text} ${toneClass.bg}`}>
-      {label}
-    </span>
-  );
-}
-
 function AccessValue({ value, planId }: { value: string; planId: PlanId }) {
   const toneClass = toneClasses[planToneFromId(planId)];
   if (value === "-") {
@@ -555,12 +604,6 @@ function AccessValue({ value, planId }: { value: string; planId: PlanId }) {
       <Check size={14} /> {value}
     </span>
   );
-}
-
-function planToneFromLabel(label: string): Tone {
-  if (label.toLowerCase().includes("advanced")) return "amber";
-  if (label.toLowerCase().includes("pro")) return "purple";
-  return "cyan";
 }
 
 function planToneFromId(planId: PlanId): Tone {
@@ -584,19 +627,16 @@ const toneClasses = {
   cyan: {
     text: "text-cyan",
     bg: "bg-cyan/[0.055]",
-    border: "border-cyan/35",
-    gradient: "bg-gradient-to-r from-cyan to-accent"
+    border: "border-cyan/35"
   },
   purple: {
     text: "text-violet",
     bg: "bg-violet/[0.055]",
-    border: "border-violet/35",
-    gradient: "bg-gradient-to-r from-accent to-violet"
+    border: "border-violet/35"
   },
   amber: {
     text: "text-warning",
     bg: "bg-warning/[0.055]",
-    border: "border-warning/35",
-    gradient: "bg-gradient-to-r from-warning to-violet"
+    border: "border-warning/35"
   }
 } as const;
