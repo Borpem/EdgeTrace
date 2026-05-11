@@ -1,9 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect } from "react";
 import {
-  Activity,
   ArrowRight,
   BarChart3,
-  Bell,
   Check,
   Database,
   FileSearch,
@@ -15,17 +13,14 @@ import {
   Route,
   Search,
   ShieldCheck,
-  ShieldAlert,
   UploadCloud,
-  Users,
   type LucideIcon
 } from "lucide-react";
 import { PageShell } from "../components/ui/Primitives";
 import { trackEvent } from "../lib/analytics";
-import { getActivationSummary, listReports } from "../lib/api";
 import { canUseFeature, getPlanConfig } from "../lib/entitlements";
 import { planConfigs, planOrder, type FeatureKey, type PlanId } from "../lib/plans";
-import type { ActivationSummary, ReportSummary, UserProfile } from "../types";
+import type { UserProfile } from "../types";
 
 type FeatureEducationPageProps = {
   profile?: UserProfile | null;
@@ -67,7 +62,7 @@ const workflowStages: WorkflowStage[] = [
   {
     number: "03",
     title: "Review Primary Diagnosis",
-    description: "See the single largest issue affecting performance.",
+    description: "See the largest issue affecting performance.",
     plan: "FREE",
     icon: Gauge,
     tone: "cyan"
@@ -75,7 +70,7 @@ const workflowStages: WorkflowStage[] = [
   {
     number: "04",
     title: "Inspect Leaks",
-    description: "Analyze symbols, setups, time windows, and strategy segments.",
+    description: "Break down symbols, setups, time windows, and strategy segments.",
     plan: "PRO",
     icon: Search,
     tone: "purple"
@@ -91,7 +86,7 @@ const workflowStages: WorkflowStage[] = [
   {
     number: "06",
     title: "Build Strategy Set",
-    description: "Track related reports across iterations and strategy evolution.",
+    description: "Track related reports across strategy iterations.",
     plan: "PRO",
     icon: Layers,
     tone: "purple"
@@ -249,60 +244,18 @@ const planDepth: Record<PlanId, number> = {
   advanced: 100
 };
 
-const advancedPreviewFeatures: Array<{ title: string; body: string; icon: LucideIcon }> = [
-  {
-    title: "Recurring strategy reviews",
-    body: "Periodic summaries of what improved, weakened, or deserves review.",
-    icon: Activity
-  },
-  {
-    title: "Regression alerts",
-    body: "Flag when expectancy, cost drag, or R capture starts moving the wrong way.",
-    icon: Bell
-  },
-  {
-    title: "Edge Stability Score",
-    body: "A durability readout based on consistency, outliers, losses, and segment concentration.",
-    icon: Gauge
-  },
-  {
-    title: "Strategy deterioration monitoring",
-    body: "Track whether a strategy is becoming unstable across reports and iterations.",
-    icon: ShieldAlert
-  },
-  {
-    title: "Future team/API support",
-    body: "Designed for deeper workflows, shared review, and programmatic access later.",
-    icon: Users
-  }
-];
-
 export function FeatureEducationPage({
   profile,
   isAuthenticated = Boolean(profile),
   onAnalyze,
   onPricing,
   onDemo,
-  onSignup,
-  onOpenReport,
-  onCreateStrategySet
+  onSignup
 }: FeatureEducationPageProps) {
-  const [reports, setReports] = useState<ReportSummary[]>([]);
-  const [activation, setActivation] = useState<ActivationSummary | null>(null);
   const plan = getPlanConfig(profile?.planId);
-  const latestReport = reports[0];
 
   useEffect(() => {
     trackEvent(isAuthenticated ? "feature_education_opened" : "public_how_it_works_opened");
-    if (!isAuthenticated) {
-      setReports([]);
-      setActivation(null);
-      return;
-    }
-    void listReports()
-      .then((response) => setReports(Array.isArray(response.reports) ? response.reports : []))
-      .catch(() => setReports([]));
-    void getActivationSummary().then(setActivation).catch(() => setActivation(null));
   }, [isAuthenticated]);
 
   useEffect(() => {
@@ -314,112 +267,51 @@ export function FeatureEducationPage({
     });
   }, []);
 
-  const nextAction = useMemo(() => {
-    if (!isAuthenticated) {
-      return {
-        title: "Preview the workflow before creating an account.",
-        body: "Open the public demo to see how a completed trade file becomes a diagnostic report, attribution path, and next inspection.",
-        cta: "Try Interactive Demo",
-        action: onDemo ?? onSignup ?? onAnalyze
-      };
-    }
-    if (!activation?.hasCreatedReport) {
-      return {
-        title: "Start with your first diagnostic report.",
-        body: "Upload completed trade history and generate the first performance leak readout.",
-        cta: "Analyze Trades",
-        action: onAnalyze
-      };
-    }
-    if (!activation?.hasClickedDrilldown && latestReport && onOpenReport) {
-      return {
-        title: "Inspect the primary leak.",
-        body: "Open the latest report and use the recommended next inspection path.",
-        cta: "Open Latest Report",
-        action: () => onOpenReport(latestReport.id)
-      };
-    }
-    if (!activation?.hasCreatedComparison) {
-      return {
-        title: "Create another report and compare changes.",
-        body: "Comparisons show what improved, degraded, or introduced new leakage between reports.",
-        cta: "Create New Report",
-        action: onAnalyze
-      };
-    }
-    if (!activation?.hasCreatedCollection) {
-      return {
-        title: "Group reports into a strategy set.",
-        body: "Strategy sets help you track related iterations over time.",
-        cta: "Create Strategy Set",
-        action: onCreateStrategySet ?? onAnalyze
-      };
-    }
-    return {
-      title: plan.id === "advanced" ? "Monitor durability over time." : "Use strategy sets to track progress.",
-      body:
-        plan.id === "free"
-          ? "Your first report gives you the full diagnostic experience. Upgrade to Pro when you are ready to track strategy changes continuously."
-          : plan.id === "pro"
-            ? "Use strategy sets and monitoring to track improvement over time."
-            : "Review regression alerts, strategy digests, and Edge Stability Score to monitor durability.",
-      cta: plan.id === "free" ? "View Pricing" : "Analyze Trades",
-      action: plan.id === "free" ? onPricing : onAnalyze
-    };
-  }, [activation, isAuthenticated, latestReport, onAnalyze, onCreateStrategySet, onDemo, onOpenReport, onPricing, onSignup, plan.id]);
-
   const heroAccountAction = isAuthenticated ? onAnalyze : onSignup ?? onAnalyze;
   const heroAccountLabel = isAuthenticated ? "Create Diagnostic Report" : "Create Free Account";
 
   return (
     <PageShell className="relative z-10 pb-16">
-      <section className="relative z-10 overflow-hidden border-b border-white/[0.08] pb-10 pt-1 md:pb-12">
-        <div className="pointer-events-none absolute left-[56%] top-0 h-72 w-[42rem] -translate-x-1/2 rounded-full bg-cyan/10 blur-[110px]" />
-        <div className="relative grid gap-7 lg:grid-cols-[1fr_0.95fr] lg:items-center">
-          <div>
-            <h1 className="max-w-3xl text-5xl font-semibold leading-[1.08] tracking-[-0.035em] text-ink md:text-6xl xl:text-7xl">
-              Understand every layer of your trading performance.
-            </h1>
-            <p className="mt-5 max-w-2xl text-base leading-7 text-muted md:text-lg md:leading-8">
-              EdgeTrace turns completed trade history into diagnostics, attribution, comparisons, strategy monitoring,
-              and actionable review workflows.
-            </p>
-            <div className="mt-7 flex flex-wrap gap-3">
-              <button className="EdgeTrace-primary-button" onClick={onDemo ?? onAnalyze}>
-                Try Interactive Demo <ArrowRight size={16} />
-              </button>
-              <button className="EdgeTrace-secondary-button" onClick={heroAccountAction}>
-                {heroAccountLabel}
-              </button>
-              <button className="EdgeTrace-secondary-button" onClick={onPricing}>
-                View Pricing
-              </button>
-            </div>
+      <section className="relative z-10 overflow-hidden border-b border-white/[0.08] py-12 md:py-16">
+        <div className="pointer-events-none absolute left-1/2 top-0 h-80 w-[52rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(34,197,245,0.11),rgba(124,92,255,0.06)_42%,transparent_72%)] blur-[118px]" />
+        <div className="relative mx-auto max-w-5xl">
+          <h1 className="max-w-4xl text-5xl font-semibold leading-[1.08] tracking-[-0.035em] text-ink md:text-6xl xl:text-7xl">
+            Understand every layer of your trading performance.
+          </h1>
+          <p className="mt-5 max-w-2xl text-base leading-7 text-muted md:text-lg md:leading-8">
+            EdgeTrace turns completed trade history into diagnostics, attribution, comparisons, strategy monitoring,
+            and actionable review workflows.
+          </p>
+          <div className="mt-7 flex flex-wrap gap-3">
+            <button className="EdgeTrace-primary-button" onClick={onDemo ?? onAnalyze}>
+              Try Interactive Demo <ArrowRight size={16} />
+            </button>
+            <button className="EdgeTrace-secondary-button" onClick={heroAccountAction}>
+              {heroAccountLabel}
+            </button>
+            <button className="EdgeTrace-secondary-button" onClick={onPricing}>
+              View Pricing
+            </button>
           </div>
-          <ProgressionPanel />
         </div>
       </section>
 
       <section className="relative z-10 py-10 md:py-12">
-        <div className="mb-6 grid gap-4 lg:grid-cols-[0.74fr_1fr] lg:items-end">
+        <div className="mb-7">
           <h2 className="max-w-2xl text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl">
             From import to strategy monitoring.
           </h2>
-          <p className="max-w-2xl text-base leading-7 text-muted">
-            Follow how a completed trade file becomes a diagnostic workflow, then a repeatable strategy review system.
-          </p>
         </div>
         <div className="relative isolate">
-          <div className="pointer-events-none absolute left-[7%] right-[7%] top-[4.4rem] z-0 hidden h-px bg-gradient-to-r from-cyan/20 via-violet/18 to-warning/14 xl:block" />
           <div className="relative z-10 grid gap-3 md:grid-cols-2 xl:grid-cols-7">
             {workflowStages.map((stage, index) => (
-              <WorkflowStageCard key={stage.title} stage={stage} offset={index % 2 === 1} />
+              <WorkflowStageCard key={stage.title} stage={stage} showConnector={index < workflowStages.length - 1} />
             ))}
           </div>
         </div>
       </section>
 
-      <section className="relative z-10 border-y border-white/[0.08] bg-[#03060c]/55 py-11 md:py-14">
+      <section className="relative z-10 border-y border-white/[0.08] bg-[radial-gradient(circle_at_20%_0%,rgba(34,197,245,0.035),transparent_32rem),rgba(3,6,12,0.28)] py-11 md:py-14">
         <div className="mb-8 max-w-4xl">
           <h2 className="text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl">
             What EdgeTrace analyzes.
@@ -460,9 +352,7 @@ export function FeatureEducationPage({
         </div>
       </section>
 
-      <AdvancedPreviewSection />
-
-      <section className="relative z-10 border-y border-white/[0.08] bg-[#03060c]/55 py-11 md:py-14">
+      <section className="relative z-10 border-y border-white/[0.08] bg-[radial-gradient(circle_at_80%_0%,rgba(124,92,255,0.035),transparent_30rem),rgba(3,6,12,0.28)] py-11 md:py-14">
         <div className="mx-auto mb-6 grid max-w-6xl gap-4 lg:grid-cols-[0.72fr_1.28fr] lg:items-end">
           <div>
             <h2 className="text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl">
@@ -508,28 +398,20 @@ export function FeatureEducationPage({
         <div className="relative overflow-hidden border border-cyan/25 bg-[radial-gradient(circle_at_18%_0%,rgba(34,197,245,0.12),transparent_34%),radial-gradient(circle_at_88%_92%,rgba(124,92,255,0.1),transparent_36%),rgba(255,255,255,0.03)] p-7 md:p-9">
           <div className="max-w-4xl">
             <h2 className="text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl">
-              Preview the workflow before creating an account.
+              Start with your own completed trades.
             </h2>
             <p className="mt-4 max-w-2xl text-base leading-7 text-muted">
-              See how completed trade history becomes diagnostics, attribution paths, and strategy monitoring.
+              Create a free account to generate your first full diagnostic report, then decide whether the Pro workflow
+              fits how you review strategy changes.
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
-              <button className="EdgeTrace-primary-button" onClick={onDemo ?? onAnalyze}>
-                Try Interactive Demo <ArrowRight size={16} />
+              <button className="EdgeTrace-primary-button" onClick={heroAccountAction}>
+                {heroAccountLabel} <ArrowRight size={16} />
               </button>
               <button className="EdgeTrace-secondary-button" onClick={onPricing}>
                 View Pricing
               </button>
             </div>
-          </div>
-          <div className="mt-7 flex flex-col gap-4 border-t border-white/[0.1] pt-5 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <p className="text-sm font-semibold text-ink">{nextAction.title}</p>
-              <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">{nextAction.body}</p>
-            </div>
-            <button className="EdgeTrace-command-button shrink-0" onClick={nextAction.action}>
-              {nextAction.cta}
-            </button>
           </div>
         </div>
       </section>
@@ -537,65 +419,21 @@ export function FeatureEducationPage({
   );
 }
 
-function ProgressionPanel() {
-  const steps = [
-    { label: "Import", metric: "CSV / broker export", icon: UploadCloud },
-    { label: "Diagnose", metric: "Health + primary leak", icon: Gauge },
-    { label: "Inspect", metric: "Symbol / setup / time", icon: Search },
-    { label: "Compare", metric: "Iteration deltas", icon: GitCompare },
-    { label: "Monitor", metric: "Regression watch", icon: LineChart }
-  ];
-
-  return (
-    <div className="relative border border-white/[0.1] bg-[linear-gradient(145deg,rgba(7,12,20,0.96),rgba(6,10,18,0.9))] p-4 shadow-[0_24px_72px_rgba(0,0,0,0.32)] md:p-5 lg:-ml-2">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(124,92,255,0.18),transparent_36%),radial-gradient(circle_at_20%_80%,rgba(34,197,245,0.12),transparent_34%)]" />
-      <div className="relative">
-        <div className="border-b border-white/[0.1] pb-4">
-          <div>
-            <p className="text-sm font-semibold text-ink">Workflow progression</p>
-            <p className="mt-1 text-xs text-muted">Import to monitoring, one report at a time.</p>
-          </div>
-        </div>
-        <div className="mt-4 space-y-2.5">
-          {steps.map((step, index) => {
-            const Icon = step.icon;
-            return (
-              <div key={step.label} className="grid grid-cols-[38px_1fr_auto] items-center gap-4">
-                <div className="relative">
-                  <div className="grid h-9 w-9 place-items-center border border-cyan/25 bg-black/35 text-cyan">
-                    <Icon size={17} strokeWidth={1.8} />
-                  </div>
-                  {index < steps.length - 1 && <div className="absolute left-1/2 top-9 h-3 w-px -translate-x-1/2 bg-cyan/30" />}
-                </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold text-ink">{step.label}</p>
-                  <p className="mt-1 truncate text-xs text-muted">{step.metric}</p>
-                </div>
-                <div className="h-1.5 w-20 bg-white/[0.08]">
-                  <div
-                    className="h-full bg-gradient-to-r from-cyan to-violet"
-                    style={{ width: `${Math.min(100, 32 + index * 15)}%` }}
-                  />
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function WorkflowStageCard({ stage, offset }: { stage: WorkflowStage; offset: boolean }) {
+function WorkflowStageCard({ stage, showConnector }: { stage: WorkflowStage; showConnector: boolean }) {
   const Icon = stage.icon;
   const toneClass = toneClasses[stage.tone];
 
   return (
     <article
-      className={`relative z-10 border border-white/[0.12] bg-[#050a12] p-4 shadow-[0_0_0_1px_rgba(3,6,12,0.92),0_18px_44px_-36px_rgba(0,0,0,0.95)] transition hover:border-white/[0.18] hover:bg-[#07101c] ${
-        offset ? "xl:translate-y-4" : ""
-      }`}
+      className="relative z-10 border border-white/[0.12] bg-[#050a12] p-4 shadow-[0_0_0_1px_rgba(3,6,12,0.92),0_18px_44px_-36px_rgba(0,0,0,0.95)] transition hover:border-white/[0.18] hover:bg-[#07101c]"
     >
+      {showConnector && (
+        <ArrowRight
+          className="pointer-events-none absolute -right-3 top-8 z-20 hidden text-muted/45 xl:block"
+          size={16}
+          strokeWidth={1.6}
+        />
+      )}
       <div className="flex items-start justify-between gap-3">
         <div className={`grid h-12 w-12 place-items-center border ${toneClass.border} ${toneClass.bg} ${toneClass.text}`}>
           <Icon size={23} strokeWidth={1.7} />
@@ -705,45 +543,6 @@ function AccessValue({ value, planId }: { value: string; planId: PlanId }) {
     <span className={`inline-flex items-center gap-2 ${toneClass.text}`}>
       <Check size={14} /> {value}
     </span>
-  );
-}
-
-function AdvancedPreviewSection() {
-  return (
-    <section className="relative z-10 border-t border-white/[0.08] py-11 md:py-14">
-      <div className="mb-6 grid gap-4 lg:grid-cols-[0.74fr_1fr] lg:items-end">
-        <div>
-          <h2 className="max-w-3xl text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl">
-            Continuous strategy intelligence.
-          </h2>
-          <p className="mt-4 max-w-2xl text-base leading-7 text-muted">
-            Advanced evolves EdgeTrace from diagnostic reports into continuous monitoring for strategy deterioration
-            and review workflows.
-          </p>
-        </div>
-        <p className="max-w-2xl border-l border-warning/35 pl-4 text-sm leading-6 text-muted">
-          These capabilities are marked Coming Soon while the beta validates how traders use ongoing strategy
-          monitoring.
-        </p>
-      </div>
-      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
-        {advancedPreviewFeatures.map((feature) => {
-          const Icon = feature.icon;
-          return (
-            <article key={feature.title} className="border border-warning/20 bg-[#060a11]/94 p-4">
-              <div className="flex items-start justify-between gap-3">
-                <Icon className="text-warning" size={23} strokeWidth={1.7} />
-                <span className="border border-warning/30 bg-warning/[0.055] px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-warning">
-                  Coming Soon
-                </span>
-              </div>
-              <h3 className="mt-5 text-lg font-semibold leading-tight tracking-[-0.035em] text-ink">{feature.title}</h3>
-              <p className="mt-3 text-sm leading-6 text-muted">{feature.body}</p>
-            </article>
-          );
-        })}
-      </div>
-    </section>
   );
 }
 
