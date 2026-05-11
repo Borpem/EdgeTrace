@@ -63,11 +63,7 @@ export function HomePage({
       <section className="EdgeTrace-shell relative pb-12 pt-12 md:pb-16 md:pt-16 lg:pb-20 lg:pt-20">
         <div className="grid items-center gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:gap-10 xl:gap-12">
           <div className="max-w-2xl">
-            <p className="inline-flex border border-cyan/20 bg-cyan/[0.08] px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-cyan shadow-[0_0_34px_-28px_rgba(88,214,255,0.9)]">
-              Strategy Intelligence for Active Traders
-            </p>
-
-            <h1 className="mt-8 overflow-visible text-[clamp(3.3rem,6.7vw,6.75rem)] font-semibold leading-[1.02] tracking-[-0.048em] text-ink md:tracking-[-0.052em]">
+            <h1 className="overflow-visible text-[clamp(3.3rem,6.7vw,6.75rem)] font-semibold leading-[1.02] tracking-[-0.048em] text-ink md:tracking-[-0.052em]">
               Know exactly why your strategy{" "}
               <span className="inline-block overflow-visible bg-gradient-to-r from-cyan to-accent bg-clip-text pr-2 text-transparent">wins</span>{" "}
               or{" "}
