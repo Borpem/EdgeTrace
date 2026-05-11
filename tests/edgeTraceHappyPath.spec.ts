@@ -71,14 +71,26 @@ test.describe.serial("EdgeTrace happy path", () => {
     await expect(page).toHaveURL(/\/demo/);
     await expect(page.getByText("Interactive Demo", { exact: true })).toBeVisible();
     await expect(page.getByText(/Sample data - no account required/i)).toBeVisible();
+    await expect(page.getByText("Start with the primary diagnosis.")).toBeVisible();
     await expect(page.getByText("Strategy Health", { exact: true }).first()).toBeVisible();
     await expect(page.getByText("Primary Diagnosis", { exact: true }).first()).toBeVisible();
-    await page.getByRole("button", { name: "Drilldowns" }).click();
-    await expect(page.getByText("Find which segments are driving the leak.")).toBeVisible();
-    await page.getByRole("button", { name: "Compare", exact: true }).click();
-    await expect(page.getByText("Understand what changed between iterations.")).toBeVisible();
-    await page.getByRole("button", { name: "Strategy Set Preview" }).click();
-    await expect(page.getByText("Monitor strategy health over time.")).toBeVisible();
+
+    await page.getByRole("button", { name: "Inspect the Leak" }).first().click();
+    await expect(page.getByText("Inspect the segment causing the leak.")).toBeVisible();
+    await page.getByRole("button", { name: /Opening Session/ }).first().click();
+    await expect(page.getByText("Attribution detail")).toBeVisible();
+
+    await page.getByRole("button", { name: "Compare Iterations" }).first().click();
+    await expect(page.getByText("V1 Baseline vs V2 Lower Costs")).toBeVisible();
+    await expect(page.getByText("V2 improved because cost drag fell and R capture increased.")).toBeVisible();
+
+    await page.getByRole("button", { name: "View Strategy Trend" }).first().click();
+    await expect(page.getByText("One strategy, three iterations.")).toBeVisible();
+
+    await page.getByRole("button", { name: "Start With Your Trades" }).first().click();
+    await expect(page.getByRole("heading", { name: "Ready to analyze your own trades?" }).last()).toBeVisible();
+    await page.getByRole("button", { name: "Create Free Account" }).first().click();
+    await expect(page).toHaveURL(/\/signup\?next=/);
   });
 });
 

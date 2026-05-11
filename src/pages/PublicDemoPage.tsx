@@ -8,7 +8,7 @@ import {
   type BreakdownDimension,
   type BreakdownRow
 } from "../lib/breakdowns";
-import { buildComparisonMetrics, buildInterpretation, costDragPct } from "../lib/compare";
+import { buildComparisonMetrics, costDragPct, type ComparisonMetric } from "../lib/compare";
 import { runDiagnostics } from "../lib/diagnostics";
 import { normalizeTrades } from "../lib/normalize";
 import { buildReportIntelligence } from "../lib/reportIntelligence";
@@ -23,12 +23,21 @@ type PublicDemoPageProps = {
   onHowItWorks: () => void;
 };
 
-type DemoTab = "diagnostic" | "drilldowns" | "compare" | "strategy";
-type DemoStep = "diagnosis" | "drilldown" | "compare" | "strategy";
+type DemoStep = "diagnose" | "inspect" | "compare" | "monitor" | "start";
 
 type DemoReport = DiagnosticsResult & {
   demoLabel: string;
   demoNote: string;
+};
+
+type StepConfig = {
+  id: DemoStep;
+  number: string;
+  title: string;
+  shortTitle: string;
+  body: string;
+  why: string;
+  cta: string;
 };
 
 const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
@@ -60,11 +69,53 @@ const demoSpecs = [
   }
 ] as const;
 
-const guideSteps: Array<{ id: DemoStep; title: string; tab: DemoTab; cta: string }> = [
-  { id: "diagnosis", title: "Review the primary diagnosis", tab: "diagnostic", cta: "Review Diagnosis" },
-  { id: "drilldown", title: "Click a drilldown row", tab: "drilldowns", cta: "Inspect Cost Drag" },
-  { id: "compare", title: "Compare V1 vs V2", tab: "compare", cta: "Compare Iterations" },
-  { id: "strategy", title: "View the strategy health trend", tab: "strategy", cta: "View Strategy Trend" }
+const guidedSteps: StepConfig[] = [
+  {
+    id: "diagnose",
+    number: "01",
+    title: "Start with the primary diagnosis.",
+    shortTitle: "Diagnose",
+    body:
+      "EdgeTrace turns sample trade history into a diagnostic report showing strategy health, cost drag, expectancy, and the main leak.",
+    why: "The first screen should tell a trader what matters before they inspect detail.",
+    cta: "Inspect the Leak"
+  },
+  {
+    id: "inspect",
+    number: "02",
+    title: "Inspect the segment causing the leak.",
+    shortTitle: "Inspect",
+    body: "Drilldowns show which symbols, setups, or time windows are contributing most to the issue.",
+    why: "Attribution turns a vague problem into a concrete segment to review.",
+    cta: "Compare Iterations"
+  },
+  {
+    id: "compare",
+    number: "03",
+    title: "Compare strategy iterations.",
+    shortTitle: "Compare",
+    body: "Compare reports to see whether adjustments improved performance, reduced costs, or introduced new leakage.",
+    why: "Iteration comparison shows whether a change actually helped after costs.",
+    cta: "View Strategy Trend"
+  },
+  {
+    id: "monitor",
+    number: "04",
+    title: "Monitor strategy health over time.",
+    shortTitle: "Monitor",
+    body: "Strategy sets track whether a strategy is improving, degrading, or becoming unstable across multiple reports.",
+    why: "Ongoing monitoring is where the workflow becomes recurring strategy intelligence.",
+    cta: "Start With Your Trades"
+  },
+  {
+    id: "start",
+    number: "05",
+    title: "Ready to analyze your own trades?",
+    shortTitle: "Start",
+    body: "You have seen the Pro workflow on sample data. Create a free account to generate your first full diagnostic report.",
+    why: "Free gives one full diagnostic report. Pro unlocks the complete workflow.",
+    cta: "Create Free Account"
+  }
 ];
 
 export function PublicDemoPage({
@@ -76,12 +127,10 @@ export function PublicDemoPage({
 }: PublicDemoPageProps) {
   const [reports, setReports] = useState<DemoReport[]>([]);
   const [error, setError] = useState("");
-  const [activeTab, setActiveTab] = useState<DemoTab>("diagnostic");
-  const [completedSteps, setCompletedSteps] = useState<Set<DemoStep>>(() => new Set(["diagnosis"]));
-  const [drilldownDimension, setDrilldownDimension] = useState<BreakdownDimension>("symbol");
+  const [activeStep, setActiveStep] = useState<DemoStep>("diagnose");
+  const [completedSteps, setCompletedSteps] = useState<DemoStep[]>([]);
+  const [drilldownDimension, setDrilldownDimension] = useState<BreakdownDimension>("timeOfDay");
   const [selectedGroup, setSelectedGroup] = useState<string>("");
-  const [compareAId, setCompareAId] = useState("orb-demo-v1");
-  const [compareBId, setCompareBId] = useState("orb-demo-v2");
 
   useEffect(() => {
     trackEvent("public_demo_opened");
@@ -99,56 +148,65 @@ export function PublicDemoPage({
     };
   }, []);
 
+  useEffect(() => {
+    trackEvent("public_demo_step_viewed", { step: activeStep });
+  }, [activeStep]);
+
   const primaryReport = reports[0];
+  const compareA = reports[0];
+  const compareB = reports[1] ?? reports[0];
   const intelligence = useMemo(() => (primaryReport ? buildReportIntelligence(primaryReport) : null), [primaryReport]);
   const drilldownRows = useMemo(
     () => (primaryReport ? buildBreakdown(primaryReport.trades, drilldownDimension) : []),
     [drilldownDimension, primaryReport]
   );
+  const recommendedRow = useMemo(() => getRecommendedRow(drilldownRows, drilldownDimension), [drilldownDimension, drilldownRows]);
   const selectedRow = useMemo(
-    () => drilldownRows.find((row) => row.group === selectedGroup) ?? drilldownRows[0],
-    [drilldownRows, selectedGroup]
+    () => drilldownRows.find((row) => row.group === selectedGroup) ?? recommendedRow ?? drilldownRows[0],
+    [drilldownRows, recommendedRow, selectedGroup]
   );
-  const compareA = reports.find((report) => report.id === compareAId) ?? reports[0];
-  const compareB = reports.find((report) => report.id === compareBId) ?? reports[1] ?? reports[0];
   const comparisonMetrics = useMemo(
     () => (compareA && compareB ? buildComparisonMetrics(compareA, compareB) : []),
     [compareA, compareB]
   );
-  const comparisonInterpretation = useMemo(() => buildInterpretation(comparisonMetrics), [comparisonMetrics]);
   const trend = useMemo(() => buildStrategyTrend(reports), [reports]);
+  const activeConfig = guidedSteps.find((step) => step.id === activeStep) ?? guidedSteps[0];
+  const activeIndex = guidedSteps.findIndex((step) => step.id === activeStep);
+  const progressPct = ((activeIndex + 1) / guidedSteps.length) * 100;
 
-  const markStep = (step: DemoStep) => {
-    setCompletedSteps((current) => new Set([...current, step]));
+  const markStepComplete = (step: DemoStep) => {
+    setCompletedSteps((current) => {
+      if (current.includes(step)) return current;
+      trackEvent("public_demo_step_completed", { step });
+      return [...current, step];
+    });
   };
 
-  const openTab = (tab: DemoTab, source: string) => {
-    setActiveTab(tab);
-    if (tab === "diagnostic") markStep("diagnosis");
-    if (tab === "compare") {
-      markStep("compare");
-      trackEvent("demo_compare_used", { source });
-    }
-    if (tab === "strategy") {
-      markStep("strategy");
-      trackEvent("demo_strategy_trend_viewed", { source });
-    }
+  const goToStep = (step: DemoStep, source: string) => {
+    setActiveStep(step);
+    trackEvent("public_demo_step_viewed", { step, source });
+  };
+
+  const completeAndGo = (current: DemoStep, next: DemoStep, cta: string) => {
+    markStepComplete(current);
+    trackEvent("public_demo_primary_cta_clicked", { step: current, cta });
+    goToStep(next, "primary_cta");
   };
 
   const selectDrilldownRow = (row: BreakdownRow) => {
     setSelectedGroup(row.group);
-    markStep("drilldown");
+    markStepComplete("inspect");
     trackEvent("demo_drilldown_clicked", { dimension: drilldownDimension, group: row.group });
+    trackEvent("public_demo_step_completed", { step: "inspect", action: "drilldown_row_clicked" });
   };
 
   const handleDimensionChange = (dimension: BreakdownDimension) => {
     setDrilldownDimension(dimension);
     setSelectedGroup("");
-    openTab("drilldowns", "dimension");
   };
 
   const trackCta = (cta: string, action: () => void) => {
-    trackEvent("public_demo_cta_clicked", { cta });
+    trackEvent("public_demo_primary_cta_clicked", { step: "start", cta });
     if (cta === "create_account") trackEvent("demo_signup_clicked");
     if (cta === "analyze_trades") trackEvent("demo_analyze_trades_clicked");
     action();
@@ -160,24 +218,11 @@ export function PublicDemoPage({
         <div className="grid gap-8 xl:grid-cols-[1fr_380px] xl:items-end">
           <div>
             <p className="EdgeTrace-eyebrow">Interactive Demo</p>
-            <h1 className="EdgeTrace-title">Experience the EdgeTrace Pro workflow with sample trades.</h1>
+            <h1 className="EdgeTrace-title">Follow the path from trade history to strategy insight.</h1>
             <p className="EdgeTrace-copy">
-              Demo unlocks a preview of Pro features using sample data. Diagnose a report, inspect attribution,
-              compare iterations, and preview strategy monitoring without an account.
+              A guided Pro preview using sample data: diagnose the report, inspect the leak, compare iterations, then
+              monitor the strategy trend.
             </p>
-            <div className="mt-7 flex flex-wrap gap-3">
-              {!isAuthenticated && (
-                <button className="EdgeTrace-primary-button" onClick={() => trackCta("create_account", onSignup)}>
-                  Create Free Account <ArrowRight size={16} />
-                </button>
-              )}
-              <button className="EdgeTrace-secondary-button" onClick={() => trackCta("analyze_trades", onAnalyze)}>
-                {isAuthenticated ? "Create Your Own Report" : "Analyze My Trades"}
-              </button>
-              <button className="EdgeTrace-secondary-button" onClick={() => trackCta("pricing", onPricing)}>
-                View Pricing
-              </button>
-            </div>
           </div>
           <aside className="border border-cyan/30 bg-cyan/[0.045] p-5">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan">
@@ -187,7 +232,7 @@ export function PublicDemoPage({
               {primaryReport ? `${primaryReport.metrics.totalTrades} trades analyzed` : "Loading sample"}
             </p>
             <p className="mt-3 text-sm leading-6 text-muted">
-              No database writes. No real broker data. This sandbox is only a guided Pro workflow preview.
+              No database writes. No real broker data. This walkthrough previews the Pro value loop only.
             </p>
           </aside>
         </div>
@@ -195,169 +240,165 @@ export function PublicDemoPage({
 
       {error && <section className="mt-6 border border-loss/50 bg-loss/10 p-5 text-sm text-loss">{error}</section>}
 
-      {!primaryReport || !intelligence ? (
+      {!primaryReport || !intelligence || !compareA || !compareB ? (
         <section className="mt-6 border border-white/[0.1] bg-white/[0.025] p-8">
-          <p className="font-semibold text-ink">Loading demo workspace...</p>
-          <p className="mt-2 text-sm text-muted">EdgeTrace is preparing the sample diagnostic reports.</p>
+          <p className="font-semibold text-ink">Loading guided demo...</p>
+          <p className="mt-2 text-sm text-muted">EdgeTrace is preparing the sample diagnostic workflow.</p>
         </section>
       ) : (
-        <>
-          <section className="mt-6 grid gap-5 xl:grid-cols-[380px_1fr]">
-            <DemoGuide
-              activeTab={activeTab}
-              completedSteps={completedSteps}
-              onOpenTab={(tab) => openTab(tab, "guide")}
+        <section className="mt-6 border border-white/[0.1] bg-white/[0.025]">
+          <GuidedStepper
+            activeStep={activeStep}
+            completedSteps={completedSteps}
+            onSelectStep={(step) => goToStep(step, "stepper")}
+          />
+
+          <div className="h-px bg-white/[0.1]">
+            <div className="h-px bg-cyan transition-all" style={{ width: `${progressPct}%` }} />
+          </div>
+
+          <section className="grid gap-0 xl:grid-cols-[360px_1fr]">
+            <StepContextPanel
+              config={activeConfig}
+              activeIndex={activeIndex}
+              onPrimary={() => {
+                if (activeStep === "diagnose") completeAndGo("diagnose", "inspect", "Inspect the Leak");
+                if (activeStep === "inspect") completeAndGo("inspect", "compare", "Compare Iterations");
+                if (activeStep === "compare") completeAndGo("compare", "monitor", "View Strategy Trend");
+                if (activeStep === "monitor") completeAndGo("monitor", "start", "Start With Your Trades");
+                if (activeStep === "start") trackCta("create_account", onSignup);
+              }}
               onHowItWorks={onHowItWorks}
             />
 
-            <section className="min-w-0 border border-white/[0.1] bg-white/[0.025]">
-              <div className="flex flex-wrap border-b border-white/[0.1]">
-                {[
-                  ["diagnostic", "Diagnostic Report"],
-                  ["drilldowns", "Drilldowns"],
-                  ["compare", "Compare"],
-                  ["strategy", "Strategy Set Preview"]
-                ].map(([tab, label]) => (
-                  <button
-                    key={tab}
-                    className={`border-r border-white/[0.08] px-4 py-3 text-sm font-semibold ${
-                      activeTab === tab ? "bg-cyan/[0.08] text-cyan" : "text-muted hover:bg-white/[0.035] hover:text-ink"
-                    }`}
-                    onClick={() => openTab(tab as DemoTab, "tab")}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-
-              <div className="p-5 md:p-6">
-                {activeTab === "diagnostic" && (
-                  <DiagnosticDemoSection report={primaryReport} intelligence={intelligence} onInspect={() => openTab("drilldowns", "diagnostic_cta")} />
-                )}
-                {activeTab === "drilldowns" && (
-                  <DrilldownDemoSection
-                    dimension={drilldownDimension}
-                    rows={drilldownRows}
-                    selectedRow={selectedRow}
-                    onDimensionChange={handleDimensionChange}
-                    onSelectRow={selectDrilldownRow}
-                  />
-                )}
-                {activeTab === "compare" && compareA && compareB && (
-                  <CompareDemoSection
-                    reports={reports}
-                    reportA={compareA}
-                    reportB={compareB}
-                    reportAId={compareAId}
-                    reportBId={compareBId}
-                    metrics={comparisonMetrics}
-                    interpretation={comparisonInterpretation}
-                    onSelectA={(id) => {
-                      setCompareAId(id);
-                      markStep("compare");
-                      trackEvent("demo_compare_used", { action: "select_report_a" });
-                    }}
-                    onSelectB={(id) => {
-                      setCompareBId(id);
-                      markStep("compare");
-                      trackEvent("demo_compare_used", { action: "select_report_b" });
-                    }}
-                  />
-                )}
-                {activeTab === "strategy" && <StrategyTrendDemoSection reports={reports} trend={trend} />}
-              </div>
-            </section>
-          </section>
-
-          <section className="mt-8 border border-cyan/30 bg-cyan/[0.045] p-6">
-            <p className="EdgeTrace-eyebrow">Ready for your own trades?</p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-[-0.055em] text-ink">
-              You have seen the Pro workflow on sample data.
-            </h2>
-            <p className="mt-3 max-w-3xl text-sm leading-6 text-muted">
-              Create a free account to analyze your own completed trades. Free includes one full diagnostic report;
-              Pro unlocks the full strategy workflow.
-            </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              {!isAuthenticated && (
-                <button className="EdgeTrace-command-button" onClick={() => trackCta("create_account", onSignup)}>
-                  Create Free Account <ArrowRight size={16} />
-                </button>
+            <div className="min-w-0 border-t border-white/[0.1] p-5 md:p-6 xl:border-l xl:border-t-0">
+              {activeStep === "diagnose" && (
+                <DiagnoseStep
+                  report={primaryReport}
+                  intelligence={intelligence}
+                  onInspect={() => completeAndGo("diagnose", "inspect", "Inspect the Leak")}
+                />
               )}
-              <button className="EdgeTrace-secondary-button" onClick={() => trackCta("analyze_trades", onAnalyze)}>
-                {isAuthenticated ? "Create Your Own Report" : "Analyze My Trades"}
-              </button>
-              <button className="EdgeTrace-secondary-button" onClick={onHowItWorks}>
-                Learn How It Works
-              </button>
+              {activeStep === "inspect" && (
+                <InspectStep
+                  dimension={drilldownDimension}
+                  rows={drilldownRows}
+                  recommendedRow={recommendedRow}
+                  selectedRow={selectedRow}
+                  onDimensionChange={handleDimensionChange}
+                  onSelectRow={selectDrilldownRow}
+                  onCompare={() => completeAndGo("inspect", "compare", "Compare Iterations")}
+                />
+              )}
+              {activeStep === "compare" && (
+                <CompareStep
+                  reportA={compareA}
+                  reportB={compareB}
+                  metrics={comparisonMetrics}
+                  onMonitor={() => completeAndGo("compare", "monitor", "View Strategy Trend")}
+                />
+              )}
+              {activeStep === "monitor" && (
+                <MonitorStep
+                  reports={reports}
+                  trend={trend}
+                  onStart={() => completeAndGo("monitor", "start", "Start With Your Trades")}
+                />
+              )}
+              {activeStep === "start" && (
+                <StartStep
+                  isAuthenticated={isAuthenticated}
+                  onSignup={() => trackCta("create_account", onSignup)}
+                  onAnalyze={() => trackCta("analyze_trades", onAnalyze)}
+                  onPricing={() => trackCta("pricing", onPricing)}
+                />
+              )}
             </div>
           </section>
-        </>
+        </section>
       )}
     </main>
   );
 }
 
-function DemoGuide({
-  activeTab,
+function GuidedStepper({
+  activeStep,
   completedSteps,
-  onOpenTab,
+  onSelectStep
+}: {
+  activeStep: DemoStep;
+  completedSteps: DemoStep[];
+  onSelectStep: (step: DemoStep) => void;
+}) {
+  return (
+    <div className="grid md:grid-cols-5">
+      {guidedSteps.map((step) => {
+        const active = activeStep === step.id;
+        const complete = completedSteps.includes(step.id);
+        return (
+          <button
+            key={step.id}
+            className={`border-b border-r border-white/[0.08] p-4 text-left transition last:border-r-0 ${
+              active ? "bg-cyan/[0.075] shadow-[0_0_42px_-36px_rgba(88,214,255,0.95)]" : "bg-black/20 hover:bg-white/[0.025]"
+            }`}
+            onClick={() => onSelectStep(step.id)}
+          >
+            <span className="flex items-center justify-between gap-3">
+              <span className={active ? "text-xs font-semibold uppercase tracking-[0.24em] text-cyan" : "text-xs font-semibold uppercase tracking-[0.24em] text-muted"}>
+                {step.number}
+              </span>
+              {complete && (
+                <span className="grid h-5 w-5 place-items-center border border-cyan bg-cyan text-black">
+                  <Check size={12} strokeWidth={3} />
+                </span>
+              )}
+            </span>
+            <span className={active ? "mt-3 block text-lg font-semibold text-ink" : "mt-3 block text-sm font-semibold text-muted"}>
+              {step.shortTitle}
+            </span>
+            <span className={active ? "mt-2 block text-xs leading-5 text-muted" : "mt-2 hidden text-xs leading-5 text-muted lg:block"}>
+              {step.why}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function StepContextPanel({
+  config,
+  activeIndex,
+  onPrimary,
   onHowItWorks
 }: {
-  activeTab: DemoTab;
-  completedSteps: Set<DemoStep>;
-  onOpenTab: (tab: DemoTab) => void;
+  config: StepConfig;
+  activeIndex: number;
+  onPrimary: () => void;
   onHowItWorks: () => void;
 }) {
   return (
-    <aside className="border border-cyan/25 bg-black/42 p-5 shadow-[0_0_42px_-34px_rgba(88,214,255,0.9)]">
-      <p className="text-xs font-semibold uppercase tracking-[0.24em] text-cyan">Try the core workflow</p>
-      <h2 className="mt-3 text-2xl font-semibold tracking-[-0.045em] text-ink">
-        {"Diagnose -> inspect -> compare -> monitor."}
-      </h2>
-      <p className="mt-3 text-sm leading-6 text-muted">
-        This public sandbox previews Pro workflows with sample data. Follow the prompts or explore the tabs directly.
+    <aside className="bg-black/34 p-5 md:p-6">
+      <p className="text-xs font-semibold uppercase tracking-[0.24em] text-cyan">
+        Step {activeIndex + 1} of {guidedSteps.length}
       </p>
-      <div className="mt-5 space-y-3">
-        {guideSteps.map((step) => {
-          const complete = completedSteps.has(step.id);
-          const active = activeTab === step.tab;
-          return (
-            <button
-              key={step.id}
-              className={`w-full border p-4 text-left transition ${
-                active
-                  ? "border-cyan/55 bg-cyan/[0.07] shadow-[0_0_40px_-34px_rgba(88,214,255,0.9)]"
-                  : "border-white/[0.1] bg-white/[0.025] hover:border-white/25"
-              }`}
-              onClick={() => onOpenTab(step.tab)}
-            >
-              <span className="flex items-start justify-between gap-3">
-                <span>
-                  <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted">
-                    {complete ? "Complete" : active ? "Active" : "Next"}
-                  </span>
-                  <span className="mt-1 block text-sm font-semibold text-ink">{step.title}</span>
-                </span>
-                {complete && (
-                  <span className="grid h-6 w-6 place-items-center border border-cyan bg-cyan text-black">
-                    <Check size={14} strokeWidth={3} />
-                  </span>
-                )}
-              </span>
-              {active && <span className="mt-3 inline-flex text-sm font-semibold text-cyan">{step.cta}</span>}
-            </button>
-          );
-        })}
+      <h2 className="mt-4 text-3xl font-semibold tracking-[-0.055em] text-ink">{config.title}</h2>
+      <p className="mt-4 text-sm leading-6 text-muted">{config.body}</p>
+      <div className="mt-6 border-l border-cyan/60 pl-4">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">Why this matters</p>
+        <p className="mt-2 text-sm leading-6 text-ink">{config.why}</p>
       </div>
-      <button className="mt-5 border-b border-cyan/60 text-sm font-semibold text-cyan hover:text-ink" onClick={onHowItWorks}>
-        Learn how each feature works
+      <button className="EdgeTrace-command-button mt-7 w-full justify-between" onClick={onPrimary}>
+        {config.cta} <ArrowRight size={16} />
+      </button>
+      <button className="mt-4 border-b border-cyan/50 text-sm font-semibold text-cyan hover:text-ink" onClick={onHowItWorks}>
+        Learn how EdgeTrace works
       </button>
     </aside>
   );
 }
 
-function DiagnosticDemoSection({
+function DiagnoseStep({
   report,
   intelligence,
   onInspect
@@ -368,43 +409,37 @@ function DiagnosticDemoSection({
 }) {
   return (
     <div>
-      <div className="flex flex-wrap items-center justify-between gap-4">
+      <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="EdgeTrace-eyebrow">Diagnostic Report</p>
-          <h2 className="mt-2 text-3xl font-semibold tracking-[-0.055em] text-ink">{report.name}</h2>
-          <p className="mt-2 text-sm text-muted">Pro workflow preview - diagnostic summary from sample trades.</p>
+          <h2 className="mt-2 text-3xl font-semibold tracking-[-0.055em] text-ink">Essential report summary</h2>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">
+            Dense details stay hidden until they matter. This step shows only the diagnosis a trader needs first.
+          </p>
         </div>
-        <button className="EdgeTrace-command-button" onClick={onInspect}>
-          Inspect Cost Drag <ArrowRight size={16} />
-        </button>
+        <span className="border border-cyan/35 bg-cyan/[0.06] px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-cyan">
+          Pro workflow preview
+        </span>
       </div>
 
-      <section className="mt-6 grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
+      <section className="mt-6 grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
         <div className="relative overflow-hidden border border-white/[0.12] bg-white/[0.035] p-6">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_86%_28%,rgba(61,220,151,0.13),transparent_17rem)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_86%_28%,rgba(88,214,255,0.12),transparent_16rem)]" />
           <div className="relative">
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-cyan">Strategy Health</p>
-            <div className="mt-6 flex flex-col gap-6 md:flex-row md:items-end">
-              <div>
-                <p className="text-8xl font-semibold leading-none tracking-[-0.08em] text-ink">
-                  {intelligence.strategyHealthScore}
-                </p>
-                <p className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-ink">{intelligence.healthBand}</p>
-              </div>
-              <p className="max-w-2xl pb-1 text-sm leading-6 text-muted">{intelligence.primaryExplanation}</p>
-            </div>
-            <svg className="mt-8 h-36 w-full" viewBox="0 0 520 150" fill="none" role="img" aria-label="Demo equity curve">
-              <path d="M0 28H520M0 74H520M0 120H520" stroke="white" strokeOpacity=".08" />
-              <polyline points={buildLinePoints(report.charts.equityCurve)} fill="none" stroke="#58D6FF" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+            <p className="mt-6 text-8xl font-semibold leading-none tracking-[-0.08em] text-ink">
+              {intelligence.strategyHealthScore}
+            </p>
+            <p className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-ink">{intelligence.healthBand}</p>
+            <p className="mt-5 text-sm leading-6 text-muted">{intelligence.primaryExplanation}</p>
           </div>
         </div>
 
         <div className="border border-white/[0.12] bg-white/[0.035] p-6">
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-warning">Primary Diagnosis</p>
-          <h3 className="mt-6 text-3xl font-semibold tracking-[-0.055em] text-ink">{intelligence.primaryDiagnosis}</h3>
-          <p className="mt-5 text-sm leading-6 text-muted">{intelligence.primaryLeak.explanation}</p>
-          <div className="mt-7 border border-white/[0.1] bg-black/24 p-5">
+          <h3 className="mt-5 text-3xl font-semibold tracking-[-0.055em] text-ink">{intelligence.primaryDiagnosis}</h3>
+          <p className="mt-4 text-sm leading-6 text-muted">{intelligence.primaryLeak.explanation}</p>
+          <div className="mt-6 border border-cyan/25 bg-cyan/[0.04] p-5">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted">Where to Look Next</p>
             <p className="mt-2 text-xl font-semibold tracking-[-0.035em] text-ink">{intelligence.primaryLeak.recommendedInspection}</p>
             <p className="mt-1 text-sm text-muted">{intelligence.primaryLeak.supportingMetric}</p>
@@ -412,38 +447,55 @@ function DiagnosticDemoSection({
         </div>
       </section>
 
-      <section className="mt-5 grid gap-4 md:grid-cols-3">
-        <DemoMetric label="After-cost performance" value={currency.format(report.metrics.netPnl)} detail={`Expectancy ${currencyPrecise.format(report.metrics.expectancy)} per trade`} />
-        <DemoMetric label="Cost drag" value={intelligence.costDragLabel} detail={`Total costs ${currency.format(report.metrics.totalCosts)}`} />
-        <DemoMetric label="R capture" value={report.metrics.averageRealizedR === undefined ? "Unavailable" : `${decimal.format(report.metrics.averageRealizedR)}R`} detail={`Win rate ${percent.format(report.metrics.winRate)}`} />
+      <section className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+        <DemoMetric label="Net PnL" value={currency.format(report.metrics.netPnl)} detail="After costs" />
+        <DemoMetric label="Expectancy" value={currencyPrecise.format(report.metrics.expectancy)} detail="Per trade" />
+        <DemoMetric label="Cost Drag" value={intelligence.costDragLabel} detail={`Costs ${currency.format(report.metrics.totalCosts)}`} />
+        <DemoMetric
+          label="R Capture"
+          value={report.metrics.averageRealizedR === undefined ? "Unavailable" : `${decimal.format(report.metrics.averageRealizedR)}R`}
+          detail={`Win rate ${percent.format(report.metrics.winRate)}`}
+        />
       </section>
+
+      <button className="EdgeTrace-command-button mt-5" onClick={onInspect}>
+        Inspect the Leak <ArrowRight size={16} />
+      </button>
     </div>
   );
 }
 
-function DrilldownDemoSection({
+function InspectStep({
   dimension,
   rows,
+  recommendedRow,
   selectedRow,
   onDimensionChange,
-  onSelectRow
+  onSelectRow,
+  onCompare
 }: {
   dimension: BreakdownDimension;
   rows: BreakdownRow[];
+  recommendedRow?: BreakdownRow;
   selectedRow?: BreakdownRow;
   onDimensionChange: (dimension: BreakdownDimension) => void;
   onSelectRow: (row: BreakdownRow) => void;
+  onCompare: () => void;
 }) {
+  const visibleRows = getVisibleRows(rows, recommendedRow);
+
   return (
     <div>
       <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <p className="EdgeTrace-eyebrow">Drilldowns</p>
-          <h2 className="mt-2 text-3xl font-semibold tracking-[-0.055em] text-ink">Find which segments are driving the leak.</h2>
-          <p className="mt-2 text-sm text-muted">Pro workflow preview - click rows to update the detail panel.</p>
+          <p className="EdgeTrace-eyebrow">Drilldown</p>
+          <h2 className="mt-2 text-3xl font-semibold tracking-[-0.055em] text-ink">Start with the recommended segment.</h2>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">
+            The demo defaults to a single attribution lens, then lets you switch dimensions if you want to explore.
+          </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          {(["symbol", "setup", "timeOfDay"] as BreakdownDimension[]).map((item) => (
+          {(["timeOfDay", "symbol", "setup"] as BreakdownDimension[]).map((item) => (
             <button
               key={item}
               className={`border px-3 py-2 text-sm font-semibold ${
@@ -457,92 +509,104 @@ function DrilldownDemoSection({
         </div>
       </div>
 
-      <section className="mt-6 grid gap-5 xl:grid-cols-[1.15fr_0.85fr]">
-        <div className="overflow-x-auto border border-white/[0.1]">
-          <table className="min-w-full text-sm">
-            <thead className="border-b border-white/[0.1] text-left text-muted">
-              <tr>
-                <th className="px-4 py-3 font-medium">{breakdownLabels[dimension]}</th>
-                <th className="px-4 py-3 font-medium">Trades</th>
-                <th className="px-4 py-3 font-medium">Net PnL</th>
-                <th className="px-4 py-3 font-medium">Expectancy</th>
-                <th className="px-4 py-3 font-medium">Cost Drag</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/[0.08]">
-              {rows.slice(0, 7).map((row) => (
-                <tr
-                  key={row.group}
-                  className={`cursor-pointer ${selectedRow?.group === row.group ? "bg-cyan/[0.08]" : "hover:bg-white/[0.035]"}`}
-                  onClick={() => onSelectRow(row)}
-                >
-                  <td className="px-4 py-3 font-semibold text-ink">{row.group}</td>
-                  <td className="px-4 py-3 text-muted">{row.totalTrades}</td>
-                  <td className={row.netPnl >= 0 ? "px-4 py-3 text-cyan" : "px-4 py-3 text-loss"}>{currency.format(row.netPnl)}</td>
-                  <td className="px-4 py-3 text-ink">{currencyPrecise.format(row.expectancy)}</td>
-                  <td className="px-4 py-3 text-warning">{row.costDrag.label}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      <section className="mt-6 grid gap-5 xl:grid-cols-[0.95fr_1.05fr]">
+        <div className="space-y-3">
+          {visibleRows.map((row, index) => {
+            const selected = selectedRow?.group === row.group;
+            const recommended = recommendedRow?.group === row.group;
+            return (
+              <button
+                key={row.group}
+                className={`w-full border p-4 text-left transition ${
+                  selected
+                    ? "border-cyan/55 bg-cyan/[0.075] shadow-[0_0_38px_-32px_rgba(88,214,255,0.9)]"
+                    : "border-white/[0.1] bg-white/[0.025] hover:border-white/25"
+                }`}
+                onClick={() => onSelectRow(row)}
+              >
+                <span className="flex items-start justify-between gap-4">
+                  <span>
+                    <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-muted">
+                      {recommended ? "Recommended" : `Segment ${index + 1}`}
+                    </span>
+                    <span className="mt-2 block text-xl font-semibold tracking-[-0.04em] text-ink">
+                      {displayGroupName(row.group)}
+                    </span>
+                    <span className="mt-2 block text-sm leading-6 text-muted">
+                      {row.totalTrades} trades · {currencyPrecise.format(row.expectancy)} expectancy · {row.costDrag.label}
+                    </span>
+                  </span>
+                  <span className={row.netPnl >= 0 ? "text-sm font-semibold text-cyan" : "text-sm font-semibold text-loss"}>
+                    {currency.format(row.netPnl)}
+                  </span>
+                </span>
+              </button>
+            );
+          })}
         </div>
 
         <div className="border border-cyan/30 bg-cyan/[0.045] p-5">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan">Selected attribution</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan">Attribution detail</p>
           {selectedRow ? (
             <>
-              <h3 className="mt-3 text-3xl font-semibold tracking-[-0.055em] text-ink">{selectedRow.group}</h3>
-              <p className="mt-3 text-sm leading-6 text-muted">
+              <h3 className="mt-3 text-4xl font-semibold tracking-[-0.06em] text-ink">
+                {displayGroupName(selectedRow.group)}
+              </h3>
+              <p className="mt-4 text-sm leading-6 text-muted">
                 {selectedRow.netPnl < 0
-                  ? "This segment is weakening the report and deserves inspection before changing the whole strategy."
-                  : "This segment is contributing positively. Compare whether it remains strong in later iterations."}
+                  ? "This segment is weakening the sample report. In the full product, this is where you would inspect exact trades and leakage drivers."
+                  : "This segment is contributing positively. In the full product, you would compare whether it stays strong across iterations."}
               </p>
-              <div className="mt-5 grid gap-3">
+              <div className="mt-5 grid gap-3 md:grid-cols-2">
                 <MetricMini label="Net PnL" value={currency.format(selectedRow.netPnl)} />
                 <MetricMini label="Win rate" value={percent.format(selectedRow.winRate)} />
-                <MetricMini label="Average R" value={selectedRow.averageRealizedR === undefined ? "Unavailable" : `${decimal.format(selectedRow.averageRealizedR)}R`} />
-                <MetricMini label="Net/gross conversion" value={selectedRow.netToGrossPct === undefined ? "Unavailable" : percent.format(selectedRow.netToGrossPct)} />
+                <MetricMini
+                  label="Average R"
+                  value={selectedRow.averageRealizedR === undefined ? "Unavailable" : `${decimal.format(selectedRow.averageRealizedR)}R`}
+                />
+                <MetricMini
+                  label="Net/gross conversion"
+                  value={selectedRow.netToGrossPct === undefined ? "Unavailable" : percent.format(selectedRow.netToGrossPct)}
+                />
               </div>
             </>
           ) : (
-            <p className="text-sm text-muted">Select a row to inspect the attribution detail.</p>
+            <p className="text-sm text-muted">Select the recommended row to inspect the segment behind the leak.</p>
           )}
         </div>
       </section>
+
+      <button className="EdgeTrace-command-button mt-5" onClick={onCompare}>
+        Compare Iterations <ArrowRight size={16} />
+      </button>
     </div>
   );
 }
 
-function CompareDemoSection({
-  reports,
+function CompareStep({
   reportA,
   reportB,
-  reportAId,
-  reportBId,
   metrics,
-  interpretation,
-  onSelectA,
-  onSelectB
+  onMonitor
 }: {
-  reports: DemoReport[];
   reportA: DemoReport;
   reportB: DemoReport;
-  reportAId: string;
-  reportBId: string;
-  metrics: ReturnType<typeof buildComparisonMetrics>;
-  interpretation: string;
-  onSelectA: (id: string) => void;
-  onSelectB: (id: string) => void;
+  metrics: ComparisonMetric[];
+  onMonitor: () => void;
 }) {
-  const keyMetrics = metrics.filter((metric) => ["expectancy", "costDragPct", "averageRealizedR", "netPnl"].includes(metric.key));
+  const keyMetrics = ["expectancy", "costDragPct", "averageRealizedR"]
+    .map((key) => metrics.find((metric) => metric.key === key))
+    .filter((metric): metric is ComparisonMetric => Boolean(metric));
 
   return (
     <div>
       <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <p className="EdgeTrace-eyebrow">Compare</p>
-          <h2 className="mt-2 text-3xl font-semibold tracking-[-0.055em] text-ink">Understand what changed between iterations.</h2>
-          <p className="mt-2 text-sm text-muted">Pro workflow preview - compare sample reports without saving anything.</p>
+          <h2 className="mt-2 text-3xl font-semibold tracking-[-0.055em] text-ink">V1 Baseline vs V2 Lower Costs</h2>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">
+            The demo keeps this comparison focused on the three deltas that explain the iteration.
+          </p>
         </div>
         <span className="border border-cyan/35 bg-cyan/[0.06] px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-cyan">
           Pro workflow preview
@@ -550,41 +614,52 @@ function CompareDemoSection({
       </div>
 
       <section className="mt-6 grid gap-4 md:grid-cols-2">
-        <ReportSelector label="Report A" value={reportAId} reports={reports} onChange={onSelectA} />
-        <ReportSelector label="Report B" value={reportBId} reports={reports} onChange={onSelectB} />
+        <ReportSnapshot report={reportA} />
+        <ReportSnapshot report={reportB} />
       </section>
 
-      <section className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <section className="mt-5 grid gap-4 md:grid-cols-3">
         {keyMetrics.map((metric) => (
-          <div key={metric.key} className="border border-white/[0.1] bg-white/[0.025] p-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">{metric.label}</p>
-            <p className={metric.status === "Improved" ? "mt-4 text-3xl font-semibold text-cyan" : metric.status === "Degraded" ? "mt-4 text-3xl font-semibold text-loss" : "mt-4 text-3xl font-semibold text-ink"}>
-              {formatDelta(metric.delta, metric.format)}
-            </p>
-            <p className="mt-2 text-sm text-muted">{metric.status}</p>
-          </div>
+          <DeltaCard key={metric.key} metric={metric} />
         ))}
       </section>
 
-      <section className="mt-5 border border-white/[0.1] bg-black/24 p-5">
+      <section className="mt-5 border border-cyan/30 bg-cyan/[0.045] p-5">
         <p className="EdgeTrace-eyebrow">Interpretation</p>
-        <p className="mt-3 max-w-4xl text-base leading-7 text-ink">{interpretation}</p>
-        <p className="mt-4 text-sm text-muted">
-          {reportA.demoLabel}: {reportA.demoNote} {reportB.demoLabel}: {reportB.demoNote}
+        <p className="mt-3 max-w-4xl text-xl font-semibold leading-8 tracking-[-0.035em] text-ink">
+          V2 improved because cost drag fell and R capture increased.
+        </p>
+        <p className="mt-3 text-sm leading-6 text-muted">
+          In the full workflow, EdgeTrace lets you compare saved reports to see whether changes reduced leakage or
+          introduced new weaknesses.
         </p>
       </section>
+
+      <button className="EdgeTrace-command-button mt-5" onClick={onMonitor}>
+        View Strategy Trend <ArrowRight size={16} />
+      </button>
     </div>
   );
 }
 
-function StrategyTrendDemoSection({ reports, trend }: { reports: DemoReport[]; trend: ReturnType<typeof buildStrategyTrend> }) {
+function MonitorStep({
+  reports,
+  trend,
+  onStart
+}: {
+  reports: DemoReport[];
+  trend: ReturnType<typeof buildStrategyTrend>;
+  onStart: () => void;
+}) {
   return (
     <div>
       <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <p className="EdgeTrace-eyebrow">Strategy Set Preview</p>
-          <h2 className="mt-2 text-3xl font-semibold tracking-[-0.055em] text-ink">Monitor strategy health over time.</h2>
-          <p className="mt-2 text-sm text-muted">Pro workflow preview - strategy sets track whether iterations are strengthening or weakening.</p>
+          <h2 className="mt-2 text-3xl font-semibold tracking-[-0.055em] text-ink">One strategy, three iterations.</h2>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">
+            Strategy sets turn individual reports into a monitoring workflow.
+          </p>
         </div>
         <span className="border border-cyan/35 bg-cyan/[0.06] px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-cyan">
           Pro workflow preview
@@ -593,14 +668,14 @@ function StrategyTrendDemoSection({ reports, trend }: { reports: DemoReport[]; t
 
       <section className="mt-6 grid gap-5 xl:grid-cols-[1.1fr_0.9fr]">
         <div className="border border-white/[0.1] bg-white/[0.025] p-5">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted">Three-report strategy trend</p>
-          <svg className="mt-5 h-72 w-full" viewBox="0 0 680 280" fill="none" role="img" aria-label="Strategy health trend">
-            <path d="M40 36H650M40 100H650M40 164H650M40 228H650" stroke="white" strokeOpacity=".08" />
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted">Strategy health trend</p>
+          <svg className="mt-5 h-64 w-full" viewBox="0 0 680 260" fill="none" role="img" aria-label="Strategy health trend">
+            <path d="M40 34H650M40 92H650M40 150H650M40 208H650" stroke="white" strokeOpacity=".08" />
             <polyline points={trend.points} fill="none" stroke="#58D6FF" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
             {trend.markers.map((marker) => (
               <g key={marker.label}>
                 <circle cx={marker.x} cy={marker.y} r="6" fill="#58D6FF" />
-                <text x={marker.x} y="258" textAnchor="middle" fill="#9b9b95" fontSize="12" fontWeight="700">
+                <text x={marker.x} y="242" textAnchor="middle" fill="#9b9b95" fontSize="12" fontWeight="700">
                   {marker.label}
                 </text>
               </g>
@@ -610,15 +685,18 @@ function StrategyTrendDemoSection({ reports, trend }: { reports: DemoReport[]; t
 
         <div className="grid gap-4">
           <div className="border border-cyan/30 bg-cyan/[0.045] p-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan">Monitoring insight</p>
-            <h3 className="mt-3 text-2xl font-semibold tracking-[-0.045em] text-ink">{trend.insightTitle}</h3>
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan">Latest health status</p>
+            <h3 className="mt-3 text-3xl font-semibold tracking-[-0.055em] text-ink">{trend.insightTitle}</h3>
             <p className="mt-3 text-sm leading-6 text-muted">{trend.insight}</p>
+          </div>
+          <div className="border border-white/[0.1] bg-white/[0.025] p-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-warning">Current vs best</p>
+            <p className="mt-3 text-sm leading-6 text-muted">{trend.currentVsBest}</p>
           </div>
           <div className="border border-white/[0.1] bg-white/[0.025] p-5">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-warning">Watchlist teaser</p>
             <p className="mt-3 text-sm leading-6 text-muted">
-              EdgeTrace can monitor whether cost drag, expectancy, R capture, and segment concentration are improving or
-              deteriorating across strategy iterations.
+              Pro strategy monitoring flags recurring cost drag, expectancy deterioration, and unstable segment behavior.
             </p>
           </div>
         </div>
@@ -636,16 +714,58 @@ function StrategyTrendDemoSection({ reports, trend }: { reports: DemoReport[]; t
           );
         })}
       </section>
+
+      <button className="EdgeTrace-command-button mt-5" onClick={onStart}>
+        Start With Your Trades <ArrowRight size={16} />
+      </button>
     </div>
+  );
+}
+
+function StartStep({
+  isAuthenticated,
+  onSignup,
+  onAnalyze,
+  onPricing
+}: {
+  isAuthenticated: boolean;
+  onSignup: () => void;
+  onAnalyze: () => void;
+  onPricing: () => void;
+}) {
+  return (
+    <section className="border border-cyan/30 bg-cyan/[0.045] p-6 md:p-8">
+      <p className="EdgeTrace-eyebrow">Start</p>
+      <h2 className="mt-3 max-w-3xl text-5xl font-semibold leading-[0.98] tracking-[-0.065em] text-ink">
+        Ready to analyze your own trades?
+      </h2>
+      <p className="mt-5 max-w-3xl text-base leading-7 text-muted">
+        You have seen the Pro workflow on sample data. Create a free account to generate your first full diagnostic
+        report.
+      </p>
+      <div className="mt-7 flex flex-wrap gap-3">
+        {!isAuthenticated && (
+          <button className="EdgeTrace-command-button" onClick={onSignup}>
+            Create Free Account <ArrowRight size={16} />
+          </button>
+        )}
+        <button className="EdgeTrace-secondary-button" onClick={onAnalyze}>
+          {isAuthenticated ? "Create Your Own Report" : "Analyze My Trades"}
+        </button>
+        <button className="EdgeTrace-secondary-button" onClick={onPricing}>
+          View Pricing
+        </button>
+      </div>
+    </section>
   );
 }
 
 function DemoMetric({ label, value, detail }: { label: string; value: string; detail: string }) {
   return (
-    <div className="border border-white/[0.1] bg-white/[0.025] p-5">
-      <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted">{label}</p>
-      <p className="mt-5 text-4xl font-semibold tracking-[-0.06em] text-ink">{value}</p>
-      <p className="mt-3 text-sm text-muted">{detail}</p>
+    <div className="border border-white/[0.1] bg-white/[0.025] p-4">
+      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">{label}</p>
+      <p className="mt-4 text-3xl font-semibold tracking-[-0.055em] text-ink">{value}</p>
+      <p className="mt-2 text-sm text-muted">{detail}</p>
     </div>
   );
 }
@@ -659,32 +779,38 @@ function MetricMini({ label, value }: { label: string; value: string }) {
   );
 }
 
-function ReportSelector({
-  label,
-  value,
-  reports,
-  onChange
-}: {
-  label: string;
-  value: string;
-  reports: DemoReport[];
-  onChange: (id: string) => void;
-}) {
+function ReportSnapshot({ report }: { report: DemoReport }) {
+  const intelligence = buildReportIntelligence(report);
   return (
-    <label className="block border border-white/[0.1] bg-white/[0.025] p-4">
-      <span className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">{label}</span>
-      <select
-        className="mt-3 w-full border border-white/[0.12] bg-black/40 px-3 py-2 text-sm font-semibold text-ink"
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
+    <div className="border border-white/[0.1] bg-white/[0.025] p-5">
+      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">{report.demoLabel}</p>
+      <h3 className="mt-3 text-2xl font-semibold tracking-[-0.045em] text-ink">{report.name}</h3>
+      <p className="mt-3 text-sm leading-6 text-muted">{report.demoNote}</p>
+      <div className="mt-5 grid grid-cols-2 gap-3">
+        <MetricMini label="Health" value={String(intelligence.strategyHealthScore)} />
+        <MetricMini label="Net PnL" value={currency.format(report.metrics.netPnl)} />
+      </div>
+    </div>
+  );
+}
+
+function DeltaCard({ metric }: { metric: ComparisonMetric }) {
+  return (
+    <div className="border border-white/[0.1] bg-white/[0.025] p-5">
+      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">{metric.label}</p>
+      <p
+        className={
+          metric.status === "Improved"
+            ? "mt-4 text-4xl font-semibold tracking-[-0.06em] text-cyan"
+            : metric.status === "Degraded"
+              ? "mt-4 text-4xl font-semibold tracking-[-0.06em] text-loss"
+              : "mt-4 text-4xl font-semibold tracking-[-0.06em] text-ink"
+        }
       >
-        {reports.map((report) => (
-          <option key={report.id} value={report.id}>
-            {report.demoLabel}
-          </option>
-        ))}
-      </select>
-    </label>
+        {formatDelta(metric.delta, metric.format)}
+      </p>
+      <p className="mt-2 text-sm text-muted">{metric.status}</p>
+    </div>
   );
 }
 
@@ -725,18 +851,28 @@ async function loadDemoReport(spec: (typeof demoSpecs)[number]): Promise<DemoRep
   };
 }
 
-function buildLinePoints(rows: Array<{ trade: number; equity: number }>, width = 520, height = 150, padding = 20) {
-  if (!rows.length) return "";
-  const min = Math.min(...rows.map((row) => row.equity));
-  const max = Math.max(...rows.map((row) => row.equity));
-  const span = max - min || 1;
-  return rows
-    .map((row, index) => {
-      const x = rows.length === 1 ? padding : padding + (index / (rows.length - 1)) * (width - padding * 2);
-      const y = height - padding - ((row.equity - min) / span) * (height - padding * 2);
-      return `${x.toFixed(1)},${y.toFixed(1)}`;
-    })
-    .join(" ");
+function getRecommendedRow(rows: BreakdownRow[], dimension: BreakdownDimension) {
+  if (!rows.length) return undefined;
+  if (dimension === "timeOfDay") {
+    return rows.find((row) => row.group === "Open 09:30-10:30") ?? findLargestLeak(rows);
+  }
+  if (dimension === "symbol") {
+    return rows.find((row) => row.group === "QQQ") ?? findLargestLeak(rows);
+  }
+  return findLargestLeak(rows);
+}
+
+function getVisibleRows(rows: BreakdownRow[], recommendedRow: BreakdownRow | undefined) {
+  if (!recommendedRow) return rows.slice(0, 4);
+  const sorted = [...rows].sort((a, b) => a.netPnl - b.netPnl).filter((row) => row.group !== recommendedRow.group);
+  return [recommendedRow, ...sorted].slice(0, 4);
+}
+
+function displayGroupName(group: string) {
+  if (group === "Open 09:30-10:30") return "Opening Session";
+  if (group === "Midday 10:30-14:00") return "Midday Session";
+  if (group === "Power Hour 14:00-16:00") return "Power Hour";
+  return group;
 }
 
 function buildStrategyTrend(reports: DemoReport[]) {
@@ -753,23 +889,31 @@ function buildStrategyTrend(reports: DemoReport[]) {
   const span = max - min || 1;
   const markers = scored.map((item, index) => {
     const x = 70 + index * 250;
-    const y = 228 - ((item.score - min) / span) * 180;
-    return { x, y, label: item.report.demoLabel.replace(" ", "\n") };
+    const y = 208 - ((item.score - min) / span) * 170;
+    return { x, y, label: item.report.demoLabel.replace(" ", " ") };
   });
   const first = scored[0];
   const latest = scored[scored.length - 1];
+  const best = [...scored].sort((a, b) => b.score - a.score)[0];
   const expectancyImproved = first && latest ? latest.expectancy > first.expectancy : false;
   const costDragImproved =
     first?.costDrag !== undefined && latest?.costDrag !== undefined ? latest.costDrag < first.costDrag : false;
+  const latestScore = latest?.score ?? 0;
+  const bestScore = best?.score ?? latestScore;
+  const scoreGap = bestScore - latestScore;
 
   return {
     points: markers.map((marker) => `${marker.x.toFixed(1)},${marker.y.toFixed(1)}`).join(" "),
     markers,
-    insightTitle: expectancyImproved || costDragImproved ? "Strategy trend is improving." : "Strategy trend needs review.",
+    insightTitle: expectancyImproved || costDragImproved ? "Improving, with watchlist items." : "Needs strategy review.",
     insight:
       expectancyImproved || costDragImproved
-        ? "The latest sample iteration shows better conversion quality: expectancy and/or cost drag improved versus the baseline."
-        : "The latest sample iteration does not clearly outperform the baseline. EdgeTrace would flag this for deeper review."
+        ? "The latest sample iteration improved versus baseline, while remaining weak segments still deserve monitoring."
+        : "The latest sample iteration does not clearly outperform the baseline. EdgeTrace would flag this for deeper review.",
+    currentVsBest:
+      scoreGap <= 2
+        ? "The current sample iteration is near the best observed health score."
+        : `The current sample iteration is ${decimal.format(scoreGap)} points below the best observed health score.`
   };
 }
 
