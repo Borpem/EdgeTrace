@@ -67,11 +67,11 @@ export function HomePage({
               Strategy Intelligence for Active Traders
             </p>
 
-            <h1 className="mt-8 text-[clamp(3.3rem,6.7vw,6.75rem)] font-semibold leading-[0.98] tracking-[-0.048em] text-ink md:tracking-[-0.052em]">
+            <h1 className="mt-8 overflow-visible text-[clamp(3.3rem,6.7vw,6.75rem)] font-semibold leading-[1.02] tracking-[-0.048em] text-ink md:tracking-[-0.052em]">
               Know exactly why your strategy{" "}
-              <span className="bg-gradient-to-r from-cyan to-accent bg-clip-text text-transparent">wins</span>{" "}
+              <span className="inline-block overflow-visible bg-gradient-to-r from-cyan to-accent bg-clip-text pr-2 text-transparent">wins</span>{" "}
               or{" "}
-              <span className="bg-gradient-to-r from-violet to-fuchsia-400 bg-clip-text text-transparent">fails.</span>
+              <span className="inline-block overflow-visible bg-gradient-to-r from-violet to-fuchsia-400 bg-clip-text pr-1 text-transparent">fails.</span>
             </h1>
 
             <p className="mt-7 max-w-xl text-lg leading-8 text-slate-300 md:text-xl md:leading-9">
