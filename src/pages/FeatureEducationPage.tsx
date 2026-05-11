@@ -158,11 +158,38 @@ function HeroSection({
   );
 }
 
+function PresentationFrame({
+  children,
+  tilt = "none"
+}: {
+  children: ReactNode;
+  tilt?: "left" | "right" | "none";
+}) {
+  const tiltClass =
+    tilt === "left"
+      ? "lg:[transform:rotateX(1.2deg)_rotateY(1.6deg)_translateZ(0)]"
+      : tilt === "right"
+        ? "lg:[transform:rotateX(1.2deg)_rotateY(-1.6deg)_translateZ(0)]"
+        : "lg:[transform:translateZ(0)]";
+
+  return (
+    <div className="pointer-events-none relative isolate select-none [perspective:1200px]" aria-hidden="true">
+      <div className="absolute -inset-x-5 bottom-[-1.35rem] h-12 bg-[radial-gradient(ellipse,rgba(88,214,255,0.18),rgba(124,92,255,0.08)_42%,transparent_72%)] blur-2xl" />
+      <div
+        className={`relative overflow-hidden border border-white/[0.095] bg-[linear-gradient(145deg,rgba(8,13,22,0.98),rgba(4,8,15,0.95))] shadow-[0_30px_92px_-60px_rgba(88,214,255,0.72),0_14px_34px_-26px_rgba(0,0,0,0.96)] ring-1 ring-white/[0.035] ${tiltClass}`}
+      >
+        <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
+        {children}
+      </div>
+    </div>
+  );
+}
+
 function WorkspaceVisual() {
   return (
-    <div className="relative overflow-hidden border border-white/[0.1] bg-[linear-gradient(145deg,rgba(8,13,22,0.98),rgba(4,8,15,0.96))] p-5 shadow-[0_24px_84px_-58px_rgba(88,214,255,0.65)]">
+    <PresentationFrame tilt="right">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_10%,rgba(124,92,255,0.12),transparent_35%),radial-gradient(circle_at_18%_86%,rgba(34,197,245,0.11),transparent_34%)]" />
-      <div className="relative">
+      <div className="relative p-5">
         <div className="flex items-center justify-between border-b border-white/[0.08] pb-4">
           <div>
             <p className="text-sm font-semibold text-ink">Diagnostic report preview</p>
@@ -227,7 +254,7 @@ function WorkspaceVisual() {
           </div>
         </div>
       </div>
-    </div>
+    </PresentationFrame>
   );
 }
 
@@ -286,9 +313,9 @@ function WalkthroughSection({
 
 function ImportReportVisual() {
   return (
-    <div className="relative overflow-hidden border border-white/[0.1] bg-[#050a12]/94 p-6">
+    <PresentationFrame tilt="left">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_16%_20%,rgba(34,197,245,0.12),transparent_30%),radial-gradient(circle_at_86%_82%,rgba(124,92,255,0.1),transparent_36%)]" />
-      <div className="relative grid gap-5 md:grid-cols-[0.8fr_auto_1.1fr] md:items-center">
+      <div className="relative grid gap-5 p-6 md:grid-cols-[0.8fr_auto_1.1fr] md:items-center">
         <div className="border border-white/[0.09] bg-black/25 p-5">
           <FileText className="text-cyan" size={30} />
           <p className="mt-5 text-2xl font-semibold tracking-[-0.04em] text-ink">CSV export</p>
@@ -307,15 +334,15 @@ function ImportReportVisual() {
           </div>
         </div>
       </div>
-    </div>
+    </PresentationFrame>
   );
 }
 
 function AttributionVisual() {
   return (
-    <div className="relative overflow-hidden border border-white/[0.1] bg-[#050a12]/94 p-6">
+    <PresentationFrame tilt="right">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(124,92,255,0.11),transparent_34%)]" />
-      <div className="relative">
+      <div className="relative p-6">
         <div className="grid gap-4 md:grid-cols-3">
           <div className="border border-white/[0.08] bg-black/20 p-4">
             <p className="text-sm font-semibold text-muted">Gross edge</p>
@@ -347,7 +374,7 @@ function AttributionVisual() {
           </div>
         </div>
       </div>
-    </div>
+    </PresentationFrame>
   );
 }
 
@@ -371,9 +398,9 @@ function StrategyTimelineReviewVisual() {
   ];
 
   return (
-    <div className="relative overflow-hidden border border-white/[0.1] bg-[linear-gradient(145deg,rgba(7,12,20,0.98),rgba(5,9,16,0.94))] p-5 shadow-[0_20px_72px_-56px_rgba(124,92,255,0.65)]">
+    <PresentationFrame>
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_76%_18%,rgba(124,92,255,0.14),transparent_34%),radial-gradient(circle_at_18%_84%,rgba(34,197,245,0.12),transparent_34%)]" />
-      <div className="relative">
+      <div className="relative p-5">
         <div className="mb-5 flex flex-col gap-3 border-b border-white/[0.08] pb-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-sm font-semibold text-ink">Strategy timeline review</p>
@@ -442,7 +469,7 @@ function StrategyTimelineReviewVisual() {
           </div>
         </div>
       </div>
-    </div>
+    </PresentationFrame>
   );
 }
 
