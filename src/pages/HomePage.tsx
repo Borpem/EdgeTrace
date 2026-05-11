@@ -219,8 +219,7 @@ function WorkflowSection() {
   return (
     <section className="EdgeTrace-shell py-14 md:py-20">
       <div className="mx-auto max-w-3xl text-center">
-        <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-cyan">How EdgeTrace Works</p>
-        <h2 className="mt-5 text-4xl font-semibold tracking-[-0.042em] text-ink md:text-5xl">From trades to clarity.</h2>
+        <h2 className="text-4xl font-semibold tracking-[-0.042em] text-ink md:text-5xl">From trades to clarity.</h2>
         <p className="mt-5 text-lg leading-8 text-muted">A complete workflow for understanding what changed, what leaked, and what deserves attention.</p>
       </div>
 
@@ -315,8 +314,7 @@ function LeakDiagnosticsSection() {
       <div className="grid items-center gap-12 lg:grid-cols-[1.08fr_0.92fr] lg:gap-16">
         <RadarVisual />
         <div className="max-w-xl">
-          <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-cyan">Diagnose What Matters</p>
-          <h2 className="mt-5 text-4xl font-semibold leading-[1.04] tracking-[-0.042em] text-ink md:text-5xl">
+          <h2 className="text-4xl font-semibold leading-[1.04] tracking-[-0.042em] text-ink md:text-5xl">
             Find what's degrading your edge.
           </h2>
           <p className="mt-6 text-lg leading-8 text-muted">
@@ -382,8 +380,7 @@ function ImportCompatibilitySection() {
     <section className="EdgeTrace-shell py-12 md:py-16">
       <div className="grid items-center gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:gap-16">
         <div>
-          <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-cyan">Built for traders</p>
-          <h2 className="mt-5 text-4xl font-semibold tracking-[-0.042em] text-ink md:text-5xl">Works with your data.</h2>
+          <h2 className="text-4xl font-semibold tracking-[-0.042em] text-ink md:text-5xl">Works with your data.</h2>
           <p className="mt-6 max-w-xl text-lg leading-8 text-muted">
             Import from major broker exports or use a generic CSV. EdgeTrace normalizes completed trade history into diagnostics without turning it into a manual journal.
           </p>
