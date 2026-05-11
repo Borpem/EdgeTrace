@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { createBillingPortalSession, createCheckoutSession } from "../lib/api";
 import { DisclosurePanel } from "../components/DisclosurePanel";
-import { PlanAccessGraphic } from "../components/visuals/PlanAccessGraphic";
+import { PlanProgressionVisual } from "../components/marketing/PlanProgressionVisual";
 import { trackEvent } from "../lib/analytics";
 import { formatLimit, getPlanConfig } from "../lib/entitlements";
 import { planOrder, type PlanId } from "../lib/plans";
@@ -182,7 +182,7 @@ export function PricingPage({
       {notice && <div className="mt-6 border border-cyan/50 bg-cyan/10 p-4 text-sm text-cyan">{notice}</div>}
       {error && <div className="mt-6 border border-loss/60 bg-loss/10 p-4 text-sm text-loss">{error}</div>}
 
-      <PlanAccessGraphic className="mt-10" />
+      <PlanProgressionVisual className="mt-10" />
 
       <section className="mt-10 grid gap-5 lg:grid-cols-3">
         {planOrder.map((planId) => {
