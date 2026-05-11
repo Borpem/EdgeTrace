@@ -70,10 +70,15 @@ test.describe.serial("EdgeTrace happy path", () => {
 
     await expect(page).toHaveURL(/\/demo/);
     await expect(page.getByText("Interactive Demo", { exact: true })).toBeVisible();
-    await expect(page.getByText(/Demo data - not your account/i)).toBeVisible();
+    await expect(page.getByText(/Sample data - no account required/i)).toBeVisible();
     await expect(page.getByText("Strategy Health", { exact: true }).first()).toBeVisible();
     await expect(page.getByText("Primary Diagnosis", { exact: true }).first()).toBeVisible();
-    await expect(page.getByText("Drilldown Preview", { exact: true })).toBeVisible();
+    await page.getByRole("button", { name: "Drilldowns" }).click();
+    await expect(page.getByText("Find which segments are driving the leak.")).toBeVisible();
+    await page.getByRole("button", { name: "Compare", exact: true }).click();
+    await expect(page.getByText("Understand what changed between iterations.")).toBeVisible();
+    await page.getByRole("button", { name: "Strategy Set Preview" }).click();
+    await expect(page.getByText("Monitor strategy health over time.")).toBeVisible();
   });
 });
 
