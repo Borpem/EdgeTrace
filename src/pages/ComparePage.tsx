@@ -369,8 +369,8 @@ export function ComparePage({
           <PaywallGate
             feature="full_compare"
             accessLevel={comparisonAccessLevel}
-            title="Upgrade to inspect the full comparison breakdown."
-            description="Comparisons show what improved, degraded, or introduced new leakage between reports."
+            title="Upgrade to Pro to unlock full comparisons."
+            description="Pro shows what improved, degraded, or introduced new leakage between reports."
           >
           <section className="EdgeTrace-card mt-8 p-5">
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-muted">Interpretation</p>

@@ -135,7 +135,7 @@ export function ReportsPage({
             Full report access: {fullReportUsage} of {formatLimit(fullReportLimit)}
           </p>
           {hasPreviewReports && (
-            <p className="mt-2 text-xs text-warning">Additional Free reports open as previews. Upgrade for full attribution.</p>
+            <p className="mt-2 text-xs text-warning">Additional Free reports open as previews. Upgrade to Pro to unlock the full strategy workflow.</p>
           )}
           <button className="EdgeTrace-primary-button mt-5 w-full" onClick={onAnalyze}>
             Analyze Trades

@@ -87,7 +87,7 @@ export function UploadPage({
     : brokerBlocked
       ? `${plan.displayName} plan supports generic CSV imports only.`
       : reportLimitReached
-        ? `You've reached the Free report limit. Upgrade to create more reports.`
+        ? `You've reached the Free full-report limit. Upgrade to Pro to unlock the full strategy workflow.`
         : hasParsedFile && normalizedTrades.length === 0
           ? "No normalized trades are ready yet."
           : "";
@@ -288,10 +288,10 @@ export function UploadPage({
         throw new Error("No normalized trades are ready yet. Review the uploaded file and field mapping.");
       }
       if (brokerBlocked) {
-        throw new Error("Free plan supports generic CSV imports only. Upgrade to analyze broker-specific CSV exports.");
+        throw new Error("Free plan supports generic CSV imports only. Upgrade to Pro to unlock all supported broker CSV imports.");
       }
       if (reportLimitReached) {
-        throw new Error("You've reached the Free report limit. Upgrade to create more reports.");
+        throw new Error("You've reached the Free full-report limit. Upgrade to Pro to unlock the full strategy workflow.");
       }
       trackEvent("diagnostics_started", {
         brokerId: activeBrokerId,
@@ -750,7 +750,7 @@ export function UploadPage({
               />
               {reportLimitReached && (
                 <div className="mt-3 border border-warning/50 bg-warning/10 p-3 text-sm text-warning">
-                  You've reached the Free report limit. Upgrade to create more reports.
+                  You've reached the Free full-report limit. Upgrade to Pro to unlock the full strategy workflow.
                   {onViewPricing && (
                     <button className="ml-3 border-b border-warning/60 font-semibold text-warning" onClick={onViewPricing} type="button">
                       View Pricing
@@ -1334,10 +1334,10 @@ function buildImportProvenance({
 function formatUploadError(error: unknown, context: "csv_parse" | "html_parse" | "normalize" | "diagnostics") {
   const message = error instanceof Error ? error.message : "";
   if (/PLAN_LIMIT_REACHED|free report limit|reached the Free report limit/i.test(message)) {
-    return "You've reached the Free report limit. Upgrade to create more reports, or delete an older non-demo report.";
+    return "You've reached the Free full-report limit. Upgrade to Pro to unlock the full strategy workflow, or delete an older non-demo report.";
   }
   if (/generic csv imports only|broker-specific/i.test(message)) {
-    return "This broker export is not available on the Free plan. Use a generic CSV export or upgrade to analyze broker-specific files.";
+    return "This broker export is not available on the Free plan. Use a generic CSV export or upgrade to Pro to unlock all broker imports.";
   }
   if (/missing required fields/i.test(message)) {
     return `${message} Review the field mapping, then run diagnostics again.`;

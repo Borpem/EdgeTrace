@@ -45,7 +45,7 @@ export function PaywallGate({
         <p className="mt-3 max-w-2xl text-sm leading-6 text-muted">{description}</p>
         <div className="mt-5 flex flex-wrap gap-3">
           <button className="EdgeTrace-primary-button" type="button" onClick={goToPricing}>
-            Upgrade to {planLabel === "advanced" ? "Advanced" : "Pro"}
+            {planLabel === "advanced" ? "Advanced Coming Soon" : "Upgrade to Pro"}
           </button>
           <button className="EdgeTrace-secondary-button" type="button" onClick={learnMore}>
             Learn what this unlocks
@@ -67,7 +67,7 @@ export function PaywallGate({
         <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">{description}</p>
         <div className="mt-4 flex flex-wrap gap-3">
           <button className="EdgeTrace-primary-button" type="button" onClick={goToPricing}>
-            Upgrade to {planLabel === "advanced" ? "Advanced" : "Pro"}
+            {planLabel === "advanced" ? "Advanced Coming Soon" : "Upgrade to Pro"}
           </button>
           <button className="EdgeTrace-secondary-button" type="button" onClick={learnMore}>
             Learn what this unlocks

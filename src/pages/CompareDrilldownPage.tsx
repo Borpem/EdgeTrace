@@ -153,8 +153,8 @@ export function CompareDrilldownPage({
         <PaywallGate
           feature="full_compare"
           accessLevel="locked"
-          title="Upgrade to inspect the full comparison drilldown."
-          description="Compare drilldowns show the exact segment and trade-level changes between two diagnostic reports."
+          title="Upgrade to Pro to unlock comparison drilldowns."
+          description="Pro shows the exact segment and trade-level changes between two diagnostic reports."
         />
       </main>
     );

@@ -53,7 +53,7 @@ export async function sanitizeReportForUser(userId: string, report: DiagnosticsR
       ...sanitized,
       trades: [],
       lockedSections: [...new Set([...(sanitized.lockedSections ?? []), ...previewLockedSections()])],
-      upgradeMessage: "Upgrade to Pro to inspect the full attribution breakdown."
+      upgradeMessage: "Upgrade to Pro to unlock the full strategy workflow."
     };
   }
   return sanitized;
@@ -96,7 +96,7 @@ export function sanitizeReportForAccess(report: DiagnosticsResult, accessLevel: 
       charts: emptyCharts(),
       accessLevel,
       lockedSections,
-      upgradeMessage: "Upgrade to Pro to inspect the full attribution breakdown."
+      upgradeMessage: "Upgrade to Pro to unlock the full strategy workflow."
     };
   }
 
@@ -111,7 +111,7 @@ export function sanitizeReportForAccess(report: DiagnosticsResult, accessLevel: 
     },
     accessLevel,
     lockedSections,
-    upgradeMessage: "Preview unlocked. Upgrade to inspect the full attribution breakdown."
+    upgradeMessage: "Preview unlocked. Upgrade to Pro to unlock the full strategy workflow."
   };
 }
 
@@ -125,18 +125,17 @@ export function planUpgradeResponse(feature: EntitlementFeature, requiredPlan: P
 }
 
 export function upgradeMessageForFeature(feature: EntitlementFeature, requiredPlan: PlanId = "pro") {
-  const planName = requiredPlan === "advanced" ? "Advanced" : "Pro";
   const messages: Partial<Record<EntitlementFeature, string>> = {
-    full_drilldowns: "Upgrade to Pro to inspect the full attribution breakdown.",
+    full_drilldowns: "Upgrade to Pro to unlock the full strategy workflow.",
     reconstruction_audit: "Upgrade to Pro to review execution-to-trade reconstruction lineage.",
     audit_exports: "Upgrade to Pro to export audit and report details.",
-    full_compare: "Upgrade to Pro to inspect the full comparison breakdown.",
+    full_compare: "Upgrade to Pro to unlock the full strategy workflow.",
     strategy_health_monitoring: "Upgrade to Pro to monitor whether this strategy is improving or degrading over time.",
-    recurring_reviews: "Upgrade to Advanced to unlock recurring strategy review summaries.",
-    regression_alerts: "Upgrade to Advanced to unlock regression alerts.",
-    edge_stability_score: "Upgrade to Advanced to unlock Edge Stability Score."
+    recurring_reviews: "Advanced monitoring features are coming soon.",
+    regression_alerts: "Advanced monitoring features are coming soon.",
+    edge_stability_score: "Advanced monitoring features are coming soon."
   };
-  return messages[feature] ?? `Upgrade to ${planName} to unlock this feature.`;
+  return messages[feature] ?? (requiredPlan === "advanced" ? "Advanced monitoring features are coming soon." : "Upgrade to Pro to unlock this feature.");
 }
 
 function previewLockedSections() {

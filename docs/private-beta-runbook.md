@@ -35,10 +35,11 @@ CLERK_SECRET_KEY=
 STRIPE_SECRET_KEY=
 STRIPE_WEBHOOK_SECRET=
 STRIPE_PRO_PRICE_ID=
-STRIPE_ADVANCED_PRICE_ID=
 FRONTEND_URL=https://your-vercel-domain.vercel.app
 APP_URL=https://your-vercel-domain.vercel.app
 ```
+
+Advanced is positioned as coming soon during beta. Do not configure Advanced checkout unless you are doing internal entitlement testing.
 
 Do not set `VITE_*` variables on Railway unless needed for a build check. Do not set mock auth in production.
 
@@ -119,12 +120,11 @@ https://your-vercel-domain.vercel.app/app/dashboard
 
 ## Configure Stripe
 
-1. Confirm Pro and Advanced monthly recurring prices exist.
-2. Set the price IDs in Railway:
+1. Confirm the Pro monthly recurring price exists.
+2. Set the Pro price ID in Railway:
 
 ```env
 STRIPE_PRO_PRICE_ID=price_...
-STRIPE_ADVANCED_PRICE_ID=price_...
 ```
 
 3. Create a production webhook endpoint:

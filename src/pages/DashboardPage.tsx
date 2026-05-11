@@ -682,8 +682,8 @@ export function DashboardPage({
       <PaywallGate
         feature="advanced_attribution"
         accessLevel={fullAttributionAccess ? "full" : "preview"}
-        title="Upgrade to inspect the full attribution breakdown."
-        description="EdgeTrace detected a performance leak. Upgrade to see which symbols, setups, and time windows contributed most."
+        title="Upgrade to Pro to unlock the full attribution breakdown."
+        description="EdgeTrace detected a performance leak. Pro shows which symbols, setups, and time windows contributed most."
       >
       <section className="mt-8">
         <div className="mb-4 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
@@ -796,8 +796,8 @@ export function DashboardPage({
       <PaywallGate
         feature="full_report_access"
         accessLevel={fullTradeAccess ? "full" : "preview"}
-        title="Upgrade to inspect the full trade-level report."
-        description="Preview reports show top-level diagnostics. Upgrade to inspect every normalized trade behind the attribution."
+        title="Upgrade to Pro to unlock the full trade-level report."
+        description="Preview reports show top-level diagnostics. Pro unlocks every normalized trade behind the attribution."
       >
       <section className="mt-8 overflow-hidden rounded-lg border border-line">
         <table className="min-w-full divide-y divide-line text-sm">

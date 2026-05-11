@@ -14,8 +14,7 @@ let stripeClient: InstanceType<typeof Stripe> | null = null;
 export function isStripeConfigured() {
   return Boolean(
     process.env.STRIPE_SECRET_KEY &&
-      process.env.STRIPE_PRO_PRICE_ID &&
-      process.env.STRIPE_ADVANCED_PRICE_ID
+      process.env.STRIPE_PRO_PRICE_ID
   );
 }
 
@@ -66,8 +65,8 @@ export async function createCheckoutSession(userId: string, planId: PlanId, orig
     throw new Error("Billing is not configured in this environment.");
   }
 
-  if (planId !== "pro" && planId !== "advanced") {
-    throw new Error("Checkout is only available for paid plans.");
+  if (planId !== "pro") {
+    throw new Error("Advanced is coming soon. Pro is the current self-serve upgrade.");
   }
 
   const stripe = getStripe();
@@ -205,5 +204,5 @@ export async function handleInvoicePaymentFailed(invoice: any) {
 
 export function normalizePaidPlan(planId: unknown): PlanId | null {
   const normalized = normalizePlanId(typeof planId === "string" ? planId : undefined);
-  return normalized === "pro" || normalized === "advanced" ? normalized : null;
+  return normalized === "pro" ? normalized : null;
 }

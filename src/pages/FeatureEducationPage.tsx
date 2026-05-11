@@ -110,9 +110,9 @@ const featureRows: Array<{ label: string; feature?: FeatureKey; access: Record<P
   { label: "Reconstruction audit", feature: "reconstruction_audit", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Exports", feature: "audit_exports", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Strategy monitoring", feature: "strategy_health_monitoring", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Recurring strategy reviews", feature: "recurring_reviews", access: { free: "-", pro: "-", advanced: "Included" } },
-  { label: "Regression alerts", feature: "regression_alerts", access: { free: "-", pro: "-", advanced: "Included" } },
-  { label: "Edge Stability Score", feature: "edge_stability_score", access: { free: "-", pro: "-", advanced: "Included" } }
+  { label: "Recurring strategy reviews", feature: "recurring_reviews", access: { free: "-", pro: "-", advanced: "Coming soon" } },
+  { label: "Regression alerts", feature: "regression_alerts", access: { free: "-", pro: "-", advanced: "Coming soon" } },
+  { label: "Edge Stability Score", feature: "edge_stability_score", access: { free: "-", pro: "-", advanced: "Coming soon" } }
 ];
 
 export function FeatureEducationPage({
@@ -296,6 +296,8 @@ export function FeatureEducationPage({
                     {row.feature ? (
                       canUseFeature(plan, row.feature) ? (
                         <span className="text-cyan">Included</span>
+                      ) : isAdvancedOnlyFeature(row.feature) ? (
+                        <span className="text-muted">Coming soon</span>
                       ) : (
                         <button
                           className="border-b border-cyan/60 text-cyan hover:text-ink"
@@ -351,4 +353,8 @@ function AccessValue({ value }: { value: string }) {
       <Check size={14} /> {value}
     </span>
   );
+}
+
+function isAdvancedOnlyFeature(feature: FeatureKey) {
+  return ["recurring_reviews", "regression_alerts", "edge_stability_score"].includes(feature);
 }

@@ -252,8 +252,8 @@ export function CollectionDetailPage({
             <PaywallGate
               feature="collection_attribution"
               accessLevel={canUseFeature(plan, "collection_attribution") ? "full" : "preview"}
-              title="Upgrade to inspect full strategy set analytics."
-              description="Strategy set analytics track whether related reports are improving or degrading across iterations."
+              title="Upgrade to Pro to unlock strategy set analytics."
+              description="Pro unlocks the full strategy workflow, including whether related reports are improving or degrading across iterations."
             >
               <CollectionAnalyticsSection analytics={analytics} />
             </PaywallGate>
@@ -275,8 +275,8 @@ export function CollectionDetailPage({
             <PaywallGate
               feature="review_workspace"
               accessLevel={canUseFeature(plan, "review_workspace") ? "full" : "preview"}
-              title="Upgrade to use the full review workflow."
-              description="Rank report-to-report transitions by priority and decide what deserves inspection first."
+              title="Upgrade to Pro to unlock the review workflow."
+              description="Pro unlocks report-to-report transition ranking so you can decide what deserves inspection first."
             >
             <ReviewQueueSection
               items={reviewQueue}
@@ -305,8 +305,8 @@ export function CollectionDetailPage({
             <PaywallGate
               feature="collection_attribution"
               accessLevel={canUseFeature(plan, "collection_attribution") ? "full" : "preview"}
-              title="Upgrade to see full attribution by symbol, setup, strategy, and time bucket."
-              description="Collection attribution shows which segments are driving improvement or degradation across reports."
+              title="Upgrade to Pro to unlock full attribution."
+              description="Pro shows which symbols, setups, strategies, and time buckets are driving improvement or degradation across reports."
             >
             <CollectionAttributionSection
               attribution={attribution}
@@ -321,8 +321,8 @@ export function CollectionDetailPage({
             <PaywallGate
               feature="advanced_attribution"
               accessLevel={canUseFeature(plan, "advanced_attribution") ? "full" : "preview"}
-              title="Upgrade to inspect iteration change attribution."
-              description="Iteration attribution explains what changed from one report to the next and where to inspect."
+              title="Upgrade to Pro to unlock iteration attribution."
+              description="Pro explains what changed from one report to the next and where to inspect."
             >
             <IterationChangesSection
               changes={iterationChanges}
@@ -488,8 +488,8 @@ function StrategyMonitoringSection({
       <PaywallGate
         feature="strategy_health_monitoring"
         accessLevel={strategyMonitoringAccess}
-        title="Upgrade to monitor whether this strategy is improving or degrading over time."
-        description="Strategy health monitoring compares the latest iteration against prior reports, cost drag, expectancy, and R capture trends."
+        title="Upgrade to Pro to unlock strategy health monitoring."
+        description="Pro compares the latest iteration against prior reports, cost drag, expectancy, and R capture trends."
       >
         <div className="border border-white/[0.1] bg-white/[0.025] p-6">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
@@ -521,8 +521,8 @@ function StrategyMonitoringSection({
       <PaywallGate
         feature="edge_stability_score"
         accessLevel={stabilityAccess}
-        title="Upgrade to Advanced for Edge Stability Score."
-        description="Edge Stability Score evaluates consistency across expectancy, cost drag, R capture, loss concentration, and report history."
+        title="Edge Stability Score is coming soon."
+        description="Advanced monitoring will evaluate consistency across expectancy, cost drag, R capture, loss concentration, and report history."
       >
         <div className="border border-white/[0.1] bg-white/[0.025] p-6">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted">Edge Stability Score</p>
@@ -536,8 +536,8 @@ function StrategyMonitoringSection({
       <PaywallGate
         feature="regression_alerts"
         accessLevel={regressionAccess}
-        title="Upgrade to monitor regression flags."
-        description="Regression detection highlights expectancy deterioration, rising cost drag, weakening R capture, and large-loss concentration."
+        title="Advanced monitoring features are coming soon."
+        description="Advanced will add regression alerts for expectancy deterioration, rising cost drag, weakening R capture, and large-loss concentration."
       >
         <div className="border border-white/[0.1] bg-white/[0.025] p-6">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-warning">
@@ -561,8 +561,8 @@ function StrategyMonitoringSection({
       <PaywallGate
         feature="recurring_reviews"
         accessLevel={reviewAccess}
-        title="Upgrade to Advanced for recurring strategy reviews."
-        description="Recurring reviews summarize what changed, what improved, what deteriorated, and what deserves the next inspection."
+        title="Recurring strategy reviews are coming soon."
+        description="Advanced monitoring will summarize what changed, what improved, what deteriorated, and what deserves the next inspection."
       >
         <div className="border border-white/[0.1] bg-white/[0.025] p-6">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan">{digest.periodLabel}</p>

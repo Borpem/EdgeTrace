@@ -23,11 +23,12 @@ CLERK_SECRET_KEY=
 STRIPE_SECRET_KEY=
 STRIPE_WEBHOOK_SECRET=
 STRIPE_PRO_PRICE_ID=
-STRIPE_ADVANCED_PRICE_ID=
 FRONTEND_URL=https://your-domain.com
 APP_URL=https://your-domain.com
 DATABASE_PROVIDER=postgres
 DATABASE_URL=postgres://user:password@host:5432/edgetrace
+# Optional while Advanced is in early-access/coming-soon mode:
+# STRIPE_ADVANCED_PRICE_ID=
 # Optional only when DATABASE_PROVIDER=sqlite:
 # EDGETRACE_DB_PATH=/persistent/data/edgetrace.sqlite
 ```
@@ -52,14 +53,15 @@ VITE_API_BASE_URL=
 
 ## Stripe Setup
 
-1. Create Stripe products for Pro and Advanced.
-2. Create recurring monthly prices for each plan.
+1. Create a Stripe product for Pro.
+2. Create a recurring monthly price for Pro.
 3. Set:
 
 ```env
 STRIPE_PRO_PRICE_ID=price_...
-STRIPE_ADVANCED_PRICE_ID=price_...
 ```
+
+Advanced is displayed as coming soon during beta and does not start checkout. Keep `STRIPE_ADVANCED_PRICE_ID` unset unless you need internal webhook mapping tests.
 
 4. Set `STRIPE_SECRET_KEY` from Stripe test/live mode as appropriate.
 5. Never expose `STRIPE_SECRET_KEY` to the frontend.

@@ -97,8 +97,8 @@ export function DrilldownPage({
         <PaywallGate
           feature="full_drilldowns"
           accessLevel="locked"
-          title="Upgrade to inspect the full attribution breakdown."
-          description="Drilldowns show the exact symbols, setups, time windows, and trades behind the primary leak."
+          title="Upgrade to Pro to unlock full drilldowns."
+          description="Pro shows the exact symbols, setups, time windows, and trades behind the primary leak."
         />
       </main>
     );

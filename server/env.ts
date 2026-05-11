@@ -50,8 +50,7 @@ export function validateServerEnvironment() {
       "CLERK_SECRET_KEY",
       "STRIPE_SECRET_KEY",
       "STRIPE_WEBHOOK_SECRET",
-      "STRIPE_PRO_PRICE_ID",
-      "STRIPE_ADVANCED_PRICE_ID"
+      "STRIPE_PRO_PRICE_ID"
     ]) {
       if (!process.env[key]) errors.push(`${key} is required in production.`);
     }

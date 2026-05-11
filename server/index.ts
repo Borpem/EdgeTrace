@@ -237,7 +237,7 @@ app.post("/api/billing/create-checkout-session", async (req, res) => {
   if (!planId) {
     res.status(400).json({
       error: "INVALID_PLAN",
-      message: "Checkout is available for Pro and Advanced plans."
+      message: "Checkout is currently available for Pro. Advanced monitoring features are coming soon."
     });
     return;
   }
@@ -305,7 +305,7 @@ app.post("/api/diagnostics/run", async (req, res) => {
   if (!isDemo && !canUseBrokerAdapter(plan, brokerId)) {
     res.status(403).json({
       error: "PLAN_LIMIT_REACHED",
-      message: "Free plan supports generic CSV imports only. Upgrade to analyze broker-specific CSV exports."
+      message: "Free plan supports generic CSV imports only. Upgrade to Pro to unlock all supported broker CSV imports."
     });
     return;
   }
@@ -313,7 +313,7 @@ app.post("/api/diagnostics/run", async (req, res) => {
   if (!isDemo && !canCreateReport(plan, existingBillableReportCount)) {
     res.status(403).json({
       error: "PLAN_LIMIT_REACHED",
-      message: "Free plan includes 1 full report and preview access to additional reports. Upgrade for unlimited full diagnostics."
+      message: "Free plan includes 1 full diagnostic report. Upgrade to Pro to unlock the full strategy workflow."
     });
     return;
   }
@@ -409,7 +409,7 @@ app.post("/api/collections", async (req, res) => {
   if (!isDemo && !canCreateCollection(plan, await countCollections(userId))) {
     res.status(403).json({
       error: "PLAN_LIMIT_REACHED",
-      message: "Free plan allows 1 collection. Upgrade to create more."
+      message: "Free plan allows 1 strategy set. Upgrade to Pro to unlock the full strategy workflow."
     });
     return;
   }
@@ -537,7 +537,7 @@ app.post("/api/saved-comparisons", async (req, res) => {
   if (!isDemo && !canCreateSavedComparison(plan, await countSavedComparisons(userId))) {
     res.status(403).json({
       error: "PLAN_LIMIT_REACHED",
-      message: "Free plan allows 1 saved comparison. Upgrade to save more comparisons."
+      message: "Free plan allows 1 saved comparison. Upgrade to Pro to unlock the full strategy workflow."
     });
     return;
   }

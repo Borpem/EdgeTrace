@@ -46,8 +46,8 @@ export function ReconstructionAuditPage({
         <PaywallGate
           feature="reconstruction_audit"
           accessLevel="locked"
-          title="Upgrade to review reconstruction lineage."
-          description="Reconstruction audit shows which source executions created each completed trade and enables audit exports."
+          title="Upgrade to Pro to review reconstruction lineage."
+          description="Pro unlocks the audit showing which source executions created each completed trade and enables audit exports."
         />
         <button className="EdgeTrace-secondary-button mt-5" onClick={onBack}>
           Back to Dashboard

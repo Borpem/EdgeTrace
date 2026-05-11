@@ -66,10 +66,18 @@ export function PricingPage({
   const renderPlanAction = (planId: PlanId) => {
     const isCurrent = currentPlanId === planId;
 
+    if (planId === "advanced" && !isCurrent) {
+      return (
+        <button className="EdgeTrace-secondary-button mt-8 w-full cursor-not-allowed opacity-70" disabled>
+          Coming Soon
+        </button>
+      );
+    }
+
     if (!profile) {
       return (
         <button className="EdgeTrace-secondary-button mt-8 w-full" onClick={onStart}>
-          {planId === "free" ? "Start Free" : "Sign In to Upgrade"}
+          {planId === "free" ? "Start Free" : "Sign In for Pro"}
         </button>
       );
     }
@@ -127,11 +135,11 @@ export function PricingPage({
 
     return (
       <button
-        className="EdgeTrace-secondary-button mt-8 w-full"
+        className={planId === "pro" ? "EdgeTrace-primary-button mt-8 w-full" : "EdgeTrace-secondary-button mt-8 w-full"}
         disabled={activeAction === planId}
         onClick={() => void startCheckout(planId)}
       >
-        {activeAction === planId ? "Redirecting..." : `Upgrade to ${getPlanConfig(planId).displayName}`}
+        {activeAction === planId ? "Redirecting..." : "Upgrade to Pro"}
       </button>
     );
   };
@@ -144,8 +152,8 @@ export function PricingPage({
           Start with one full report. Scale into continuous strategy intelligence.
         </h1>
         <p className="mt-7 max-w-3xl text-lg leading-8 text-muted">
-          Free gives a meaningful diagnostic preview. Pro unlocks the full workflow. Advanced adds recurring reviews,
-          regression alerts, and edge stability monitoring.
+          Free explores the first diagnostic. Pro is the main self-serve upgrade for the full strategy workflow.
+          Advanced monitoring features are coming soon.
         </p>
         {profile && (
           <button
@@ -183,11 +191,17 @@ export function PricingPage({
             <article
               key={plan.id}
               className={`border bg-white/[0.025] p-7 ${
-                isCurrent ? "border-cyan/45" : "border-white/[0.12]"
+                isCurrent || plan.id === "pro" ? "border-cyan/45" : "border-white/[0.12]"
               }`}
             >
               <p className="text-xs font-semibold uppercase tracking-[0.24em] text-cyan">{plan.displayName}</p>
               <p className="mt-5 text-4xl font-semibold tracking-[-0.055em] text-ink">{plan.monthlyPriceLabel}</p>
+              {plan.id === "pro" && (
+                <p className="mt-2 text-xs font-semibold uppercase tracking-[0.18em] text-cyan">Main beta upgrade</p>
+              )}
+              {plan.id === "advanced" && (
+                <p className="mt-2 text-xs font-semibold uppercase tracking-[0.18em] text-muted">Not available for checkout yet</p>
+              )}
               <p className="mt-5 min-h-16 text-sm leading-6 text-muted">{plan.description}</p>
 
               <div className="mt-6 grid gap-2 border border-white/[0.08] bg-black/20 p-4 text-xs text-muted">

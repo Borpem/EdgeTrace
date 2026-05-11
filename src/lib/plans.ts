@@ -43,7 +43,7 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
     id: "free",
     displayName: "Free",
     monthlyPriceLabel: "$0",
-    description: "Validate the diagnostic workflow with lightweight strategy analysis.",
+    description: "Explore the first diagnostic.",
     limits: {
       maxReports: "unlimited",
       maxFullReports: 1,
@@ -73,17 +73,16 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
     },
     featureBullets: [
       "1 full diagnostic report",
-      "Preview access to additional reports",
-      "Generic CSV imports",
-      "Basic top-level diagnostics",
-      "Upgrade preview for deeper attribution"
+      "Generic CSV import",
+      "Preview deeper insights after first report",
+      "Limited report history"
     ]
   },
   pro: {
     id: "pro",
     displayName: "Pro",
-    monthlyPriceLabel: "Coming soon",
-    description: "For active traders reviewing broker imports and strategy iterations.",
+    monthlyPriceLabel: "$19/month",
+    description: "Full strategy workflow.",
     limits: {
       maxReports: "unlimited",
       maxFullReports: "unlimited",
@@ -115,7 +114,8 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
       "Unlimited full diagnostic reports",
       "All supported broker CSV imports",
       "Full attribution and drilldowns",
-      "Compare reports and strategy sets",
+      "Compare reports",
+      "Strategy sets",
       "Reconstruction audit",
       "Exports",
       "Strategy health monitoring"
@@ -124,8 +124,8 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
   advanced: {
     id: "advanced",
     displayName: "Advanced",
-    monthlyPriceLabel: "Coming soon",
-    description: "Reserved for deeper attribution, API access, and team research workflows.",
+    monthlyPriceLabel: "Coming Soon",
+    description: "Continuous strategy intelligence.",
     limits: {
       maxReports: "unlimited",
       maxFullReports: "unlimited",
@@ -155,11 +155,10 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
     },
     featureBullets: [
       "Everything in Pro",
-      "Regression alerts",
       "Recurring strategy reviews",
+      "Regression alerts",
       "Edge stability score",
-      "Future API access",
-      "Future team and priority support"
+      "Future team/API/priority import support"
     ]
   }
 };
