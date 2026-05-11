@@ -207,11 +207,9 @@ export function ComparePage({
     <main className="EdgeTrace-shell py-10" data-testid="compare-page">
       <div className="EdgeTrace-page-header mb-8 grid gap-8 xl:grid-cols-[1fr_360px] xl:items-end">
         <div>
-          <p className="EdgeTrace-eyebrow">Compare</p>
           <h1 className="EdgeTrace-title">Diagnostic report comparison</h1>
           <p className="EdgeTrace-copy">
-            A comparison shows what changed between two reports. Compare strategy iterations to see whether performance
-            changed through costs, expectancy, R capture, or segment mix.
+            Compare two reports to see what improved, degraded, or introduced new leakage between iterations.
           </p>
         </div>
         <div className="EdgeTrace-card-soft relative z-10 p-4">

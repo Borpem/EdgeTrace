@@ -55,10 +55,9 @@ export function CollectionsPage({
     <main className="EdgeTrace-shell py-10">
       <div className="EdgeTrace-page-header mb-8 grid gap-8 xl:grid-cols-[1fr_360px] xl:items-end">
         <div>
-          <p className="EdgeTrace-eyebrow">Strategy Sets</p>
           <h1 className="EdgeTrace-title">Strategy sets</h1>
           <p className="EdgeTrace-copy">
-            Strategy sets group related reports so you can track iterations over time.
+            Group related reports to track strategy iterations, review changes, and monitor whether edge is improving.
           </p>
         </div>
         <div className="EdgeTrace-card-soft relative z-10 p-4">

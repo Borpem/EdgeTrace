@@ -60,8 +60,7 @@ export function ReconstructionAuditPage({
     <main className="EdgeTrace-shell py-10">
       <section className="mb-8 flex flex-col gap-6 border-y border-white/[0.1] py-8 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted">Reconstruction Audit</p>
-          <h1 className="mt-4 max-w-5xl text-4xl font-semibold leading-[1] tracking-[-0.055em] text-ink md:text-6xl">{result.name ?? "Diagnostic report"}</h1>
+          <h1 className="max-w-5xl text-4xl font-semibold leading-[1.04] tracking-[-0.045em] text-ink md:text-6xl">{result.name ?? "Diagnostic report"}</h1>
           <p className="mt-5 max-w-4xl text-base leading-7 text-muted">
             Inspect how IBKR execution records were converted into completed trades.
           </p>

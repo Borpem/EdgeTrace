@@ -361,11 +361,9 @@ export function UploadPage({
     <main className={`EdgeTrace-shell py-10 ${showStickyActionBar ? "pb-44 md:pb-36" : ""}`}>
       <div className="EdgeTrace-page-header mb-8 grid gap-8 xl:grid-cols-[1fr_420px] xl:items-end">
         <div>
-          <p className="EdgeTrace-eyebrow">Analyze Trades</p>
           <h1 className="EdgeTrace-title">Create a Diagnostic Report</h1>
           <p className="EdgeTrace-copy">
-            Upload completed trade history from a broker or CSV file. EdgeTrace will normalize the data and generate a
-            diagnostic report.
+            Upload completed trade history, review the mapping, and generate a diagnostic report.
           </p>
           <div className="mt-6 grid gap-2 text-sm sm:grid-cols-4">
             {["Import trades", "Review mapping", "Run diagnostics", "Open report"].map((step, index) => (

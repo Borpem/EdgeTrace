@@ -12,13 +12,15 @@
 
   .EdgeTrace-page-header {
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     border-radius: 0;
     border: 0;
     border-top: 1px solid rgba(247, 247, 243, 0.1);
     border-bottom: 1px solid rgba(247, 247, 243, 0.1);
-    background: transparent;
-    padding: 2rem 0;
+    background:
+      radial-gradient(circle at 100% 0%, rgba(88, 214, 255, 0.04), transparent 24rem),
+      transparent;
+    padding: 2.25rem 0;
     box-shadow: none;
   }
 
@@ -46,9 +48,13 @@
     text-rendering: geometricPrecision;
   }
 
+  .EdgeTrace-page-header .EdgeTrace-title {
+    margin-top: 0;
+  }
+
   .EdgeTrace-copy {
     margin-top: 1.25rem;
-    max-width: 58rem;
+    max-width: 48rem;
     color: #9b9b95;
     font-size: 1rem;
     line-height: 1.75rem;
@@ -58,15 +64,20 @@
     border-radius: 0.125rem;
     border: 1px solid rgba(247, 247, 243, 0.11);
     background:
-      radial-gradient(circle at 100% 0%, rgba(88, 214, 255, 0.055), transparent 26rem),
-      rgba(247, 247, 243, 0.035);
+      radial-gradient(circle at 100% 0%, rgba(88, 214, 255, 0.06), transparent 24rem),
+      rgba(247, 247, 243, 0.032);
     box-shadow: none;
+    transition:
+      border-color 160ms ease,
+      background-color 160ms ease;
   }
 
   .EdgeTrace-card-soft {
     border-radius: 0.125rem;
     border: 1px solid rgba(247, 247, 243, 0.11);
-    background: rgba(247, 247, 243, 0.035);
+    background:
+      radial-gradient(circle at 100% 0%, rgba(120, 97, 255, 0.04), transparent 20rem),
+      rgba(247, 247, 243, 0.032);
   }
 
   .EdgeTrace-primary-button {

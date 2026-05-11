@@ -121,11 +121,9 @@ export function ReportsPage({
     <main className="EdgeTrace-shell py-10">
       <div className="EdgeTrace-page-header mb-8 grid gap-8 xl:grid-cols-[1fr_360px] xl:items-end">
         <div>
-          <p className="EdgeTrace-eyebrow">Reports</p>
           <h1 className="EdgeTrace-title">Strategy research library</h1>
           <p className="EdgeTrace-copy">
-            A report is a single diagnostic analysis generated from one uploaded trade file. Organize reports by strategy,
-            workflow stage, tags, and research notes.
+            Review, filter, and organize saved diagnostic reports by strategy, tag, workflow stage, and research notes.
           </p>
         </div>
         <div className="EdgeTrace-card-soft relative z-10 p-4">

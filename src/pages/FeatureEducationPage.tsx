@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, Check, Minus } from "lucide-react";
 import { DisclosurePanel } from "../components/DisclosurePanel";
+import { PageHeader, PageShell } from "../components/ui/Primitives";
 import { PlanAccessGraphic } from "../components/visuals/PlanAccessGraphic";
 import { WorkflowDiagram } from "../components/visuals/WorkflowDiagram";
 import { trackEvent } from "../lib/analytics";
@@ -213,14 +214,12 @@ export function FeatureEducationPage({
   }, [activation, isAuthenticated, latestReport, onAnalyze, onCreateStrategySet, onDemo, onOpenReport, onPricing, onSignup, plan.id]);
 
   return (
-    <main className="EdgeTrace-shell py-10">
-      <section className="border-y border-white/[0.1] py-10">
-        <div className="grid gap-8 xl:grid-cols-[1fr_360px] xl:items-end">
-          <div>
-            <p className="EdgeTrace-eyebrow">How It Works</p>
-            <h1 className="EdgeTrace-title">Understand every layer of your trading performance.</h1>
-            <p className="EdgeTrace-copy">A visual guide to reports, drilldowns, comparisons, strategy sets, and plan access.</p>
-            <div className="mt-7 flex flex-wrap gap-3">
+    <PageShell>
+      <PageHeader
+        title="Understand every layer of your trading performance."
+        subtitle="A visual guide to reports, drilldowns, comparisons, strategy sets, and plan access."
+        primaryAction={
+          <div className="flex flex-wrap gap-3">
               {isAuthenticated ? (
                 <>
                   <button className="EdgeTrace-primary-button" onClick={onAnalyze}>
@@ -249,12 +248,11 @@ export function FeatureEducationPage({
                   </button>
                 </>
               )}
-            </div>
           </div>
+        }
+        aside={
           <div className="border border-cyan/30 bg-cyan/[0.045] p-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan">
-              {isAuthenticated ? "Current Plan" : "Plan Guide"}
-            </p>
+            <p className="text-sm text-muted">{isAuthenticated ? "Current plan" : "Plan guide"}</p>
             <p className="mt-3 text-4xl font-semibold tracking-[-0.055em] text-ink">
               {isAuthenticated ? plan.displayName : "Free to Advanced"}
             </p>
@@ -264,13 +262,12 @@ export function FeatureEducationPage({
                 : "Review the full feature scope before creating an account. Free starts with one full diagnostic; Pro unlocks the workflow."}
             </p>
           </div>
-        </div>
-      </section>
+        }
+      />
 
       <section className="mt-10">
         <div className="mb-5">
-          <p className="EdgeTrace-eyebrow">Workflow</p>
-          <h2 className="mt-2 text-3xl font-semibold tracking-[-0.055em] text-ink">From import to strategy monitoring.</h2>
+          <h2 className="text-3xl font-semibold tracking-[-0.055em] text-ink">From import to strategy monitoring.</h2>
         </div>
         <WorkflowDiagram
           steps={["Import", "Report", "Diagnose", "Inspect", "Compare", "Strategy Set", "Monitor"]}
@@ -289,8 +286,7 @@ export function FeatureEducationPage({
       </section>
 
       <section className="mt-12">
-        <p className="EdgeTrace-eyebrow">Feature Guide</p>
-        <h2 className="mt-2 text-3xl font-semibold tracking-[-0.055em] text-ink">What each layer does.</h2>
+        <h2 className="text-3xl font-semibold tracking-[-0.055em] text-ink">What each layer does.</h2>
         <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {featureCards.map((feature) => (
             <article
@@ -314,8 +310,7 @@ export function FeatureEducationPage({
       <section className="mt-12">
         <div className="mb-5 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="EdgeTrace-eyebrow">Plan Access</p>
-            <h2 className="mt-2 text-3xl font-semibold tracking-[-0.055em] text-ink">What your plan includes.</h2>
+            <h2 className="text-3xl font-semibold tracking-[-0.055em] text-ink">What your plan includes.</h2>
           </div>
           {isAuthenticated ? (
             <p className="text-sm text-muted">
@@ -380,14 +375,13 @@ export function FeatureEducationPage({
       </section>
 
       <section className="mt-12 border border-cyan/30 bg-cyan/[0.045] p-6">
-        <p className="EdgeTrace-eyebrow">What should I do next?</p>
-        <h2 className="mt-3 text-3xl font-semibold tracking-[-0.055em] text-ink">{nextAction.title}</h2>
+        <h2 className="text-3xl font-semibold tracking-[-0.055em] text-ink">{nextAction.title}</h2>
         <p className="mt-3 max-w-3xl text-sm leading-6 text-muted">{nextAction.body}</p>
         <button className="EdgeTrace-command-button mt-6" onClick={nextAction.action}>
           {nextAction.cta}
         </button>
       </section>
-    </main>
+    </PageShell>
   );
 }
 

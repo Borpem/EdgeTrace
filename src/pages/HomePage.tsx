@@ -64,7 +64,7 @@ export function HomePage({
         <div className="grid items-center gap-10 lg:grid-cols-[0.88fr_1.12fr] lg:gap-10 xl:gap-12">
           <div className="max-w-[760px]">
             <h1 className="overflow-visible text-[clamp(3.2rem,5.7vw,6rem)] font-semibold leading-[1.02] tracking-[-0.048em] text-ink md:tracking-[-0.052em]">
-              <span className="block">Know exactly why your</span>
+              <span className="block">Know exactly why your </span>
               <span className="block">
                 strategy{" "}
                 <span className="inline-block overflow-visible bg-gradient-to-r from-cyan to-accent bg-clip-text pr-2 text-transparent">wins</span>{" "}

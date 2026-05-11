@@ -132,8 +132,7 @@ export function StrategyDashboardPage({
     return (
       <main className="EdgeTrace-shell py-10">
         <section className="border-y border-white/[0.1] py-10">
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted">Dashboard</p>
-          <h1 className="mt-4 max-w-4xl text-4xl font-semibold leading-[1] tracking-[-0.055em] text-ink md:text-6xl">
+          <h1 className="max-w-4xl text-4xl font-semibold leading-[1.04] tracking-[-0.045em] text-ink md:text-6xl">
             Loading strategy summary
           </h1>
           <p className="mt-5 max-w-3xl text-base leading-7 text-muted">
@@ -148,8 +147,7 @@ export function StrategyDashboardPage({
     return (
       <main className="EdgeTrace-shell py-10">
         <section className="border-y border-white/[0.1] py-10">
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted">Strategy Dashboard</p>
-          <h1 className="mt-4 max-w-4xl text-4xl font-semibold leading-[1] tracking-[-0.055em] text-ink md:text-6xl">
+          <h1 className="max-w-4xl text-4xl font-semibold leading-[1.04] tracking-[-0.045em] text-ink md:text-6xl">
             No strategy report selected
           </h1>
           <p className="mt-5 max-w-3xl text-base leading-7 text-muted">
@@ -180,8 +178,7 @@ export function StrategyDashboardPage({
       <section className="border-y border-white/[0.1] py-8">
         <div className="grid gap-8 lg:grid-cols-[1fr_420px] lg:items-center">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted">Strategy Dashboard</p>
-            <h1 className="mt-4 max-w-5xl text-4xl font-semibold leading-[1] tracking-[-0.055em] text-ink md:text-6xl">
+            <h1 className="max-w-5xl text-4xl font-semibold leading-[1.04] tracking-[-0.045em] text-ink md:text-6xl">
               {safeReport.strategyLabel || safeReport.name || "Selected Strategy"}
             </h1>
             <p className="mt-5 max-w-4xl text-base leading-7 text-muted">

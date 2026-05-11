@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, Check } from "lucide-react";
 import Papa from "papaparse";
 import { DisclosurePanel } from "../components/DisclosurePanel";
+import { PageHeader, PageShell } from "../components/ui/Primitives";
 import { WorkflowDiagram } from "../components/visuals/WorkflowDiagram";
 import {
   breakdownLabels,
@@ -215,21 +216,14 @@ export function PublicDemoPage({
   };
 
   return (
-    <main className="EdgeTrace-shell py-10 md:py-14">
-      <section className="border-y border-white/[0.1] py-10">
-        <div className="grid gap-8 xl:grid-cols-[1fr_380px] xl:items-end">
-          <div>
-            <p className="EdgeTrace-eyebrow">Interactive Demo</p>
-            <h1 className="EdgeTrace-title">Follow the path from trade history to strategy insight.</h1>
-            <p className="EdgeTrace-copy">
-              A guided Pro preview using sample data: diagnose the report, inspect the leak, compare iterations, then
-              monitor the strategy trend.
-            </p>
-          </div>
+    <PageShell>
+      <PageHeader
+        title="Follow the path from trade history to strategy insight."
+        subtitle="A guided Pro preview using sample data: diagnose the report, inspect the leak, compare iterations, then monitor the strategy trend."
+        aside={
           <aside className="border border-cyan/30 bg-cyan/[0.045] p-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan">
-              Sample data - no account required.
-            </p>
+            <p className="text-sm font-semibold text-ink">Interactive Demo</p>
+            <p className="mt-1 text-sm text-muted">Sample data - no account required.</p>
             <p className="mt-3 text-3xl font-semibold tracking-[-0.055em] text-ink">
               {primaryReport ? `${primaryReport.metrics.totalTrades} trades analyzed` : "Loading sample"}
             </p>
@@ -237,8 +231,8 @@ export function PublicDemoPage({
               No database writes. No real broker data. This walkthrough previews the Pro value loop only.
             </p>
           </aside>
-        </div>
-      </section>
+        }
+      />
 
       {error && <section className="mt-6 border border-loss/50 bg-loss/10 p-5 text-sm text-loss">{error}</section>}
 
@@ -325,7 +319,7 @@ export function PublicDemoPage({
           </section>
         </section>
       )}
-    </main>
+    </PageShell>
   );
 }
 
@@ -418,8 +412,7 @@ function DiagnoseStep({
     <div>
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="EdgeTrace-eyebrow">Diagnostic Report</p>
-          <h2 className="mt-2 text-3xl font-semibold tracking-[-0.055em] text-ink">Essential report summary</h2>
+          <h2 className="text-3xl font-semibold tracking-[-0.055em] text-ink">Essential report summary</h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">
             Dense details stay hidden until they matter. This step shows only the diagnosis a trader needs first.
           </p>
@@ -495,8 +488,7 @@ function InspectStep({
     <div>
       <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <p className="EdgeTrace-eyebrow">Drilldown</p>
-          <h2 className="mt-2 text-3xl font-semibold tracking-[-0.055em] text-ink">Start with the recommended segment.</h2>
+          <h2 className="text-3xl font-semibold tracking-[-0.055em] text-ink">Start with the recommended segment.</h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">
             The demo defaults to a single attribution lens, then lets you switch dimensions if you want to explore.
           </p>
@@ -609,8 +601,7 @@ function CompareStep({
     <div>
       <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <p className="EdgeTrace-eyebrow">Compare</p>
-          <h2 className="mt-2 text-3xl font-semibold tracking-[-0.055em] text-ink">V1 Baseline vs V2 Lower Costs</h2>
+          <h2 className="text-3xl font-semibold tracking-[-0.055em] text-ink">V1 Baseline vs V2 Lower Costs</h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">
             The demo keeps this comparison focused on the three deltas that explain the iteration.
           </p>
@@ -632,8 +623,7 @@ function CompareStep({
       </section>
 
       <section className="mt-5 border border-cyan/30 bg-cyan/[0.045] p-5">
-        <p className="EdgeTrace-eyebrow">Interpretation</p>
-        <p className="mt-3 max-w-4xl text-xl font-semibold leading-8 tracking-[-0.035em] text-ink">
+        <p className="max-w-4xl text-xl font-semibold leading-8 tracking-[-0.035em] text-ink">
           V2 improved because cost drag fell and R capture increased.
         </p>
         <p className="mt-3 text-sm leading-6 text-muted">
@@ -662,8 +652,7 @@ function MonitorStep({
     <div>
       <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <p className="EdgeTrace-eyebrow">Strategy Set Preview</p>
-          <h2 className="mt-2 text-3xl font-semibold tracking-[-0.055em] text-ink">One strategy, three iterations.</h2>
+          <h2 className="text-3xl font-semibold tracking-[-0.055em] text-ink">One strategy, three iterations.</h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">
             Strategy sets turn individual reports into a monitoring workflow.
           </p>
@@ -742,8 +731,7 @@ function StartStep({
 }) {
   return (
     <section className="border border-cyan/30 bg-cyan/[0.045] p-6 md:p-8">
-      <p className="EdgeTrace-eyebrow">Start</p>
-      <h2 className="mt-3 max-w-3xl text-5xl font-semibold leading-[0.98] tracking-[-0.065em] text-ink">
+      <h2 className="max-w-3xl text-5xl font-semibold leading-[0.98] tracking-[-0.065em] text-ink">
         Ready to analyze your own trades?
       </h2>
       <p className="mt-5 max-w-3xl text-base leading-7 text-muted">

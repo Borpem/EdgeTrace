@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { createBillingPortalSession, createCheckoutSession } from "../lib/api";
 import { DisclosurePanel } from "../components/DisclosurePanel";
+import { CardGrid, PageHeader, PageShell, SectionBlock } from "../components/ui/Primitives";
 import { PlanAccessGraphic } from "../components/visuals/PlanAccessGraphic";
 import { trackEvent } from "../lib/analytics";
 import { formatLimit, getPlanConfig } from "../lib/entitlements";
@@ -147,32 +148,40 @@ export function PricingPage({
   };
 
   return (
-    <main className="EdgeTrace-shell py-16 md:py-24">
-      <section className="border-y border-white/[0.1] py-12">
-        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted">Pricing</p>
-        <h1 className="mt-5 max-w-5xl text-5xl font-semibold leading-[1.07] tracking-[-0.036em] text-ink md:text-7xl">
-          Start with one full report. Scale into continuous strategy intelligence.
-        </h1>
-        <p className="mt-7 max-w-3xl text-lg leading-8 text-muted">Free previews the diagnostic. Pro unlocks the full workflow. Advanced monitoring is coming soon.</p>
-        {profile && (
-          <button
-            className="mt-6 border-b border-cyan/60 text-sm font-semibold text-cyan hover:text-ink"
-            onClick={() => {
-              window.history.pushState(null, "", "/app/how-it-works");
-              window.dispatchEvent(new PopStateEvent("popstate"));
-            }}
-          >
-            See how each feature works
-          </button>
-        )}
-        {profile && (
-          <p className="mt-6 text-sm text-muted">
-            Current plan: <span className="font-semibold text-cyan">{getPlanConfig(currentPlanId).displayName}</span>
-            {profile.stripeSubscriptionStatus ? ` - ${formatSubscriptionStatus(profile.stripeSubscriptionStatus)}` : ""}
-            {profile.currentPeriodEnd ? ` - Current period ends ${new Date(profile.currentPeriodEnd).toLocaleDateString()}` : ""}
-          </p>
-        )}
-      </section>
+    <PageShell className="md:py-20">
+      <PageHeader
+        title="Start with one full report. Scale into continuous strategy intelligence."
+        subtitle="Free previews the diagnostic. Pro unlocks the full workflow. Advanced monitoring is coming soon."
+        secondaryAction={
+          profile ? (
+            <button
+              className="border-b border-cyan/60 text-sm font-semibold text-cyan hover:text-ink"
+              onClick={() => {
+                window.history.pushState(null, "", "/app/how-it-works");
+                window.dispatchEvent(new PopStateEvent("popstate"));
+              }}
+            >
+              See how each feature works
+            </button>
+          ) : undefined
+        }
+        aside={
+          profile ? (
+            <div className="border border-cyan/30 bg-cyan/[0.045] p-5">
+              <p className="text-sm text-muted">Current plan</p>
+              <p className="mt-3 text-4xl font-semibold tracking-[-0.055em] text-cyan">
+                {getPlanConfig(currentPlanId).displayName}
+              </p>
+              {(profile.stripeSubscriptionStatus || profile.currentPeriodEnd) && (
+                <p className="mt-3 text-sm leading-6 text-muted">
+                  {profile.stripeSubscriptionStatus ? formatSubscriptionStatus(profile.stripeSubscriptionStatus) : ""}
+                  {profile.currentPeriodEnd ? ` · Current period ends ${new Date(profile.currentPeriodEnd).toLocaleDateString()}` : ""}
+                </p>
+              )}
+            </div>
+          ) : undefined
+        }
+      />
 
       {!billingConfigured && (
         <div className="mt-6 border border-warn/50 bg-warn/10 p-4 text-sm text-warn">
@@ -182,9 +191,14 @@ export function PricingPage({
       {notice && <div className="mt-6 border border-cyan/50 bg-cyan/10 p-4 text-sm text-cyan">{notice}</div>}
       {error && <div className="mt-6 border border-loss/60 bg-loss/10 p-4 text-sm text-loss">{error}</div>}
 
-      <PlanAccessGraphic className="mt-10" />
+      <SectionBlock
+        title="Choose the workflow depth you need."
+        subtitle="Free is a real diagnostic preview. Pro is the beta self-serve plan. Advanced is reserved for monitoring intelligence."
+      >
+        <PlanAccessGraphic />
+      </SectionBlock>
 
-      <section className="mt-10 grid gap-5 lg:grid-cols-3">
+      <CardGrid columns="3" className="mt-6">
         {planOrder.map((planId) => {
           const plan = getPlanConfig(planId);
           const isCurrent = currentPlanId === planId;
@@ -195,7 +209,7 @@ export function PricingPage({
                 isCurrent || plan.id === "pro" ? "border-cyan/45" : "border-white/[0.12]"
               }`}
             >
-              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-cyan">{plan.displayName}</p>
+              <p className="text-2xl font-semibold tracking-[-0.04em] text-ink">{plan.displayName}</p>
               <p className="mt-5 text-4xl font-semibold tracking-[-0.055em] text-ink">{plan.monthlyPriceLabel}</p>
               {plan.id === "pro" && (
                 <p className="mt-2 text-xs font-semibold uppercase tracking-[0.18em] text-cyan">Main beta upgrade</p>
@@ -230,8 +244,8 @@ export function PricingPage({
             </article>
           );
         })}
-      </section>
-    </main>
+      </CardGrid>
+    </PageShell>
   );
 }
 

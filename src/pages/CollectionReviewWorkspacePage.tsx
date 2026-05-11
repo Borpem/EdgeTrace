@@ -121,8 +121,7 @@ export function CollectionReviewWorkspacePage({
       ) : (
         <>
           <section className="mb-8 border-y border-white/[0.1] py-8">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted">Review Workspace</p>
-            <h1 className="mt-4 max-w-5xl text-4xl font-semibold leading-[1] tracking-[-0.055em] text-ink md:text-6xl">{collection.name}</h1>
+            <h1 className="max-w-5xl text-4xl font-semibold leading-[1.04] tracking-[-0.045em] text-ink md:text-6xl">{collection.name}</h1>
             <div className="mt-5 grid gap-3 md:grid-cols-4">
               <Metric label="Total Items" value={String(queue.length)} />
               <Metric label="Needs Follow-up" value={String(needsFollowUp.length)} tone="warning" />

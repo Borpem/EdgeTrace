@@ -55,8 +55,7 @@ export function CollectionAttributionPage({
       ) : (
         <>
           <section className="border-y border-white/[0.1] py-8">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted">Strategy Set Attribution</p>
-            <h1 className="mt-4 max-w-5xl text-4xl font-semibold leading-[1] tracking-[-0.055em] text-ink md:text-6xl">
+            <h1 className="max-w-5xl text-4xl font-semibold leading-[1.04] tracking-[-0.045em] text-ink md:text-6xl">
               {breakdownLabels[dimension]}: {group}
             </h1>
             <p className="mt-5 max-w-4xl text-base leading-7 text-muted">{attribution.interpretation}</p>
