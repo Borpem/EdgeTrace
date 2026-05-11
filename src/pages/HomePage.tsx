@@ -310,7 +310,7 @@ function DashboardPreview() {
             <div className="mt-7 flex items-end gap-5">
               <p className="text-7xl font-semibold tracking-[-0.08em] text-ink">82</p>
               <div className="pb-3">
-                <p className="text-2xl font-semibold tracking-[-0.04em] text-profit">Improving</p>
+                <p className="text-2xl font-semibold tracking-[-0.04em] text-cyan">Improving</p>
                 <p className="mt-1 text-sm text-muted">+9 vs prior report</p>
               </div>
             </div>
@@ -339,7 +339,7 @@ function DashboardPreview() {
         </div>
 
         <div className="relative mt-4 grid gap-4 md:grid-cols-3">
-          <PreviewMetric label="After-cost PnL" value="$4.8k" detail="Expectancy +$42/trade" tone="text-profit" />
+          <PreviewMetric label="After-cost PnL" value="$4.8k" detail="Expectancy +$42/trade" tone="text-cyan" />
           <PreviewMetric label="Cost drag" value="22.6%" detail="Down 14 pts vs V2" tone="text-warning" />
           <PreviewMetric label="R capture" value="0.74R" detail="Win rate 57.8% · PF 1.48" tone="text-cyan" />
         </div>
