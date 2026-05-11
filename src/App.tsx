@@ -591,7 +591,11 @@ export function App() {
       <header className="sticky top-0 z-40 border-b border-white/[0.06] bg-graphite/88 backdrop-blur-2xl">
         <div className="EdgeTrace-shell relative flex h-auto flex-col items-center gap-4 py-4 lg:h-16 lg:flex-row lg:justify-between lg:py-0">
           <button
-            className="flex items-center justify-center lg:w-[300px] xl:absolute xl:left-1/2 xl:top-1/2 xl:z-10 xl:-translate-x-1/2 xl:-translate-y-1/2"
+            className={
+              isAuthenticated
+                ? "flex items-center justify-center lg:w-[300px] xl:absolute xl:left-1/2 xl:top-1/2 xl:z-10 xl:-translate-x-1/2 xl:-translate-y-1/2"
+                : "flex items-center justify-center lg:justify-start"
+            }
             onClick={() => navigate(isAuthenticated ? "strategyDashboard" : "home", isAuthenticated ? "/app/dashboard" : "/")}
             aria-label="EdgeTrace home"
           >
@@ -632,10 +636,10 @@ export function App() {
             })}
             </nav>
           ) : (
-            <nav className="flex flex-wrap items-center justify-center gap-5 text-sm lg:ml-auto lg:justify-end">
+            <nav className="flex flex-wrap items-center justify-center gap-6 text-sm lg:ml-auto lg:justify-end">
               <button
                 className={`border-b py-1.5 font-semibold ${
-                  page === "home" ? "border-ink text-ink" : "border-transparent text-muted hover:border-white/20 hover:text-ink"
+                  page === "home" ? "border-cyan text-ink" : "border-transparent text-muted hover:border-white/20 hover:text-ink"
                 }`}
                 onClick={() => navigate("home")}
               >
@@ -666,8 +670,10 @@ export function App() {
                 Login
               </button>
               <button
-                className={`border-b py-1.5 font-semibold ${
-                  page === "signup" ? "border-ink text-ink" : "border-transparent text-muted hover:border-white/20 hover:text-ink"
+                className={`border px-4 py-2 font-semibold ${
+                  page === "signup"
+                    ? "border-cyan text-ink"
+                    : "border-accent/55 text-ink hover:border-cyan hover:bg-cyan/[0.06]"
                 }`}
                 onClick={() => navigate("signup")}
               >
