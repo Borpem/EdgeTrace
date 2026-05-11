@@ -16,7 +16,6 @@ import {
   UploadCloud,
   type LucideIcon
 } from "lucide-react";
-import { DisclosurePanel } from "../components/DisclosurePanel";
 import { PageShell } from "../components/ui/Primitives";
 import { trackEvent } from "../lib/analytics";
 import { getActivationSummary, listReports } from "../lib/api";
@@ -341,19 +340,19 @@ export function FeatureEducationPage({
   const heroAccountLabel = isAuthenticated ? "Create Diagnostic Report" : "Create Free Account";
 
   return (
-    <PageShell className="pb-20">
-      <section className="relative overflow-hidden border-b border-white/[0.08] pb-12 pt-4 md:pb-16">
-        <div className="pointer-events-none absolute left-1/2 top-0 h-80 w-[46rem] -translate-x-1/2 rounded-full bg-cyan/10 blur-[120px]" />
-        <div className="relative grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+    <PageShell className="pb-16">
+      <section className="relative overflow-hidden border-b border-white/[0.08] pb-10 pt-1 md:pb-12">
+        <div className="pointer-events-none absolute left-[56%] top-0 h-72 w-[42rem] -translate-x-1/2 rounded-full bg-cyan/10 blur-[110px]" />
+        <div className="relative grid gap-7 lg:grid-cols-[1fr_0.95fr] lg:items-center">
           <div>
-            <h1 className="max-w-4xl text-5xl font-semibold leading-[1.08] tracking-[-0.035em] text-ink md:text-7xl">
+            <h1 className="max-w-3xl text-5xl font-semibold leading-[1.08] tracking-[-0.035em] text-ink md:text-6xl xl:text-7xl">
               Understand every layer of your trading performance.
             </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-muted">
+            <p className="mt-5 max-w-2xl text-base leading-7 text-muted md:text-lg md:leading-8">
               EdgeTrace turns completed trade history into diagnostics, attribution, comparisons, strategy monitoring,
               and actionable review workflows.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-7 flex flex-wrap gap-3">
               <button className="EdgeTrace-primary-button" onClick={onDemo ?? onAnalyze}>
                 Try Interactive Demo <ArrowRight size={16} />
               </button>
@@ -369,47 +368,44 @@ export function FeatureEducationPage({
         </div>
       </section>
 
-      <section className="py-14 md:py-18">
-        <div className="grid gap-8 lg:grid-cols-[0.72fr_1.28fr]">
-          <div className="lg:sticky lg:top-24 lg:self-start">
-            <h2 className="text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl">
-              From import to strategy monitoring.
-            </h2>
-            <p className="mt-5 max-w-xl text-base leading-7 text-muted">
-              Follow how a completed trade file becomes a diagnostic workflow.
-            </p>
-          </div>
-          <div className="relative">
-            <div className="absolute left-5 top-4 hidden h-[calc(100%-2rem)] w-px bg-gradient-to-b from-cyan/50 via-violet/35 to-warning/30 md:block" />
-            <div className="grid gap-4">
-              {workflowStages.map((stage, index) => (
-                <WorkflowStageCard key={stage.title} stage={stage} offset={index % 2 === 1} />
-              ))}
-            </div>
-          </div>
+      <section className="py-10 md:py-12">
+        <div className="mb-6 grid gap-4 lg:grid-cols-[0.74fr_1fr] lg:items-end">
+          <h2 className="max-w-2xl text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl">
+            From import to strategy monitoring.
+          </h2>
+          <p className="max-w-2xl text-base leading-7 text-muted">
+            Follow how a completed trade file becomes a diagnostic workflow, then a repeatable strategy review system.
+          </p>
         </div>
-      </section>
-
-      <section className="border-y border-white/[0.08] py-14 md:py-18">
-        <div className="grid gap-8 lg:grid-cols-[0.76fr_1.24fr] lg:items-start">
-          <div>
-            <h2 className="text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl">
-              What EdgeTrace analyzes.
-            </h2>
-            <p className="mt-5 max-w-xl text-base leading-7 text-muted">
-              Each layer isolates a different source of strategy performance.
-            </p>
-          </div>
-          <div className="space-y-5">
-            {capabilityGroups.map((group) => (
-              <CapabilityGroup key={group.title} group={group} planId={plan.id} />
+        <div className="relative">
+          <div className="absolute left-[7%] right-[7%] top-[4.4rem] hidden h-px bg-gradient-to-r from-cyan/45 via-violet/35 to-warning/25 xl:block" />
+          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-7">
+            {workflowStages.map((stage, index) => (
+              <WorkflowStageCard key={stage.title} stage={stage} offset={index % 2 === 1} />
             ))}
           </div>
         </div>
       </section>
 
-      <section className="py-14 md:py-18">
-        <div className="mb-7 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+      <section className="border-y border-white/[0.08] py-11 md:py-14">
+        <div className="mb-8 max-w-4xl">
+          <h2 className="text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl">
+            What EdgeTrace analyzes.
+          </h2>
+          <p className="mt-4 max-w-2xl text-base leading-7 text-muted">
+            Each layer isolates a different source of strategy performance without making every detail compete for
+            attention at once.
+          </p>
+        </div>
+        <div className="space-y-7">
+          {capabilityGroups.map((group) => (
+            <CapabilityGroup key={group.title} group={group} planId={plan.id} />
+          ))}
+        </div>
+      </section>
+
+      <section className="py-11 md:py-14">
+        <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
             <h2 className="max-w-3xl text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl">
               Choose how deep you want to inspect performance.
@@ -425,15 +421,15 @@ export function FeatureEducationPage({
             </p>
           )}
         </div>
-        <div className="grid gap-4 lg:grid-cols-3">
+        <div className="grid gap-3 lg:grid-cols-3">
           {planOrder.map((planId) => (
             <PlanProgressCard key={planId} planId={planId} active={plan.id === planId} />
           ))}
         </div>
       </section>
 
-      <section className="border-y border-white/[0.08] py-14 md:py-18">
-        <div className="mb-6 grid gap-5 lg:grid-cols-[0.72fr_1.28fr] lg:items-end">
+      <section className="border-y border-white/[0.08] py-11 md:py-14">
+        <div className="mx-auto mb-6 grid max-w-6xl gap-4 lg:grid-cols-[0.72fr_1.28fr] lg:items-end">
           <div>
             <h2 className="text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl">
               Feature access by plan.
@@ -444,9 +440,9 @@ export function FeatureEducationPage({
             monitoring, and Advanced capabilities.
           </p>
         </div>
-        <div className="overflow-x-auto border border-white/[0.1] bg-white/[0.025]">
+        <div className="mx-auto max-w-6xl overflow-x-auto border border-white/[0.08] bg-white/[0.02]">
           <table className="min-w-full text-sm">
-            <thead className="border-b border-white/[0.12] bg-white/[0.035] text-left text-muted">
+            <thead className="border-b border-white/[0.1] bg-white/[0.03] text-left text-muted">
               <tr>
                 <th className="px-5 py-4 font-medium">Feature</th>
                 {planOrder.map((planId) => (
@@ -497,32 +493,32 @@ export function FeatureEducationPage({
         </div>
       </section>
 
-      <section className="pt-14 md:pt-18">
-        <div className="relative overflow-hidden border border-cyan/25 bg-[radial-gradient(circle_at_20%_0%,rgba(34,197,245,0.13),transparent_36%),radial-gradient(circle_at_80%_100%,rgba(124,92,255,0.12),transparent_34%),rgba(255,255,255,0.03)] p-7 md:p-10">
-          <div className="grid gap-8 lg:grid-cols-[1fr_360px] lg:items-center">
-            <div>
-              <h2 className="max-w-3xl text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl">
-                Preview the workflow before creating an account.
-              </h2>
-              <p className="mt-5 max-w-2xl text-base leading-7 text-muted">
-                See how completed trade history becomes diagnostics, attribution paths, and strategy monitoring.
-              </p>
-              <div className="mt-7 flex flex-wrap gap-3">
-                <button className="EdgeTrace-primary-button" onClick={onDemo ?? onAnalyze}>
-                  Try Interactive Demo <ArrowRight size={16} />
-                </button>
-                <button className="EdgeTrace-secondary-button" onClick={onPricing}>
-                  View Pricing
-                </button>
-              </div>
-            </div>
-            <div className="border border-white/[0.1] bg-black/30 p-5">
-              <p className="text-sm font-semibold text-ink">{nextAction.title}</p>
-              <p className="mt-3 text-sm leading-6 text-muted">{nextAction.body}</p>
-              <button className="EdgeTrace-command-button mt-5" onClick={nextAction.action}>
-                {nextAction.cta}
+      <section className="pt-11 md:pt-14">
+        <div className="relative overflow-hidden border border-cyan/25 bg-[radial-gradient(circle_at_18%_0%,rgba(34,197,245,0.12),transparent_34%),radial-gradient(circle_at_88%_92%,rgba(124,92,255,0.1),transparent_36%),rgba(255,255,255,0.03)] p-7 md:p-9">
+          <div className="max-w-4xl">
+            <h2 className="text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl">
+              Preview the workflow before creating an account.
+            </h2>
+            <p className="mt-4 max-w-2xl text-base leading-7 text-muted">
+              See how completed trade history becomes diagnostics, attribution paths, and strategy monitoring.
+            </p>
+            <div className="mt-7 flex flex-wrap gap-3">
+              <button className="EdgeTrace-primary-button" onClick={onDemo ?? onAnalyze}>
+                Try Interactive Demo <ArrowRight size={16} />
+              </button>
+              <button className="EdgeTrace-secondary-button" onClick={onPricing}>
+                View Pricing
               </button>
             </div>
+          </div>
+          <div className="mt-7 flex flex-col gap-4 border-t border-white/[0.1] pt-5 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <p className="text-sm font-semibold text-ink">{nextAction.title}</p>
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">{nextAction.body}</p>
+            </div>
+            <button className="EdgeTrace-command-button shrink-0" onClick={nextAction.action}>
+              {nextAction.cta}
+            </button>
           </div>
         </div>
       </section>
@@ -540,10 +536,10 @@ function ProgressionPanel({ currentPlan }: { currentPlan: PlanId }) {
   ];
 
   return (
-    <div className="relative border border-white/[0.1] bg-[linear-gradient(145deg,rgba(255,255,255,0.07),rgba(255,255,255,0.025))] p-5 shadow-[0_30px_90px_rgba(0,0,0,0.34)] md:p-6">
+    <div className="relative border border-white/[0.1] bg-[linear-gradient(145deg,rgba(255,255,255,0.07),rgba(255,255,255,0.025))] p-4 shadow-[0_24px_72px_rgba(0,0,0,0.32)] md:p-5 lg:-ml-2">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(124,92,255,0.18),transparent_36%),radial-gradient(circle_at_20%_80%,rgba(34,197,245,0.12),transparent_34%)]" />
       <div className="relative">
-        <div className="flex items-center justify-between gap-5 border-b border-white/[0.1] pb-5">
+        <div className="flex items-center justify-between gap-5 border-b border-white/[0.1] pb-4">
           <div>
             <p className="text-sm font-semibold text-ink">Workflow progression</p>
             <p className="mt-1 text-xs text-muted">Import to monitoring, one report at a time.</p>
@@ -552,7 +548,7 @@ function ProgressionPanel({ currentPlan }: { currentPlan: PlanId }) {
             {planConfigs[currentPlan].displayName}
           </span>
         </div>
-        <div className="mt-5 space-y-3">
+        <div className="mt-4 space-y-2.5">
           {steps.map((step, index) => {
             const Icon = step.icon;
             return (
@@ -577,7 +573,7 @@ function ProgressionPanel({ currentPlan }: { currentPlan: PlanId }) {
             );
           })}
         </div>
-        <div className="mt-6 grid gap-3 sm:grid-cols-3">
+        <div className="mt-5 grid gap-2.5 sm:grid-cols-3">
           <MiniMetric label="Cost drag" value="22.6%" tone="amber" />
           <MiniMetric label="R capture" value="0.74R" tone="cyan" />
           <MiniMetric label="Health" value="82" tone="purple" />
@@ -593,35 +589,32 @@ function WorkflowStageCard({ stage, offset }: { stage: WorkflowStage; offset: bo
 
   return (
     <article
-      className={`relative border border-white/[0.1] bg-white/[0.025] p-5 transition hover:border-white/[0.18] hover:bg-white/[0.04] md:ml-10 ${
-        offset ? "lg:ml-20" : ""
+      className={`relative border border-white/[0.1] bg-white/[0.025] p-4 transition hover:border-white/[0.18] hover:bg-white/[0.04] ${
+        offset ? "xl:translate-y-4" : ""
       }`}
     >
-      <div className="grid gap-5 sm:grid-cols-[58px_1fr_auto] sm:items-start">
-        <div className={`grid h-14 w-14 place-items-center border ${toneClass.border} ${toneClass.bg} ${toneClass.text}`}>
-          <Icon size={25} strokeWidth={1.7} />
+      <div className="flex items-start justify-between gap-3">
+        <div className={`grid h-12 w-12 place-items-center border ${toneClass.border} ${toneClass.bg} ${toneClass.text}`}>
+          <Icon size={23} strokeWidth={1.7} />
         </div>
-        <div>
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="text-sm font-semibold text-muted">{stage.number}</span>
-            <h3 className="text-2xl font-semibold tracking-[-0.04em] text-ink">{stage.title}</h3>
-          </div>
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-muted">{stage.description}</p>
-        </div>
-        <span className={`w-fit border px-3 py-1 text-xs font-semibold ${toneClass.border} ${toneClass.text}`}>
+        <span className={`w-fit border px-2 py-1 text-[10px] font-semibold ${toneClass.border} ${toneClass.text}`}>
           {stage.plan}
         </span>
       </div>
+      <p className="mt-5 text-sm font-semibold text-muted">{stage.number}</p>
+      <h3 className="mt-2 text-xl font-semibold leading-tight tracking-[-0.04em] text-ink">{stage.title}</h3>
+      <p className="mt-3 text-sm leading-6 text-muted">{stage.description}</p>
     </article>
   );
 }
 
 function CapabilityGroup({ group, planId }: { group: (typeof capabilityGroups)[number]; planId: PlanId }) {
   return (
-    <section className="border border-white/[0.1] bg-white/[0.02] p-5">
-      <div className="mb-5 grid gap-2 md:grid-cols-[220px_1fr] md:items-end">
+    <section className="grid gap-5 border-t border-white/[0.09] pt-6 lg:grid-cols-[230px_1fr]">
+      <div>
+        <div className={`mb-4 h-px w-16 ${toneClasses[group.accent].gradient}`} />
         <h3 className="text-2xl font-semibold tracking-[-0.04em] text-ink">{group.title}</h3>
-        <p className="text-sm leading-6 text-muted">{group.summary}</p>
+        <p className="mt-3 text-sm leading-6 text-muted">{group.summary}</p>
       </div>
       <div className="grid gap-3 md:grid-cols-3">
         {group.features.map((feature) => {
@@ -632,7 +625,7 @@ function CapabilityGroup({ group, planId }: { group: (typeof capabilityGroups)[n
             <article
               id={feature.id}
               key={feature.id}
-              className="scroll-mt-28 border border-white/[0.09] bg-black/20 p-4 transition hover:border-white/[0.17] hover:bg-white/[0.035]"
+              className="scroll-mt-28 border border-white/[0.08] bg-white/[0.022] p-4 transition hover:border-white/[0.16] hover:bg-white/[0.035]"
             >
               <div className="flex items-start justify-between gap-3">
                 <Icon className={toneClass.text} size={24} strokeWidth={1.7} />
@@ -640,9 +633,7 @@ function CapabilityGroup({ group, planId }: { group: (typeof capabilityGroups)[n
               </div>
               <h4 className="mt-5 text-lg font-semibold tracking-[-0.035em] text-ink">{feature.title}</h4>
               <p className="mt-3 text-sm leading-6 text-muted">{feature.summary}</p>
-              <DisclosurePanel className="mt-4" title="Details" compact>
-                <p className="text-sm leading-6 text-muted">{feature.detail}</p>
-              </DisclosurePanel>
+              <p className="mt-4 border-t border-white/[0.08] pt-4 text-xs leading-5 text-muted/85">{feature.detail}</p>
             </article>
           );
         })}
@@ -657,7 +648,7 @@ function PlanProgressCard({ planId, active }: { planId: PlanId; active: boolean 
   const toneClass = toneClasses[tone];
 
   return (
-    <article className={`border p-5 ${active ? `${toneClass.border} bg-white/[0.045]` : "border-white/[0.1] bg-white/[0.025]"}`}>
+    <article className={`border p-4 md:p-5 ${active ? `${toneClass.border} bg-white/[0.045]` : "border-white/[0.1] bg-white/[0.025]"}`}>
       <div className="flex items-start justify-between gap-4">
         <div>
           <h3 className="text-2xl font-semibold tracking-[-0.04em] text-ink">{config.displayName}</h3>
@@ -665,11 +656,11 @@ function PlanProgressCard({ planId, active }: { planId: PlanId; active: boolean 
         </div>
         {active && <span className={`border px-3 py-1 text-xs font-semibold ${toneClass.border} ${toneClass.text}`}>Current</span>}
       </div>
-      <p className="mt-5 text-base font-semibold text-ink">{config.description}</p>
-      <div className="mt-5 h-2 bg-white/[0.08]">
+      <p className="mt-4 text-base font-semibold text-ink">{config.description}</p>
+      <div className="mt-4 h-2 bg-white/[0.08]">
         <div className={`h-full ${toneClass.gradient}`} style={{ width: `${planDepth[planId]}%` }} />
       </div>
-      <ul className="mt-5 space-y-3">
+      <ul className="mt-4 space-y-2.5">
         {config.featureBullets.slice(0, 5).map((bullet) => (
           <li key={bullet} className="flex gap-3 text-sm leading-5 text-muted">
             <Check className={`mt-0.5 shrink-0 ${toneClass.text}`} size={15} />
