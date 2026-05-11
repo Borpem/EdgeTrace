@@ -1,0 +1,27 @@
+<svg width="920" height="220" viewBox="0 0 920 220" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">EdgeTrace horizontal logo</title>
+  <desc id="desc">EdgeTrace wordmark with geometric execution trace mark and diagnostics tagline.</desc>
+  <rect width="920" height="220" fill="none"/>
+  <g transform="translate(24 36) scale(.34)">
+    <path d="M124 132h220l-32 58H156l-32-58Z" fill="url(#edge)"/>
+    <path d="M102 227h198l-31 58H70l32-58Z" fill="#58D6FF"/>
+    <path d="M124 380h110l32-58H156l-32 58Z" fill="#7861FF"/>
+    <path d="M294 322h70l39 58H256l38-58Z" fill="#9B86FF"/>
+    <path d="M214 394 304 236h70" stroke="url(#trace)" stroke-width="24" stroke-linecap="square" stroke-linejoin="miter"/>
+    <circle cx="389" cy="236" r="21" fill="#58D6FF"/>
+  </g>
+  <text x="190" y="102" fill="#F6F8FF" font-family="Inter, Arial, sans-serif" font-size="76" font-weight="650" letter-spacing="-2">EdgeTrace</text>
+  <text x="194" y="150" fill="#A7B3D6" font-family="Inter, Arial, sans-serif" font-size="18" letter-spacing="8">TRADE DIAGNOSTICS · EXECUTION INTELLIGENCE</text>
+  <defs>
+    <linearGradient id="edge" x1="112" y1="392" x2="342" y2="102" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7861FF"/>
+      <stop offset=".48" stop-color="#3E8BFF"/>
+      <stop offset="1" stop-color="#45D5FF"/>
+    </linearGradient>
+    <linearGradient id="trace" x1="210" y1="402" x2="398" y2="154" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7861FF"/>
+      <stop offset=".5" stop-color="#3E8BFF"/>
+      <stop offset="1" stop-color="#58D6FF"/>
+    </linearGradient>
+  </defs>
+</svg>

@@ -1,0 +1,127 @@
+<svg width="1600" height="980" viewBox="0 0 1600 980" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">EdgeTrace strategy intelligence hero graphic</title>
+  <desc id="desc">A clean product illustration showing broker trade history flowing into strategy diagnostics, attribution, cost drag, and next inspection paths.</desc>
+  <defs>
+    <linearGradient id="blueViolet" x1="548" y1="231" x2="1006" y2="704" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#06A7FF"/>
+      <stop offset="0.48" stop-color="#2557FF"/>
+      <stop offset="1" stop-color="#6F4CFF"/>
+    </linearGradient>
+    <linearGradient id="softBlue" x1="248" y1="135" x2="1352" y2="842" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#EAF6FF"/>
+      <stop offset="0.45" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#F0EEFF"/>
+    </linearGradient>
+    <linearGradient id="flow" x1="296" y1="460" x2="1268" y2="460" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#06A7FF" stop-opacity="0"/>
+      <stop offset="0.24" stop-color="#06A7FF" stop-opacity="0.72"/>
+      <stop offset="0.52" stop-color="#2557FF"/>
+      <stop offset="0.78" stop-color="#6F4CFF" stop-opacity="0.72"/>
+      <stop offset="1" stop-color="#6F4CFF" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="shadow" x="34" y="0" width="1532" height="968" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dy="38"/>
+      <feGaussianBlur stdDeviation="45"/>
+      <feComposite in2="hardAlpha" operator="out"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.027 0 0 0 0 0.035 0 0 0 0 0.06 0 0 0 0.16 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape"/>
+    </filter>
+    <filter id="cardShadow" x="0" y="0" width="1600" height="980" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="24" stdDeviation="24" flood-color="#050505" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="980" rx="56" fill="#F7F7F2"/>
+  <path d="M0 764C210 650 378 763 580 678C767 600 941 560 1164 656C1324 725 1470 706 1600 620" stroke="#D8D8CE" stroke-width="2" opacity="0.7"/>
+  <path d="M0 224C178 124 344 214 520 166C731 109 832 237 1032 168C1266 86 1414 184 1600 90" stroke="#D8D8CE" stroke-width="2" opacity="0.65"/>
+  <path d="M116 490H1482" stroke="#E9E7DD"/>
+  <path d="M800 94V874" stroke="#ECEAE0"/>
+  <path d="M240 96V874" stroke="#F0EEE5"/>
+  <path d="M1360 96V874" stroke="#F0EEE5"/>
+
+  <g filter="url(#shadow)">
+    <rect x="106" y="86" width="1388" height="808" rx="46" fill="url(#softBlue)" stroke="#E1DFD5" stroke-width="2"/>
+  </g>
+
+  <g opacity="0.54">
+    <path d="M294 382C406 382 474 420 582 462" stroke="url(#flow)" stroke-width="4"/>
+    <path d="M294 452C430 452 493 458 614 486" stroke="url(#flow)" stroke-width="4"/>
+    <path d="M294 522C416 522 494 505 618 498" stroke="url(#flow)" stroke-width="4"/>
+    <path d="M982 462C1090 420 1160 382 1272 382" stroke="url(#flow)" stroke-width="4"/>
+    <path d="M946 486C1067 458 1130 452 1272 452" stroke="url(#flow)" stroke-width="4"/>
+    <path d="M946 498C1070 505 1148 522 1272 522" stroke="url(#flow)" stroke-width="4"/>
+  </g>
+
+  <g filter="url(#cardShadow)">
+    <rect x="164" y="306" width="304" height="270" rx="30" fill="white" stroke="#E4E2D8" stroke-width="2"/>
+    <text x="200" y="358" fill="#050505" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="800">Trade history</text>
+    <text x="200" y="391" fill="#6F6C63" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="600">Broker CSVs normalized</text>
+    <circle cx="205" cy="448" r="7" fill="#06A7FF"/>
+    <rect x="224" y="441" width="144" height="14" rx="7" fill="#2557FF" opacity="0.9"/>
+    <rect x="382" y="441" width="46" height="14" rx="7" fill="#D8D8CE"/>
+    <circle cx="205" cy="493" r="7" fill="#2557FF"/>
+    <rect x="224" y="486" width="198" height="14" rx="7" fill="#050505" opacity="0.18"/>
+    <rect x="224" y="531" width="112" height="14" rx="7" fill="#6F4CFF" opacity="0.92"/>
+    <rect x="350" y="531" width="72" height="14" rx="7" fill="#050505" opacity="0.16"/>
+  </g>
+
+  <g filter="url(#cardShadow)">
+    <rect x="572" y="226" width="456" height="518" rx="36" fill="#050505"/>
+    <rect x="604" y="258" width="392" height="82" rx="22" fill="#141414"/>
+    <text x="634" y="308" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="800">Strategy overview</text>
+    <text x="884" y="309" fill="#B9B9B1" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="700">ORB V3</text>
+    <rect x="604" y="374" width="176" height="152" rx="24" fill="#FFFFFF"/>
+    <text x="632" y="420" fill="#6F6C63" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="800" letter-spacing="4">HEALTH</text>
+    <text x="632" y="484" fill="#050505" font-family="Inter, Arial, sans-serif" font-size="56" font-weight="900">72</text>
+    <text x="704" y="480" fill="#128B60" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="800">Watch</text>
+    <rect x="812" y="374" width="184" height="152" rx="24" fill="#FFFFFF"/>
+    <text x="840" y="420" fill="#6F6C63" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="800" letter-spacing="4">LEAK</text>
+    <text x="840" y="466" fill="#050505" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="900">Cost drag</text>
+    <text x="840" y="497" fill="#6F6C63" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="600">Gross edge loses</text>
+    <text x="840" y="520" fill="#6F6C63" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="600">power after fees.</text>
+    <rect x="604" y="560" width="392" height="142" rx="24" fill="#FFFFFF"/>
+    <path d="M642 654L688 630L728 648L774 598L820 632L868 568L956 612" stroke="#2557FF" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="632" y="604" fill="#6F6C63" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="800" letter-spacing="4">EQUITY CURVE</text>
+  </g>
+
+  <g filter="url(#cardShadow)">
+    <rect x="1122" y="276" width="302" height="128" rx="28" fill="white" stroke="#E4E2D8" stroke-width="2"/>
+    <text x="1162" y="322" fill="#6F6C63" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="800" letter-spacing="5">EXPECTANCY</text>
+    <text x="1162" y="372" fill="#050505" font-family="Inter, Arial, sans-serif" font-size="46" font-weight="900">+0.31</text>
+    <path d="M1300 368C1337 348 1361 351 1392 328" stroke="#06A7FF" stroke-width="5" stroke-linecap="round"/>
+  </g>
+
+  <g filter="url(#cardShadow)">
+    <rect x="1122" y="430" width="302" height="128" rx="28" fill="white" stroke="#E4E2D8" stroke-width="2"/>
+    <text x="1162" y="476" fill="#6F6C63" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="800" letter-spacing="5">COST DRAG</text>
+    <text x="1162" y="526" fill="#050505" font-family="Inter, Arial, sans-serif" font-size="46" font-weight="900">18%</text>
+    <path d="M1304 520C1337 526 1360 507 1390 516" stroke="#A76600" stroke-width="5" stroke-linecap="round"/>
+  </g>
+
+  <g filter="url(#cardShadow)">
+    <rect x="1122" y="584" width="302" height="128" rx="28" fill="white" stroke="#E4E2D8" stroke-width="2"/>
+    <text x="1162" y="630" fill="#6F6C63" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="800" letter-spacing="5">NEXT</text>
+    <text x="1162" y="680" fill="#050505" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="900">Inspect QQQ</text>
+    <path d="M1340 674H1392M1392 674L1372 654M1392 674L1372 694" stroke="#2557FF" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <g transform="translate(724 398)">
+    <path d="M76 0L190 226H144L76 88L8 226H-38L76 0Z" fill="url(#blueViolet)"/>
+    <path d="M76 118L130 226H94L76 188L58 226H22L76 118Z" fill="url(#blueViolet)"/>
+  </g>
+
+  <g transform="translate(248 760)">
+    <rect x="0" y="0" width="1104" height="72" rx="36" fill="#FFFFFF" stroke="#E4E2D8" stroke-width="2"/>
+    <circle cx="74" cy="36" r="8" fill="#06A7FF"/>
+    <text x="96" y="43" fill="#050505" font-family="Inter, Arial, sans-serif" font-size="19" font-weight="800">Diagnose</text>
+    <circle cx="328" cy="36" r="8" fill="#2557FF"/>
+    <text x="350" y="43" fill="#050505" font-family="Inter, Arial, sans-serif" font-size="19" font-weight="800">Attribute</text>
+    <circle cx="596" cy="36" r="8" fill="#6F4CFF"/>
+    <text x="618" y="43" fill="#050505" font-family="Inter, Arial, sans-serif" font-size="19" font-weight="800">Compare</text>
+    <circle cx="850" cy="36" r="8" fill="#128B60"/>
+    <text x="872" y="43" fill="#050505" font-family="Inter, Arial, sans-serif" font-size="19" font-weight="800">Inspect next</text>
+  </g>
+</svg>

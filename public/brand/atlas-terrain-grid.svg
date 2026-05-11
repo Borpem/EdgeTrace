@@ -1,0 +1,30 @@
+<svg width="1600" height="520" viewBox="0 0 1600 520" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">EdgeTrace terrain grid visual</title>
+  <desc id="desc">A technical terrain-grid mountain line illustration for EdgeTrace brand sections.</desc>
+  <rect width="1600" height="520" rx="36" fill="#070B14"/>
+  <rect width="1600" height="520" rx="36" fill="url(#wash)"/>
+  <g transform="translate(0 48)" opacity=".72" stroke-linejoin="round">
+    <path d="M0 393 112 359 207 312 317 352 433 212 528 274 628 176 736 330 850 250 962 306 1058 220 1197 327 1326 282 1434 324 1600 262" stroke="#3E8BFF" stroke-width="2.2"/>
+    <path d="M0 422 115 384 214 342 325 376 442 246 540 303 638 212 744 356 856 284 968 334 1064 252 1203 358 1330 314 1441 354 1600 292" stroke="#45D5FF" stroke-opacity=".55"/>
+    <path d="M0 452 120 415 228 374 337 404 454 282 552 333 651 246 755 386 868 315 982 366 1075 285 1214 389 1337 348 1451 383 1600 324" stroke="#3E8BFF" stroke-opacity=".35"/>
+    <g opacity=".35" stroke="#45D5FF">
+      <path d="M112 359 120 415M207 312 228 374M317 352 337 404M433 212 454 282M528 274 552 333M628 176 651 246M736 330 755 386M850 250 868 315M962 306 982 366M1058 220 1075 285M1197 327 1214 389M1326 282 1337 348M1434 324 1451 383"/>
+      <path d="M433 212 528 274 628 176 736 330"/>
+      <path d="M207 312 433 212 736 330 962 306 1197 327"/>
+      <path d="M628 176 850 250 1058 220 1326 282 1600 262"/>
+    </g>
+  </g>
+  <g opacity=".11" stroke="#45D5FF">
+    <path d="M0 96h1600M0 164h1600M0 232h1600M0 300h1600M0 368h1600M0 436h1600"/>
+    <path d="M100 0v520M220 0v520M340 0v520M460 0v520M580 0v520M700 0v520M820 0v520M940 0v520M1060 0v520M1180 0v520M1300 0v520M1420 0v520M1540 0v520"/>
+  </g>
+  <text x="980" y="180" fill="#F3F6FF" font-family="Inter, Arial, sans-serif" font-size="42">Built for traders.</text>
+  <text x="980" y="236" fill="#F3F6FF" font-family="Inter, Arial, sans-serif" font-size="42">Designed for clarity.</text>
+  <text x="980" y="292" fill="#F3F6FF" font-family="Inter, Arial, sans-serif" font-size="42">Backed by data.</text>
+  <path d="M982 336h96" stroke="#3E8BFF" stroke-width="5" stroke-linecap="round"/>
+  <defs>
+    <linearGradient id="wash" x1="0" x2="1600" y1="0" y2="520" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#070A12"/><stop offset=".55" stop-color="#070B14"/><stop offset="1" stop-color="#13244A"/>
+    </linearGradient>
+  </defs>
+</svg>

@@ -1,0 +1,42 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">EdgeTrace social preview image</title>
+  <desc id="desc">EdgeTrace trade diagnostics social preview with logo, tagline, and analytical interface cards.</desc>
+  <rect width="1200" height="630" fill="#070B14"/>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <g opacity=".16" stroke="#45D5FF">
+    <path d="M0 438c148-82 260-94 392-178 151-96 276-99 414-22 139 78 250 77 394-28"/>
+    <path d="M0 506c166-90 286-104 430-194 146-91 276-88 414-12 130 72 240 70 356-28"/>
+  </g>
+  <g transform="translate(70 74) scale(.28)">
+    <path d="M124 132h220l-32 58H156l-32-58Z" fill="url(#edge)"/>
+    <path d="M102 227h198l-31 58H70l32-58Z" fill="#58D6FF"/>
+    <path d="M124 380h110l32-58H156l-32 58Z" fill="#7861FF"/>
+    <path d="M294 322h70l39 58H256l38-58Z" fill="#9B86FF"/>
+    <path d="M214 394 304 236h70" stroke="url(#trace)" stroke-width="24" stroke-linecap="square" stroke-linejoin="miter"/>
+    <circle cx="389" cy="236" r="21" fill="#58D6FF"/>
+  </g>
+  <text x="212" y="122" fill="#F6F8FF" font-family="Inter, Arial, sans-serif" font-size="64" font-weight="650" letter-spacing="-1">EdgeTrace</text>
+  <text x="216" y="164" fill="#A7B3D6" font-family="Inter, Arial, sans-serif" font-size="18" letter-spacing="7">TRADE DIAGNOSTICS · EXECUTION INTELLIGENCE</text>
+  <text x="78" y="330" fill="#F6F8FF" font-family="Inter, Arial, sans-serif" font-size="58" font-weight="650">Understand your edge.</text>
+  <text x="80" y="402" fill="#F6F8FF" font-family="Inter, Arial, sans-serif" font-size="58" font-weight="650">Find what changed.</text>
+  <text x="82" y="478" fill="#A7B3D6" font-family="Inter, Arial, sans-serif" font-size="24">Expectancy, cost drag, R capture, slippage, and strategy iteration attribution.</text>
+  <g transform="translate(846 270)">
+    <rect width="270" height="210" rx="20" fill="#0D1424" stroke="#243B64"/>
+    <text x="26" y="44" fill="#A7B3D6" font-family="Inter, Arial, sans-serif" font-size="14">Primary Diagnosis</text>
+    <text x="26" y="88" fill="#F6F8FF" font-family="Inter, Arial, sans-serif" font-size="32" font-weight="650">Cost Drag</text>
+    <text x="26" y="134" fill="#A7B3D6" font-family="Inter, Arial, sans-serif" font-size="17">Costs are eroding</text>
+    <text x="26" y="162" fill="#A7B3D6" font-family="Inter, Arial, sans-serif" font-size="17">after-cost edge.</text>
+    <path d="M26 184h210" stroke="#243B64"/>
+  </g>
+  <defs>
+    <radialGradient id="bg" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1070 126) rotate(143) scale(658 562)">
+      <stop stop-color="#17305E"/><stop offset=".5" stop-color="#070B14"/><stop offset="1" stop-color="#070A12"/>
+    </radialGradient>
+    <linearGradient id="edge" x1="112" y1="392" x2="342" y2="102" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7861FF"/><stop offset=".48" stop-color="#3E8BFF"/><stop offset="1" stop-color="#45D5FF"/>
+    </linearGradient>
+    <linearGradient id="trace" x1="210" y1="402" x2="398" y2="154" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7861FF"/><stop offset=".5" stop-color="#3E8BFF"/><stop offset="1" stop-color="#58D6FF"/>
+    </linearGradient>
+  </defs>
+</svg>

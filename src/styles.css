@@ -1,0 +1,295 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .EdgeTrace-shell {
+    width: min(100%, 1520px);
+    margin: 0 auto;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+
+  .EdgeTrace-page-header {
+    position: relative;
+    overflow: hidden;
+    border-radius: 0;
+    border: 0;
+    border-top: 1px solid rgba(247, 247, 243, 0.1);
+    border-bottom: 1px solid rgba(247, 247, 243, 0.1);
+    background: transparent;
+    padding: 2rem 0;
+    box-shadow: none;
+  }
+
+  .EdgeTrace-page-header::after {
+    content: none;
+  }
+
+  .EdgeTrace-eyebrow {
+    color: #9b9b95;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .EdgeTrace-title {
+    margin-top: 1rem;
+    color: #f7f7f3;
+    font-size: 2.75rem;
+    font-weight: 760;
+    letter-spacing: -0.055em;
+    line-height: 1;
+  }
+
+  .EdgeTrace-copy {
+    margin-top: 1.25rem;
+    max-width: 58rem;
+    color: #9b9b95;
+    font-size: 1rem;
+    line-height: 1.75rem;
+  }
+
+  .EdgeTrace-card {
+    border-radius: 0.125rem;
+    border: 1px solid rgba(247, 247, 243, 0.11);
+    background:
+      radial-gradient(circle at 100% 0%, rgba(88, 214, 255, 0.055), transparent 26rem),
+      rgba(247, 247, 243, 0.035);
+    box-shadow: none;
+  }
+
+  .EdgeTrace-card-soft {
+    border-radius: 0.125rem;
+    border: 1px solid rgba(247, 247, 243, 0.11);
+    background: rgba(247, 247, 243, 0.035);
+  }
+
+  .EdgeTrace-primary-button {
+    border-radius: 0.125rem;
+    background: #f7f7f3;
+    color: #050505;
+    padding: 0.65rem 1.1rem;
+    font-weight: 780;
+    box-shadow: 0 18px 42px -28px rgba(247, 247, 243, 0.44);
+  }
+
+  .EdgeTrace-primary-button:hover {
+    background: #ffffff;
+    transform: translateY(-1px);
+  }
+
+  .EdgeTrace-secondary-button {
+    border-radius: 0.125rem;
+    border: 1px solid rgba(247, 247, 243, 0.16);
+    background: rgba(247, 247, 243, 0.08);
+    color: #f7f7f3;
+    padding: 0.6rem 0.95rem;
+    font-size: 0.875rem;
+    font-weight: 760;
+  }
+
+  .EdgeTrace-secondary-button:hover {
+    border-color: rgba(247, 247, 243, 0.32);
+    background: rgba(247, 247, 243, 0.12);
+  }
+
+  .EdgeTrace-compact-primary {
+    border-radius: 0.125rem;
+    background: #f7f7f3;
+    color: #050505;
+    padding: 0.55rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 760;
+    box-shadow: 0 14px 34px -24px rgba(247, 247, 243, 0.4);
+  }
+
+  .EdgeTrace-compact-primary:hover {
+    background: #ffffff;
+  }
+
+  .EdgeTrace-compact-secondary {
+    border-radius: 0.125rem;
+    border: 1px solid rgba(247, 247, 243, 0.16);
+    background: rgba(247, 247, 243, 0.08);
+    color: #f7f7f3;
+    padding: 0.55rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 760;
+  }
+
+  .EdgeTrace-compact-secondary:hover {
+    border-color: rgba(247, 247, 243, 0.32);
+    background: rgba(247, 247, 243, 0.12);
+  }
+
+  .EdgeTrace-command-button {
+    border-radius: 0.125rem;
+    border: 1px solid rgba(88, 214, 255, 0.7);
+    background: #f7f7f3;
+    color: #050505;
+    padding: 0.72rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 800;
+    box-shadow:
+      0 0 0 1px rgba(88, 214, 255, 0.12),
+      0 22px 54px -30px rgba(88, 214, 255, 0.86);
+  }
+
+  .EdgeTrace-command-button:hover {
+    background: #ffffff;
+    border-color: rgba(88, 214, 255, 1);
+    transform: translateY(-1px);
+  }
+
+  .EdgeTrace-recommended {
+    position: relative;
+    border-color: rgba(88, 214, 255, 0.45) !important;
+    box-shadow: inset 0 0 0 1px rgba(88, 214, 255, 0.08), 0 0 42px -36px rgba(88, 214, 255, 0.95);
+  }
+
+  .EdgeTrace-recommended::before {
+    content: "Recommended";
+    position: absolute;
+    right: 1rem;
+    top: 0.9rem;
+    color: #58d6ff;
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  @media (min-width: 768px) {
+    .EdgeTrace-shell {
+      padding-left: 2.5rem;
+      padding-right: 2.5rem;
+    }
+
+    .EdgeTrace-page-header {
+      padding: 2rem 0;
+    }
+
+    .EdgeTrace-title {
+      font-size: 3.75rem;
+      line-height: 1;
+    }
+  }
+}
+
+:root {
+  color-scheme: dark;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #050505;
+}
+
+.EdgeTrace-contours {
+  min-height: 100vh;
+  background-color: #050505;
+  background-image:
+    radial-gradient(circle at 50% -10%, rgba(247, 247, 243, 0.11), transparent 34rem),
+    radial-gradient(circle at 16% 18%, rgba(79, 140, 255, 0.12), transparent 28rem),
+    radial-gradient(circle at 88% 26%, rgba(120, 97, 255, 0.12), transparent 30rem),
+    linear-gradient(180deg, rgba(5, 5, 5, 0), #050505 62%);
+  background-repeat: no-repeat;
+}
+
+.EdgeTrace-contours .rounded-lg,
+.EdgeTrace-contours .rounded-xl,
+.EdgeTrace-contours .rounded-2xl {
+  border-radius: 0.125rem;
+}
+
+.EdgeTrace-contours .rounded-md,
+.EdgeTrace-contours .rounded-full {
+  border-radius: 0.125rem;
+}
+
+.EdgeTrace-contours button,
+.EdgeTrace-contours input,
+.EdgeTrace-contours select,
+.EdgeTrace-contours textarea {
+  border-radius: 0.125rem;
+}
+
+.EdgeTrace-contours .shadow-2xl,
+.EdgeTrace-contours .shadow-xl,
+.EdgeTrace-contours .shadow-lg {
+  box-shadow: none;
+}
+
+.EdgeTrace-contours .p-8 {
+  padding: 1.5rem;
+}
+
+.EdgeTrace-contours .p-6 {
+  padding: 1.25rem;
+}
+
+.EdgeTrace-contours .p-5 {
+  padding: 1rem;
+}
+
+.EdgeTrace-contours .bg-panel {
+  background-color: rgba(247, 247, 243, 0.035);
+}
+
+.EdgeTrace-contours .bg-graphite {
+  background-color: rgba(5, 5, 5, 0.72);
+}
+
+.EdgeTrace-contours .border-line {
+  border-color: rgba(247, 247, 243, 0.11);
+}
+
+.EdgeTrace-contours table {
+  border-collapse: collapse;
+}
+
+.EdgeTrace-contours thead {
+  background-color: rgba(247, 247, 243, 0.035);
+}
+
+.EdgeTrace-hero-logo {
+  image-rendering: -webkit-optimize-contrast;
+  filter: contrast(1.08) saturate(1.08);
+  transform: translateZ(0);
+}
+
+.EdgeTrace-hero-title {
+  text-wrap: balance;
+  font-kerning: normal;
+  text-rendering: geometricPrecision;
+}
+
+button,
+a,
+input {
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease,
+    color 150ms ease,
+    opacity 150ms ease,
+    transform 150ms ease;
+}
+
+select,
+textarea,
+input {
+  color-scheme: dark;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #58d6ff;
+  outline-offset: 2px;
+}

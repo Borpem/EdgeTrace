@@ -1,0 +1,167 @@
+<svg width="1600" height="1000" viewBox="0 0 1600 1000" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">EdgeTrace product hero visual</title>
+  <desc id="desc">A clean, high-contrast product hero showing EdgeTrace turning completed trades into a primary diagnosis and next inspection path.</desc>
+  <defs>
+    <radialGradient id="bg" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(796 430) rotate(90) scale(710 860)">
+      <stop stop-color="#102B57"/>
+      <stop offset=".48" stop-color="#071123"/>
+      <stop offset="1" stop-color="#050914"/>
+    </radialGradient>
+    <linearGradient id="blue" x1="150" y1="726" x2="1120" y2="180" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7861FF"/>
+      <stop offset=".47" stop-color="#3E8BFF"/>
+      <stop offset="1" stop-color="#45D5FF"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="330" y1="152" x2="1140" y2="756" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#111B31"/>
+      <stop offset="1" stop-color="#071020"/>
+    </linearGradient>
+    <linearGradient id="cost" x1="930" y1="190" x2="1374" y2="582" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFE08A"/>
+      <stop offset="1" stop-color="#FFB84D"/>
+    </linearGradient>
+    <filter id="glow" x="-120" y="-120" width="1840" height="1240" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="14" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.15 0 0 0 0 0.55 0 0 0 0 1 0 0 0 .34 0"/>
+      <feBlend in="SourceGraphic"/>
+    </filter>
+    <filter id="cardGlow" x="230" y="74" width="1120" height="774" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="18" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.16 0 0 0 0 0.48 0 0 0 0 1 0 0 0 .28 0"/>
+      <feBlend in="SourceGraphic"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="1000" rx="36" fill="url(#bg)"/>
+  <g opacity=".15" stroke="#45D5FF" stroke-width="1.4">
+    <path d="M0 124c172 62 312 66 484 10 190-62 320-58 500 5 184 64 356 48 616-66"/>
+    <path d="M0 216c158 44 304 46 458 0 186-56 324-48 490 12 182 66 376 44 652-90"/>
+    <path d="M0 880c188-102 344-116 518-56 154 54 294 50 450-6 182-66 366-48 632 66"/>
+  </g>
+  <g opacity=".13" stroke="#243B64">
+    <path d="M80 738h1440M80 804h1440M80 870h1440M80 936h1440"/>
+    <path d="M170 700v300M310 700v300M450 700v300M590 700v300M730 700v300M870 700v300M1010 700v300M1150 700v300M1290 700v300M1430 700v300"/>
+  </g>
+
+  <g filter="url(#glow)">
+    <g transform="translate(82 160)">
+      <text x="0" y="0" fill="#A7B3D6" font-family="Inter, Arial, sans-serif" font-size="15" letter-spacing="8">COMPLETED TRADES</text>
+      <g transform="translate(0 48)">
+        <rect width="304" height="408" rx="24" fill="#0D1424" stroke="#243B64"/>
+        <g transform="translate(32 42)" stroke-width="8" stroke-linecap="round">
+          <path d="M0 0h96" stroke="#45D5FF"/><path d="M122 0h56" stroke="#243B64"/>
+          <path d="M0 42h176" stroke="#243B64"/><path d="M202 42h58" stroke="#7861FF"/>
+          <path d="M0 84h142" stroke="#3E8BFF"/><path d="M168 84h92" stroke="#243B64"/>
+          <path d="M0 126h214" stroke="#243B64"/><path d="M236 126h38" stroke="#45D5FF"/>
+          <path d="M0 168h124" stroke="#7861FF"/><path d="M148 168h104" stroke="#243B64"/>
+          <path d="M0 210h184" stroke="#3E8BFF"/><path d="M210 210h50" stroke="#243B64"/>
+          <path d="M0 252h116" stroke="#45D5FF"/><path d="M142 252h126" stroke="#243B64"/>
+          <path d="M0 294h148" stroke="#243B64"/><path d="M176 294h82" stroke="#7861FF"/>
+        </g>
+        <g transform="translate(32 354)" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="700">
+          <rect width="104" height="34" rx="10" fill="#071020" stroke="#243B64"/>
+          <text x="52" y="22" fill="#45D5FF" text-anchor="middle">Mapped</text>
+          <rect x="124" width="126" height="34" rx="10" fill="#071020" stroke="#243B64"/>
+          <text x="187" y="22" fill="#3DDC97" text-anchor="middle">Normalized</text>
+        </g>
+      </g>
+    </g>
+
+    <g opacity=".78" stroke="url(#blue)" stroke-width="2.4">
+      <path d="M388 302C478 302 528 344 608 420"/>
+      <path d="M388 368C478 370 528 390 608 440"/>
+      <path d="M388 436C478 436 528 436 608 460"/>
+      <path d="M388 504C478 500 528 486 608 480"/>
+    </g>
+    <circle cx="608" cy="420" r="6" fill="#45D5FF"/>
+    <circle cx="608" cy="440" r="6" fill="#3E8BFF"/>
+    <circle cx="608" cy="460" r="6" fill="#7861FF"/>
+    <circle cx="608" cy="480" r="6" fill="#45D5FF"/>
+  </g>
+
+  <g filter="url(#cardGlow)" transform="translate(570 148)">
+    <rect width="610" height="620" rx="34" fill="url(#panel)" stroke="#2B4778"/>
+    <rect x="38" y="36" width="534" height="72" rx="18" fill="#060B16" stroke="#263D68"/>
+    <text x="64" y="80" fill="#F6F8FF" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700">Strategy Health</text>
+    <text x="424" y="78" fill="#A7B3D6" font-family="IBM Plex Mono, Consolas, monospace" font-size="14">ORB V3</text>
+
+    <g transform="translate(48 148)">
+      <circle cx="94" cy="94" r="70" stroke="#243B64" stroke-width="16"/>
+      <path d="M94 24a70 70 0 1 1-58 109" stroke="#3DDC97" stroke-width="16" stroke-linecap="round"/>
+      <text x="94" y="108" fill="#F6F8FF" text-anchor="middle" font-family="IBM Plex Mono, Consolas, monospace" font-size="54" font-weight="700">72</text>
+      <text x="94" y="148" fill="#3DDC97" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="700">Watchlist</text>
+    </g>
+
+    <g transform="translate(246 146)">
+      <text x="0" y="0" fill="#A7B3D6" font-family="Inter, Arial, sans-serif" font-size="13" letter-spacing="3">PRIMARY DIAGNOSIS</text>
+      <text x="0" y="58" fill="#F6F8FF" font-family="Inter, Arial, sans-serif" font-size="52" font-weight="750">Cost Drag</text>
+      <text x="0" y="106" fill="#A7B3D6" font-family="Inter, Arial, sans-serif" font-size="18">Gross edge exists, but too much</text>
+      <text x="0" y="136" fill="#A7B3D6" font-family="Inter, Arial, sans-serif" font-size="18">is lost before it reaches net PnL.</text>
+    </g>
+
+    <g transform="translate(48 360)">
+      <rect width="250" height="134" rx="20" fill="#0D1424" stroke="#263D68"/>
+      <text x="22" y="38" fill="#A7B3D6" font-family="Inter, Arial, sans-serif" font-size="13" letter-spacing="3">EXPECTANCY</text>
+      <text x="22" y="92" fill="#45D5FF" font-family="IBM Plex Mono, Consolas, monospace" font-size="43">+0.31</text>
+      <path d="M140 94c36-25 56-12 84-32" stroke="#45D5FF" stroke-width="4" fill="none" stroke-linecap="round"/>
+    </g>
+
+    <g transform="translate(326 360)">
+      <rect width="236" height="134" rx="20" fill="#0D1424" stroke="#FFB84D" stroke-opacity=".68"/>
+      <text x="22" y="38" fill="#A7B3D6" font-family="Inter, Arial, sans-serif" font-size="13" letter-spacing="3">COST DRAG</text>
+      <text x="22" y="92" fill="#FFB84D" font-family="IBM Plex Mono, Consolas, monospace" font-size="43">18%</text>
+      <path d="M138 90c30 8 48-8 78 2" stroke="url(#cost)" stroke-width="4" fill="none" stroke-linecap="round"/>
+    </g>
+
+    <g transform="translate(48 528)">
+      <text x="0" y="0" fill="#A7B3D6" font-family="Inter, Arial, sans-serif" font-size="13" letter-spacing="3">WHERE TO LOOK NEXT</text>
+      <g transform="translate(0 28)" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="700">
+        <rect width="158" height="42" rx="12" fill="#071020" stroke="#263D68"/>
+        <text x="79" y="27" fill="#45D5FF" text-anchor="middle">Inspect QQQ</text>
+        <rect x="176" width="160" height="42" rx="12" fill="#071020" stroke="#263D68"/>
+        <text x="256" y="27" fill="#FFB84D" text-anchor="middle">Review Open</text>
+        <rect x="354" width="158" height="42" rx="12" fill="#071020" stroke="#263D68"/>
+        <text x="433" y="27" fill="#9B86FF" text-anchor="middle">Compare V2</text>
+      </g>
+    </g>
+  </g>
+
+  <g filter="url(#glow)" font-family="Inter, Arial, sans-serif">
+    <g transform="translate(1232 220)">
+      <text x="0" y="0" fill="#A7B3D6" font-size="13" letter-spacing="5">ATTRIBUTION</text>
+      <path d="M0 34h246" stroke="#243B64"/>
+      <g transform="translate(0 72)">
+        <circle cx="18" cy="18" r="18" fill="#071020" stroke="#45D5FF"/>
+        <text x="52" y="13" fill="#F6F8FF" font-size="18" font-weight="700">Segment leaks</text>
+        <text x="52" y="40" fill="#A7B3D6" font-size="14">QQQ cost drag</text>
+      </g>
+      <g transform="translate(0 158)">
+        <circle cx="18" cy="18" r="18" fill="#071020" stroke="#FFB84D"/>
+        <text x="52" y="13" fill="#F6F8FF" font-size="18" font-weight="700">Execution costs</text>
+        <text x="52" y="40" fill="#A7B3D6" font-size="14">18% of gross edge</text>
+      </g>
+      <g transform="translate(0 244)">
+        <circle cx="18" cy="18" r="18" fill="#071020" stroke="#7861FF"/>
+        <text x="52" y="13" fill="#F6F8FF" font-size="18" font-weight="700">R capture</text>
+        <text x="52" y="40" fill="#A7B3D6" font-size="14">0.72R average</text>
+      </g>
+    </g>
+  </g>
+
+  <g transform="translate(326 840)">
+    <rect width="948" height="78" rx="22" fill="#071020" stroke="#243B64"/>
+    <g font-family="Inter, Arial, sans-serif">
+      <text x="60" y="34" fill="#F6F8FF" font-size="15" font-weight="700">Upload</text>
+      <text x="60" y="56" fill="#A7B3D6" font-size="12">broker CSV</text>
+      <path d="M222 18v42" stroke="#243B64"/>
+      <text x="280" y="34" fill="#F6F8FF" font-size="15" font-weight="700">Diagnose</text>
+      <text x="280" y="56" fill="#A7B3D6" font-size="12">costs &amp; expectancy</text>
+      <path d="M494 18v42" stroke="#243B64"/>
+      <text x="552" y="34" fill="#F6F8FF" font-size="15" font-weight="700">Compare</text>
+      <text x="552" y="56" fill="#A7B3D6" font-size="12">strategy versions</text>
+      <path d="M746 18v42" stroke="#243B64"/>
+      <text x="804" y="34" fill="#F6F8FF" font-size="15" font-weight="700">Review</text>
+      <text x="804" y="56" fill="#A7B3D6" font-size="12">next inspection</text>
+    </g>
+  </g>
+</svg>

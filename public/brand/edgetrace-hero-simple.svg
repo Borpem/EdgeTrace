@@ -1,0 +1,108 @@
+<svg width="1600" height="980" viewBox="0 0 1600 980" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">EdgeTrace strategy intelligence hero</title>
+  <desc id="desc">A simplified marketing visual showing completed trades flowing through EdgeTrace into strategy diagnostics.</desc>
+  <defs>
+    <radialGradient id="bg" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(800 438) rotate(90) scale(674 830)">
+      <stop stop-color="#102B57"/>
+      <stop offset=".48" stop-color="#071123"/>
+      <stop offset="1" stop-color="#050914"/>
+    </radialGradient>
+    <linearGradient id="edge" x1="112" y1="392" x2="342" y2="102" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7861FF"/>
+      <stop offset=".48" stop-color="#3E8BFF"/>
+      <stop offset="1" stop-color="#45D5FF"/>
+    </linearGradient>
+    <linearGradient id="trace" x1="210" y1="402" x2="398" y2="154" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7861FF"/>
+      <stop offset=".5" stop-color="#3E8BFF"/>
+      <stop offset="1" stop-color="#58D6FF"/>
+    </linearGradient>
+    <linearGradient id="flow" x1="136" y1="490" x2="1360" y2="490" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3E8BFF"/>
+      <stop offset=".52" stop-color="#45D5FF"/>
+      <stop offset="1" stop-color="#7861FF"/>
+    </linearGradient>
+    <filter id="glow" x="-120" y="-120" width="1840" height="1220" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.18 0 0 0 0 0.58 0 0 0 0 1 0 0 0 .32 0"/>
+      <feBlend in="SourceGraphic"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="980" rx="36" fill="url(#bg)"/>
+  <g opacity=".14" stroke="#45D5FF" stroke-width="1.3">
+    <path d="M0 130c176 64 316 70 486 14 190-62 322-58 500 4 182 64 356 48 614-64"/>
+    <path d="M0 846c188-104 344-118 518-58 154 54 294 50 450-6 182-66 366-48 632 66"/>
+  </g>
+  <g opacity=".12" stroke="#243B64">
+    <path d="M64 744h1472M64 812h1472M64 880h1472"/>
+    <path d="M180 706v274M330 706v274M480 706v274M630 706v274M780 706v274M930 706v274M1080 706v274M1230 706v274M1380 706v274"/>
+  </g>
+
+  <g filter="url(#glow)">
+    <g transform="translate(92 240)">
+      <text x="0" y="0" fill="#A7B3D6" font-family="Inter, Arial, sans-serif" font-size="16" letter-spacing="8">TRADE HISTORY</text>
+      <g transform="translate(0 52)" stroke-width="8" stroke-linecap="round">
+        <path d="M0 0h160" stroke="#45D5FF"/><path d="M190 0h74" stroke="#243B64"/><path d="M296 0h90" stroke="#3E8BFF"/>
+        <path d="M0 56h242" stroke="#243B64"/><path d="M274 56h94" stroke="#7861FF"/>
+        <path d="M0 112h206" stroke="#3E8BFF"/><path d="M238 112h150" stroke="#243B64"/>
+        <path d="M0 168h298" stroke="#243B64"/><path d="M330 168h70" stroke="#45D5FF"/>
+        <path d="M0 224h178" stroke="#7861FF"/><path d="M208 224h168" stroke="#243B64"/>
+        <path d="M0 280h248" stroke="#45D5FF"/><path d="M280 280h92" stroke="#243B64"/>
+      </g>
+    </g>
+
+    <g opacity=".84" stroke="url(#flow)" stroke-width="2.5">
+      <path d="M486 324C594 324 638 392 708 448"/>
+      <path d="M486 380C598 382 642 424 708 470"/>
+      <path d="M486 436C596 438 642 462 708 490"/>
+      <path d="M486 492C596 492 642 500 708 510"/>
+      <path d="M486 548C598 546 642 532 708 532"/>
+    </g>
+    <circle cx="708" cy="448" r="6" fill="#45D5FF"/>
+    <circle cx="708" cy="490" r="6" fill="#3E8BFF"/>
+    <circle cx="708" cy="532" r="6" fill="#7861FF"/>
+
+    <g transform="translate(650 170)">
+      <circle cx="260" cy="300" r="250" stroke="#45D5FF" stroke-opacity=".35" stroke-width="2"/>
+      <circle cx="260" cy="300" r="194" stroke="#3E8BFF" stroke-opacity=".22" stroke-width="2"/>
+      <circle cx="260" cy="300" r="134" stroke="#7861FF" stroke-opacity=".18" stroke-width="2"/>
+      <circle cx="260" cy="300" r="202" fill="#071020" fill-opacity=".68" stroke="#263D68"/>
+      <g transform="translate(102 118) scale(.62)">
+        <path d="M124 132h220l-32 58H156l-32-58Z" fill="url(#edge)"/>
+        <path d="M102 227h198l-31 58H70l32-58Z" fill="#58D6FF"/>
+        <path d="M124 380h110l32-58H156l-32 58Z" fill="#7861FF"/>
+        <path d="M294 322h70l39 58H256l38-58Z" fill="#9B86FF"/>
+        <path d="M214 394 304 236h70" stroke="url(#trace)" stroke-width="24" stroke-linecap="square" stroke-linejoin="miter"/>
+        <circle cx="389" cy="236" r="21" fill="#58D6FF"/>
+      </g>
+      <text x="260" y="446" fill="#F6F8FF" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="58" font-weight="750">EdgeTrace</text>
+    </g>
+
+    <g font-family="Inter, Arial, sans-serif">
+      <g transform="translate(1190 214)">
+        <rect width="300" height="96" rx="22" fill="#0D1424" stroke="#45D5FF" stroke-opacity=".78"/>
+        <text x="30" y="60" fill="#F6F8FF" font-size="27" font-weight="750">What changed?</text>
+      </g>
+      <g transform="translate(1190 354)">
+        <rect width="300" height="96" rx="22" fill="#0D1424" stroke="#7861FF" stroke-opacity=".78"/>
+        <text x="30" y="60" fill="#F6F8FF" font-size="27" font-weight="750">Hidden leaks</text>
+      </g>
+      <g transform="translate(1190 494)">
+        <rect width="300" height="96" rx="22" fill="#0D1424" stroke="#FFB84D" stroke-opacity=".78"/>
+        <text x="30" y="60" fill="#FFB84D" font-size="27" font-weight="750">Cost drag</text>
+      </g>
+      <g transform="translate(1190 634)">
+        <rect width="300" height="96" rx="22" fill="#0D1424" stroke="#7861FF" stroke-opacity=".78"/>
+        <text x="30" y="60" fill="#9B86FF" font-size="27" font-weight="750">R capture</text>
+      </g>
+    </g>
+
+    <g stroke-width="3" fill="none">
+      <path d="M1050 424C1110 424 1130 262 1190 262" stroke="#45D5FF"/>
+      <path d="M1050 460C1110 460 1130 402 1190 402" stroke="#7861FF"/>
+      <path d="M1050 500C1110 500 1130 542 1190 542" stroke="#FFB84D"/>
+      <path d="M1050 540C1110 540 1130 682 1190 682" stroke="#7861FF"/>
+    </g>
+  </g>
+</svg>

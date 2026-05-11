@@ -1,0 +1,23 @@
+<svg width="1180" height="260" viewBox="0 0 1180 260" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">EdgeTrace horizontal logo</title>
+  <desc id="desc">EdgeTrace wordmark with geometric compass-inspired mark and execution intelligence tagline.</desc>
+  <rect width="1180" height="260" rx="32" fill="#070B14"/>
+  <path d="M146 42 238 218h-38l-54-112-54 112H54L146 42Z" fill="url(#outer)"/>
+  <path d="M146 96 208 218h-34l-28-62-28 62H84l62-122Z" fill="#070B14" stroke="url(#inner)" stroke-width="12" stroke-linejoin="round"/>
+  <path d="M89 218h114" stroke="#45D5FF" stroke-opacity=".42" stroke-width="7" stroke-linecap="round"/>
+  <path d="M308 74h42l48 100 48-100h42l-72 144h-36L308 74Zm227 0h38v144h-38V74Zm90 0h38v110h82v34H625V74Zm179 0h39l70 144h-42l-13-29h-71l-13 29h-40l70-144Zm42 86-23-52-23 52h46Zm117-86h38v110h79v34H963V74Z" fill="#F3F6FF"/>
+  <path d="M313 232h420" stroke="#243B64"/>
+  <text x="313" y="242" fill="#45D5FF" font-family="Inter, Arial, sans-serif" font-size="22" letter-spacing="9">STRATEGY INTELLIGENCE</text>
+  <defs>
+    <linearGradient id="outer" x1="62" y1="211" x2="206" y2="48" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7861FF"/>
+      <stop offset=".45" stop-color="#3E8BFF"/>
+      <stop offset="1" stop-color="#45D5FF"/>
+    </linearGradient>
+    <linearGradient id="inner" x1="90" y1="205" x2="197" y2="92" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7861FF"/>
+      <stop offset=".55" stop-color="#3E8BFF"/>
+      <stop offset="1" stop-color="#45D5FF"/>
+    </linearGradient>
+  </defs>
+</svg>

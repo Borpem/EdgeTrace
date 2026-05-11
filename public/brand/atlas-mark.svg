@@ -1,0 +1,23 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">EdgeTrace mark</title>
+  <desc id="desc">A geometric blue compass-inspired A mark for EdgeTrace.</desc>
+  <rect width="512" height="512" rx="104" fill="#070B14"/>
+  <rect x="36" y="36" width="440" height="440" rx="78" stroke="#243B64" stroke-opacity=".72"/>
+  <path d="M256 86 404 400h-58L256 202 166 400h-58L256 86Z" fill="url(#outer)"/>
+  <path d="M256 178 354 400h-50l-48-112-48 112h-50l98-222Z" fill="#111A2B"/>
+  <path d="M256 178 354 400h-50l-48-112-48 112h-50l98-222Z" stroke="url(#inner)" stroke-width="18" stroke-linejoin="round"/>
+  <path d="M148 400h216" stroke="#45D5FF" stroke-opacity=".45" stroke-width="10" stroke-linecap="round"/>
+  <path d="M256 286v94" stroke="#F3F6FF" stroke-opacity=".38" stroke-width="8" stroke-linecap="round"/>
+  <defs>
+    <linearGradient id="outer" x1="118" y1="378" x2="354" y2="106" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7861FF"/>
+      <stop offset=".42" stop-color="#3E8BFF"/>
+      <stop offset="1" stop-color="#45D5FF"/>
+    </linearGradient>
+    <linearGradient id="inner" x1="178" y1="376" x2="334" y2="190" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7861FF"/>
+      <stop offset=".55" stop-color="#3E8BFF"/>
+      <stop offset="1" stop-color="#45D5FF"/>
+    </linearGradient>
+  </defs>
+</svg>

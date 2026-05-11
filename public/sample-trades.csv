@@ -1,0 +1,9 @@
+symbol,side,entry_time,exit_time,entry_price,exit_price,quantity,commission,fees,strategy,setup,planned_stop,planned_target
+AAPL,long,2026-04-01T09:35:00,2026-04-01T10:20:00,190.00,190.04,100,3,2,Opening Range,Breakout,189.50,191.00
+MSFT,long,2026-04-01T10:10:00,2026-04-01T11:05:00,415.00,415.05,100,3,2,Opening Range,Continuation,414.50,416.00
+NVDA,short,2026-04-02T11:15:00,2026-04-02T12:05:00,880.00,879.96,100,3,2,Mean Reversion,Failed Push,881.00,878.00
+TSLA,long,2026-04-02T13:05:00,2026-04-02T13:50:00,175.00,174.98,100,3,2,Opening Range,Pullback,174.50,176.00
+AMD,short,2026-04-03T09:50:00,2026-04-03T10:40:00,160.00,159.97,100,3,2,Mean Reversion,Exhaustion,160.50,159.00
+META,long,2026-04-03T14:00:00,2026-04-03T14:45:00,510.00,509.98,100,3,2,Opening Range,Breakout,509.50,511.00
+QQQ,long,2026-04-04T10:25:00,2026-04-04T11:10:00,440.00,440.06,100,3,2,Index Momentum,Trend Day,439.50,441.00
+SPY,short,2026-04-04T12:30:00,2026-04-04T13:15:00,520.00,520.02,100,3,2,Index Momentum,Reversal,520.50,519.00

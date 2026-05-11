@@ -1,0 +1,192 @@
+<svg width="1600" height="1000" viewBox="0 0 1600 1000" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">EdgeTrace product intelligence visual</title>
+  <desc id="desc">A polished product graphic showing broker trade imports, diagnostics, attribution, comparison, collections, and review queue intelligence.</desc>
+  <defs>
+    <radialGradient id="bg" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(830 424) rotate(90) scale(690 800)">
+      <stop stop-color="#122E5C"/>
+      <stop offset=".46" stop-color="#081224"/>
+      <stop offset="1" stop-color="#050912"/>
+    </radialGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#45D5FF"/>
+      <stop offset=".52" stop-color="#3E8BFF"/>
+      <stop offset="1" stop-color="#7861FF"/>
+    </linearGradient>
+    <linearGradient id="card" x1="406" y1="166" x2="1040" y2="740" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#111B31"/>
+      <stop offset="1" stop-color="#071020"/>
+    </linearGradient>
+    <linearGradient id="amber" x1="1132" y1="300" x2="1454" y2="470" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFD66B"/>
+      <stop offset="1" stop-color="#FFB84D"/>
+    </linearGradient>
+    <filter id="panelGlow" x="250" y="46" width="954" height="810" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="18" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.12 0 0 0 0 0.45 0 0 0 0 1 0 0 0 .28 0"/>
+      <feBlend in="SourceGraphic"/>
+    </filter>
+    <filter id="thinGlow" x="-80" y="-80" width="1760" height="1160" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.25 0 0 0 0 0.72 0 0 0 0 1 0 0 0 .22 0"/>
+      <feBlend in="SourceGraphic"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="1000" rx="34" fill="url(#bg)"/>
+  <g opacity=".16" stroke="#45D5FF" stroke-width="1.4">
+    <path d="M0 118c176 66 312 72 486 15 190-62 320-62 494-1 190 66 370 48 620-68"/>
+    <path d="M0 880c190-106 340-120 514-60 152 52 286 50 438-4 178-64 356-46 648 66"/>
+    <path d="M0 202c152 44 300 48 448 2 186-58 320-52 486 9 176 65 372 47 666-88"/>
+  </g>
+  <g opacity=".15" stroke="#243B64">
+    <path d="M80 756h1440M80 814h1440M80 872h1440M80 930h1440"/>
+    <path d="M180 718v282M300 718v282M420 718v282M540 718v282M660 718v282M780 718v282M900 718v282M1020 718v282M1140 718v282M1260 718v282M1380 718v282M1500 718v282"/>
+  </g>
+
+  <g filter="url(#thinGlow)">
+    <g transform="translate(82 126)">
+      <text x="0" y="0" fill="#A7B3D6" font-family="Inter, Arial, sans-serif" font-size="14" letter-spacing="7">BROKER CSV INPUT</text>
+      <g transform="translate(0 44)">
+        <rect width="300" height="318" rx="20" fill="#0D1424" stroke="#243B64"/>
+        <text x="26" y="42" fill="#F6F8FF" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="650">Trade History</text>
+        <text x="26" y="72" fill="#A7B3D6" font-family="Inter, Arial, sans-serif" font-size="13">IBKR · Robinhood · Schwab · Fidelity</text>
+        <g transform="translate(26 112)" stroke-width="7" stroke-linecap="round">
+          <path d="M0 0h76" stroke="#45D5FF"/><path d="M96 0h36" stroke="#243B64"/><path d="M152 0h56" stroke="#3E8BFF"/>
+          <path d="M0 34h144" stroke="#243B64"/><path d="M166 34h62" stroke="#7861FF"/>
+          <path d="M0 68h96" stroke="#3E8BFF"/><path d="M118 68h112" stroke="#243B64"/>
+          <path d="M0 102h178" stroke="#243B64"/><path d="M202 102h42" stroke="#45D5FF"/>
+          <path d="M0 136h118" stroke="#7861FF"/><path d="M140 136h104" stroke="#243B64"/>
+          <path d="M0 170h154" stroke="#45D5FF"/><path d="M178 170h52" stroke="#243B64"/>
+        </g>
+        <g transform="translate(26 250)">
+          <rect width="108" height="34" rx="9" fill="#071020" stroke="#243B64"/>
+          <text x="54" y="22" fill="#45D5FF" text-anchor="middle" font-family="IBM Plex Mono, Consolas, monospace" font-size="13">Mapped</text>
+          <rect x="126" width="116" height="34" rx="9" fill="#071020" stroke="#243B64"/>
+          <text x="184" y="22" fill="#3DDC97" text-anchor="middle" font-family="IBM Plex Mono, Consolas, monospace" font-size="13">Normalized</text>
+        </g>
+      </g>
+    </g>
+
+    <g stroke="url(#edge)" stroke-width="2.2" opacity=".72">
+      <path d="M384 276C452 276 492 316 542 350"/>
+      <path d="M384 350C454 350 498 364 542 390"/>
+      <path d="M384 424C452 424 494 418 542 430"/>
+    </g>
+    <circle cx="542" cy="350" r="5" fill="#45D5FF"/>
+    <circle cx="542" cy="390" r="5" fill="#3E8BFF"/>
+    <circle cx="542" cy="430" r="5" fill="#7861FF"/>
+  </g>
+
+  <g filter="url(#panelGlow)" transform="translate(472 128)">
+    <rect width="622" height="650" rx="30" fill="url(#card)" stroke="#2C4778"/>
+    <rect x="28" y="28" width="566" height="66" rx="16" fill="#060B16" stroke="#263D68"/>
+    <g transform="translate(50 44) scale(.105)">
+      <path d="M124 132h220l-32 58H156l-32-58Z" fill="url(#edge)"/>
+      <path d="M102 227h198l-31 58H70l32-58Z" fill="#58D6FF"/>
+      <path d="M124 380h110l32-58H156l-32 58Z" fill="#7861FF"/>
+      <path d="M294 322h70l39 58H256l38-58Z" fill="#9B86FF"/>
+      <path d="M214 394 304 236h70" stroke="url(#edge)" stroke-width="24"/>
+      <circle cx="389" cy="236" r="21" fill="#58D6FF"/>
+    </g>
+    <text x="112" y="68" fill="#F6F8FF" font-family="Inter, Arial, sans-serif" font-size="19" font-weight="650">EdgeTrace Strategy Overview</text>
+    <text x="482" y="68" fill="#A7B3D6" font-family="IBM Plex Mono, Consolas, monospace" font-size="13">ORB V3</text>
+
+    <g transform="translate(28 124)">
+      <rect width="176" height="166" rx="18" fill="#0D1424" stroke="#263D68"/>
+      <text x="18" y="34" fill="#A7B3D6" font-family="Inter, Arial, sans-serif" font-size="12" letter-spacing="2.4">HEALTH SCORE</text>
+      <circle cx="88" cy="90" r="38" stroke="#243B64" stroke-width="11"/>
+      <path d="M88 52a38 38 0 1 1-32 58" stroke="#3DDC97" stroke-width="11" stroke-linecap="round"/>
+      <text x="88" y="101" fill="#F6F8FF" text-anchor="middle" font-family="IBM Plex Mono, Consolas, monospace" font-size="31">72</text>
+      <text x="88" y="137" fill="#3DDC97" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="650">Watchlist</text>
+    </g>
+
+    <g transform="translate(224 124)">
+      <rect width="176" height="166" rx="18" fill="#0D1424" stroke="#263D68"/>
+      <text x="18" y="34" fill="#A7B3D6" font-family="Inter, Arial, sans-serif" font-size="12" letter-spacing="2.4">PRIMARY LEAK</text>
+      <text x="18" y="78" fill="#F6F8FF" font-family="Inter, Arial, sans-serif" font-size="27" font-weight="700">Cost Drag</text>
+      <text x="18" y="114" fill="#A7B3D6" font-family="Inter, Arial, sans-serif" font-size="13">Gross edge exists,</text>
+      <text x="18" y="137" fill="#A7B3D6" font-family="Inter, Arial, sans-serif" font-size="13">but conversion is weak.</text>
+    </g>
+
+    <g transform="translate(420 124)">
+      <rect width="174" height="166" rx="18" fill="#0D1424" stroke="#263D68"/>
+      <text x="18" y="34" fill="#A7B3D6" font-family="Inter, Arial, sans-serif" font-size="12" letter-spacing="2.4">WHERE TO LOOK</text>
+      <text x="18" y="75" fill="#45D5FF" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="700">Inspect QQQ</text>
+      <text x="18" y="108" fill="#FFB84D" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="700">Review Open</text>
+      <text x="18" y="141" fill="#9B86FF" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="700">Compare V2</text>
+    </g>
+
+    <g transform="translate(28 320)">
+      <rect width="372" height="252" rx="18" fill="#0D1424" stroke="#263D68"/>
+      <text x="20" y="36" fill="#A7B3D6" font-family="Inter, Arial, sans-serif" font-size="12" letter-spacing="2.4">EQUITY CURVE</text>
+      <g opacity=".55" stroke="#243B64">
+        <path d="M36 84h300M36 128h300M36 172h300M36 216h300"/>
+        <path d="M72 62v166M142 62v166M212 62v166M282 62v166"/>
+      </g>
+      <path d="M48 210l32-22 30 9 35-54 35 41 34-76 36 54 33-12 40-50 34 34" stroke="#45D5FF" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="145" cy="143" r="5" fill="#45D5FF"/>
+      <circle cx="250" cy="162" r="5" fill="#7861FF"/>
+      <circle cx="323" cy="100" r="5" fill="#45D5FF"/>
+    </g>
+
+    <g transform="translate(420 320)">
+      <rect width="174" height="252" rx="18" fill="#0D1424" stroke="#263D68"/>
+      <text x="18" y="36" fill="#A7B3D6" font-family="Inter, Arial, sans-serif" font-size="12" letter-spacing="2.4">ATTRIBUTION</text>
+      <text x="18" y="82" fill="#45D5FF" font-family="IBM Plex Mono, Consolas, monospace" font-size="28">+0.31</text>
+      <text x="18" y="106" fill="#A7B3D6" font-family="Inter, Arial, sans-serif" font-size="12">Expectancy</text>
+      <text x="18" y="153" fill="#FFB84D" font-family="IBM Plex Mono, Consolas, monospace" font-size="28">18%</text>
+      <text x="18" y="177" fill="#A7B3D6" font-family="Inter, Arial, sans-serif" font-size="12">Cost drag</text>
+      <text x="18" y="222" fill="#9B86FF" font-family="IBM Plex Mono, Consolas, monospace" font-size="28">0.72R</text>
+    </g>
+
+    <g transform="translate(28 598)">
+      <rect width="174" height="36" rx="10" fill="#060B16" stroke="#263D68"/>
+      <text x="87" y="23" fill="#A7B3D6" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="12">Breakdowns</text>
+      <rect x="196" width="174" height="36" rx="10" fill="#060B16" stroke="#263D68"/>
+      <text x="283" y="23" fill="#A7B3D6" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="12">Compare</text>
+      <rect x="392" width="174" height="36" rx="10" fill="#060B16" stroke="#263D68"/>
+      <text x="479" y="23" fill="#A7B3D6" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="12">Review Queue</text>
+    </g>
+  </g>
+
+  <g filter="url(#thinGlow)">
+    <g transform="translate(1142 188)">
+      <rect width="326" height="150" rx="20" fill="#0D1424" stroke="#45D5FF" stroke-opacity=".72"/>
+      <text x="28" y="40" fill="#A7B3D6" font-family="Inter, Arial, sans-serif" font-size="13" letter-spacing="5">EXPECTANCY</text>
+      <text x="28" y="92" fill="#45D5FF" font-family="IBM Plex Mono, Consolas, monospace" font-size="43">+0.31</text>
+      <path d="M156 106c38-26 62-14 96-36 22-14 38-17 54-10" stroke="#45D5FF" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    </g>
+    <g transform="translate(1142 390)">
+      <rect width="326" height="150" rx="20" fill="#0D1424" stroke="#FFB84D" stroke-opacity=".68"/>
+      <text x="28" y="40" fill="#A7B3D6" font-family="Inter, Arial, sans-serif" font-size="13" letter-spacing="5">COST DRAG</text>
+      <text x="28" y="92" fill="#FFB84D" font-family="IBM Plex Mono, Consolas, monospace" font-size="43">18%</text>
+      <path d="M156 100c40 10 58-9 94 3 22 7 38 4 58-7" stroke="url(#amber)" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    </g>
+    <g transform="translate(1142 592)">
+      <rect width="326" height="150" rx="20" fill="#0D1424" stroke="#7861FF" stroke-opacity=".72"/>
+      <text x="28" y="40" fill="#A7B3D6" font-family="Inter, Arial, sans-serif" font-size="13" letter-spacing="5">R CAPTURE</text>
+      <text x="28" y="92" fill="#9B86FF" font-family="IBM Plex Mono, Consolas, monospace" font-size="43">0.72R</text>
+      <path d="M156 106c38-30 60-4 92-25 22-14 42-8 62-22" stroke="#7861FF" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    </g>
+    <path d="M1094 252h48" stroke="#45D5FF" stroke-width="3"/>
+    <path d="M1094 454h48" stroke="#FFB84D" stroke-width="3"/>
+    <path d="M1094 656h48" stroke="#7861FF" stroke-width="3"/>
+  </g>
+
+  <g transform="translate(246 804)">
+    <rect width="1108" height="86" rx="24" fill="#071020" stroke="#243B64"/>
+    <g font-family="Inter, Arial, sans-serif">
+      <text x="58" y="35" fill="#F6F8FF" font-size="15" font-weight="700">Reports</text>
+      <text x="58" y="59" fill="#A7B3D6" font-size="12">saved diagnostics</text>
+      <path d="M232 22v42" stroke="#243B64"/>
+      <text x="292" y="35" fill="#F6F8FF" font-size="15" font-weight="700">Collections</text>
+      <text x="292" y="59" fill="#A7B3D6" font-size="12">iteration trendlines</text>
+      <path d="M516 22v42" stroke="#243B64"/>
+      <text x="576" y="35" fill="#F6F8FF" font-size="15" font-weight="700">Compare</text>
+      <text x="576" y="59" fill="#A7B3D6" font-size="12">version attribution</text>
+      <path d="M800 22v42" stroke="#243B64"/>
+      <text x="860" y="35" fill="#F6F8FF" font-size="15" font-weight="700">Review Queue</text>
+      <text x="860" y="59" fill="#A7B3D6" font-size="12">analyst workflow</text>
+    </g>
+  </g>
+</svg>
