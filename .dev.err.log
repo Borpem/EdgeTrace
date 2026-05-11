@@ -382,3 +382,138 @@ To prepare for this change:
 
 See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
 (Use `node --trace-warnings ...` to show where the warning was created)
+(node:18676) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:137868) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:31460) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:114716) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:26540) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:146148) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:141220) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[2m1:21:17 a.m.[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 3 errors:
+C:/Users/riley/Desktop/Execution intel app/src/pages/PublicDemoPage.tsx:315:89: ERROR: The character ">" is not valid inside a JSX element
+C:/Users/riley/Desktop/Execution intel app/src/pages/PublicDemoPage.tsx:315:100: ERROR: The character ">" is not valid inside a JSX element
+C:/Users/riley/Desktop/Execution intel app/src/pages/PublicDemoPage.tsx:315:111: ERROR: The character ">" is not valid inside a JSX element
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/riley/Desktop/Execution intel app/src/pages/PublicDemoPage.tsx[39m:315:79
+[33m  
+  [33mThe character ">" is not valid inside a JSX element[33m
+  313 |      <aside className="border border-cyan/25 bg-black/42 p-5 shadow-[0_0_42px_-34px_rgba(88,214,255,0.9)]">
+  314 |        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-cyan">Try the core workflow</p>
+  315 |  ...t-2xl font-semibold tracking-[-0.045em] text-ink">Diagnose -> inspect -> compare -> monitor.</h2>
+      |                                                                 ^
+  316 |        <p className="mt-3 text-sm leading-6 text-muted">
+  317 |          This public sandbox previews Pro workflows with sample data. Follow the prompts or explore the tabs directly.
+  
+  [33mThe character ">" is not valid inside a JSX element[33m
+  313 |      <aside className="border border-cyan/25 bg-black/42 p-5 shadow-[0_0_42px_-34px_rgba(88,214,255,0.9)]">
+  314 |        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-cyan">Try the core workflow</p>
+  315 |  ...semibold tracking-[-0.045em] text-ink">Diagnose -> inspect -> compare -> monitor.</h2>
+      |                                                                 ^
+  316 |        <p className="mt-3 text-sm leading-6 text-muted">
+  317 |          This public sandbox previews Pro workflows with sample data. Follow the prompts or explore the tabs directly.
+  
+  [33mThe character ">" is not valid inside a JSX element[33m
+  313 |      <aside className="border border-cyan/25 bg-black/42 p-5 shadow-[0_0_42px_-34px_rgba(88,214,255,0.9)]">
+  314 |        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-cyan">Try the core workflow</p>
+  315 |  ...acking-[-0.045em] text-ink">Diagnose -> inspect -> compare -> monitor.</h2>
+      |                                                                 ^
+  316 |        <p className="mt-3 text-sm leading-6 text-muted">
+  317 |          This public sandbox previews Pro workflows with sample data. Follow the prompts or explore the tabs directly.
+  [39m
+[2m1:21:17 a.m.[22m [31m[1m[vite][22m[39m [31mInternal server error: Transform failed with 3 errors:
+C:/Users/riley/Desktop/Execution intel app/src/pages/PublicDemoPage.tsx:315:89: ERROR: The character ">" is not valid inside a JSX element
+C:/Users/riley/Desktop/Execution intel app/src/pages/PublicDemoPage.tsx:315:100: ERROR: The character ">" is not valid inside a JSX element
+C:/Users/riley/Desktop/Execution intel app/src/pages/PublicDemoPage.tsx:315:111: ERROR: The character ">" is not valid inside a JSX element[39m
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/riley/Desktop/Execution intel app/src/pages/PublicDemoPage.tsx[39m:315:79
+[33m  
+  [33mThe character ">" is not valid inside a JSX element[33m
+  313 |      <aside className="border border-cyan/25 bg-black/42 p-5 shadow-[0_0_42px_-34px_rgba(88,214,255,0.9)]">
+  314 |        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-cyan">Try the core workflow</p>
+  315 |  ...t-2xl font-semibold tracking-[-0.045em] text-ink">Diagnose -> inspect -> compare -> monitor.</h2>
+      |                                                                 ^
+  316 |        <p className="mt-3 text-sm leading-6 text-muted">
+  317 |          This public sandbox previews Pro workflows with sample data. Follow the prompts or explore the tabs directly.
+  
+  [33mThe character ">" is not valid inside a JSX element[33m
+  313 |      <aside className="border border-cyan/25 bg-black/42 p-5 shadow-[0_0_42px_-34px_rgba(88,214,255,0.9)]">
+  314 |        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-cyan">Try the core workflow</p>
+  315 |  ...semibold tracking-[-0.045em] text-ink">Diagnose -> inspect -> compare -> monitor.</h2>
+      |                                                                 ^
+  316 |        <p className="mt-3 text-sm leading-6 text-muted">
+  317 |          This public sandbox previews Pro workflows with sample data. Follow the prompts or explore the tabs directly.
+  
+  [33mThe character ">" is not valid inside a JSX element[33m
+  313 |      <aside className="border border-cyan/25 bg-black/42 p-5 shadow-[0_0_42px_-34px_rgba(88,214,255,0.9)]">
+  314 |        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-cyan">Try the core workflow</p>
+  315 |  ...acking-[-0.045em] text-ink">Diagnose -> inspect -> compare -> monitor.</h2>
+      |                                                                 ^
+  316 |        <p className="mt-3 text-sm leading-6 text-muted">
+  317 |          This public sandbox previews Pro workflows with sample data. Follow the prompts or explore the tabs directly.
+  [39m
+      at failureErrorWithLog (C:\Users\riley\Desktop\Execution intel app\node_modules\esbuild\lib\main.js:1748:15)
+      at C:\Users\riley\Desktop\Execution intel app\node_modules\esbuild\lib\main.js:1017:50
+      at responseCallbacks.<computed> (C:\Users\riley\Desktop\Execution intel app\node_modules\esbuild\lib\main.js:884:9)
+      at handleIncomingPacket (C:\Users\riley\Desktop\Execution intel app\node_modules\esbuild\lib\main.js:939:12)
+      at Socket.readFromStdout (C:\Users\riley\Desktop\Execution intel app\node_modules\esbuild\lib\main.js:862:7)
+      at Socket.emit (node:events:509:28)
+      at addChunk (node:internal/streams/readable:563:12)
+      at readableAddChunkPushByteMode (node:internal/streams/readable:514:3)
+      at Readable.push (node:internal/streams/readable:394:5)
+      at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)
