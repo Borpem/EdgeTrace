@@ -409,9 +409,9 @@ export function FeatureEducationPage({
             Follow how a completed trade file becomes a diagnostic workflow, then a repeatable strategy review system.
           </p>
         </div>
-        <div className="relative">
-          <div className="absolute left-[7%] right-[7%] top-[4.4rem] hidden h-px bg-gradient-to-r from-cyan/25 via-violet/22 to-warning/18 xl:block" />
-          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-7">
+        <div className="relative isolate">
+          <div className="pointer-events-none absolute left-[7%] right-[7%] top-[4.4rem] z-0 hidden h-px bg-gradient-to-r from-cyan/20 via-violet/18 to-warning/14 xl:block" />
+          <div className="relative z-10 grid gap-3 md:grid-cols-2 xl:grid-cols-7">
             {workflowStages.map((stage, index) => (
               <WorkflowStageCard key={stage.title} stage={stage} offset={index % 2 === 1} />
             ))}
@@ -592,7 +592,7 @@ function WorkflowStageCard({ stage, offset }: { stage: WorkflowStage; offset: bo
 
   return (
     <article
-      className={`relative border border-white/[0.1] bg-[#050a12]/92 p-4 transition hover:border-white/[0.18] hover:bg-[#07101c] ${
+      className={`relative z-10 border border-white/[0.12] bg-[#050a12] p-4 shadow-[0_0_0_1px_rgba(3,6,12,0.92),0_18px_44px_-36px_rgba(0,0,0,0.95)] transition hover:border-white/[0.18] hover:bg-[#07101c] ${
         offset ? "xl:translate-y-4" : ""
       }`}
     >
