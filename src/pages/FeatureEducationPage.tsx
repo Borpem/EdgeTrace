@@ -7,7 +7,6 @@ import {
   Layers,
   Minus,
   Search,
-  UploadCloud,
   type LucideIcon
 } from "lucide-react";
 import { PageShell } from "../components/ui/Primitives";
@@ -80,24 +79,6 @@ const featureRows: Array<{ label: string; feature?: FeatureKey; access: Record<P
   { label: "Regression alerts", feature: "regression_alerts", access: { free: "-", pro: "-", advanced: "Coming soon" } },
   { label: "Edge Stability Score", feature: "edge_stability_score", access: { free: "-", pro: "-", advanced: "Coming soon" } }
 ];
-
-const planSummaries: Record<PlanId, { title: string; body: string; bullets: string[] }> = {
-  free: {
-    title: "Explore the first diagnostic.",
-    body: "Create one full report and preview how EdgeTrace explains completed trade history.",
-    bullets: ["1 full diagnostic report", "Generic CSV import", "Preview deeper insights"]
-  },
-  pro: {
-    title: "Full strategy workflow.",
-    body: "Unlock the practical loop: full reports, drilldowns, comparisons, strategy sets, and monitoring.",
-    bullets: ["Unlimited full reports", "All supported broker imports", "Full attribution and compare"]
-  },
-  advanced: {
-    title: "Continuous strategy intelligence.",
-    body: "Coming soon: advanced monitoring tools for ongoing strategy review.",
-    bullets: ["Recurring reviews", "Regression alerts", "Edge Stability Score"]
-  }
-};
 
 export function FeatureEducationPage({
   profile,
@@ -179,57 +160,69 @@ function HeroSection({
 
 function WorkspaceVisual() {
   return (
-    <div className="relative overflow-hidden border border-white/[0.1] bg-[linear-gradient(145deg,rgba(8,13,22,0.98),rgba(4,8,15,0.94))] p-5 shadow-[0_24px_84px_-58px_rgba(88,214,255,0.65)]">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_10%,rgba(124,92,255,0.16),transparent_35%),radial-gradient(circle_at_16%_86%,rgba(34,197,245,0.14),transparent_34%)]" />
+    <div className="relative overflow-hidden border border-white/[0.1] bg-[linear-gradient(145deg,rgba(8,13,22,0.98),rgba(4,8,15,0.96))] p-5 shadow-[0_24px_84px_-58px_rgba(88,214,255,0.65)]">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_10%,rgba(124,92,255,0.12),transparent_35%),radial-gradient(circle_at_18%_86%,rgba(34,197,245,0.11),transparent_34%)]" />
       <div className="relative">
         <div className="flex items-center justify-between border-b border-white/[0.08] pb-4">
           <div>
-            <p className="text-sm font-semibold text-ink">Diagnostic workspace</p>
-            <p className="mt-1 text-xs text-muted">Completed trades to strategy review</p>
+            <p className="text-sm font-semibold text-ink">Diagnostic report preview</p>
+            <p className="mt-1 text-xs text-muted">Completed trades to primary diagnosis</p>
           </div>
           <span className="border border-cyan/30 bg-cyan/[0.05] px-3 py-1 text-xs font-semibold text-cyan">
             Report ready
           </span>
         </div>
 
-        <div className="mt-5 grid gap-4 md:grid-cols-[0.9fr_1.1fr]">
-          <div className="space-y-3">
+        <div className="mt-5 grid gap-4">
+          <div className="grid gap-3 sm:grid-cols-[0.88fr_1.12fr]">
             <div className="border border-white/[0.08] bg-black/25 p-4">
-              <div className="flex items-center gap-3">
-                <FileText className="text-cyan" size={22} />
+              <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className="text-sm font-semibold text-ink">broker-export.csv</p>
-                  <p className="text-xs text-muted">1,248 completed trades</p>
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">Upload</p>
+                  <p className="mt-3 text-base font-semibold text-ink">broker-export.csv</p>
+                  <p className="mt-1 text-xs text-muted">1,248 completed trades</p>
                 </div>
+                <FileText className="text-cyan" size={24} />
               </div>
               <div className="mt-4 h-2 bg-white/[0.08]">
                 <div className="h-full w-[86%] bg-gradient-to-r from-cyan to-accent" />
               </div>
             </div>
-            <div className="border border-violet/25 bg-violet/[0.045] p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-violet">Leak attribution</p>
-              <p className="mt-3 text-xl font-semibold tracking-[-0.04em] text-ink">Opening session cost drag</p>
-              <p className="mt-2 text-sm leading-6 text-muted">Largest remaining drag after normalization.</p>
+
+            <div className="border border-white/[0.08] bg-[#050a12]/94 p-4">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-cyan">Strategy health</p>
+                  <p className="mt-3 text-5xl font-semibold tracking-[-0.07em] text-ink">82</p>
+                </div>
+                <p className="border border-cyan/25 bg-cyan/[0.04] px-2.5 py-1 text-xs font-semibold text-cyan">
+                  Improving
+                </p>
+              </div>
+              <svg className="mt-4 h-20 w-full overflow-visible" viewBox="0 0 320 92" role="img" aria-label="Strategy trend line">
+                <path d="M8 70 C54 60, 76 75, 112 48 S170 44, 210 34 S270 27, 312 16" fill="none" stroke="rgba(88,214,255,0.92)" strokeWidth="3" />
+                <path d="M8 78 C62 74, 92 66, 136 66 S206 50, 312 42" fill="none" stroke="rgba(255,255,255,0.16)" strokeWidth="2" />
+                <circle cx="312" cy="16" r="4" fill="rgba(88,214,255,1)" />
+              </svg>
             </div>
           </div>
 
-          <div className="border border-white/[0.08] bg-[#050a12]/92 p-4">
-            <div className="flex items-end justify-between">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-cyan">Strategy health</p>
-                <p className="mt-3 text-6xl font-semibold tracking-[-0.07em] text-ink">82</p>
-              </div>
-              <p className="pb-2 text-sm font-semibold text-cyan">Improving</p>
+          <div className="grid gap-3 sm:grid-cols-[1.08fr_0.92fr]">
+            <div className="border border-violet/25 bg-violet/[0.045] p-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-violet">Primary diagnosis</p>
+              <p className="mt-3 text-xl font-semibold tracking-[-0.04em] text-ink">Cost drag reduced, but still visible.</p>
+              <p className="mt-2 text-sm leading-6 text-muted">Next inspection starts with opening-session trades.</p>
             </div>
-            <svg className="mt-5 h-28 w-full overflow-visible" viewBox="0 0 320 112" role="img" aria-label="Strategy trend line">
-              <path d="M8 88 C54 76, 68 94, 108 66 S168 52, 206 42 S266 35, 312 20" fill="none" stroke="rgba(88,214,255,0.92)" strokeWidth="3" />
-              <path d="M8 96 C62 90, 86 82, 130 82 S202 62, 312 48" fill="none" stroke="rgba(255,255,255,0.16)" strokeWidth="2" />
-              <circle cx="312" cy="20" r="4" fill="rgba(88,214,255,1)" />
-            </svg>
-            <div className="mt-4 grid grid-cols-3 gap-2 text-xs text-muted">
-              <span>Import</span>
-              <span>Compare</span>
-              <span>Monitor</span>
+            <div className="border border-white/[0.08] bg-black/25 p-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">Workflow</p>
+              <div className="mt-4 space-y-3 text-sm">
+                {["Import", "Diagnose", "Inspect", "Monitor"].map((step, index) => (
+                  <div key={step} className="flex items-center gap-3 text-muted">
+                    <span className={`h-1.5 w-1.5 ${index < 3 ? "bg-cyan" : "bg-violet"}`} />
+                    <span>{step}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -241,16 +234,16 @@ function WorkspaceVisual() {
 function WorkflowWalkthrough() {
   return (
     <section className="relative z-10 py-12 md:py-16">
-      <div className="mb-10 max-w-3xl">
-        <h2 className="text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl">
+      <div className="mb-9 grid gap-5 lg:grid-cols-[0.78fr_1fr] lg:items-end">
+        <h2 className="max-w-4xl text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl xl:text-6xl">
           From broker export to strategy intelligence.
         </h2>
-        <p className="mt-4 text-base leading-7 text-muted">
+        <p className="max-w-xl text-base leading-7 text-muted">
           The workflow is intentionally linear: import the file, isolate what changed, then monitor whether the strategy
           keeps improving.
         </p>
       </div>
-      <div className="space-y-14">
+      <div className="space-y-12">
         <WalkthroughSection
           title="Import completed trade history."
           body="Upload broker exports or generic CSV files. EdgeTrace normalizes completed trades into a structured diagnostic workflow."
@@ -261,11 +254,6 @@ function WorkflowWalkthrough() {
           body="EdgeTrace separates expectancy, cost drag, R capture, symbol performance, setup behavior, and time-window attribution so traders can isolate the largest source of edge or leakage."
           visual={<AttributionVisual />}
           reverse
-        />
-        <WalkthroughSection
-          title="Track whether strategy quality is improving or deteriorating."
-          body="Compare iterations, monitor strategy sets, and identify regression risk before weak behavior compounds."
-          visual={<EvolutionLineVisual compact />}
         />
       </div>
     </section>
@@ -310,10 +298,10 @@ function ImportReportVisual() {
         <div className="border border-cyan/20 bg-cyan/[0.035] p-5">
           <p className="text-sm font-semibold text-cyan">Normalized report input</p>
           <div className="mt-5 space-y-3">
-            {["Trades mapped", "Costs detected", "Risk fields checked"].map((label, index) => (
+            {["Trades normalized", "Costs detected", "Mapping verified"].map((label) => (
               <div key={label} className="flex items-center justify-between border-b border-white/[0.07] pb-3 text-sm">
                 <span className="text-muted">{label}</span>
-                <span className={index === 2 ? "text-warning" : "text-cyan"}>{index === 2 ? "Review" : "Ready"}</span>
+                <span className="text-cyan">Ready</span>
               </div>
             ))}
           </div>
@@ -326,25 +314,37 @@ function ImportReportVisual() {
 function AttributionVisual() {
   return (
     <div className="relative overflow-hidden border border-white/[0.1] bg-[#050a12]/94 p-6">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(124,92,255,0.12),transparent_34%)]" />
-      <div className="relative grid gap-5 md:grid-cols-[1fr_auto_1fr] md:items-center">
-        <div>
-          <p className="text-sm font-semibold text-muted">Gross edge</p>
-          <p className="mt-2 text-4xl font-semibold tracking-[-0.06em] text-ink">$6.1k</p>
-          <div className="mt-5 h-2 bg-white/[0.08]">
-            <div className="h-full w-[78%] bg-gradient-to-r from-cyan to-accent" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(124,92,255,0.11),transparent_34%)]" />
+      <div className="relative">
+        <div className="grid gap-4 md:grid-cols-3">
+          <div className="border border-white/[0.08] bg-black/20 p-4">
+            <p className="text-sm font-semibold text-muted">Gross edge</p>
+            <p className="mt-2 text-4xl font-semibold tracking-[-0.06em] text-ink">$6.1k</p>
+            <p className="mt-3 text-xs text-muted">Before costs</p>
+          </div>
+          <div className="border border-warning/35 bg-warning/[0.045] p-4">
+            <p className="text-sm font-semibold text-warning">Leak detected</p>
+            <p className="mt-2 text-4xl font-semibold tracking-[-0.06em] text-ink">22.6%</p>
+            <p className="mt-3 text-xs text-muted">Cost drag</p>
+          </div>
+          <div className="border border-cyan/25 bg-cyan/[0.04] p-4">
+            <p className="text-sm font-semibold text-cyan">After-cost return</p>
+            <p className="mt-2 text-4xl font-semibold tracking-[-0.06em] text-ink">$4.8k</p>
+            <p className="mt-3 text-xs text-muted">Net result</p>
           </div>
         </div>
-        <div className="grid h-32 w-32 place-items-center border border-warning/35 bg-warning/[0.045]">
-          <div className="text-center">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-warning">Leak</p>
-            <p className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-ink">22.6%</p>
+
+        <div className="mt-5 border border-white/[0.08] bg-black/20 p-4">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm font-semibold text-ink">Primary attribution path</p>
+              <p className="mt-1 text-sm text-muted">Opening-session costs remain the largest drag.</p>
+            </div>
+            <div className="flex items-center gap-2 text-xs text-muted">
+              <span className="h-1.5 w-12 bg-gradient-to-r from-cyan to-warning" />
+              <span>Gross to net</span>
+            </div>
           </div>
-        </div>
-        <div>
-          <p className="text-sm font-semibold text-muted">After-cost return</p>
-          <p className="mt-2 text-4xl font-semibold tracking-[-0.06em] text-cyan">$4.8k</p>
-          <p className="mt-5 text-sm leading-6 text-muted">Opening-session costs remain the largest attribution drag.</p>
         </div>
       </div>
     </div>
@@ -472,8 +472,8 @@ function PlansSection({
             Choose how deep you want to inspect performance.
           </h2>
           <p className="mt-4 max-w-2xl text-base leading-7 text-muted">
-            The plans move from one full diagnostic to a complete strategy review workflow, with Advanced monitoring
-            marked as coming soon.
+            EdgeTrace scales from a first diagnostic report to full attribution, comparison, monitoring, and future
+            strategy intelligence workflows.
           </p>
         </div>
         {isAuthenticated && (
@@ -483,21 +483,34 @@ function PlansSection({
         )}
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        {planOrder.map((planId) => (
-          <PlanCard key={planId} planId={planId} active={currentPlan === planId} />
-        ))}
+      <div className="mb-4 grid gap-3 md:grid-cols-3">
+        {planOrder.map((planId) => {
+          const toneClass = toneClasses[planToneFromId(planId)];
+          return (
+            <div key={planId} className={`border px-4 py-3 ${toneClass.border} ${toneClass.bg}`}>
+              <p className={`text-xs font-semibold uppercase tracking-[0.16em] ${toneClass.text}`}>
+                {planConfigs[planId].displayName}
+              </p>
+              <p className="mt-2 text-sm text-muted">
+                {planId === "free"
+                  ? "First diagnostic and previews"
+                  : planId === "pro"
+                    ? "Full workflow access"
+                    : "Coming soon monitoring"}
+              </p>
+            </div>
+          );
+        })}
       </div>
 
-      <div className="mt-8">
-        <p className="mb-3 text-sm font-semibold text-muted">Feature access by plan</p>
-        <div className="overflow-x-auto border border-white/[0.08] bg-[#050a12]/92">
+      <div>
+        <div className="overflow-x-auto border border-white/[0.1] bg-[#050a12]/94 shadow-[0_18px_60px_-52px_rgba(88,214,255,0.45)]">
           <table className="min-w-full text-sm">
-            <thead className="border-b border-white/[0.09] bg-white/[0.025] text-left text-muted">
+            <thead className="border-b border-white/[0.1] bg-white/[0.035] text-left text-muted">
               <tr>
-                <th className="px-5 py-4 font-medium">Feature</th>
+                <th className="px-5 py-4 font-semibold text-ink">Feature access</th>
                 {planOrder.map((planId) => (
-                  <th key={planId} className={`px-5 py-4 font-medium ${currentPlanTableClass(currentPlan, planId, "head")}`}>
+                  <th key={planId} className={`px-5 py-4 font-semibold ${currentPlanTableClass(currentPlan, planId, "head")}`}>
                     {planConfigs[planId].displayName}
                   </th>
                 ))}
@@ -525,34 +538,6 @@ function PlansSection({
         </button>
       )}
     </section>
-  );
-}
-
-function PlanCard({ planId, active }: { planId: PlanId; active: boolean }) {
-  const config = planConfigs[planId];
-  const summary = planSummaries[planId];
-  const toneClass = toneClasses[planToneFromId(planId)];
-
-  return (
-    <article className={`border p-6 ${active ? `${toneClass.border} bg-[#07101c]` : "border-white/[0.1] bg-[#050a12]/92"}`}>
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h3 className="text-2xl font-semibold tracking-[-0.04em] text-ink">{config.displayName}</h3>
-          <p className={`mt-2 text-sm font-semibold ${toneClass.text}`}>{config.monthlyPriceLabel}</p>
-        </div>
-        {active && <span className={`border px-3 py-1 text-xs font-semibold ${toneClass.border} ${toneClass.text}`}>Current</span>}
-      </div>
-      <p className="mt-5 text-lg font-semibold leading-6 text-ink">{summary.title}</p>
-      <p className="mt-3 text-sm leading-6 text-muted">{summary.body}</p>
-      <ul className="mt-6 space-y-3">
-        {summary.bullets.map((bullet) => (
-          <li key={bullet} className="flex gap-3 text-sm leading-5 text-muted">
-            <Check className={`mt-0.5 shrink-0 ${toneClass.text}`} size={15} />
-            <span>{bullet}</span>
-          </li>
-        ))}
-      </ul>
-    </article>
   );
 }
 
