@@ -212,7 +212,7 @@ export function ReportsPage({
             </button>
             {onExploreDemo && (
               <button className="EdgeTrace-secondary-button" onClick={onExploreDemo}>
-                Explore Demo
+                Load Demo Workspace
               </button>
             )}
             <button className="EdgeTrace-secondary-button" onClick={openFeatureGuide}>

@@ -31,6 +31,7 @@ import { FeatureEducationPage } from "./pages/FeatureEducationPage";
 import { HomePage } from "./pages/HomePage";
 import { LoginPage } from "./pages/LoginPage";
 import { PricingPage } from "./pages/PricingPage";
+import { PublicDemoPage } from "./pages/PublicDemoPage";
 import { ReconstructionAuditPage } from "./pages/ReconstructionAuditPage";
 import { ReportsPage } from "./pages/ReportsPage";
 import { SignupPage } from "./pages/SignupPage";
@@ -38,7 +39,7 @@ import { StrategyDashboardPage } from "./pages/StrategyDashboardPage";
 import { UploadPage } from "./pages/UploadPage";
 import type { DiagnosticsResult, ReportSummary, UserProfile } from "./types";
 
-type Page = "home" | "pricing" | "login" | "signup" | "strategyDashboard" | "upload" | "reports" | "collections" | "collectionDetail" | "collectionAttribution" | "collectionReviewWorkspace" | "compare" | "features" | "dashboard" | "drilldown" | "compareDrilldown" | "reconstructionAudit";
+type Page = "home" | "pricing" | "login" | "signup" | "demo" | "strategyDashboard" | "upload" | "reports" | "collections" | "collectionDetail" | "collectionAttribution" | "collectionReviewWorkspace" | "compare" | "features" | "dashboard" | "drilldown" | "compareDrilldown" | "reconstructionAudit";
 type DrilldownSelection = { dimension: BreakdownDimension; group: string };
 type CompareDrilldownSelection = {
   reportA: DiagnosticsResult;
@@ -103,6 +104,8 @@ export function App() {
         return "/login";
       case "signup":
         return "/signup";
+      case "demo":
+        return "/demo";
       case "strategyDashboard":
         return "/app/dashboard";
       case "upload":
@@ -386,6 +389,14 @@ export function App() {
       setPage("pricing");
       return;
     }
+    if (pathname === "/how-it-works") {
+      setPage("features");
+      return;
+    }
+    if (pathname === "/demo") {
+      setPage("demo");
+      return;
+    }
     if (pathname === "/login") {
       if (authOverride) {
         const next = new URLSearchParams(search).get("next");
@@ -632,6 +643,14 @@ export function App() {
               </button>
               <button
                 className={`border-b py-1.5 font-semibold ${
+                  page === "features" ? "border-ink text-ink" : "border-transparent text-muted hover:border-white/20 hover:text-ink"
+                }`}
+                onClick={() => navigate("features", "/how-it-works")}
+              >
+                How It Works
+              </button>
+              <button
+                className={`border-b py-1.5 font-semibold ${
                   page === "pricing" ? "border-ink text-ink" : "border-transparent text-muted hover:border-white/20 hover:text-ink"
                 }`}
                 onClick={() => navigate("pricing")}
@@ -718,18 +737,11 @@ export function App() {
       {page === "home" && (
         <>
           <HomePage
-            onStart={() => navigate(isAuthenticated ? "upload" : "signup")}
-            onLearn={() =>
-              navigate(
-                isAuthenticated ? "features" : "signup",
-                isAuthenticated ? "/app/how-it-works" : "/signup?next=/app/how-it-works"
-              )
-            }
-            onFullDemo={() => {
-              if (authMode === "clerk" && !isAuthenticated) navigate("signup");
-              else void launchFullDemo();
-            }}
+            onStart={() => navigate(isAuthenticated ? "upload" : "signup", isAuthenticated ? "/app/upload" : "/signup?next=/app/upload")}
+            onLearn={() => navigate("features", "/how-it-works")}
+            onFullDemo={() => navigate("demo", "/demo")}
             onCleanupDemo={() => void cleanUpDemoData()}
+            showDemoCleanup={isAuthenticated}
             fullDemoLoading={fullDemoLoading}
             fullDemoStatus={fullDemoStatus}
           />
@@ -748,8 +760,17 @@ export function App() {
       {page === "pricing" && (
         <PricingPage
           profile={userProfile}
-          onStart={() => navigate(isAuthenticated ? "upload" : "signup")}
+          onStart={() => navigate(isAuthenticated ? "upload" : "signup", isAuthenticated ? "/app/upload" : "/signup?next=/app/upload")}
           onPlanChanged={setUserProfile}
+        />
+      )}
+      {page === "demo" && (
+        <PublicDemoPage
+          isAuthenticated={isAuthenticated}
+          onAnalyze={() => navigate(isAuthenticated ? "upload" : "signup", isAuthenticated ? "/app/upload" : "/signup?next=/app/upload")}
+          onSignup={() => navigate("signup", "/signup?next=/app/upload")}
+          onPricing={() => navigate("pricing", "/pricing")}
+          onHowItWorks={() => navigate("features", "/how-it-works")}
         />
       )}
       {page === "login" && (
@@ -907,8 +928,11 @@ export function App() {
       {page === "features" && (
         <FeatureEducationPage
           profile={userProfile}
-          onAnalyze={() => navigate("upload")}
+          isAuthenticated={isAuthenticated}
+          onAnalyze={() => navigate(isAuthenticated ? "upload" : "signup", isAuthenticated ? "/app/upload" : "/signup?next=/app/upload")}
           onPricing={() => navigate("pricing", "/pricing")}
+          onDemo={() => navigate("demo", "/demo")}
+          onSignup={() => navigate("signup", "/signup?next=/app/upload")}
           onOpenReport={async (reportId) => {
             try {
               const report = await getReport(reportId);

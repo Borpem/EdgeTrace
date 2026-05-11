@@ -15,6 +15,7 @@ export function HomePage({
   onFullDemo,
   onLearn,
   onCleanupDemo,
+  showDemoCleanup = false,
   fullDemoLoading,
   fullDemoStatus
 }: {
@@ -22,6 +23,7 @@ export function HomePage({
   onFullDemo: () => void;
   onLearn: () => void;
   onCleanupDemo: () => void;
+  showDemoCleanup?: boolean;
   fullDemoLoading?: boolean;
   fullDemoStatus?: string;
 }) {
@@ -73,13 +75,15 @@ export function HomePage({
             alt="EdgeTrace"
             className="h-20 w-auto object-contain opacity-60"
           />
-          <button
-            className="text-xs font-semibold text-muted hover:text-ink"
-            onClick={onCleanupDemo}
-            disabled={fullDemoLoading}
-          >
-            Clean up demo data
-          </button>
+          {showDemoCleanup && (
+            <button
+              className="text-xs font-semibold text-muted hover:text-ink"
+              onClick={onCleanupDemo}
+              disabled={fullDemoLoading}
+            >
+              Clean up demo data
+            </button>
+          )}
         </div>
       </section>
     </main>

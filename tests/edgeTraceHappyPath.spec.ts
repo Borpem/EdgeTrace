@@ -1,7 +1,8 @@
 import { expect, test, type APIRequestContext, type Page } from "@playwright/test";
 
 const apiBaseUrl = process.env.E2E_API_BASE_URL ?? "http://127.0.0.1:4107";
-const e2eReportName = "E2E Sample CSV Report";
+const e2eReportPrefix = "E2E Sample CSV Report";
+const e2eReportName = `${e2eReportPrefix} Primary`;
 
 test.describe.serial("EdgeTrace happy path", () => {
   test.beforeAll(async ({ request }) => {
@@ -19,13 +20,14 @@ test.describe.serial("EdgeTrace happy path", () => {
 
     await expect(page.getByText(/Know exactly why your strategy wins or fails/i)).toBeVisible();
     await expect(page.getByRole("button", { name: "Product" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "How It Works" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Pricing" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Login" })).toBeVisible();
     await page.getByRole("button", { name: "Analyze My Trades", exact: true }).click();
 
     await expect(page.getByText("Create a strategy diagnostics workspace.")).toBeVisible();
     await page.getByRole("button", { name: "Create Demo Account" }).click();
-    await expect(page.getByText("Strategy Dashboard")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Create a Diagnostic Report" })).toBeVisible();
   });
 
   test("Upload sample CSV flow", async ({ page }) => {
@@ -62,26 +64,35 @@ test.describe.serial("EdgeTrace happy path", () => {
     await expect(page.getByText("Breakdown Comparison")).toBeVisible();
   });
 
-  test("Full demo collection flow", async ({ page }) => {
+  test("Public interactive demo flow", async ({ page }) => {
     await page.goto("/");
     await page.getByTestId("launch-full-demo-button").click();
 
-    await expect(page.getByTestId("collection-detail")).toBeVisible({ timeout: 45_000 });
-    await expect(page.getByText("Strategy Iteration Readout")).toBeVisible();
-    await expect(page.getByText("Review Queue")).toBeVisible();
-    await expect(page.getByRole("button", { name: "ORB Demo V1 - Baseline" })).toBeVisible();
+    await expect(page).toHaveURL(/\/demo/);
+    await expect(page.getByText("Interactive Demo", { exact: true })).toBeVisible();
+    await expect(page.getByText(/Demo data - not your account/i)).toBeVisible();
+    await expect(page.getByText("Strategy Health", { exact: true }).first()).toBeVisible();
+    await expect(page.getByText("Primary Diagnosis", { exact: true }).first()).toBeVisible();
+    await expect(page.getByText("Drilldown Preview", { exact: true })).toBeVisible();
   });
 });
 
 async function ensureAtLeastTwoReports(page: Page, request: APIRequestContext) {
   let reports = await listReports(request);
   while (reports.length < 2) {
-    await page.goto("/");
-    await page.getByTestId("launch-full-demo-button").click();
-    await expect(page.getByTestId("collection-detail")).toBeVisible({ timeout: 45_000 });
+    await createReportFromUpload(page, `${e2eReportPrefix} ${reports.length + 1}`);
     reports = await listReports(request);
   }
   return reports.slice(0, 2);
+}
+
+async function createReportFromUpload(page: Page, name: string) {
+  await login(page, "/app/upload");
+  await page.getByTestId("upload-input").setInputFiles("public/sample-trades.csv");
+  await expect(page.getByText("Detected Source", { exact: true })).toBeVisible();
+  await page.getByPlaceholder("Optional report name").fill(name);
+  await page.getByTestId("sticky-run-diagnostics-button").click();
+  await expect(page.getByTestId("dashboard-health-card")).toBeVisible();
 }
 
 async function login(page: Page, nextPath = "/app/dashboard") {
@@ -109,7 +120,7 @@ async function cleanupE2eReports(request: APIRequestContext) {
   const reports = await listReports(request);
   await Promise.all(
     reports
-      .filter((report) => report.name === e2eReportName)
+      .filter((report) => report.name.startsWith(e2eReportPrefix))
       .map((report) => request.delete(`${apiBaseUrl}/api/diagnostics/${report.id}`))
   );
 }

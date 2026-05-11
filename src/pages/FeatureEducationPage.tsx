@@ -8,8 +8,11 @@ import type { ActivationSummary, ReportSummary, UserProfile } from "../types";
 
 type FeatureEducationPageProps = {
   profile?: UserProfile | null;
+  isAuthenticated?: boolean;
   onAnalyze: () => void;
   onPricing: () => void;
+  onDemo?: () => void;
+  onSignup?: () => void;
   onOpenReport?: (reportId: string) => void;
   onCreateStrategySet?: () => void;
 };
@@ -117,8 +120,11 @@ const featureRows: Array<{ label: string; feature?: FeatureKey; access: Record<P
 
 export function FeatureEducationPage({
   profile,
+  isAuthenticated = Boolean(profile),
   onAnalyze,
   onPricing,
+  onDemo,
+  onSignup,
   onOpenReport,
   onCreateStrategySet
 }: FeatureEducationPageProps) {
@@ -128,12 +134,17 @@ export function FeatureEducationPage({
   const latestReport = reports[0];
 
   useEffect(() => {
-    trackEvent("feature_education_opened");
+    trackEvent(isAuthenticated ? "feature_education_opened" : "public_how_it_works_opened");
+    if (!isAuthenticated) {
+      setReports([]);
+      setActivation(null);
+      return;
+    }
     void listReports()
       .then((response) => setReports(Array.isArray(response.reports) ? response.reports : []))
       .catch(() => setReports([]));
     void getActivationSummary().then(setActivation).catch(() => setActivation(null));
-  }, []);
+  }, [isAuthenticated]);
 
   useEffect(() => {
     const feature = new URLSearchParams(window.location.search).get("feature");
@@ -145,6 +156,14 @@ export function FeatureEducationPage({
   }, []);
 
   const nextAction = useMemo(() => {
+    if (!isAuthenticated) {
+      return {
+        title: "Preview the workflow before creating an account.",
+        body: "Open the public demo to see how a completed trade file becomes a diagnostic report, attribution path, and next inspection.",
+        cta: "Try Interactive Demo",
+        action: onDemo ?? onSignup ?? onAnalyze
+      };
+    }
     if (!activation?.hasCreatedReport) {
       return {
         title: "Start with your first diagnostic report.",
@@ -188,7 +207,7 @@ export function FeatureEducationPage({
       cta: plan.id === "free" ? "View Pricing" : "Analyze Trades",
       action: plan.id === "free" ? onPricing : onAnalyze
     };
-  }, [activation, latestReport, onAnalyze, onCreateStrategySet, onOpenReport, onPricing, plan.id]);
+  }, [activation, isAuthenticated, latestReport, onAnalyze, onCreateStrategySet, onDemo, onOpenReport, onPricing, onSignup, plan.id]);
 
   return (
     <main className="EdgeTrace-shell py-10">
@@ -202,20 +221,48 @@ export function FeatureEducationPage({
               and long-term strategy health monitoring.
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
-              <button className="EdgeTrace-primary-button" onClick={onAnalyze}>
-                Create Diagnostic Report <ArrowRight size={16} />
-              </button>
-              {plan.id === "free" && (
-                <button className="EdgeTrace-secondary-button" onClick={onPricing}>
-                  View Pricing
-                </button>
+              {isAuthenticated ? (
+                <>
+                  <button className="EdgeTrace-primary-button" onClick={onAnalyze}>
+                    Create Diagnostic Report <ArrowRight size={16} />
+                  </button>
+                  {plan.id === "free" && (
+                    <button className="EdgeTrace-secondary-button" onClick={onPricing}>
+                      View Pricing
+                    </button>
+                  )}
+                </>
+              ) : (
+                <>
+                  {onDemo && (
+                    <button className="EdgeTrace-primary-button" onClick={onDemo}>
+                      Try Interactive Demo <ArrowRight size={16} />
+                    </button>
+                  )}
+                  {onSignup && (
+                    <button className="EdgeTrace-secondary-button" onClick={onSignup}>
+                      Create Free Account
+                    </button>
+                  )}
+                  <button className="EdgeTrace-secondary-button" onClick={onPricing}>
+                    View Pricing
+                  </button>
+                </>
               )}
             </div>
           </div>
           <div className="border border-cyan/30 bg-cyan/[0.045] p-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan">Current Plan</p>
-            <p className="mt-3 text-4xl font-semibold tracking-[-0.055em] text-ink">{plan.displayName}</p>
-            <p className="mt-2 text-sm leading-6 text-muted">{plan.description}</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan">
+              {isAuthenticated ? "Current Plan" : "Plan Guide"}
+            </p>
+            <p className="mt-3 text-4xl font-semibold tracking-[-0.055em] text-ink">
+              {isAuthenticated ? plan.displayName : "Free to Advanced"}
+            </p>
+            <p className="mt-2 text-sm leading-6 text-muted">
+              {isAuthenticated
+                ? plan.description
+                : "Review the full feature scope before creating an account. Free starts with one full diagnostic; Pro unlocks the workflow."}
+            </p>
           </div>
         </div>
       </section>
@@ -263,9 +310,13 @@ export function FeatureEducationPage({
             <p className="EdgeTrace-eyebrow">Plan Access</p>
             <h2 className="mt-2 text-3xl font-semibold tracking-[-0.055em] text-ink">What your plan includes.</h2>
           </div>
-          <p className="text-sm text-muted">
-            Current plan: <span className="font-semibold text-cyan">{plan.displayName}</span>
-          </p>
+          {isAuthenticated ? (
+            <p className="text-sm text-muted">
+              Current plan: <span className="font-semibold text-cyan">{plan.displayName}</span>
+            </p>
+          ) : (
+            <p className="text-sm text-muted">Public preview: compare plans before signing up.</p>
+          )}
         </div>
         <div className="overflow-x-auto border border-white/[0.1]">
           <table className="min-w-full text-sm">
@@ -280,7 +331,7 @@ export function FeatureEducationPage({
                     {planConfigs[planId].displayName}
                   </th>
                 ))}
-                <th className="px-4 py-3 font-medium">Your Access</th>
+                <th className="px-4 py-3 font-medium">{isAuthenticated ? "Your Access" : "Free Preview"}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/[0.08]">
