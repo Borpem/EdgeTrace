@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import {
+  Activity,
   ArrowRight,
   BarChart3,
+  Bell,
   Check,
   Database,
   FileSearch,
@@ -13,7 +15,9 @@ import {
   Route,
   Search,
   ShieldCheck,
+  ShieldAlert,
   UploadCloud,
+  Users,
   type LucideIcon
 } from "lucide-react";
 import { PageShell } from "../components/ui/Primitives";
@@ -245,6 +249,34 @@ const planDepth: Record<PlanId, number> = {
   advanced: 100
 };
 
+const advancedPreviewFeatures: Array<{ title: string; body: string; icon: LucideIcon }> = [
+  {
+    title: "Recurring strategy reviews",
+    body: "Periodic summaries of what improved, weakened, or deserves review.",
+    icon: Activity
+  },
+  {
+    title: "Regression alerts",
+    body: "Flag when expectancy, cost drag, or R capture starts moving the wrong way.",
+    icon: Bell
+  },
+  {
+    title: "Edge Stability Score",
+    body: "A durability readout based on consistency, outliers, losses, and segment concentration.",
+    icon: Gauge
+  },
+  {
+    title: "Strategy deterioration monitoring",
+    body: "Track whether a strategy is becoming unstable across reports and iterations.",
+    icon: ShieldAlert
+  },
+  {
+    title: "Future team/API support",
+    body: "Designed for deeper workflows, shared review, and programmatic access later.",
+    icon: Users
+  }
+];
+
 export function FeatureEducationPage({
   profile,
   isAuthenticated = Boolean(profile),
@@ -340,8 +372,8 @@ export function FeatureEducationPage({
   const heroAccountLabel = isAuthenticated ? "Create Diagnostic Report" : "Create Free Account";
 
   return (
-    <PageShell className="pb-16">
-      <section className="relative overflow-hidden border-b border-white/[0.08] pb-10 pt-1 md:pb-12">
+    <PageShell className="relative z-10 pb-16">
+      <section className="relative z-10 overflow-hidden border-b border-white/[0.08] pb-10 pt-1 md:pb-12">
         <div className="pointer-events-none absolute left-[56%] top-0 h-72 w-[42rem] -translate-x-1/2 rounded-full bg-cyan/10 blur-[110px]" />
         <div className="relative grid gap-7 lg:grid-cols-[1fr_0.95fr] lg:items-center">
           <div>
@@ -364,11 +396,11 @@ export function FeatureEducationPage({
               </button>
             </div>
           </div>
-          <ProgressionPanel currentPlan={plan.id} />
+          <ProgressionPanel />
         </div>
       </section>
 
-      <section className="py-10 md:py-12">
+      <section className="relative z-10 py-10 md:py-12">
         <div className="mb-6 grid gap-4 lg:grid-cols-[0.74fr_1fr] lg:items-end">
           <h2 className="max-w-2xl text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl">
             From import to strategy monitoring.
@@ -378,7 +410,7 @@ export function FeatureEducationPage({
           </p>
         </div>
         <div className="relative">
-          <div className="absolute left-[7%] right-[7%] top-[4.4rem] hidden h-px bg-gradient-to-r from-cyan/45 via-violet/35 to-warning/25 xl:block" />
+          <div className="absolute left-[7%] right-[7%] top-[4.4rem] hidden h-px bg-gradient-to-r from-cyan/25 via-violet/22 to-warning/18 xl:block" />
           <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-7">
             {workflowStages.map((stage, index) => (
               <WorkflowStageCard key={stage.title} stage={stage} offset={index % 2 === 1} />
@@ -387,7 +419,7 @@ export function FeatureEducationPage({
         </div>
       </section>
 
-      <section className="border-y border-white/[0.08] py-11 md:py-14">
+      <section className="relative z-10 border-y border-white/[0.08] bg-[#03060c]/55 py-11 md:py-14">
         <div className="mb-8 max-w-4xl">
           <h2 className="text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl">
             What EdgeTrace analyzes.
@@ -404,7 +436,7 @@ export function FeatureEducationPage({
         </div>
       </section>
 
-      <section className="py-11 md:py-14">
+      <section className="relative z-10 py-11 md:py-14">
         <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
             <h2 className="max-w-3xl text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl">
@@ -416,8 +448,8 @@ export function FeatureEducationPage({
             </p>
           </div>
           {isAuthenticated && (
-            <p className="shrink-0 border border-cyan/30 bg-cyan/[0.04] px-4 py-3 text-sm text-muted">
-              Current plan: <span className="font-semibold text-cyan">{plan.displayName}</span>
+            <p className={`shrink-0 border px-4 py-3 text-sm text-muted ${currentPlanPillClass(plan.id)}`}>
+              Current plan: <span className="font-semibold">{plan.displayName}</span>
             </p>
           )}
         </div>
@@ -428,7 +460,9 @@ export function FeatureEducationPage({
         </div>
       </section>
 
-      <section className="border-y border-white/[0.08] py-11 md:py-14">
+      <AdvancedPreviewSection />
+
+      <section className="relative z-10 border-y border-white/[0.08] bg-[#03060c]/55 py-11 md:py-14">
         <div className="mx-auto mb-6 grid max-w-6xl gap-4 lg:grid-cols-[0.72fr_1.28fr] lg:items-end">
           <div>
             <h2 className="text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl">
@@ -436,11 +470,10 @@ export function FeatureEducationPage({
             </h2>
           </div>
           <p className="max-w-3xl text-base leading-7 text-muted">
-            Summary cards show the path. The table gives the precise access model for reports, attribution,
-            monitoring, and Advanced capabilities.
+            The table gives the precise access model for reports, attribution, monitoring, and Advanced capabilities.
           </p>
         </div>
-        <div className="mx-auto max-w-6xl overflow-x-auto border border-white/[0.08] bg-white/[0.02]">
+        <div className="mx-auto max-w-6xl overflow-x-auto border border-white/[0.08] bg-[#050a12]/92">
           <table className="min-w-full text-sm">
             <thead className="border-b border-white/[0.1] bg-white/[0.03] text-left text-muted">
               <tr>
@@ -448,12 +481,11 @@ export function FeatureEducationPage({
                 {planOrder.map((planId) => (
                   <th
                     key={planId}
-                    className={`px-5 py-4 font-medium ${plan.id === planId ? "bg-cyan/[0.07] text-cyan" : ""}`}
+                    className={`px-5 py-4 font-medium ${currentPlanTableClass(plan.id, planId, "head")}`}
                   >
                     {planConfigs[planId].displayName}
                   </th>
                 ))}
-                <th className="px-5 py-4 font-medium">{isAuthenticated ? "Your Access" : "Free Preview"}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/[0.08]">
@@ -461,31 +493,10 @@ export function FeatureEducationPage({
                 <tr key={row.label} className={index % 2 === 1 ? "bg-white/[0.018]" : ""}>
                   <td className="px-5 py-4 font-semibold text-ink">{row.label}</td>
                   {planOrder.map((planId) => (
-                    <td key={planId} className={`px-5 py-4 ${plan.id === planId ? "bg-cyan/[0.03]" : ""}`}>
-                      <AccessValue value={row.access[planId]} />
+                    <td key={planId} className={`px-5 py-4 ${currentPlanTableClass(plan.id, planId, "body")}`}>
+                      <AccessValue value={row.access[planId]} planId={planId} />
                     </td>
                   ))}
-                  <td className="px-5 py-4">
-                    {row.feature ? (
-                      canUseFeature(plan, row.feature) ? (
-                        <span className="text-cyan">Included</span>
-                      ) : isAdvancedOnlyFeature(row.feature) ? (
-                        <span className="text-muted">Coming soon</span>
-                      ) : (
-                        <button
-                          className="border-b border-cyan/60 text-cyan transition hover:text-ink"
-                          onClick={() => {
-                            trackEvent("plan_feature_cta_clicked", { feature: row.feature ?? row.label });
-                            onPricing();
-                          }}
-                        >
-                          Upgrade
-                        </button>
-                      )
-                    ) : (
-                      <span className="text-cyan">Included</span>
-                    )}
-                  </td>
                 </tr>
               ))}
             </tbody>
@@ -493,7 +504,7 @@ export function FeatureEducationPage({
         </div>
       </section>
 
-      <section className="pt-11 md:pt-14">
+      <section className="relative z-10 pt-11 md:pt-14">
         <div className="relative overflow-hidden border border-cyan/25 bg-[radial-gradient(circle_at_18%_0%,rgba(34,197,245,0.12),transparent_34%),radial-gradient(circle_at_88%_92%,rgba(124,92,255,0.1),transparent_36%),rgba(255,255,255,0.03)] p-7 md:p-9">
           <div className="max-w-4xl">
             <h2 className="text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl">
@@ -526,7 +537,7 @@ export function FeatureEducationPage({
   );
 }
 
-function ProgressionPanel({ currentPlan }: { currentPlan: PlanId }) {
+function ProgressionPanel() {
   const steps = [
     { label: "Import", metric: "CSV / broker export", icon: UploadCloud },
     { label: "Diagnose", metric: "Health + primary leak", icon: Gauge },
@@ -536,17 +547,14 @@ function ProgressionPanel({ currentPlan }: { currentPlan: PlanId }) {
   ];
 
   return (
-    <div className="relative border border-white/[0.1] bg-[linear-gradient(145deg,rgba(255,255,255,0.07),rgba(255,255,255,0.025))] p-4 shadow-[0_24px_72px_rgba(0,0,0,0.32)] md:p-5 lg:-ml-2">
+    <div className="relative border border-white/[0.1] bg-[linear-gradient(145deg,rgba(7,12,20,0.96),rgba(6,10,18,0.9))] p-4 shadow-[0_24px_72px_rgba(0,0,0,0.32)] md:p-5 lg:-ml-2">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(124,92,255,0.18),transparent_36%),radial-gradient(circle_at_20%_80%,rgba(34,197,245,0.12),transparent_34%)]" />
       <div className="relative">
-        <div className="flex items-center justify-between gap-5 border-b border-white/[0.1] pb-4">
+        <div className="border-b border-white/[0.1] pb-4">
           <div>
             <p className="text-sm font-semibold text-ink">Workflow progression</p>
             <p className="mt-1 text-xs text-muted">Import to monitoring, one report at a time.</p>
           </div>
-          <span className="border border-cyan/30 bg-cyan/[0.05] px-3 py-1 text-xs font-semibold text-cyan">
-            {planConfigs[currentPlan].displayName}
-          </span>
         </div>
         <div className="mt-4 space-y-2.5">
           {steps.map((step, index) => {
@@ -573,11 +581,6 @@ function ProgressionPanel({ currentPlan }: { currentPlan: PlanId }) {
             );
           })}
         </div>
-        <div className="mt-5 grid gap-2.5 sm:grid-cols-3">
-          <MiniMetric label="Cost drag" value="22.6%" tone="amber" />
-          <MiniMetric label="R capture" value="0.74R" tone="cyan" />
-          <MiniMetric label="Health" value="82" tone="purple" />
-        </div>
       </div>
     </div>
   );
@@ -589,7 +592,7 @@ function WorkflowStageCard({ stage, offset }: { stage: WorkflowStage; offset: bo
 
   return (
     <article
-      className={`relative border border-white/[0.1] bg-white/[0.025] p-4 transition hover:border-white/[0.18] hover:bg-white/[0.04] ${
+      className={`relative border border-white/[0.1] bg-[#050a12]/92 p-4 transition hover:border-white/[0.18] hover:bg-[#07101c] ${
         offset ? "xl:translate-y-4" : ""
       }`}
     >
@@ -625,7 +628,7 @@ function CapabilityGroup({ group, planId }: { group: (typeof capabilityGroups)[n
             <article
               id={feature.id}
               key={feature.id}
-              className="scroll-mt-28 border border-white/[0.08] bg-white/[0.022] p-4 transition hover:border-white/[0.16] hover:bg-white/[0.035]"
+              className="scroll-mt-28 border border-white/[0.08] bg-[#050a12]/92 p-4 transition hover:border-white/[0.16] hover:bg-[#07101c]"
             >
               <div className="flex items-start justify-between gap-3">
                 <Icon className={toneClass.text} size={24} strokeWidth={1.7} />
@@ -648,7 +651,7 @@ function PlanProgressCard({ planId, active }: { planId: PlanId; active: boolean 
   const toneClass = toneClasses[tone];
 
   return (
-    <article className={`border p-4 md:p-5 ${active ? `${toneClass.border} bg-white/[0.045]` : "border-white/[0.1] bg-white/[0.025]"}`}>
+    <article className={`border p-4 md:p-5 ${active ? `${toneClass.border} bg-[#07101c]` : "border-white/[0.1] bg-[#050a12]/90"}`}>
       <div className="flex items-start justify-between gap-4">
         <div>
           <h3 className="text-2xl font-semibold tracking-[-0.04em] text-ink">{config.displayName}</h3>
@@ -672,29 +675,22 @@ function PlanProgressCard({ planId, active }: { planId: PlanId; active: boolean 
   );
 }
 
-function MiniMetric({ label, value, tone }: { label: string; value: string; tone: "cyan" | "purple" | "amber" }) {
-  const toneClass = toneClasses[tone];
-  return (
-    <div className="border border-white/[0.09] bg-black/30 p-3">
-      <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted">{label}</p>
-      <p className={`mt-2 text-2xl font-semibold tracking-[-0.05em] ${toneClass.text}`}>{value}</p>
-    </div>
-  );
-}
-
 function PlanBadge({ label, active }: { label: string; active: boolean }) {
+  const tone = planToneFromLabel(label);
+  const toneClass = toneClasses[tone];
   return (
     <span
       className={`border px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] ${
-        active ? "border-cyan/50 text-cyan" : "border-white/[0.12] text-muted"
+        active ? `${toneClass.border} ${toneClass.text} ${toneClass.bg}` : `${toneClass.border} ${toneClass.text} bg-black/20`
       }`}
     >
-      {active ? "Included" : label}
+      {label}
     </span>
   );
 }
 
-function AccessValue({ value }: { value: string }) {
+function AccessValue({ value, planId }: { value: string; planId: PlanId }) {
+  const toneClass = toneClasses[planToneFromId(planId)];
   if (value === "-") {
     return (
       <span className="inline-flex items-center gap-2 text-muted">
@@ -703,17 +699,75 @@ function AccessValue({ value }: { value: string }) {
     );
   }
   if (value === "Coming soon") {
-    return <span className="inline-flex items-center gap-2 text-muted">Coming soon</span>;
+    return <span className={`inline-flex items-center gap-2 ${toneClass.text}`}>Coming soon</span>;
   }
   return (
-    <span className="inline-flex items-center gap-2 text-cyan">
+    <span className={`inline-flex items-center gap-2 ${toneClass.text}`}>
       <Check size={14} /> {value}
     </span>
   );
 }
 
-function isAdvancedOnlyFeature(feature: FeatureKey) {
-  return ["recurring_reviews", "regression_alerts", "edge_stability_score"].includes(feature);
+function AdvancedPreviewSection() {
+  return (
+    <section className="relative z-10 border-t border-white/[0.08] py-11 md:py-14">
+      <div className="mb-6 grid gap-4 lg:grid-cols-[0.74fr_1fr] lg:items-end">
+        <div>
+          <h2 className="max-w-3xl text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl">
+            Continuous strategy intelligence.
+          </h2>
+          <p className="mt-4 max-w-2xl text-base leading-7 text-muted">
+            Advanced evolves EdgeTrace from diagnostic reports into continuous monitoring for strategy deterioration
+            and review workflows.
+          </p>
+        </div>
+        <p className="max-w-2xl border-l border-warning/35 pl-4 text-sm leading-6 text-muted">
+          These capabilities are marked Coming Soon while the beta validates how traders use ongoing strategy
+          monitoring.
+        </p>
+      </div>
+      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
+        {advancedPreviewFeatures.map((feature) => {
+          const Icon = feature.icon;
+          return (
+            <article key={feature.title} className="border border-warning/20 bg-[#060a11]/94 p-4">
+              <div className="flex items-start justify-between gap-3">
+                <Icon className="text-warning" size={23} strokeWidth={1.7} />
+                <span className="border border-warning/30 bg-warning/[0.055] px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-warning">
+                  Coming Soon
+                </span>
+              </div>
+              <h3 className="mt-5 text-lg font-semibold leading-tight tracking-[-0.035em] text-ink">{feature.title}</h3>
+              <p className="mt-3 text-sm leading-6 text-muted">{feature.body}</p>
+            </article>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+function planToneFromLabel(label: string): "cyan" | "purple" | "amber" {
+  if (label.toLowerCase().includes("advanced")) return "amber";
+  if (label.toLowerCase().includes("pro")) return "purple";
+  return "cyan";
+}
+
+function planToneFromId(planId: PlanId): "cyan" | "purple" | "amber" {
+  return planId === "advanced" ? "amber" : planId === "pro" ? "purple" : "cyan";
+}
+
+function currentPlanPillClass(planId: PlanId) {
+  if (planId === "advanced") return "border-warning/35 bg-warning/[0.045] text-warning";
+  if (planId === "pro") return "border-violet/35 bg-violet/[0.045] text-violet";
+  return "border-cyan/30 bg-cyan/[0.04] text-cyan";
+}
+
+function currentPlanTableClass(currentPlanId: PlanId, columnPlanId: PlanId, area: "head" | "body") {
+  if (currentPlanId !== columnPlanId) return "";
+  if (columnPlanId === "advanced") return area === "head" ? "bg-warning/[0.07] text-warning" : "bg-warning/[0.025]";
+  if (columnPlanId === "pro") return area === "head" ? "bg-violet/[0.07] text-violet" : "bg-violet/[0.025]";
+  return area === "head" ? "bg-cyan/[0.07] text-cyan" : "bg-cyan/[0.025]";
 }
 
 const toneClasses = {
