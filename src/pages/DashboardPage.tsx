@@ -11,9 +11,11 @@ import {
   YAxis
 } from "recharts";
 import { AddToStrategySetDialog } from "../components/AddToStrategySetDialog";
+import { DisclosurePanel } from "../components/DisclosurePanel";
 import { CommandPath } from "../components/onboarding/CommandPath";
 import { PaywallGate } from "../components/PaywallGate";
 import { formatReportType, ReportDetailsEditor } from "../components/ReportDetailsEditor";
+import { MetricFlowGraphic } from "../components/visuals/MetricFlowGraphic";
 import { trackEvent } from "../lib/analytics";
 import { getActivationSummary } from "../lib/api";
 import {
@@ -413,7 +415,9 @@ export function DashboardPage({
         </section>
       )}
 
-      <section className="mt-6 border border-white/[0.1] bg-white/[0.025]">
+      <MetricFlowGraphic className="mt-6" />
+
+      <section className="mt-4 border border-white/[0.1] bg-white/[0.025]">
         <button
           className="flex w-full items-center justify-between gap-4 p-4 text-left"
           type="button"
@@ -456,6 +460,18 @@ export function DashboardPage({
           </div>
         )}
       </section>
+
+      <DisclosurePanel
+        className="mt-3"
+        compact
+        title="What cost drag and R capture mean"
+        subtitle="Open for metric definitions."
+      >
+        <div className="grid gap-3 text-sm leading-6 text-muted md:grid-cols-2">
+          <p>Cost drag estimates how much execution costs reduce gross performance before it reaches net results.</p>
+          <p>R capture measures realized reward relative to risk when risk data is available or can be inferred.</p>
+        </div>
+      </DisclosurePanel>
 
       <CommandPath
         className="mt-6"

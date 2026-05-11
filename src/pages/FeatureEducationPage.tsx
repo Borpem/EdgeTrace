@@ -1,5 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, Check, Minus } from "lucide-react";
+import { DisclosurePanel } from "../components/DisclosurePanel";
+import { PlanAccessGraphic } from "../components/visuals/PlanAccessGraphic";
+import { WorkflowDiagram } from "../components/visuals/WorkflowDiagram";
 import { trackEvent } from "../lib/analytics";
 import { getActivationSummary, listReports } from "../lib/api";
 import { canUseFeature, getPlanConfig } from "../lib/entitlements";
@@ -216,10 +219,7 @@ export function FeatureEducationPage({
           <div>
             <p className="EdgeTrace-eyebrow">How It Works</p>
             <h1 className="EdgeTrace-title">Understand every layer of your trading performance.</h1>
-            <p className="EdgeTrace-copy">
-              EdgeTrace turns completed trade history into diagnostic reports, attribution breakdowns, strategy comparisons,
-              and long-term strategy health monitoring.
-            </p>
+            <p className="EdgeTrace-copy">A visual guide to reports, drilldowns, comparisons, strategy sets, and plan access.</p>
             <div className="mt-7 flex flex-wrap gap-3">
               {isAuthenticated ? (
                 <>
@@ -272,6 +272,10 @@ export function FeatureEducationPage({
           <p className="EdgeTrace-eyebrow">Workflow</p>
           <h2 className="mt-2 text-3xl font-semibold tracking-[-0.055em] text-ink">From import to strategy monitoring.</h2>
         </div>
+        <WorkflowDiagram
+          steps={["Import", "Report", "Diagnose", "Inspect", "Compare", "Strategy Set", "Monitor"]}
+          className="mb-5"
+        />
         <div className="grid border border-white/[0.1] md:grid-cols-2 xl:grid-cols-7">
           {workflowSteps.map(([number, title, description, includedPlan]) => (
             <article key={title} className="min-h-52 border-b border-r border-white/[0.08] p-4 last:border-r-0 md:last:border-b-0">
@@ -298,7 +302,10 @@ export function FeatureEducationPage({
                 <h3 className="text-xl font-semibold tracking-[-0.04em] text-ink">{feature.title}</h3>
                 <PlanBadge label={feature.plan} active={feature.feature ? canUseFeature(plan, feature.feature) : true} />
               </div>
-              <p className="mt-4 text-sm leading-6 text-muted">{feature.explanation}</p>
+              <p className="mt-4 text-sm leading-6 text-muted">{shortFeatureCopy(feature.explanation)}</p>
+              <DisclosurePanel className="mt-4" title="Expand details" compact>
+                <p className="text-sm leading-6 text-muted">{feature.explanation}</p>
+              </DisclosurePanel>
             </article>
           ))}
         </div>
@@ -318,6 +325,7 @@ export function FeatureEducationPage({
             <p className="text-sm text-muted">Public preview: compare plans before signing up.</p>
           )}
         </div>
+        <PlanAccessGraphic className="mb-5" />
         <div className="overflow-x-auto border border-white/[0.1]">
           <table className="min-w-full text-sm">
             <thead className="border-b border-white/[0.1] text-left text-muted">
@@ -408,4 +416,9 @@ function AccessValue({ value }: { value: string }) {
 
 function isAdvancedOnlyFeature(feature: FeatureKey) {
   return ["recurring_reviews", "regression_alerts", "edge_stability_score"].includes(feature);
+}
+
+function shortFeatureCopy(text: string) {
+  const firstSentence = text.split(".")[0]?.trim();
+  return firstSentence ? `${firstSentence}.` : text;
 }

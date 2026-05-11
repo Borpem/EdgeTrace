@@ -2,6 +2,7 @@ import { Pencil, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { CollectionEditor } from "../components/CollectionEditor";
 import { CommandPath } from "../components/onboarding/CommandPath";
+import { StrategyLoopGraphic } from "../components/visuals/StrategyLoopGraphic";
 import { deleteCollection, listCollections } from "../lib/api";
 import { canCreateCollection, formatLimit, getPlanConfig } from "../lib/entitlements";
 import type { ReportCollectionSummary, UserProfile } from "../types";
@@ -87,6 +88,7 @@ export function CollectionsPage({
         </section>
       ) : collections.length === 0 ? (
         <section className="EdgeTrace-card p-8">
+          <StrategyLoopGraphic className="mb-6 max-w-2xl" />
           <p className="text-2xl font-semibold tracking-[-0.04em] text-ink">Group reports into strategy sets.</p>
           <p className="mt-2 text-sm text-muted">
             Strategy sets help you track iterations and understand whether a strategy is improving over time.

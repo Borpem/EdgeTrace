@@ -39,8 +39,11 @@
     color: #f7f7f3;
     font-size: 2.75rem;
     font-weight: 760;
-    letter-spacing: -0.055em;
-    line-height: 1;
+    letter-spacing: -0.034em;
+    line-height: 1.08;
+    text-wrap: balance;
+    font-kerning: normal;
+    text-rendering: geometricPrecision;
   }
 
   .EdgeTrace-copy {
@@ -198,7 +201,7 @@
 
     .EdgeTrace-title {
       font-size: 3.75rem;
-      line-height: 1;
+      line-height: 1.06;
     }
   }
 }
@@ -295,6 +298,28 @@ body {
   text-wrap: balance;
   font-kerning: normal;
   text-rendering: geometricPrecision;
+  letter-spacing: -0.032em;
+  line-height: 1.06;
+}
+
+.EdgeTrace-contours h1,
+.EdgeTrace-contours h2,
+.EdgeTrace-contours h3 {
+  text-wrap: balance;
+  font-kerning: normal;
+  text-rendering: geometricPrecision;
+}
+
+@media (max-width: 767px) {
+  .EdgeTrace-hero-title {
+    letter-spacing: -0.022em;
+    line-height: 1.1;
+  }
+
+  .EdgeTrace-title {
+    letter-spacing: -0.026em;
+    line-height: 1.1;
+  }
 }
 
 button,

@@ -13,6 +13,7 @@ import { CommandPath } from "../components/onboarding/CommandPath";
 import { PaywallGate } from "../components/PaywallGate";
 import { formatReportType } from "../components/ReportDetailsEditor";
 import { SavedComparisonEditor } from "../components/SavedComparisonEditor";
+import { WorkflowDiagram } from "../components/visuals/WorkflowDiagram";
 import { trackEvent } from "../lib/analytics";
 import { deleteSavedComparison, getReport, listReports, listSavedComparisons } from "../lib/api";
 import { canCreateSavedComparison, canUseFeature, formatLimit, getPlanConfig } from "../lib/entitlements";
@@ -289,6 +290,7 @@ export function ComparePage({
 
       {!isLoadingReports && reports.length < 2 && (
         <section className="EdgeTrace-card mt-6 p-8">
+          <WorkflowDiagram steps={["Report A", "Compare", "Report B"]} activeIndex={reports.length === 1 ? 1 : 0} compact className="mb-6 max-w-2xl" />
           <p className="text-2xl font-semibold tracking-[-0.04em] text-ink">Comparisons unlock after you create reports.</p>
           <p className="mt-2 text-sm text-muted">
             Create at least two diagnostic reports to see what improved, degraded, or introduced new leakage.

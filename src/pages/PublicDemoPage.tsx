@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, Check } from "lucide-react";
 import Papa from "papaparse";
+import { DisclosurePanel } from "../components/DisclosurePanel";
+import { WorkflowDiagram } from "../components/visuals/WorkflowDiagram";
 import {
   breakdownLabels,
   buildBreakdown,
@@ -256,6 +258,12 @@ export function PublicDemoPage({
           <div className="h-px bg-white/[0.1]">
             <div className="h-px bg-cyan transition-all" style={{ width: `${progressPct}%` }} />
           </div>
+          <WorkflowDiagram
+            steps={["Diagnose", "Inspect", "Compare", "Monitor", "Start"]}
+            activeIndex={activeIndex}
+            compact
+            className="border-x-0 border-t-0"
+          />
 
           <section className="grid gap-0 xl:grid-cols-[360px_1fr]">
             <StepContextPanel
@@ -384,10 +392,9 @@ function StepContextPanel({
       </p>
       <h2 className="mt-4 text-3xl font-semibold tracking-[-0.055em] text-ink">{config.title}</h2>
       <p className="mt-4 text-sm leading-6 text-muted">{config.body}</p>
-      <div className="mt-6 border-l border-cyan/60 pl-4">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">Why this matters</p>
-        <p className="mt-2 text-sm leading-6 text-ink">{config.why}</p>
-      </div>
+      <DisclosurePanel className="mt-6" title="Why this matters" subtitle="Open for context." compact>
+        <p className="text-sm leading-6 text-muted">{config.why}</p>
+      </DisclosurePanel>
       <button className="EdgeTrace-command-button mt-7 w-full justify-between" onClick={onPrimary}>
         {config.cta} <ArrowRight size={16} />
       </button>

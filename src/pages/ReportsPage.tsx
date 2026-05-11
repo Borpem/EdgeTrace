@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { AddToStrategySetDialog } from "../components/AddToStrategySetDialog";
 import { CommandPath } from "../components/onboarding/CommandPath";
 import { formatReportType, ReportDetailsEditor } from "../components/ReportDetailsEditor";
+import { WorkflowDiagram } from "../components/visuals/WorkflowDiagram";
 import { deleteReport, getReport, listReports } from "../lib/api";
 import { getPlanConfig, formatLimit } from "../lib/entitlements";
 import type { DiagnosticsResult, ReportSummary, ReportType, UserProfile } from "../types";
@@ -199,6 +200,7 @@ export function ReportsPage({
         </section>
       ) : reports.length === 0 ? (
         <section className="EdgeTrace-card p-8">
+          <WorkflowDiagram steps={["Upload", "Report", "Insight"]} activeIndex={0} compact className="mb-6 max-w-2xl" />
           <p className="text-2xl font-semibold tracking-[-0.04em] text-ink">Start with your first diagnostic report.</p>
           <p className="mt-2 text-sm text-muted">
             Upload completed trade history and EdgeTrace will identify the first performance leaks to inspect.

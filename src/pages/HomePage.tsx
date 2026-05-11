@@ -1,4 +1,7 @@
 import { ArrowRight } from "lucide-react";
+import { DisclosurePanel } from "../components/DisclosurePanel";
+import { WorkflowDiagram } from "../components/visuals/WorkflowDiagram";
+import { StrategyLoopGraphic } from "../components/visuals/StrategyLoopGraphic";
 
 const supportedImports = [
   "Interactive Brokers",
@@ -33,7 +36,7 @@ export function HomePage({
         <HeroBackdrop />
         <div className="EdgeTrace-shell min-h-[calc(100vh-64px)] pb-20 pt-20 md:pb-28 md:pt-24">
           <div className="mx-auto max-w-[1320px] text-center">
-            <h1 className="EdgeTrace-hero-title mx-auto mt-8 max-w-[1060px] text-[clamp(3.25rem,6.05vw,7rem)] font-semibold leading-[1.01] tracking-[-0.052em] text-ink">
+            <h1 className="EdgeTrace-hero-title mx-auto mt-8 max-w-[1060px] text-[clamp(3.25rem,6vw,6.75rem)] font-semibold leading-[1.06] tracking-[-0.032em] text-ink">
               Know exactly why your
               <br className="hidden md:block" /> strategy wins or fails.
             </h1>
@@ -111,14 +114,13 @@ function StrategyIntelligenceSection({ onLearn }: { onLearn: () => void }) {
             <p className="text-xs font-semibold uppercase tracking-[0.26em] text-cyan">
               Continuous Strategy Intelligence
             </p>
-            <h2 className="mt-5 max-w-5xl text-5xl font-semibold leading-[0.98] tracking-[-0.06em] text-ink md:text-7xl">
+            <h2 className="mt-5 max-w-5xl text-5xl font-semibold leading-[1.06] tracking-[-0.036em] text-ink md:text-7xl">
               Know when your edge improves, weakens, or breaks.
             </h2>
           </div>
           <div>
             <p className="max-w-3xl text-lg leading-8 text-muted">
-              EdgeTrace tracks strategy health across reports, comparisons, and strategy iterations so traders can
-              identify degradation, cost drag, instability, and changing edge behavior before it compounds.
+              Track strategy health across reports, comparisons, and iterations.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-6">
               <button
@@ -127,32 +129,49 @@ function StrategyIntelligenceSection({ onLearn }: { onLearn: () => void }) {
               >
                 See how EdgeTrace works <ArrowRight size={18} />
               </button>
-              <p className="max-w-md text-sm leading-6 text-muted">
-                Most traders review results. EdgeTrace helps monitor edge deterioration.
-              </p>
+              <p className="max-w-md text-sm leading-6 text-muted">Most traders review results. EdgeTrace monitors edge deterioration.</p>
             </div>
           </div>
         </div>
       </section>
 
+      <WorkflowDiagram
+        steps={["Import Trades", "Diagnostic Report", "Drilldowns", "Compare", "Strategy Monitoring"]}
+        className="mt-2"
+      />
+
       <section className="grid gap-4 lg:grid-cols-3">
         <StrategyPillar
           label="Diagnose"
           headline="Find the leaks affecting performance."
-          body="EdgeTrace separates execution drag, expectancy quality, R capture, and unstable segments into actionable diagnostics."
+          body="Separate cost drag, expectancy, R capture, and weak segments."
         />
         <StrategyPillar
           label="Compare"
           headline="Track what changed between iterations."
-          body="Compare reports to understand whether adjustments improved performance, introduced new leakage, or weakened edge stability."
+          body="See whether adjustments improved performance or introduced leakage."
         />
         <StrategyPillar
           emphasized
           label="Monitor"
           headline="Monitor strategy health over time."
-          body="Strategy sets, recurring reviews, regression detection, and Edge Stability scoring help traders monitor whether a strategy is strengthening or deteriorating over time."
+          body="Use strategy sets to track whether edge is strengthening or deteriorating."
         />
       </section>
+
+      <div className="grid gap-4 lg:grid-cols-3">
+        <DisclosurePanel title="What EdgeTrace analyzes" subtitle="Costs, expectancy, R capture, and segment behavior." compact>
+          <p className="text-sm leading-6 text-muted">
+            EdgeTrace analyzes completed trades only. It does not provide signals or investment advice.
+          </p>
+        </DisclosurePanel>
+        <DisclosurePanel title="Why strategy monitoring matters" subtitle="Single reports are useful; iteration history is stronger." compact>
+          <p className="text-sm leading-6 text-muted">
+            Comparing related reports helps reveal whether a strategy is improving, degrading, or becoming unstable.
+          </p>
+        </DisclosurePanel>
+        <StrategyLoopGraphic />
+      </div>
 
       <SupportedImportsSection />
     </div>
@@ -182,7 +201,7 @@ function StrategyPillar({
         <p className={emphasized ? "text-xs font-semibold uppercase tracking-[0.24em] text-cyan" : "text-xs font-semibold uppercase tracking-[0.24em] text-muted"}>
           {label}
         </p>
-        <h3 className="mt-8 text-3xl font-semibold leading-[1.02] tracking-[-0.055em] text-ink md:text-4xl">
+        <h3 className="mt-8 text-3xl font-semibold leading-[1.08] tracking-[-0.035em] text-ink md:text-4xl">
           {headline}
         </h3>
         <p className="mt-auto pt-8 text-base leading-7 text-muted">{body}</p>
@@ -196,15 +215,12 @@ function SupportedImportsSection() {
     <section className="grid gap-8 border-t border-white/[0.1] pt-9 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
       <div>
         <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted">Supported Imports</p>
-        <h2 className="mt-4 max-w-2xl text-3xl font-semibold leading-[1.03] tracking-[-0.055em] text-ink md:text-5xl">
+        <h2 className="mt-4 max-w-2xl text-3xl font-semibold leading-[1.08] tracking-[-0.035em] text-ink md:text-5xl">
           Broker files in. Structured diagnostics out.
         </h2>
       </div>
       <div>
-        <p className="max-w-4xl text-base leading-7 text-muted">
-          Upload completed trade data from supported brokers or generic CSV exports. EdgeTrace preserves import
-          provenance so saved reports can show source, confidence, warnings, and reconstruction details after reload.
-        </p>
+        <p className="max-w-4xl text-base leading-7 text-muted">Upload completed broker exports or generic CSV files.</p>
         <div className="mt-7 flex flex-wrap gap-2.5">
           {supportedImports.map((broker) => (
             <span
@@ -215,10 +231,16 @@ function SupportedImportsSection() {
             </span>
           ))}
         </div>
-        <p className="mt-5 max-w-3xl text-sm leading-6 text-muted">
-          Broker files vary by export type. EdgeTrace uses broker-aware detection, field mapping, and reconstruction where
-          possible.
-        </p>
+        <DisclosurePanel
+          className="mt-5"
+          title="Supported import details"
+          subtitle="Broker files vary by export type."
+          compact
+        >
+          <p className="text-sm leading-6 text-muted">
+            EdgeTrace uses broker-aware detection, field mapping, import provenance, and reconstruction where possible.
+          </p>
+        </DisclosurePanel>
       </div>
     </section>
   );
@@ -230,13 +252,11 @@ function MarketingVisual() {
       <div className="grid gap-12 lg:grid-cols-[0.7fr_1.3fr] lg:items-center">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted">How EdgeTrace Works</p>
-          <p className="mt-4 max-w-2xl text-4xl font-semibold leading-[1.04] tracking-[-0.055em] text-ink md:text-6xl">
+          <p className="mt-4 max-w-2xl text-4xl font-semibold leading-[1.09] tracking-[-0.034em] text-ink md:text-6xl">
             The dashboard surfaces the leaks affecting performance first.
           </p>
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-muted">
-            Every report begins with a diagnostic summary showing whether execution costs, weak expectancy,
-            deteriorating R capture, or unstable segments are driving performance.
-          </p>
+          <p className="mt-6 max-w-2xl text-lg leading-8 text-muted">Health, diagnosis, metrics, and next inspection appear before dense tables.</p>
+          <WorkflowDiagram className="mt-8" compact />
           <div className="mt-10 space-y-5">
             {[
               ["01", "Strategy health", "Quickly identify whether a strategy is improving, degrading, or losing edge after costs."],

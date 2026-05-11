@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { createBillingPortalSession, createCheckoutSession } from "../lib/api";
+import { DisclosurePanel } from "../components/DisclosurePanel";
+import { PlanAccessGraphic } from "../components/visuals/PlanAccessGraphic";
 import { trackEvent } from "../lib/analytics";
 import { formatLimit, getPlanConfig } from "../lib/entitlements";
 import { planOrder, type PlanId } from "../lib/plans";
@@ -148,13 +150,10 @@ export function PricingPage({
     <main className="EdgeTrace-shell py-16 md:py-24">
       <section className="border-y border-white/[0.1] py-12">
         <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted">Pricing</p>
-        <h1 className="mt-5 max-w-5xl text-5xl font-semibold leading-[0.98] tracking-[-0.06em] text-ink md:text-7xl">
+        <h1 className="mt-5 max-w-5xl text-5xl font-semibold leading-[1.07] tracking-[-0.036em] text-ink md:text-7xl">
           Start with one full report. Scale into continuous strategy intelligence.
         </h1>
-        <p className="mt-7 max-w-3xl text-lg leading-8 text-muted">
-          Free explores the first diagnostic. Pro is the main self-serve upgrade for the full strategy workflow.
-          Advanced monitoring features are coming soon.
-        </p>
+        <p className="mt-7 max-w-3xl text-lg leading-8 text-muted">Free previews the diagnostic. Pro unlocks the full workflow. Advanced monitoring is coming soon.</p>
         {profile && (
           <button
             className="mt-6 border-b border-cyan/60 text-sm font-semibold text-cyan hover:text-ink"
@@ -183,6 +182,8 @@ export function PricingPage({
       {notice && <div className="mt-6 border border-cyan/50 bg-cyan/10 p-4 text-sm text-cyan">{notice}</div>}
       {error && <div className="mt-6 border border-loss/60 bg-loss/10 p-4 text-sm text-loss">{error}</div>}
 
+      <PlanAccessGraphic className="mt-10" />
+
       <section className="mt-10 grid gap-5 lg:grid-cols-3">
         {planOrder.map((planId) => {
           const plan = getPlanConfig(planId);
@@ -204,23 +205,26 @@ export function PricingPage({
               )}
               <p className="mt-5 min-h-16 text-sm leading-6 text-muted">{plan.description}</p>
 
-              <div className="mt-6 grid gap-2 border border-white/[0.08] bg-black/20 p-4 text-xs text-muted">
-                <span>Full reports: {formatLimit(plan.limits.maxFullReports)}</span>
-                <span>Report history: {formatLimit(plan.limits.maxReports)}</span>
-                <span>Strategy sets: {formatLimit(plan.limits.maxCollections)}</span>
-                <span>Saved comparisons: {formatLimit(plan.limits.maxSavedComparisons)}</span>
-                <span>
-                  Imports: {plan.limits.brokerAdapters === "all" ? "All broker CSV adapters" : "Generic CSV only"}
-                </span>
-              </div>
-
               <ul className="mt-7 space-y-3 text-sm text-muted">
-                {plan.featureBullets.map((feature) => (
+                {plan.featureBullets.slice(0, 6).map((feature) => (
                   <li key={feature} className="border-t border-white/[0.08] pt-3">
                     {feature}
                   </li>
                 ))}
               </ul>
+
+              <DisclosurePanel className="mt-5" title="Full feature details" compact>
+                <div className="grid gap-2 text-xs text-muted">
+                  <span>Full reports: {formatLimit(plan.limits.maxFullReports)}</span>
+                  <span>Report history: {formatLimit(plan.limits.maxReports)}</span>
+                  <span>Strategy sets: {formatLimit(plan.limits.maxCollections)}</span>
+                  <span>Saved comparisons: {formatLimit(plan.limits.maxSavedComparisons)}</span>
+                  <span>Imports: {plan.limits.brokerAdapters === "all" ? "All broker CSV adapters" : "Generic CSV only"}</span>
+                  {plan.featureBullets.slice(6).map((feature) => (
+                    <span key={feature}>{feature}</span>
+                  ))}
+                </div>
+              </DisclosurePanel>
 
               {renderPlanAction(plan.id)}
             </article>

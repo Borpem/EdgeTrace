@@ -1,7 +1,9 @@
 import Papa from "papaparse";
 import { UploadCloud } from "lucide-react";
 import { useEffect, useState } from "react";
+import { DisclosurePanel } from "../components/DisclosurePanel";
 import { CommandPath } from "../components/onboarding/CommandPath";
+import { WorkflowDiagram } from "../components/visuals/WorkflowDiagram";
 import { trackEvent } from "../lib/analytics";
 import {
   adapterForOverride,
@@ -478,15 +480,12 @@ export function UploadPage({
             Select a file from your machine. EdgeTrace detects the source, reviews mappings, normalizes trades, and then runs diagnostics.
           </span>
         </div>
-        <div className="hidden rounded-2xl border border-line bg-graphite/70 p-6 md:block">
-          <p className="text-xs uppercase tracking-[0.18em] text-muted">Import pipeline</p>
-          <div className="mt-4 grid gap-3 text-sm text-muted">
-            <span>1. Import trades</span>
-            <span>2. Review mapping</span>
-            <span>3. Run diagnostics</span>
-            <span>4. Open report</span>
-          </div>
-        </div>
+        <WorkflowDiagram
+          steps={["Import", "Map", "Diagnose", "Report"]}
+          activeIndex={activeStepIndex}
+          compact
+          className="hidden md:block"
+        />
         <input
           className="sr-only"
           data-testid="upload-input"
@@ -554,90 +553,106 @@ export function UploadPage({
                 </div>
               </div>
 
-              <ImportDiagnosticsPanel
-                selected={detectionResults.find((result) => result.brokerId === activeAdapter?.brokerId)}
-                autoDetected={autoDetection}
-                results={detectionResults}
-                sourceOverride={sourceOverride}
-              />
+              <DisclosurePanel
+                className="mt-4"
+                title="Import detection details"
+                subtitle={`Selected source: ${importDetection.label}. Expand to review competing adapter scores.`}
+                compact
+              >
+                <ImportDiagnosticsPanel
+                  selected={detectionResults.find((result) => result.brokerId === activeAdapter?.brokerId)}
+                  autoDetected={autoDetection}
+                  results={detectionResults}
+                  sourceOverride={sourceOverride}
+                />
+              </DisclosurePanel>
 
-              <div className="EdgeTrace-card-soft mt-4 flex flex-col gap-2 p-4 sm:flex-row sm:items-center sm:justify-between">
-                <p className="text-sm text-muted">
-                  Debug exports may include trade rows from the uploaded file. Share only with people you trust.
-                </p>
+              <DisclosurePanel
+                className="mt-4"
+                title="Debug export"
+                subtitle="For support use only. May include trade rows from the uploaded file."
+                compact
+              >
                 <button
-                  className="w-fit rounded-md border border-line px-4 py-2 text-sm font-semibold hover:border-accent"
+                  className="EdgeTrace-secondary-button"
                   type="button"
                   onClick={handleDebugExport}
                 >
                   Download import debug JSON
                 </button>
-              </div>
+              </DisclosurePanel>
 
               {fieldMappings.length > 0 && (
-                <div id="mapping-review" className="mt-5 scroll-mt-28 overflow-x-auto rounded-lg border border-line">
-                  <table className="min-w-full divide-y divide-line text-sm">
-                    <thead className="bg-graphite text-left text-muted">
-                      <tr>
-                        <th className="px-4 py-3 font-medium">Source column</th>
-                        <th className="px-4 py-3 font-medium">EdgeTrace field</th>
-                        <th className="px-4 py-3 font-medium">Confidence</th>
-                        <th className="px-4 py-3 font-medium">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-line">
-                      {fieldMappings.map((mapping) => (
-                      <tr key={mapping.sourceColumn} className={mapping.status === "required_missing" ? "bg-loss/5" : ""}>
-                          <td className="px-4 py-3 text-muted">{mapping.sourceColumn}</td>
-                          <td className="px-4 py-3">
-                            {mapping.status === "required_missing" ? (
-                              <span className="text-loss">Required field not mapped</span>
-                            ) : (
-                              <select
-                                className="rounded-md border border-line bg-graphite px-3 py-2 text-sm text-ink outline-none focus:border-accent"
-                                value={mapping.targetField ?? ""}
-                                onChange={(event) => handleMappingChange(mapping.sourceColumn, event.target.value)}
-                              >
-                                {edgeTraceFieldOptions.map((option) => (
-                                  <option key={option.value} value={option.value}>
-                                    {option.label}
-                                  </option>
-                                ))}
-                              </select>
-                            )}
-                          </td>
-                          <td className="px-4 py-3 text-muted">
-                            {mapping.confidence ? `${mapping.confidence}%` : "-"}
-                            {detectionResults
-                              .find((result) => result.brokerId === activeAdapter?.brokerId)
-                              ?.matchedHeaders.includes(mapping.sourceColumn) && (
-                              <span className="ml-2 rounded-full bg-accent/10 px-2 py-0.5 text-xs text-accent">
-                                signal
-                              </span>
-                            )}
-                          </td>
-                          <td className="px-4 py-3">
-                            <span
-                              className={`rounded-full px-2.5 py-1 text-xs ${
-                                mapping.status === "mapped"
-                                  ? "bg-accent/10 text-cyan"
-                                  : mapping.status === "required_missing"
-                                    ? "bg-loss/10 text-loss"
-                                    : "bg-graphite text-muted"
-                              }`}
-                            >
-                              {mapping.status.replace("_", " ")}
-                            </span>
-                          </td>
+                <DisclosurePanel
+                  className="mt-5 scroll-mt-28"
+                  title="Field mapping details"
+                  subtitle={`${mappedFieldsCount} fields mapped. Expand if you need to adjust columns.`}
+                  defaultOpen={missingRequiredFields.length > 0}
+                >
+                  <div id="mapping-review" className="overflow-x-auto border border-line">
+                    <table className="min-w-full divide-y divide-line text-sm">
+                      <thead className="bg-graphite text-left text-muted">
+                        <tr>
+                          <th className="px-4 py-3 font-medium">Source column</th>
+                          <th className="px-4 py-3 font-medium">EdgeTrace field</th>
+                          <th className="px-4 py-3 font-medium">Confidence</th>
+                          <th className="px-4 py-3 font-medium">Status</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                      </thead>
+                      <tbody className="divide-y divide-line">
+                        {fieldMappings.map((mapping) => (
+                        <tr key={mapping.sourceColumn} className={mapping.status === "required_missing" ? "bg-loss/5" : ""}>
+                            <td className="px-4 py-3 text-muted">{mapping.sourceColumn}</td>
+                            <td className="px-4 py-3">
+                              {mapping.status === "required_missing" ? (
+                                <span className="text-loss">Required field not mapped</span>
+                              ) : (
+                                <select
+                                  className="rounded-md border border-line bg-graphite px-3 py-2 text-sm text-ink outline-none focus:border-accent"
+                                  value={mapping.targetField ?? ""}
+                                  onChange={(event) => handleMappingChange(mapping.sourceColumn, event.target.value)}
+                                >
+                                  {edgeTraceFieldOptions.map((option) => (
+                                    <option key={option.value} value={option.value}>
+                                      {option.label}
+                                    </option>
+                                  ))}
+                                </select>
+                              )}
+                            </td>
+                            <td className="px-4 py-3 text-muted">
+                              {mapping.confidence ? `${mapping.confidence}%` : "-"}
+                              {detectionResults
+                                .find((result) => result.brokerId === activeAdapter?.brokerId)
+                                ?.matchedHeaders.includes(mapping.sourceColumn) && (
+                                <span className="ml-2 rounded-full bg-accent/10 px-2 py-0.5 text-xs text-accent">
+                                  signal
+                                </span>
+                              )}
+                            </td>
+                            <td className="px-4 py-3">
+                              <span
+                                className={`rounded-full px-2.5 py-1 text-xs ${
+                                  mapping.status === "mapped"
+                                    ? "bg-accent/10 text-cyan"
+                                    : mapping.status === "required_missing"
+                                      ? "bg-loss/10 text-loss"
+                                      : "bg-graphite text-muted"
+                                }`}
+                              >
+                                {mapping.status.replace("_", " ")}
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </DisclosurePanel>
               )}
 
               {canReconstructBroker(executionTrades, activeAdapter) && (
-                <div className="mt-5 rounded-lg border border-line bg-graphite p-4">
+                <DisclosurePanel className="mt-5" title="Reconstruction details" subtitle="Execution files can be reconstructed into completed trades.">
                   <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                     <div>
                       <p className="text-sm font-semibold">{activeAdapter?.displayName ?? "Broker"} execution handling</p>
@@ -723,16 +738,23 @@ export function UploadPage({
                       )}
                     </>
                   )}
-                </div>
+                </DisclosurePanel>
               )}
-              <ImportSummary
-                detection={importDetection}
-                rawRows={Math.max(0, rows.filter(Array.isArray).length - 1)}
-                mappedRows={executionTrades.length}
-                excludedRows={excludedRows}
-                reconstructedTrades={reconstructionResult?.summary.reconstructedTrades}
-                missingRequired={fieldMappings.filter((mapping) => mapping.status === "required_missing").map((mapping) => mapping.sourceColumn)}
-              />
+              <DisclosurePanel
+                className="mt-5"
+                title="Import summary and excluded rows"
+                subtitle={`${excludedRows.length} rows excluded. Expand for row-level import summary.`}
+                compact
+              >
+                <ImportSummary
+                  detection={importDetection}
+                  rawRows={Math.max(0, rows.filter(Array.isArray).length - 1)}
+                  mappedRows={executionTrades.length}
+                  excludedRows={excludedRows}
+                  reconstructedTrades={reconstructionResult?.summary.reconstructedTrades}
+                  missingRequired={fieldMappings.filter((mapping) => mapping.status === "required_missing").map((mapping) => mapping.sourceColumn)}
+                />
+              </DisclosurePanel>
             </div>
           )}
           <div className="mb-4 grid gap-4 xl:grid-cols-[1fr_auto] xl:items-center">
