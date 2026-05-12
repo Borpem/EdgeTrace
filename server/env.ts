@@ -7,6 +7,7 @@ export type DatabaseProvider = "sqlite" | "postgres";
 loadDotEnv();
 
 const isProduction = process.env.NODE_ENV === "production";
+const DEFAULT_PRODUCTION_FRONTEND_ORIGINS = ["https://www.edgetrace.app", "https://edge-trace.vercel.app"];
 
 export function getAuthMode(): AuthMode {
   if (isProduction) return "clerk";
@@ -16,7 +17,22 @@ export function getAuthMode(): AuthMode {
 }
 
 export function getAllowedFrontendOrigin() {
-  return process.env.FRONTEND_URL || process.env.APP_URL || "http://localhost:5173";
+  return getAllowedFrontendOrigins()[0] ?? "http://localhost:5173";
+}
+
+export function getAllowedFrontendOrigins() {
+  const configuredOrigins = [
+    ...parseOriginList(process.env.FRONTEND_URL),
+    ...parseOriginList(process.env.APP_URL)
+  ];
+
+  const origins = configuredOrigins.length
+    ? configuredOrigins
+    : isProduction
+      ? DEFAULT_PRODUCTION_FRONTEND_ORIGINS
+      : ["http://localhost:5173"];
+
+  return Array.from(new Set(origins));
 }
 
 export function getDatabasePath() {
@@ -55,8 +71,8 @@ export function validateServerEnvironment() {
       if (!process.env[key]) errors.push(`${key} is required in production.`);
     }
 
-    if (!process.env.FRONTEND_URL && !process.env.APP_URL) {
-      errors.push("FRONTEND_URL or APP_URL is required in production.");
+    if (!parseOriginList(process.env.FRONTEND_URL).length && !parseOriginList(process.env.APP_URL).length) {
+      warnings.push("FRONTEND_URL or APP_URL is not a valid origin. Falling back to built-in EdgeTrace production origins.");
     }
 
     if (getDatabaseProvider() === "postgres" && !process.env.DATABASE_URL) {
@@ -99,6 +115,18 @@ export function validateClientEnvironment() {
   if (errors.length > 0) {
     throw new Error(`EdgeTrace client environment validation failed:\n- ${errors.join("\n- ")}`);
   }
+}
+
+function parseOriginList(value: string | undefined) {
+  if (!value || isPlaceholderOrigin(value)) return [];
+  return value
+    .split(",")
+    .map((origin) => origin.trim().replace(/\/$/, ""))
+    .filter((origin) => /^https?:\/\/[^/\s]+$/i.test(origin) && !isPlaceholderOrigin(origin));
+}
+
+function isPlaceholderOrigin(value: string) {
+  return /<.*frontend.*url.*>|your frontend url/i.test(value);
 }
 
 function loadDotEnv() {

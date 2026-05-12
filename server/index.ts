@@ -2,7 +2,7 @@ import cors from "cors";
 import express from "express";
 import { clerkMiddleware, getAuth } from "@clerk/express";
 import { randomUUID } from "node:crypto";
-import { getAllowedFrontendOrigin, validateServerEnvironment } from "./env";
+import { getAllowedFrontendOrigins, validateServerEnvironment } from "./env";
 import {
   addReportToCollection,
   countBillableReports,
@@ -72,13 +72,13 @@ if (!process.env.CLERK_PUBLISHABLE_KEY && process.env.VITE_CLERK_PUBLISHABLE_KEY
 const app = express();
 const port = process.env.PORT ? Number(process.env.PORT) : 4000;
 const isProduction = process.env.NODE_ENV === "production";
-const allowedFrontendOrigin = getAllowedFrontendOrigin();
+const allowedFrontendOrigins = getAllowedFrontendOrigins();
 
 app.disable("x-powered-by");
 app.use(securityHeaders);
 app.use(
   cors({
-    origin: isProduction ? allowedFrontendOrigin : true,
+    origin: isProduction ? productionCorsOrigin : true,
     credentials: true
   })
 );
@@ -138,6 +138,21 @@ if (authMode === "clerk") {
   app.use(clerkMiddleware());
 }
 
+function productionCorsOrigin(origin: string | undefined, callback: (error: Error | null, origin?: boolean | string) => void) {
+  if (!origin) {
+    callback(null, false);
+    return;
+  }
+
+  const normalizedOrigin = origin.replace(/\/$/, "");
+  if (allowedFrontendOrigins.includes(normalizedOrigin) || isAllowedVercelDeploymentOrigin(normalizedOrigin)) {
+    callback(null, normalizedOrigin);
+    return;
+  }
+
+  callback(new Error(`Origin ${normalizedOrigin} is not allowed by CORS.`));
+}
+
 async function requireEdgeTraceUser(req: express.Request, res: express.Response, next: express.NextFunction) {
   if (authMode === "mock") {
     if (isProduction) {
@@ -166,6 +181,10 @@ async function requireEdgeTraceUser(req: express.Request, res: express.Response,
     name: firstString(claims?.name, claims?.full_name)
   });
   next();
+}
+
+function isAllowedVercelDeploymentOrigin(origin: string) {
+  return /^https:\/\/edge-trace-[a-z0-9-]+-edge-trace-s-projects\.vercel\.app$/i.test(origin);
 }
 
 function getUserId(req: express.Request) {
@@ -620,7 +639,7 @@ function safeApiErrorMessage(err: unknown, fallback: string) {
 }
 
 function getRequestOrigin(req: express.Request) {
-  if (isProduction) return allowedFrontendOrigin;
+  if (isProduction) return allowedFrontendOrigins[0];
   return req.get("origin") || `${req.protocol}://${req.get("host")}`;
 }
 
