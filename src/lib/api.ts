@@ -171,8 +171,7 @@ export async function runTradeDiagnostics(
 }
 
 function shouldUseLocalDiagnosticsFallback(response: Response) {
-  const contentType = response.headers.get("content-type") ?? "";
-  return response.status >= 500 && contentType.toLowerCase().includes("text/html");
+  return response.status >= 500;
 }
 
 function createLocalDiagnosticReport(
