@@ -192,8 +192,18 @@ async function requireEdgeTraceUser(req: express.Request, res: express.Response,
     return;
   }
 
-  const auth = getAuth(req);
-  const { userId } = auth;
+  let auth: ReturnType<typeof getAuth>;
+  try {
+    auth = getAuth(req);
+  } catch {
+    res.status(401).json({
+      error: "Unauthorized",
+      message: "Sign in again before running diagnostics."
+    });
+    return;
+  }
+
+  const userId = auth.userId ?? "";
   if (!userId) {
     res.status(401).json({ error: "Unauthorized" });
     return;
@@ -220,6 +230,20 @@ function isPayloadTooLargeError(err: unknown) {
 
 function isJsonSyntaxError(err: unknown) {
   return err instanceof SyntaxError && typeof err === "object" && err !== null && "body" in err;
+}
+
+function apiErrorHandler(
+  err: unknown,
+  _req: express.Request,
+  res: express.Response,
+  _next: express.NextFunction
+) {
+  console.error("[api] Unhandled request error", err);
+  if (res.headersSent) return;
+  res.status(500).json({
+    error: "INTERNAL_SERVER_ERROR",
+    message: "The diagnostics service hit an internal error. Try again in a moment."
+  });
 }
 
 function getUserId(req: express.Request) {
@@ -652,6 +676,8 @@ app.delete("/api/saved-comparisons/:id", async (req, res) => {
   }
   res.status(204).send();
 });
+
+app.use(apiErrorHandler);
 
 await initDb();
 console.info(`[db] Database provider: ${getDatabaseProviderName()}`);

@@ -15,6 +15,7 @@ import type {
   PlanId,
   ImportProvenance
 } from "../types";
+import { runDiagnostics } from "./diagnostics";
 import { describeNormalizationIssue, normalizeTrades } from "./normalize";
 
 const DEFAULT_USER_ID = "local-demo-user";
@@ -55,6 +56,7 @@ async function apiHeaders(extra?: HeadersInit): Promise<HeadersInit> {
 async function readApiError(response: Response, fallback: string) {
   const text = await response.text().catch(() => "");
   if (!text) return fallback;
+  if (isHtmlErrorBody(text)) return fallback;
   try {
     const body = JSON.parse(text) as { message?: string; error?: string };
     return body.message || body.error || fallback;
@@ -158,8 +160,47 @@ export async function runTradeDiagnostics(
     headers: await apiHeaders({ "Content-Type": "application/json" }),
     body: JSON.stringify({ trades, name, ...options })
   });
-  if (!response.ok) throw new Error(await readApiError(response, "Unable to run diagnostics"));
+  if (!response.ok) {
+    const message = await readApiError(response, "Unable to run diagnostics");
+    if (shouldUseLocalDiagnosticsFallback(response)) {
+      return createLocalDiagnosticReport(trades, name, options);
+    }
+    throw new Error(message);
+  }
   return response.json() as Promise<DiagnosticsResult>;
+}
+
+function shouldUseLocalDiagnosticsFallback(response: Response) {
+  const contentType = response.headers.get("content-type") ?? "";
+  return response.status >= 500 && contentType.toLowerCase().includes("text/html");
+}
+
+function createLocalDiagnosticReport(
+  trades: NormalizedTrade[],
+  name?: string,
+  options?: { importProvenance?: ImportProvenance }
+): DiagnosticsResult {
+  const now = new Date().toISOString();
+  return {
+    ...runDiagnostics(createLocalReportId(), trades),
+    name: name?.trim() || "Diagnostic Report",
+    createdAt: now,
+    updatedAt: now,
+    importProvenance: options?.importProvenance,
+    accessLevel: "full",
+    lockedSections: [],
+    notes: "Generated locally because the diagnostics service returned an internal error."
+  };
+}
+
+function createLocalReportId() {
+  return typeof crypto !== "undefined" && "randomUUID" in crypto
+    ? `local-${crypto.randomUUID()}`
+    : `local-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
+
+function isHtmlErrorBody(text: string) {
+  return /^\s*(?:<!doctype html|<html|<pre>)/i.test(text) || /<pre>\s*Internal Server Error\s*<\/pre>/i.test(text);
 }
 
 export async function listReports() {
