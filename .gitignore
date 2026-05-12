@@ -6,3 +6,5 @@ dist-server/
 .env.*.local
 test-results/
 playwright-report/
+
+.vercel
