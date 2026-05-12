@@ -300,9 +300,10 @@ export function UploadPage({
         brokerId: activeBrokerId,
         tradeCount: normalizedTrades.length
       });
+      const diagnosticsBrokerId = profile?.planId === "free" ? "generic_csv" : activeBrokerId;
       onComplete(
         await runTradeDiagnostics(normalizedTrades, reportName, {
-          brokerId: activeBrokerId,
+          brokerId: diagnosticsBrokerId,
           importProvenance: buildImportProvenance({
             uploadedFilename,
             detectedSourceLabel,

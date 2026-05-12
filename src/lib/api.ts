@@ -17,7 +17,8 @@ import type {
 } from "../types";
 
 const DEFAULT_USER_ID = "local-demo-user";
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/$/, "") ?? "";
+const CONFIGURED_API_BASE_URL = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/$/, "") ?? "";
+const API_BASE_URL = shouldUseSameOriginApi() ? "" : CONFIGURED_API_BASE_URL;
 let currentUserId = DEFAULT_USER_ID;
 let currentAuthMode: "mock" | "clerk" = "mock";
 let accessTokenProvider: (() => Promise<string | null>) | undefined;
@@ -61,6 +62,17 @@ async function readApiError(response: Response, fallback: string) {
 
 function apiUrl(path: string) {
   return `${API_BASE_URL}${path}`;
+}
+
+function shouldUseSameOriginApi() {
+  if (typeof window === "undefined") return false;
+  const hostname = window.location.hostname;
+  return (
+    hostname === "www.edgetrace.app" ||
+    hostname === "edgetrace.app" ||
+    hostname === "edge-trace.vercel.app" ||
+    /^edge-trace-[a-z0-9-]+-edge-trace-s-projects\.vercel\.app$/i.test(hostname)
+  );
 }
 
 export async function getMe() {
