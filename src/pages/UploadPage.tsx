@@ -1344,7 +1344,7 @@ function formatUploadError(error: unknown, context: "csv_parse" | "html_parse" |
   if (/PLAN_LIMIT_REACHED|free report limit|reached the Free report limit/i.test(message)) {
     return "You've reached the Free full-report limit. Upgrade to Pro to unlock the full strategy workflow, or delete an older non-demo report.";
   }
-  if (/generic csv imports only|broker-specific|import source is not available/i.test(message)) {
+  if (/broker-specific|import source is not available/i.test(message)) {
     return "This import source could not be used. Try auto-detect, choose Generic CSV, or review the uploaded file format.";
   }
   if (/missing required fields/i.test(message)) {
