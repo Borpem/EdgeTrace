@@ -49,10 +49,10 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
       maxFullReports: 1,
       maxCollections: 1,
       maxSavedComparisons: 1,
-      brokerAdapters: "generic_csv"
+      brokerAdapters: "all"
     },
     features: {
-      broker_imports: false,
+      broker_imports: true,
       reconstruction_audit: false,
       export_audit: false,
       collection_attribution: false,
@@ -73,7 +73,7 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
     },
     featureBullets: [
       "1 full diagnostic report",
-      "Generic CSV import",
+      "Supported broker and generic CSV imports",
       "Preview deeper insights after first report",
       "Limited report history"
     ]
@@ -112,7 +112,6 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
     },
     featureBullets: [
       "Unlimited full diagnostic reports",
-      "All supported broker CSV imports",
       "Full attribution and drilldowns",
       "Compare reports",
       "Strategy sets",

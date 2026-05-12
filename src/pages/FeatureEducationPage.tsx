@@ -68,7 +68,7 @@ const insightGroups: Array<{
 const featureRows: Array<{ label: string; feature?: FeatureKey; access: Record<PlanId, string> }> = [
   { label: "1 full diagnostic report", access: { free: "Included", pro: "Unlimited", advanced: "Unlimited" } },
   { label: "Preview reports", feature: "preview_reports", access: { free: "Included", pro: "Included", advanced: "Included" } },
-  { label: "All broker imports", feature: "broker_imports", access: { free: "-", pro: "Included", advanced: "Included" } },
+  { label: "Broker and generic CSV imports", feature: "broker_imports", access: { free: "Included", pro: "Included", advanced: "Included" } },
   { label: "Full drilldowns", feature: "full_drilldowns", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Full compare", feature: "full_compare", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Strategy sets", feature: "strategy_sets", access: { free: "-", pro: "Included", advanced: "Included" } },

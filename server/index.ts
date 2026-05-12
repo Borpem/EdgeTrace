@@ -305,7 +305,7 @@ app.post("/api/diagnostics/run", async (req, res) => {
   if (!isDemo && !canUseBrokerAdapter(plan, brokerId)) {
     res.status(403).json({
       error: "PLAN_LIMIT_REACHED",
-      message: "Free plan supports generic CSV imports only. Upgrade to Pro to unlock all supported broker CSV imports."
+      message: "This import source is not available on your current plan."
     });
     return;
   }

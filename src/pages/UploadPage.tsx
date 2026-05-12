@@ -88,7 +88,7 @@ export function UploadPage({
   const runBlockerMessage = missingRequiredFields.length
     ? `Missing required fields: ${missingRequiredFields.join(", ")}.`
     : brokerBlocked
-      ? `${plan.displayName} plan supports generic CSV imports only.`
+      ? "This import source is not available on your current plan."
       : reportLimitReached
         ? `You've reached the Free full-report limit. Upgrade to Pro to unlock the full strategy workflow.`
         : hasParsedFile && normalizedTrades.length === 0
@@ -291,7 +291,7 @@ export function UploadPage({
         throw new Error("No normalized trades are ready yet. Review the uploaded file and field mapping.");
       }
       if (brokerBlocked) {
-        throw new Error("Free plan supports generic CSV imports only. Upgrade to Pro to unlock all supported broker CSV imports.");
+        throw new Error("This import source is not available on your current plan.");
       }
       if (reportLimitReached) {
         throw new Error("You've reached the Free full-report limit. Upgrade to Pro to unlock the full strategy workflow.");
@@ -442,7 +442,7 @@ export function UploadPage({
           {profile && (
             <p className="mt-4 text-xs text-muted">
               Current plan: <span className="text-cyan">{plan.displayName}</span>
-              {plan.limits.brokerAdapters === "generic_csv" ? " · Generic CSV imports only" : " · All broker CSV imports"}
+              {" · Broker and generic CSV imports"}
             </p>
           )}
         </div>
@@ -494,8 +494,7 @@ export function UploadPage({
       {warning && <div className="mt-5 rounded-md border border-warning/60 bg-warning/10 p-4 text-warning">{warning}</div>}
       {brokerBlocked && (
         <div className="mt-5 rounded-md border border-warning/60 bg-warning/10 p-4 text-warning">
-          {plan.displayName} plan supports generic CSV imports only. This file was detected as {activeAdapter?.displayName}.
-          Upgrade options are listed on Pricing.
+          This import source is not available on your current plan. This file was detected as {activeAdapter?.displayName}.
         </div>
       )}
 
@@ -1345,8 +1344,8 @@ function formatUploadError(error: unknown, context: "csv_parse" | "html_parse" |
   if (/PLAN_LIMIT_REACHED|free report limit|reached the Free report limit/i.test(message)) {
     return "You've reached the Free full-report limit. Upgrade to Pro to unlock the full strategy workflow, or delete an older non-demo report.";
   }
-  if (/generic csv imports only|broker-specific/i.test(message)) {
-    return "This broker export is not available on the Free plan. Use a generic CSV export or upgrade to Pro to unlock all broker imports.";
+  if (/generic csv imports only|broker-specific|import source is not available/i.test(message)) {
+    return "This import source could not be used. Try auto-detect, choose Generic CSV, or review the uploaded file format.";
   }
   if (/missing required fields/i.test(message)) {
     return `${message} Review the field mapping, then run diagnostics again.`;

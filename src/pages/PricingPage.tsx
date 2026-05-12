@@ -23,7 +23,7 @@ const pricingPlans: PricingPlan[] = [
     title: "Explore the first diagnostic",
     bullets: [
       "1 full diagnostic report",
-      "Generic CSV import",
+      "Supported broker and generic CSV imports",
       "Preview deeper insights after first report",
       "Limited report history"
     ],
@@ -35,7 +35,6 @@ const pricingPlans: PricingPlan[] = [
     title: "Full strategy workflow",
     bullets: [
       "Unlimited full diagnostic reports",
-      "Supported broker CSV imports",
       "Full attribution and drilldowns",
       "Compare reports",
       "Strategy sets",
@@ -64,7 +63,7 @@ const pricingPlans: PricingPlan[] = [
 const featureRows: Array<{ label: string; access: Record<PlanId, string> }> = [
   { label: "Full diagnostic reports", access: { free: "1", pro: "Unlimited", advanced: "Unlimited" } },
   { label: "Preview reports", access: { free: "Included", pro: "Included", advanced: "Included" } },
-  { label: "Broker CSV imports", access: { free: "Generic CSV", pro: "Supported brokers", advanced: "Supported brokers" } },
+  { label: "Broker and generic CSV imports", access: { free: "Included", pro: "Included", advanced: "Included" } },
   { label: "Full attribution and drilldowns", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Compare reports", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Strategy sets", access: { free: "-", pro: "Included", advanced: "Included" } },
