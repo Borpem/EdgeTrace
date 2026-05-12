@@ -591,11 +591,7 @@ export function App() {
       <header className="EdgeTrace-topbar sticky top-0 z-40">
         <div className="EdgeTrace-shell relative flex h-auto flex-col items-center gap-4 py-4 lg:h-16 lg:flex-row lg:justify-between lg:py-0">
           <button
-            className={
-              isAuthenticated
-                ? "flex items-center justify-center lg:w-[300px] xl:absolute xl:left-1/2 xl:top-1/2 xl:z-10 xl:-translate-x-1/2 xl:-translate-y-1/2"
-                : "flex items-center justify-center lg:justify-start"
-            }
+            className="flex shrink-0 items-center justify-center lg:justify-start"
             onClick={() => navigate(isAuthenticated ? "strategyDashboard" : "home", isAuthenticated ? "/app/dashboard" : "/")}
             aria-label="EdgeTrace home"
           >
@@ -614,22 +610,22 @@ export function App() {
             </span>
           </button>
           {isAuthenticated ? (
-            <nav className="flex flex-wrap items-center justify-center gap-5 text-sm lg:justify-start xl:mr-auto">
+            <nav className="flex flex-wrap items-center justify-center gap-4 text-sm lg:flex-1 lg:justify-start xl:pl-2">
               {appNavItems.map(({ target, label }) => {
-              const isActive = activeNavPage === target;
-              return (
-              <button
-                key={target}
-                className={`EdgeTrace-nav-link ${isActive ? "EdgeTrace-nav-link-active" : ""}`}
-                onClick={() => {
-                  if (target === "compare") setInitialComparePair(null);
-                  navigate(target);
-                }}
-              >
-                {label}
-              </button>
-            );
-            })}
+                const isActive = activeNavPage === target;
+                return (
+                  <button
+                    key={target}
+                    className={`EdgeTrace-nav-link ${isActive ? "EdgeTrace-nav-link-active" : ""}`}
+                    onClick={() => {
+                      if (target === "compare") setInitialComparePair(null);
+                      navigate(target);
+                    }}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
             </nav>
           ) : (
             <nav className="flex flex-wrap items-center justify-center gap-6 text-sm lg:ml-auto lg:justify-end">
@@ -666,7 +662,7 @@ export function App() {
             </nav>
           )}
           {isAuthenticated ? (
-            <div className="flex items-center gap-3 xl:ml-auto">
+            <div className="flex flex-wrap items-center justify-center gap-3 xl:ml-auto">
               <button className="EdgeTrace-compact-primary" onClick={() => navigate("upload")}>
                 + New Report
               </button>

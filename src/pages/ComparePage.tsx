@@ -13,6 +13,7 @@ import { CommandPath } from "../components/onboarding/CommandPath";
 import { PaywallGate } from "../components/PaywallGate";
 import { formatReportType } from "../components/ReportDetailsEditor";
 import { SavedComparisonEditor } from "../components/SavedComparisonEditor";
+import { SummaryPanel, TableContainer } from "../components/ui/Primitives";
 import { WorkflowDiagram } from "../components/visuals/WorkflowDiagram";
 import { trackEvent } from "../lib/analytics";
 import { deleteSavedComparison, getReport, listReports, listSavedComparisons } from "../lib/api";
@@ -372,10 +373,14 @@ export function ComparePage({
             title="Upgrade to Pro to unlock full comparisons."
             description="Pro shows what improved, degraded, or introduced new leakage between reports."
           >
-          <section className="EdgeTrace-card mt-8 p-5">
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-muted">Interpretation</p>
-            <p className="mt-3 max-w-4xl text-base leading-7 text-ink">{interpretation}</p>
-            <div className="mt-5 grid gap-3 text-sm md:grid-cols-2">
+          <SummaryPanel
+            className="mt-8"
+            accent="purple"
+            title="What changed between these reports"
+            body={interpretation}
+          >
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-muted">Interpretation</p>
+            <div className="grid gap-3 text-sm md:grid-cols-2">
               <SummaryLine label="Expectancy Change" value={currency.format(reportB.metrics.expectancy - reportA.metrics.expectancy)} />
               <SummaryLine
                 label="R Behavior Change"
@@ -388,7 +393,7 @@ export function ComparePage({
               <SummaryLine label="Report A Net-to-Gross" value={formatOptional(netToGrossPct(reportA), "percent")} />
               <SummaryLine label="Report B Net-to-Gross" value={formatOptional(netToGrossPct(reportB), "percent")} />
             </div>
-          </section>
+          </SummaryPanel>
 
           <section className="mt-8 grid gap-4 xl:grid-cols-2">
             <ChartPanel title="Metric Comparison">
@@ -450,7 +455,7 @@ export function ComparePage({
               <p className="mt-3 max-w-4xl text-sm leading-6 text-ink">{breakdownInterpretation}</p>
             </section>
 
-            <div className="overflow-x-auto rounded-lg border border-line">
+            <TableContainer>
               <table className="min-w-full divide-y divide-line text-sm">
                 <thead className="bg-panel text-left text-muted">
                   <tr>
@@ -491,7 +496,7 @@ export function ComparePage({
                   ))}
                 </tbody>
               </table>
-            </div>
+            </TableContainer>
           </section>
           </PaywallGate>
         </>

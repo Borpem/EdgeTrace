@@ -87,6 +87,93 @@
       rgba(7, 12, 20, 0.82);
   }
 
+  .EdgeTrace-summary-panel {
+    border-radius: 0.125rem;
+    border: 1px solid rgba(88, 214, 255, 0.16);
+    background:
+      radial-gradient(circle at 100% 0%, rgba(88, 214, 255, 0.08), transparent 20rem),
+      linear-gradient(135deg, rgba(247, 247, 243, 0.055), rgba(120, 97, 255, 0.025)),
+      rgba(7, 12, 20, 0.84);
+    padding: 1.25rem;
+    box-shadow:
+      inset 0 1px 0 rgba(247, 247, 243, 0.04),
+      0 20px 64px -56px rgba(88, 214, 255, 0.48);
+  }
+
+  .EdgeTrace-info-card {
+    border-radius: 0.125rem;
+    border: 1px solid rgba(247, 247, 243, 0.095);
+    background:
+      linear-gradient(135deg, rgba(247, 247, 243, 0.045), rgba(88, 214, 255, 0.015)),
+      rgba(7, 12, 20, 0.78);
+  }
+
+  .EdgeTrace-table-container {
+    overflow-x: auto;
+    border-radius: 0.125rem;
+    border: 1px solid rgba(88, 214, 255, 0.14);
+    background:
+      radial-gradient(circle at 100% 0%, rgba(88, 214, 255, 0.065), transparent 18rem),
+      rgba(7, 12, 20, 0.84);
+    box-shadow:
+      inset 0 1px 0 rgba(247, 247, 243, 0.035),
+      0 18px 54px -48px rgba(88, 214, 255, 0.34);
+  }
+
+  .EdgeTrace-table-container table {
+    min-width: 100%;
+    border-collapse: collapse;
+  }
+
+  .EdgeTrace-table-container th {
+    border-bottom: 1px solid rgba(88, 214, 255, 0.13);
+    background: rgba(88, 214, 255, 0.045);
+    color: #9b9b95;
+    font-size: 0.72rem;
+    font-weight: 760;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .EdgeTrace-table-container td {
+    border-bottom: 1px solid rgba(247, 247, 243, 0.065);
+  }
+
+  .EdgeTrace-table-container tbody tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .EdgeTrace-table-container tbody tr:hover {
+    background: rgba(88, 214, 255, 0.035);
+  }
+
+  .EdgeTrace-workflow-panel {
+    border-radius: 0.125rem;
+    border: 1px solid rgba(247, 247, 243, 0.1);
+    background:
+      linear-gradient(135deg, rgba(247, 247, 243, 0.045), rgba(88, 214, 255, 0.015)),
+      rgba(7, 12, 20, 0.78);
+    padding: 1rem;
+  }
+
+  .EdgeTrace-workflow-step {
+    border-radius: 0.125rem;
+    border: 1px solid rgba(247, 247, 243, 0.08);
+    background: rgba(3, 6, 12, 0.44);
+    padding: 0.85rem;
+  }
+
+  .EdgeTrace-workflow-step-active {
+    border-color: rgba(88, 214, 255, 0.58);
+    background: rgba(88, 214, 255, 0.085);
+    box-shadow: inset 0 0 0 1px rgba(88, 214, 255, 0.06);
+  }
+
+  .EdgeTrace-workflow-step-complete {
+    border-color: rgba(120, 97, 255, 0.38);
+    background: rgba(120, 97, 255, 0.06);
+  }
+
   .EdgeTrace-primary-button {
     display: inline-flex;
     align-items: center;
@@ -378,6 +465,33 @@ body {
 
 .EdgeTrace-contours thead {
   background-color: rgba(88, 214, 255, 0.055);
+}
+
+.EdgeTrace-contours tbody tr {
+  border-color: rgba(247, 247, 243, 0.065);
+}
+
+.EdgeTrace-contours th,
+.EdgeTrace-contours td {
+  border-color: rgba(247, 247, 243, 0.065);
+}
+
+.EdgeTrace-contours .overflow-x-auto.border-line {
+  border-color: rgba(88, 214, 255, 0.14);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(88, 214, 255, 0.06), transparent 18rem),
+    rgba(7, 12, 20, 0.84);
+  box-shadow:
+    inset 0 1px 0 rgba(247, 247, 243, 0.035),
+    0 18px 54px -48px rgba(88, 214, 255, 0.34);
+}
+
+.EdgeTrace-contours .border.border-line.bg-panel,
+.EdgeTrace-contours .border.border-line.bg-graphite {
+  border-color: rgba(88, 214, 255, 0.13);
+  background:
+    linear-gradient(135deg, rgba(247, 247, 243, 0.045), rgba(88, 214, 255, 0.014)),
+    rgba(7, 12, 20, 0.82);
 }
 
 .EdgeTrace-hero-logo {

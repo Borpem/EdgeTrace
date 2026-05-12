@@ -20,6 +20,7 @@ import {
   getSegmentTrades
 } from "../lib/leakAnalysis";
 import { PaywallGate } from "../components/PaywallGate";
+import { TableContainer } from "../components/ui/Primitives";
 import type { DiagnosticsResult, NormalizedTrade } from "../types";
 
 const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
@@ -110,7 +111,7 @@ export function DrilldownPage({
         <button className="mb-6 inline-flex items-center gap-2 text-sm text-accent" onClick={onBack}>
           <ArrowLeft size={16} /> Back to Dashboard
         </button>
-        <section className="rounded-lg border border-line bg-panel p-8">
+        <section className="EdgeTrace-card p-8">
           <p className="font-semibold">Segment not found</p>
           <p className="mt-2 text-sm text-muted">The selected segment is not available in this report.</p>
         </section>
@@ -137,7 +138,7 @@ export function DrilldownPage({
         <ArrowLeft size={16} /> Back to Dashboard
       </button>
 
-      <section className="mb-8 border-y border-white/[0.1] py-8">
+      <section className="EdgeTrace-page-header mb-6">
         <h1 className="max-w-5xl text-4xl font-semibold leading-[1.04] tracking-[-0.045em] text-ink md:text-6xl">{group}</h1>
         <p className="mt-5 max-w-4xl text-base leading-7 text-muted">
           {breakdownLabels[dimension]} segment from {result.name ?? "current report"}
@@ -146,7 +147,7 @@ export function DrilldownPage({
 
       <section className="grid gap-4 md:grid-cols-3 xl:grid-cols-5">
         {metrics.map(([label, value]) => (
-          <div key={label} className="rounded-lg border border-line bg-panel p-5">
+          <div key={label} className="EdgeTrace-card-soft p-5">
             <p className="text-xs uppercase tracking-[0.16em] text-muted">{label}</p>
             <p className="mt-3 text-xl font-semibold">{value}</p>
           </div>
@@ -157,7 +158,7 @@ export function DrilldownPage({
         {leakInsights.map((insight) => (
           <div
             key={insight.id}
-            className={`rounded-lg border bg-panel p-5 ${
+            className={`EdgeTrace-card p-5 ${
               insight.severity === "critical"
                 ? "border-loss/70"
                 : insight.severity === "warning"
@@ -173,7 +174,7 @@ export function DrilldownPage({
 
       <section className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {patterns.map((pattern) => (
-          <div key={pattern.label} className="rounded-lg border border-line bg-panel p-5">
+          <div key={pattern.label} className="EdgeTrace-card-soft p-5">
             <p className="text-xs uppercase tracking-[0.16em] text-muted">{pattern.label}</p>
             <p className="mt-3 text-lg font-semibold">{pattern.value}</p>
           </div>
@@ -216,7 +217,7 @@ export function DrilldownPage({
         </ChartPanel>
       </section>
 
-      <section className="mt-8 overflow-x-auto rounded-lg border border-line">
+      <TableContainer className="mt-8">
         <table className="min-w-full divide-y divide-line text-sm">
           <thead className="bg-panel text-left text-muted">
             <tr>
@@ -257,14 +258,14 @@ export function DrilldownPage({
             ))}
           </tbody>
         </table>
-      </section>
+      </TableContainer>
     </main>
   );
 }
 
 function ChartPanel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-lg border border-line bg-panel p-5">
+    <div className="EdgeTrace-card p-5">
       <h2 className="mb-4 text-sm font-semibold uppercase tracking-[0.16em] text-muted">{title}</h2>
       {children}
     </div>

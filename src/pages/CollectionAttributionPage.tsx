@@ -11,6 +11,7 @@ import {
 import { breakdownLabels, type BreakdownDimension } from "../lib/breakdowns";
 import { getCollection } from "../lib/api";
 import { getAttributionRow } from "../lib/collectionAttribution";
+import { TableContainer } from "../components/ui/Primitives";
 import type { ReportCollectionDetail } from "../types";
 
 const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
@@ -48,13 +49,13 @@ export function CollectionAttributionPage({
       </button>
       {error && <div className="mb-5 rounded-md border border-loss/60 bg-loss/10 p-4 text-loss">{error}</div>}
       {!collection || !attribution ? (
-        <section className="rounded-lg border border-line bg-panel p-8">
+        <section className="EdgeTrace-card p-8">
           <p className="font-semibold">Attribution data is unavailable</p>
           <p className="mt-2 text-sm text-muted">This strategy set may need reports with trade-level data.</p>
         </section>
       ) : (
         <>
-          <section className="border-y border-white/[0.1] py-8">
+          <section className="EdgeTrace-page-header mb-6">
             <h1 className="max-w-5xl text-4xl font-semibold leading-[1.04] tracking-[-0.045em] text-ink md:text-6xl">
               {breakdownLabels[dimension]}: {group}
             </h1>
@@ -73,9 +74,9 @@ export function CollectionAttributionPage({
             <AttributionChart title="Cost Drag Over Reports" data={attribution.perReport} dataKey="costDrag" format="percent" />
           </section>
 
-          <section className="mt-8 rounded-lg border border-line bg-panel p-5">
+          <section className="EdgeTrace-card mt-8 p-5">
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-muted">Per-Report Metrics</p>
-            <div className="mt-4 overflow-x-auto">
+            <TableContainer className="mt-4">
               <table className="min-w-full divide-y divide-line text-sm">
                 <thead className="text-left text-muted">
                   <tr>
@@ -102,17 +103,17 @@ export function CollectionAttributionPage({
                   ))}
                 </tbody>
               </table>
-            </div>
+            </TableContainer>
           </section>
 
-          <section className="mt-8 rounded-lg border border-line bg-panel p-5">
+          <section className="EdgeTrace-card mt-8 p-5">
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-muted">
               Latest Report Trades Driving This Segment
             </p>
             {attribution.latestTrades.length === 0 ? (
               <p className="mt-3 text-sm text-muted">No latest-report trades are available for this group.</p>
             ) : (
-              <div className="mt-4 overflow-x-auto">
+              <TableContainer className="mt-4">
                 <table className="min-w-full divide-y divide-line text-sm">
                   <thead className="text-left text-muted">
                     <tr>
@@ -141,7 +142,7 @@ export function CollectionAttributionPage({
                     ))}
                   </tbody>
                 </table>
-              </div>
+              </TableContainer>
             )}
           </section>
         </>
@@ -183,9 +184,9 @@ function AttributionChart({
 
 function Metric({ label, value, tone }: { label: string; value: string; tone?: "accent" | "loss" }) {
   return (
-    <div className="rounded-md border border-line bg-graphite px-3 py-2">
-      <p className="text-xs text-muted">{label}</p>
-      <p className={`mt-1 font-semibold capitalize ${tone === "accent" ? "text-accent" : tone === "loss" ? "text-loss" : ""}`}>{value}</p>
+    <div className="EdgeTrace-card-soft px-3 py-2">
+      <p className="text-[11px] uppercase tracking-[0.14em] text-muted">{label}</p>
+      <p className={`mt-1 font-semibold capitalize ${tone === "accent" ? "text-accent" : tone === "loss" ? "text-loss" : "text-ink"}`}>{value}</p>
     </div>
   );
 }

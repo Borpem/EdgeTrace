@@ -131,7 +131,7 @@ export function StrategyDashboardPage({
   if (isLoading && !safeReport) {
     return (
       <main className="EdgeTrace-shell py-10">
-        <section className="border-y border-white/[0.1] py-10">
+        <section className="EdgeTrace-page-header">
           <h1 className="max-w-4xl text-4xl font-semibold leading-[1.04] tracking-[-0.045em] text-ink md:text-6xl">
             Loading strategy summary
           </h1>
@@ -146,7 +146,7 @@ export function StrategyDashboardPage({
   if (!safeReport || !intelligence) {
     return (
       <main className="EdgeTrace-shell py-10">
-        <section className="border-y border-white/[0.1] py-10">
+        <section className="EdgeTrace-page-header">
           <h1 className="max-w-4xl text-4xl font-semibold leading-[1.04] tracking-[-0.045em] text-ink md:text-6xl">
             No strategy report selected
           </h1>
@@ -175,7 +175,7 @@ export function StrategyDashboardPage({
 
   return (
     <main className="EdgeTrace-shell py-10">
-      <section className="border-y border-white/[0.1] py-8">
+      <section className="EdgeTrace-page-header mb-6">
         <div className="grid gap-8 lg:grid-cols-[1fr_420px] lg:items-center">
           <div>
             <h1 className="max-w-5xl text-4xl font-semibold leading-[1.04] tracking-[-0.045em] text-ink md:text-6xl">
@@ -199,7 +199,7 @@ export function StrategyDashboardPage({
             </div>
           </div>
 
-          <div className="border border-white/[0.12] bg-white/[0.035] p-5">
+          <div className="EdgeTrace-card-soft p-5">
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted">Current Report</p>
             <select
               className="mt-4 w-full border border-white/[0.12] bg-black/30 px-4 py-3 text-sm font-semibold text-ink outline-none transition focus:border-cyan"
@@ -226,7 +226,7 @@ export function StrategyDashboardPage({
 
       <section className="mt-6 grid gap-5 lg:grid-cols-[1.08fr_0.92fr]">
         <article
-          className="relative overflow-hidden border border-white/[0.12] bg-white/[0.035] p-7 md:p-8"
+          className="EdgeTrace-card relative overflow-hidden p-7 md:p-8"
           data-testid="dashboard-health-card"
         >
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_86%_28%,rgba(61,220,151,0.13),transparent_17rem)]" />
@@ -258,7 +258,7 @@ export function StrategyDashboardPage({
           </div>
         </article>
 
-        <article className="border border-white/[0.12] bg-white/[0.035] p-7 md:p-8">
+        <article className="EdgeTrace-card p-7 md:p-8">
           <div className="flex items-center gap-3 text-warning">
             <AlertTriangle size={22} />
             <p className="text-xs font-semibold uppercase tracking-[0.24em]">Primary Diagnosis</p>
@@ -310,7 +310,7 @@ export function StrategyDashboardPage({
         />
       </section>
 
-      <section className="mt-6 border-y border-white/[0.1] py-8">
+      <section className="mt-6 border-y border-white/[0.1] py-7">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted">Where To Look Next</p>
@@ -359,7 +359,7 @@ function DashboardMetricCard({
   tone: string;
 }) {
   return (
-    <article className="border border-white/[0.12] bg-white/[0.035] p-7">
+    <article className="EdgeTrace-card-soft p-5">
       <div className={`mb-8 inline-flex border border-white/[0.1] bg-black/24 p-3 ${tone}`}>{icon}</div>
       <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted">{label}</p>
       <p className={`mt-5 text-4xl font-semibold tracking-[-0.055em] ${tone}`}>{value}</p>

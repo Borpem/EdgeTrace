@@ -22,6 +22,7 @@ import {
 } from "../lib/compareLeakAnalysis";
 import { createManualPair, pairTrades, type MatchedTradePair } from "../lib/tradePairing";
 import { PaywallGate } from "../components/PaywallGate";
+import { TableContainer } from "../components/ui/Primitives";
 import type { DiagnosticsResult, NormalizedTrade } from "../types";
 
 const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
@@ -166,7 +167,7 @@ export function CompareDrilldownPage({
         <ArrowLeft size={16} /> Back to Compare
       </button>
 
-      <section className="mb-8 border-y border-white/[0.1] py-8">
+      <section className="EdgeTrace-page-header mb-6">
         <h1 className="max-w-5xl text-4xl font-semibold leading-[1.04] tracking-[-0.045em] text-ink md:text-6xl">{group}</h1>
         <p className="mt-5 max-w-4xl text-base leading-7 text-muted">
           {breakdownLabels[dimension]} attribution between {reportA.name ?? "Report A"} and{" "}
@@ -199,7 +200,7 @@ export function CompareDrilldownPage({
         <MiniStat label="Avg Cost Change" value={signedCurrency(tradeDeltas.averageCostChange)} />
       </section>
 
-      <section className="mt-8 rounded-lg border border-line bg-panel p-5">
+      <section className="EdgeTrace-card mt-8 p-5">
         <p className="text-sm font-semibold uppercase tracking-[0.16em] text-muted">What Changed?</p>
         <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
           <div className="rounded-md border border-accent/50 bg-accent/10 px-4 py-3 text-sm text-accent">
@@ -230,7 +231,7 @@ export function CompareDrilldownPage({
         <MiniStat label="Avg Added Trade" value={currency.format(pairing.summary.averageAddedNetPnl)} />
       </section>
 
-      <section className="mt-4 rounded-lg border border-line bg-panel p-5">
+      <section className="EdgeTrace-card mt-4 p-5">
         <p className="text-sm font-semibold uppercase tracking-[0.16em] text-muted">Audit Summary</p>
         <p className="mt-3 text-sm leading-6 text-muted">
           Attribution recalculated using audited matches. Rejected matches were excluded from this analysis.
@@ -318,7 +319,7 @@ export function CompareDrilldownPage({
         </ChartPanel>
       </section>
 
-      <details className="mt-8 rounded-lg border border-line bg-panel p-5" open>
+      <details className="EdgeTrace-card mt-8 p-5" open>
         <summary className="cursor-pointer text-sm font-semibold uppercase tracking-[0.16em] text-muted">
           Filters and Sorting
         </summary>
@@ -432,11 +433,11 @@ export function CompareDrilldownPage({
         <TradeTable title="Report B Trades" trades={filteredB} />
       </section>
 
-      <details className="mt-8 rounded-lg border border-line bg-panel p-5" open>
+      <details className="EdgeTrace-card mt-8 p-5" open>
         <summary className="cursor-pointer text-sm font-semibold uppercase tracking-[0.16em] text-muted">
           Matched Trade Analysis
         </summary>
-        <div className="mt-5 overflow-x-auto rounded-lg border border-line">
+        <TableContainer className="mt-5">
           <table className="min-w-full divide-y divide-line text-sm">
             <thead className="bg-panel text-left text-muted">
               <tr>
@@ -488,10 +489,10 @@ export function CompareDrilldownPage({
               ))}
             </tbody>
           </table>
-        </div>
+        </TableContainer>
       </details>
 
-      <details className="mt-8 rounded-lg border border-line bg-panel p-5" open>
+      <details className="EdgeTrace-card mt-8 p-5" open>
         <summary className="cursor-pointer text-sm font-semibold uppercase tracking-[0.16em] text-muted">
           Create Manual Match
         </summary>
@@ -532,7 +533,7 @@ export function CompareDrilldownPage({
 
 function ReportHeader({ title, report }: { title: string; report: DiagnosticsResult }) {
   return (
-    <div className="rounded-lg border border-line bg-panel p-5">
+    <div className="EdgeTrace-card-soft p-5">
       <p className="text-xs uppercase tracking-[0.16em] text-muted">{title}</p>
       <p className="mt-2 text-xl font-semibold">{report.name ?? title}</p>
       <p className="mt-1 text-sm text-muted">{report.createdAt ? new Date(report.createdAt).toLocaleString() : "No date"}</p>
@@ -558,7 +559,7 @@ function MetricDeltaCard({
   const delta = numericA === undefined || numericB === undefined ? undefined : numericB - numericA;
   const status = deltaStatus(delta, lowerIsBetter);
   return (
-    <div className="rounded-lg border border-line bg-panel p-5">
+    <div className="EdgeTrace-card p-5">
       <div className="flex items-start justify-between gap-3">
         <p className="text-xs uppercase tracking-[0.16em] text-muted">{label}</p>
         <span className={`rounded-md border px-2 py-1 text-xs font-semibold ${statusClass(status)}`}>{status}</span>
@@ -574,7 +575,7 @@ function MetricDeltaCard({
 
 function TradeTable({ title, trades }: { title: string; trades: NormalizedTrade[] }) {
   return (
-    <div className="overflow-x-auto rounded-lg border border-line">
+    <TableContainer>
       <div className="border-b border-line bg-panel px-4 py-3 text-sm font-semibold">{title}</div>
       <table className="min-w-full divide-y divide-line text-sm">
         <thead className="bg-panel text-left text-muted">
@@ -600,7 +601,7 @@ function TradeTable({ title, trades }: { title: string; trades: NormalizedTrade[
           ))}
         </tbody>
       </table>
-    </div>
+    </TableContainer>
   );
 }
 
@@ -749,7 +750,7 @@ function SelectControl({
 
 function ChartPanel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-lg border border-line bg-panel p-5">
+    <div className="EdgeTrace-card p-5">
       <h2 className="mb-4 text-sm font-semibold uppercase tracking-[0.16em] text-muted">{title}</h2>
       {children}
     </div>
@@ -758,7 +759,7 @@ function ChartPanel({ title, children }: { title: string; children: React.ReactN
 
 function MiniStat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-lg border border-line bg-panel p-5">
+    <div className="EdgeTrace-card-soft p-5">
       <p className="text-xs uppercase tracking-[0.16em] text-muted">{label}</p>
       <p className="mt-3 text-xl font-semibold">{value}</p>
     </div>

@@ -120,7 +120,7 @@ export function CollectionReviewWorkspacePage({
         <p className="text-sm text-muted">Loading review workspace...</p>
       ) : (
         <>
-          <section className="mb-8 border-y border-white/[0.1] py-8">
+          <section className="EdgeTrace-page-header mb-6">
             <h1 className="max-w-5xl text-4xl font-semibold leading-[1.04] tracking-[-0.045em] text-ink md:text-6xl">{collection.name}</h1>
             <div className="mt-5 grid gap-3 md:grid-cols-4">
               <Metric label="Total Items" value={String(queue.length)} />
@@ -163,7 +163,7 @@ export function CollectionReviewWorkspacePage({
             }}
           />
 
-          <section className="mt-8 rounded-lg border border-line bg-panel p-5">
+          <section className="EdgeTrace-card mt-8 p-5">
             <button className="text-left" onClick={() => setShowReviewed((current) => !current)}>
               <p className="text-sm uppercase tracking-[0.22em] text-muted">Reviewed</p>
               <h2 className="mt-2 text-xl font-semibold">{showReviewed ? "Hide reviewed items" : `Show ${reviewed.length} reviewed items`}</h2>
@@ -236,7 +236,7 @@ function WorkspaceSection({
       (state) => state.previousReportId === item.previousReportId && state.currentReportId === item.currentReportId
     );
   return (
-    <section className={`mt-8 rounded-lg border bg-panel p-5 ${tone === "warning" ? "border-warning/60" : "border-line"}`}>
+    <section className={`EdgeTrace-card mt-8 p-5 ${tone === "warning" ? "border-warning/60" : "border-line"}`}>
       {title && (
         <div className="mb-5">
           <p className="text-sm uppercase tracking-[0.22em] text-accent">{title}</p>
@@ -289,7 +289,7 @@ function WorkspaceCard({
   onAttribution: () => void;
 }) {
   return (
-    <article className="rounded-lg border border-line bg-graphite p-5">
+    <article className="EdgeTrace-card-soft p-5">
       <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
         <div>
           <div className="flex flex-wrap gap-2">
@@ -368,9 +368,9 @@ function WorkspaceNoteEditor({
 
 function Metric({ label, value, tone }: { label: string; value: string; tone?: "accent" | "warning" }) {
   return (
-    <div className="rounded-md border border-line bg-graphite px-3 py-2">
-      <p className="text-xs text-muted">{label}</p>
-      <p className={`mt-1 font-semibold ${tone === "accent" ? "text-accent" : tone === "warning" ? "text-warning" : ""}`}>{value}</p>
+    <div className="EdgeTrace-card-soft px-3 py-2">
+      <p className="text-[11px] uppercase tracking-[0.14em] text-muted">{label}</p>
+      <p className={`mt-1 font-semibold ${tone === "accent" ? "text-accent" : tone === "warning" ? "text-warning" : "text-ink"}`}>{value}</p>
     </div>
   );
 }
@@ -380,7 +380,7 @@ function Delta({ label, value, format, lowerIsBetter }: { label: string; value?:
   const improved = !neutral && (lowerIsBetter ? value < 0 : value > 0);
   const formatted = value === undefined ? "N/A" : format === "currency" ? currency.format(value) : format === "percent" ? percent.format(value) : value.toFixed(2);
   return (
-    <div className="rounded-md border border-line bg-panel px-3 py-2">
+    <div className="border border-white/[0.08] bg-black/25 px-3 py-2">
       <p className="text-xs text-muted">{label}</p>
       <p className={`mt-1 font-semibold ${neutral ? "" : improved ? "text-accent" : "text-loss"}`}>{formatted}</p>
     </div>

@@ -3,6 +3,7 @@ import { UploadCloud } from "lucide-react";
 import { useEffect, useState } from "react";
 import { DisclosurePanel } from "../components/DisclosurePanel";
 import { CommandPath } from "../components/onboarding/CommandPath";
+import { WorkflowPanel } from "../components/ui/Primitives";
 import { WorkflowDiagram } from "../components/visuals/WorkflowDiagram";
 import { trackEvent } from "../lib/analytics";
 import {
@@ -365,25 +366,13 @@ export function UploadPage({
           <p className="EdgeTrace-copy">
             Upload completed trade history, review the mapping, and generate a diagnostic report.
           </p>
-          <div className="mt-6 grid gap-2 text-sm sm:grid-cols-4">
-            {["Import trades", "Review mapping", "Run diagnostics", "Open report"].map((step, index) => (
-              <div
-                key={step}
-                className={`border px-3 py-3 ${
-                  activeStepIndex === index
-                    ? "border-cyan/70 bg-cyan/10"
-                    : index < activeStepIndex
-                      ? "border-accent/45 bg-accent/5"
-                      : "border-white/[0.1] bg-white/[0.025]"
-                }`}
-              >
-                <p className={`text-xs font-semibold ${activeStepIndex === index ? "text-cyan" : "text-muted"}`}>
-                  0{index + 1}
-                </p>
-                <p className="mt-1 font-semibold text-ink">{step}</p>
-              </div>
-            ))}
-          </div>
+          <WorkflowPanel
+            className="mt-6"
+            steps={["Import trades", "Review mapping", "Run diagnostics", "Open report"].map((step, index) => ({
+              title: step,
+              status: activeStepIndex === index ? "active" : index < activeStepIndex ? "complete" : "idle"
+            }))}
+          />
           <div className="mt-6 border border-white/[0.1] bg-white/[0.025] p-4">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div>
@@ -463,7 +452,7 @@ export function UploadPage({
 
       <label
         id="trade-file-import"
-        className="grid min-h-72 cursor-pointer gap-8 rounded-2xl border border-dashed border-accent/60 bg-panel/70 p-8 text-left shadow-2xl shadow-black/20 hover:border-cyan hover:bg-panel md:grid-cols-[340px_1fr] md:items-center"
+        className="EdgeTrace-card grid min-h-72 cursor-pointer gap-8 border border-dashed border-accent/60 p-7 text-left hover:border-cyan md:grid-cols-[340px_1fr] md:items-center"
         onDragOver={(event) => event.preventDefault()}
         onDrop={(event) => {
           event.preventDefault();

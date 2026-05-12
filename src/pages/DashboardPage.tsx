@@ -15,6 +15,7 @@ import { DisclosurePanel } from "../components/DisclosurePanel";
 import { CommandPath } from "../components/onboarding/CommandPath";
 import { PaywallGate } from "../components/PaywallGate";
 import { formatReportType, ReportDetailsEditor } from "../components/ReportDetailsEditor";
+import { TableContainer } from "../components/ui/Primitives";
 import { MetricFlowGraphic } from "../components/visuals/MetricFlowGraphic";
 import { trackEvent } from "../lib/analytics";
 import { getActivationSummary } from "../lib/api";
@@ -265,7 +266,7 @@ export function DashboardPage({
 
   return (
     <main className="EdgeTrace-shell py-10">
-      <section className="border-y border-white/[0.1] py-8">
+      <section className="EdgeTrace-page-header mb-6">
         <div className="grid gap-8 lg:grid-cols-[1fr_420px] lg:items-center">
           <div>
             <h1 className="max-w-5xl text-4xl font-semibold leading-[1.04] tracking-[-0.045em] text-ink md:text-6xl">
@@ -312,7 +313,7 @@ export function DashboardPage({
             </div>
           </div>
 
-          <div className="border border-white/[0.12] bg-white/[0.035] p-5">
+          <div className="EdgeTrace-card-soft p-5">
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted">Current Report</p>
             <div className="mt-4 border border-white/[0.12] bg-black/30 px-4 py-3">
               <p className="truncate text-sm font-semibold text-ink">{result.name ?? result.id}</p>
@@ -484,7 +485,7 @@ export function DashboardPage({
 
       <section className="mt-6 grid gap-5 lg:grid-cols-[1.08fr_0.92fr]">
         <div
-          className="relative overflow-hidden border border-white/[0.12] bg-white/[0.035] p-7 md:p-8"
+          className="EdgeTrace-card relative overflow-hidden p-7 md:p-8"
           data-testid="dashboard-health-card"
         >
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_86%_28%,rgba(61,220,151,0.13),transparent_17rem)]" />
@@ -516,7 +517,7 @@ export function DashboardPage({
           </div>
         </div>
 
-        <div id="primary-diagnosis" className="scroll-mt-28 border border-white/[0.12] bg-white/[0.035] p-7 md:p-8">
+        <div id="primary-diagnosis" className="EdgeTrace-card scroll-mt-28 p-7 md:p-8">
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-warning">Primary Diagnosis</p>
           <h2 className="mt-7 text-3xl font-semibold tracking-[-0.055em] text-ink">{intelligence.primaryDiagnosis}</h2>
           <p className="mt-5 text-sm leading-6 text-muted">{intelligence.primaryLeak.explanation}</p>
@@ -748,7 +749,7 @@ export function DashboardPage({
           />
         </div>
 
-        <div className="overflow-x-auto rounded-lg border border-line">
+        <TableContainer>
           <table className="min-w-full divide-y divide-line text-sm">
             <thead className="bg-panel text-left text-muted">
               <tr>
@@ -802,7 +803,7 @@ export function DashboardPage({
               ))}
             </tbody>
           </table>
-        </div>
+        </TableContainer>
       </section>
       </PaywallGate>
       )}
@@ -814,7 +815,7 @@ export function DashboardPage({
         title="Upgrade to Pro to unlock the full trade-level report."
         description="Preview reports show top-level diagnostics. Pro unlocks every normalized trade behind the attribution."
       >
-      <section className="mt-8 overflow-hidden rounded-lg border border-line">
+      <TableContainer className="mt-8">
         <table className="min-w-full divide-y divide-line text-sm">
           <thead className="bg-panel text-left text-muted">
             <tr>
@@ -847,7 +848,7 @@ export function DashboardPage({
             ))}
           </tbody>
         </table>
-      </section>
+      </TableContainer>
       </PaywallGate>
       )}
 
@@ -1016,7 +1017,7 @@ function DashboardSummaryCard({
   tone: string;
 }) {
   return (
-    <div className="border border-white/[0.1] bg-white/[0.035] p-6">
+    <div className="EdgeTrace-card-soft p-5">
       <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted">{label}</p>
       <p className={`mt-6 text-4xl font-semibold tracking-[-0.06em] ${tone}`}>{value}</p>
       <p className="mt-4 text-sm text-muted">{detail}</p>
@@ -1039,7 +1040,7 @@ function metricStatusClass(status: MetricStatus) {
 
 function ChartPanel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-lg border border-line bg-panel p-5">
+    <div className="EdgeTrace-card p-5">
       <h2 className="mb-4 text-sm font-semibold uppercase tracking-[0.16em] text-muted">{title}</h2>
       {children}
     </div>

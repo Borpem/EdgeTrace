@@ -11,6 +11,7 @@ import {
 } from "recharts";
 import { PaywallGate } from "../components/PaywallGate";
 import { formatReportType } from "../components/ReportDetailsEditor";
+import { TableContainer } from "../components/ui/Primitives";
 import { breakdownLabels, type BreakdownDimension } from "../lib/breakdowns";
 import {
   buildCollectionAnalytics,
@@ -214,7 +215,7 @@ export function CollectionDetailPage({
         <p className="text-sm text-muted">Loading strategy set...</p>
       ) : (
         <>
-          <section className="mb-8 flex flex-col gap-6 border-y border-white/[0.1] py-8 md:flex-row md:items-end md:justify-between">
+          <section className="EdgeTrace-page-header mb-6 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <div>
               <h1 className="max-w-5xl text-4xl font-semibold leading-[1.04] tracking-[-0.045em] text-ink md:text-6xl">{collection.name}</h1>
               <p className="mt-5 max-w-4xl text-base leading-7 text-muted">
@@ -337,7 +338,7 @@ export function CollectionDetailPage({
               <p className="mt-2 text-sm text-muted">Add reports from the Reports page to track strategy iterations.</p>
             </section>
           ) : (
-            <section className="overflow-x-auto rounded-lg border border-line">
+            <TableContainer>
               <table className="min-w-full divide-y divide-line text-sm">
                 <thead className="bg-panel text-left text-muted">
                   <tr>
@@ -375,7 +376,7 @@ export function CollectionDetailPage({
                   ))}
                 </tbody>
               </table>
-            </section>
+            </TableContainer>
           )}
         </>
       )}
@@ -998,7 +999,7 @@ function CollectionAttributionSection({
         <DriverPanel title="Top Degradation Drivers" rows={attribution.degradationDrivers} tone="loss" />
       </div>
 
-      <div className="overflow-x-auto rounded-lg border border-line">
+      <TableContainer>
         <table className="min-w-full divide-y divide-line text-sm">
           <thead className="bg-graphite text-left text-muted">
             <tr>
@@ -1019,7 +1020,7 @@ function CollectionAttributionSection({
             ))}
           </tbody>
         </table>
-      </div>
+      </TableContainer>
     </section>
   );
 }

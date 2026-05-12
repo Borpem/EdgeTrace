@@ -8,6 +8,7 @@ import {
   reconstructionTradeFilename
 } from "../lib/exportUtils";
 import { PaywallGate } from "../components/PaywallGate";
+import { TableContainer } from "../components/ui/Primitives";
 import type { DiagnosticsResult, NormalizedTrade } from "../types";
 
 const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
@@ -58,7 +59,7 @@ export function ReconstructionAuditPage({
 
   return (
     <main className="EdgeTrace-shell py-10">
-      <section className="mb-8 flex flex-col gap-6 border-y border-white/[0.1] py-8 md:flex-row md:items-end md:justify-between">
+      <section className="EdgeTrace-page-header mb-6 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <div>
           <h1 className="max-w-5xl text-4xl font-semibold leading-[1.04] tracking-[-0.045em] text-ink md:text-6xl">{result.name ?? "Diagnostic report"}</h1>
           <p className="mt-5 max-w-4xl text-base leading-7 text-muted">
@@ -89,7 +90,7 @@ export function ReconstructionAuditPage({
       </section>
 
       {!reconstructedTrades.length ? (
-        <section className="rounded-lg border border-line bg-panel p-8">
+        <section className="EdgeTrace-card p-8">
           <h2 className="text-xl font-semibold">No reconstruction audit data is available for this report.</h2>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-muted">
             Reports created from generic CSVs or direct execution analysis do not include reconstruction metadata.
@@ -105,7 +106,7 @@ export function ReconstructionAuditPage({
           </section>
           <p className="mt-3 text-sm text-muted">Exports are generated locally from the saved report data.</p>
 
-          <section className="mt-6 overflow-x-auto rounded-lg border border-line">
+          <TableContainer className="mt-6">
             <table className="min-w-full divide-y divide-line text-sm">
               <thead className="bg-panel text-left text-muted">
                 <tr>
@@ -139,7 +140,7 @@ export function ReconstructionAuditPage({
                 ))}
               </tbody>
             </table>
-          </section>
+          </TableContainer>
         </>
       )}
     </main>
@@ -274,7 +275,7 @@ function AuditRow({
 
 function AuditStat({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="rounded-lg border border-line bg-panel p-5">
+    <div className="EdgeTrace-card-soft p-5">
       <p className="text-xs uppercase tracking-[0.16em] text-muted">{label}</p>
       <p className="mt-3 text-2xl font-semibold">{value}</p>
     </div>

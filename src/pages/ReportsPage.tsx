@@ -364,9 +364,9 @@ function FilterSelect({
 
 function Metric({ label, value, tone }: { label: string; value: string; tone?: "accent" | "loss" }) {
   return (
-    <div className="rounded-md border border-line bg-graphite px-3 py-2">
-      <p className="text-xs text-muted">{label}</p>
-      <p className={`mt-1 font-semibold ${tone === "accent" ? "text-accent" : tone === "loss" ? "text-loss" : ""}`}>
+    <div className="EdgeTrace-card-soft px-3 py-2">
+      <p className="text-[11px] uppercase tracking-[0.14em] text-muted">{label}</p>
+      <p className={`mt-1 font-semibold ${tone === "accent" ? "text-accent" : tone === "loss" ? "text-loss" : "text-ink"}`}>
         {value}
       </p>
     </div>
