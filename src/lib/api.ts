@@ -122,6 +122,16 @@ export async function createCheckoutSession(planId: Exclude<PlanId, "free">) {
   return response.json() as Promise<{ url: string }>;
 }
 
+export async function confirmCheckoutSession(sessionId: string) {
+  const response = await fetch(apiUrl("/api/billing/confirm-checkout-session"), {
+    method: "POST",
+    headers: await apiHeaders({ "Content-Type": "application/json" }),
+    body: JSON.stringify({ sessionId })
+  });
+  if (!response.ok) throw new Error(await readApiError(response, "Checkout completed, but the plan could not be refreshed yet."));
+  return response.json() as Promise<{ profile: UserProfile }>;
+}
+
 export async function createBillingPortalSession() {
   const response = await fetch(apiUrl("/api/billing/create-portal-session"), {
     method: "POST",

@@ -75,12 +75,14 @@ export async function createCheckoutSession(userId: string, planId: PlanId, orig
     throw new Error("The selected plan is missing a Stripe price ID.");
   }
 
+  console.info(`[stripe] Creating checkout session user=${userId} plan=${planId} price=${priceId}.`);
   const customerId = await getOrCreateStripeCustomer(userId);
-  return stripe.checkout.sessions.create({
+  const session = await stripe.checkout.sessions.create({
     mode: "subscription",
     customer: customerId,
+    client_reference_id: userId,
     line_items: [{ price: priceId, quantity: 1 }],
-    success_url: `${origin}/pricing?checkout=success`,
+    success_url: `${origin}/pricing?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${origin}/pricing?checkout=cancelled`,
     metadata: {
       edgeTraceUserId: userId,
@@ -93,6 +95,8 @@ export async function createCheckoutSession(userId: string, planId: PlanId, orig
       }
     }
   });
+  console.info(`[stripe] Created checkout session ${session.id} for user=${userId}.`);
+  return session;
 }
 
 export async function createBillingPortalSession(userId: string, origin: string) {
@@ -187,6 +191,45 @@ export async function handleCheckoutSessionCompleted(session: any) {
       }
     });
   }
+  return updated;
+}
+
+export async function confirmCheckoutSessionForUser(userId: string, sessionId: string) {
+  const session = await getStripe().checkout.sessions.retrieve(sessionId);
+  const sessionUserId = session.metadata?.edgeTraceUserId || session.metadata?.userId || session.client_reference_id;
+  if (sessionUserId && sessionUserId !== userId) {
+    throw new Error("Checkout session does not belong to the current user.");
+  }
+
+  const customerId = typeof session.customer === "string" ? session.customer : session.customer?.id;
+  if (customerId) {
+    const profile = await getOrCreateUserProfile(userId);
+    if (profile.stripeCustomerId && profile.stripeCustomerId !== customerId) {
+      throw new Error("Checkout customer does not match the current account.");
+    }
+    await setStripeCustomerId(userId, customerId);
+  }
+
+  const subscriptionId =
+    typeof session.subscription === "string" ? session.subscription : session.subscription?.id;
+  if (!subscriptionId) {
+    throw new Error("Checkout session has not created a subscription yet.");
+  }
+
+  const subscription = await getStripe().subscriptions.retrieve(subscriptionId);
+  const updated = await updateUserPlanFromSubscription(subscription);
+  if (!updated || updated.userId !== userId) {
+    throw new Error("Checkout session could not update the current account.");
+  }
+
+  await trackUserEvent(userId, {
+    eventName: "checkout_completed",
+    properties: {
+      planId: updated.planId,
+      stripeSubscriptionStatus: updated.stripeSubscriptionStatus,
+      source: "checkout_return_confirmation"
+    }
+  });
   return updated;
 }
 

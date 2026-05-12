@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { ArrowRight, Check, FileX, Lock, ReceiptText, ShieldCheck, type LucideIcon } from "lucide-react";
-import { createBillingPortalSession, createCheckoutSession } from "../lib/api";
+import { confirmCheckoutSession, createBillingPortalSession, createCheckoutSession, getMe } from "../lib/api";
 import { PageShell } from "../components/ui/Primitives";
 import { trackEvent } from "../lib/analytics";
 import { getPlanConfig } from "../lib/entitlements";
@@ -104,7 +104,8 @@ const trustItems: Array<{ title: string; body: string; icon: LucideIcon; accent:
 
 export function PricingPage({
   profile,
-  onStart
+  onStart,
+  onPlanChanged
 }: {
   profile: UserProfile | null;
   onStart: () => void;
@@ -113,6 +114,7 @@ export function PricingPage({
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [activeAction, setActiveAction] = useState<string | null>(null);
+  const [confirmedSessionId, setConfirmedSessionId] = useState("");
   const currentPlanId = profile?.planId ?? "free";
   const billingConfigured = !profile || profile.billingConfigured === true;
 
@@ -121,12 +123,50 @@ export function PricingPage({
     const params = new URLSearchParams(window.location.search);
     const checkout = params.get("checkout");
     if (checkout === "success") {
-      setNotice("Checkout completed. Your plan will update after Stripe confirms the subscription.");
+      setNotice("Checkout completed. Refreshing your plan...");
     }
     if (checkout === "cancelled") {
       setNotice("Checkout was cancelled. Your plan was not changed.");
     }
   }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("checkout") !== "success") return;
+
+    const sessionId = params.get("session_id") ?? "";
+    if (sessionId && sessionId === confirmedSessionId) return;
+    if (sessionId && !profile) return;
+
+    let cancelled = false;
+    setActiveAction("confirm-checkout");
+    const refresh = sessionId ? confirmCheckoutSession(sessionId) : getMe();
+    void refresh
+      .then(({ profile: refreshedProfile }) => {
+        if (cancelled) return;
+        setConfirmedSessionId(sessionId);
+        onPlanChanged?.(refreshedProfile);
+        setNotice(
+          refreshedProfile.planId === "pro"
+            ? "Checkout completed. Your Pro plan is active."
+            : "Checkout completed. Your plan is still updating. Refresh this page in a moment."
+        );
+        const cleanUrl = window.location.pathname;
+        window.history.replaceState(null, "", cleanUrl);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        setNotice("Checkout completed. Your plan may take a moment to update from Stripe.");
+        setError(err instanceof Error ? err.message : "Checkout completed, but the plan could not be refreshed yet.");
+      })
+      .finally(() => {
+        if (!cancelled) setActiveAction(null);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [confirmedSessionId, onPlanChanged, profile]);
 
   const startCheckout = async (planId: Exclude<PlanId, "free">) => {
     setError("");

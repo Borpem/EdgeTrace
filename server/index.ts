@@ -39,6 +39,7 @@ import {
 } from "./db";
 import {
   constructStripeWebhookEvent,
+  confirmCheckoutSessionForUser,
   createBillingPortalSession,
   createCheckoutSession,
   handleCheckoutSessionCompleted,
@@ -321,7 +322,9 @@ app.post("/api/billing/create-checkout-session", async (req, res) => {
   }
 
   try {
-    const session = await createCheckoutSession(getUserId(req), planId, getRequestOrigin(req));
+    const userId = getUserId(req);
+    console.info(`[billing] Checkout session request user=${userId} plan=${planId}.`);
+    const session = await createCheckoutSession(userId, planId, getRequestOrigin(req));
     if (!session.url) {
       res.status(502).json({
         error: "CHECKOUT_SESSION_FAILED",
@@ -329,12 +332,35 @@ app.post("/api/billing/create-checkout-session", async (req, res) => {
       });
       return;
     }
-    await trackUserEvent(getUserId(req), { eventName: "checkout_started", properties: { planId } });
+    await trackUserEvent(userId, { eventName: "checkout_started", properties: { planId } });
     res.json({ url: session.url });
   } catch (err) {
+    console.error("[billing] Checkout session creation failed", err);
     res.status(422).json({
       error: "CHECKOUT_SESSION_FAILED",
       message: safeApiErrorMessage(err, "Unable to create checkout session.")
+    });
+  }
+});
+
+app.post("/api/billing/confirm-checkout-session", async (req, res) => {
+  const sessionId = typeof req.body?.sessionId === "string" ? req.body.sessionId.trim() : "";
+  if (!sessionId) {
+    res.status(400).json({
+      error: "INVALID_CHECKOUT_SESSION",
+      message: "Checkout session id is required."
+    });
+    return;
+  }
+
+  try {
+    const profile = await confirmCheckoutSessionForUser(getUserId(req), sessionId);
+    res.json({ profile: { ...profile, billingConfigured: isStripeConfigured() } });
+  } catch (err) {
+    console.error("[billing] Checkout confirmation failed", err);
+    res.status(422).json({
+      error: "CHECKOUT_CONFIRMATION_FAILED",
+      message: safeApiErrorMessage(err, "Checkout completed, but the plan could not be refreshed yet.")
     });
   }
 });
