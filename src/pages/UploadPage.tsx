@@ -398,6 +398,7 @@ export function UploadPage({
                     costsDetected={costsDetected}
                     rMultipleAvailable={rMultipleAvailable}
                     reconstructionStatus={reconstructionStatus}
+                    primary
                   />
                 )}
               </div>
@@ -975,6 +976,7 @@ function FinalReportSummary({
   rMultipleAvailable,
   reconstructionStatus,
   compact,
+  primary = false,
   className = ""
 }: {
   normalizedTradeCount: number;
@@ -983,10 +985,11 @@ function FinalReportSummary({
   rMultipleAvailable: boolean;
   reconstructionStatus: string;
   compact?: boolean;
+  primary?: boolean;
   className?: string;
 }) {
   const items = [
-    `${normalizedTradeCount} normalized trades`,
+    primary ? `${normalizedTradeCount} normalized trades` : `${normalizedTradeCount} trades ready`,
     `Source: ${sourceLabel}`,
     `Costs detected: ${costsDetected ? "Yes" : "No"}`,
     `R-multiple available: ${rMultipleAvailable ? "Yes" : "No"}`,

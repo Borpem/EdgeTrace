@@ -15,6 +15,7 @@ import type {
   PlanId,
   ImportProvenance
 } from "../types";
+import { describeNormalizationIssue, normalizeTrades } from "./normalize";
 
 const DEFAULT_USER_ID = "local-demo-user";
 const CONFIGURED_API_BASE_URL = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/$/, "") ?? "";
@@ -52,11 +53,13 @@ async function apiHeaders(extra?: HeadersInit): Promise<HeadersInit> {
 }
 
 async function readApiError(response: Response, fallback: string) {
+  const text = await response.text().catch(() => "");
+  if (!text) return fallback;
   try {
-    const body = (await response.json()) as { message?: string; error?: string };
+    const body = JSON.parse(text) as { message?: string; error?: string };
     return body.message || body.error || fallback;
   } catch {
-    return fallback;
+    return text;
   }
 }
 
@@ -127,23 +130,22 @@ export async function createBillingPortalSession() {
 }
 
 export async function uploadTrades(rows: unknown[]) {
-  const response = await fetch(apiUrl("/api/trades/upload"), {
-    method: "POST",
-    headers: await apiHeaders({ "Content-Type": "application/json" }),
-    body: JSON.stringify({ rows })
-  });
-  if (!response.ok) throw new Error("Unable to normalize trades");
-  return response.json() as Promise<{ normalizedTrades: NormalizedTrade[]; rejectedRows: number; warning?: string }>;
+  const normalizedTrades = normalizeTrades(rows);
+  return {
+    normalizedTrades,
+    rejectedRows: rows.length - normalizedTrades.length,
+    warning: normalizedTrades.length === 0 ? describeNormalizationIssue(rows) : undefined
+  };
 }
 
 export async function uploadHtmlTrades(html: string) {
-  const response = await fetch(apiUrl("/api/trades/upload"), {
-    method: "POST",
-    headers: await apiHeaders({ "Content-Type": "application/json" }),
-    body: JSON.stringify({ html })
-  });
-  if (!response.ok) throw new Error("Unable to normalize HTML trade confirmation");
-  return response.json() as Promise<{ normalizedTrades: NormalizedTrade[]; rejectedRows: number; warning?: string }>;
+  const rows = [{ sourceType: "html", content: html }];
+  const normalizedTrades = normalizeTrades(rows);
+  return {
+    normalizedTrades,
+    rejectedRows: rows.length - normalizedTrades.length,
+    warning: normalizedTrades.length === 0 ? describeNormalizationIssue(rows) : undefined
+  };
 }
 
 export async function runTradeDiagnostics(

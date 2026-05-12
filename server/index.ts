@@ -120,7 +120,32 @@ app.post("/api/stripe/webhook", express.raw({ type: "application/json" }), async
     });
   }
 });
-app.use(express.json({ limit: "2mb" }));
+const jsonBodyErrorHandler: express.ErrorRequestHandler = (err, _req, res, next) => {
+  if (!err) {
+    next();
+    return;
+  }
+
+  if (isPayloadTooLargeError(err)) {
+    res.status(413).json({
+      error: "UPLOAD_TOO_LARGE",
+      message: "This upload is too large to process in one request. Export a smaller date range and try again."
+    });
+    return;
+  }
+
+  if (isJsonSyntaxError(err)) {
+    res.status(400).json({
+      error: "INVALID_JSON_BODY",
+      message: "The upload request could not be read. Refresh the page and try the import again."
+    });
+    return;
+  }
+
+  next(err);
+};
+app.use(express.json({ limit: "25mb" }));
+app.use(jsonBodyErrorHandler);
 
 app.get("/api/health", (_req, res) => {
   res.json({
@@ -185,6 +210,16 @@ async function requireEdgeTraceUser(req: express.Request, res: express.Response,
 
 function isAllowedVercelDeploymentOrigin(origin: string) {
   return /^https:\/\/edge-trace-[a-z0-9-]+-edge-trace-s-projects\.vercel\.app$/i.test(origin);
+}
+
+function isPayloadTooLargeError(err: unknown) {
+  if (typeof err !== "object" || err === null) return false;
+  const maybeError = err as { type?: unknown; status?: unknown };
+  return maybeError.type === "entity.too.large" || maybeError.status === 413;
+}
+
+function isJsonSyntaxError(err: unknown) {
+  return err instanceof SyntaxError && typeof err === "object" && err !== null && "body" in err;
 }
 
 function getUserId(req: express.Request) {
