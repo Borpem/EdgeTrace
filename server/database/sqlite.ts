@@ -465,9 +465,19 @@ export function getDiagnosticReport(userId: string, id: string): DiagnosticsResu
 
 export function deleteDiagnosticReport(userId: string, id: string) {
   const tx = db.transaction(() => {
+    const owned = db.prepare("SELECT id FROM diagnostic_reports WHERE id = ? AND user_id = ?").get(id, userId);
+    if (!owned) return false;
+
     db.prepare("DELETE FROM collection_review_states WHERE user_id = ? AND (previous_report_id = ? OR current_report_id = ?)").run(userId, id, id);
-    db.prepare("DELETE FROM collection_reports WHERE report_id = ? AND user_id = ?").run(id, userId);
+    db.prepare(
+      `DELETE FROM collection_review_states
+       WHERE user_id = ?
+         AND collection_id IN (
+           SELECT collection_id FROM collection_reports WHERE report_id = ? AND user_id = ?
+         )`
+    ).run(userId, id, userId);
     db.prepare("DELETE FROM saved_comparisons WHERE user_id = ? AND (report_a_id = ? OR report_b_id = ?)").run(userId, id, id);
+    db.prepare("DELETE FROM collection_reports WHERE report_id = ? AND user_id = ?").run(id, userId);
     return db.prepare("DELETE FROM diagnostic_reports WHERE id = ? AND user_id = ?").run(id, userId).changes > 0;
   });
   return tx();

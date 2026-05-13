@@ -545,12 +545,23 @@ app.patch("/api/diagnostics/:id", async (req, res) => {
 });
 
 app.delete("/api/diagnostics/:id", async (req, res) => {
-  const deleted = await deleteDiagnosticReport(getUserId(req), req.params.id);
-  if (!deleted) {
-    res.status(404).json({ error: "Diagnostics not found" });
-    return;
+  try {
+    const deleted = await deleteDiagnosticReport(getUserId(req), req.params.id);
+    if (!deleted) {
+      res.status(404).json({
+        error: "DIAGNOSTICS_NOT_FOUND",
+        message: "Report not found or already deleted."
+      });
+      return;
+    }
+    res.status(204).send();
+  } catch (err) {
+    console.error(`[diagnostics] Delete failed for report=${req.params.id} user=${getUserId(req)}`, err);
+    res.status(422).json({
+      error: "REPORT_DELETE_FAILED",
+      message: safeApiErrorMessage(err, "Unable to delete report. Remove it from strategy sets or saved comparisons and try again.")
+    });
   }
-  res.status(204).send();
 });
 
 app.delete("/api/demo-data", async (req, res) => {

@@ -448,9 +448,20 @@ export async function getDiagnosticReport(userId: string, id: string): Promise<D
 
 export async function deleteDiagnosticReport(userId: string, id: string): Promise<boolean> {
   return transaction(async (client) => {
+    const owned = await client.query("SELECT id FROM diagnostic_reports WHERE id = $1 AND user_id = $2", [id, userId]);
+    if ((owned.rowCount ?? 0) === 0) return false;
+
     await client.query("DELETE FROM collection_review_states WHERE user_id = $1 AND (previous_report_id = $2 OR current_report_id = $2)", [userId, id]);
-    await client.query("DELETE FROM collection_reports WHERE report_id = $1 AND user_id = $2", [id, userId]);
+    await client.query(
+      `DELETE FROM collection_review_states
+       WHERE user_id = $1
+         AND collection_id IN (
+           SELECT collection_id FROM collection_reports WHERE report_id = $2 AND user_id = $1
+         )`,
+      [userId, id]
+    );
     await client.query("DELETE FROM saved_comparisons WHERE user_id = $1 AND (report_a_id = $2 OR report_b_id = $2)", [userId, id]);
+    await client.query("DELETE FROM collection_reports WHERE report_id = $1 AND user_id = $2", [id, userId]);
     const result = await client.query("DELETE FROM diagnostic_reports WHERE id = $1 AND user_id = $2", [id, userId]);
     return (result.rowCount ?? 0) > 0;
   });
