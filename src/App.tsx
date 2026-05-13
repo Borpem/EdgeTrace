@@ -766,6 +766,7 @@ export function App() {
       {page === "account" && isAuthenticated && (
         <AccountPage
           profile={userProfile}
+          user={user}
           onPlanChanged={setUserProfile}
           onAnalyze={() => navigate("upload")}
           onPricing={() => navigate("pricing", "/pricing")}

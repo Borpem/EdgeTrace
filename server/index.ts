@@ -235,15 +235,22 @@ function isJsonSyntaxError(err: unknown) {
 
 function apiErrorHandler(
   err: unknown,
-  _req: express.Request,
+  req: express.Request,
   res: express.Response,
   _next: express.NextFunction
 ) {
   console.error("[api] Unhandled request error", err);
   if (res.headersSent) return;
+  if (req.path.startsWith("/api/billing")) {
+    res.status(500).json({
+      error: "BILLING_INTERNAL_ERROR",
+      message: "The billing service hit an internal error. Try again in a moment."
+    });
+    return;
+  }
   res.status(500).json({
     error: "INTERNAL_SERVER_ERROR",
-    message: "The diagnostics service hit an internal error. Try again in a moment."
+    message: "The EdgeTrace service hit an internal error. Try again in a moment."
   });
 }
 
