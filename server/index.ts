@@ -154,6 +154,8 @@ app.get("/api/health", (_req, res) => {
     service: "edgetrace-api",
     databaseProvider: getDatabaseProviderName(),
     authMode,
+    authConfigured: authMode === "mock" || Boolean(process.env.CLERK_SECRET_KEY && process.env.CLERK_PUBLISHABLE_KEY),
+    clerkPublishableConfigured: Boolean(process.env.CLERK_PUBLISHABLE_KEY),
     billingConfigured: isStripeConfigured(),
     billingApiVersion: "stripe-checkout-v2",
     gitCommit: process.env.RAILWAY_GIT_COMMIT_SHA || process.env.VERCEL_GIT_COMMIT_SHA || ""
@@ -163,7 +165,12 @@ app.get("/api/health", (_req, res) => {
 type EdgeTraceRequest = express.Request & { edgeTraceUserId?: string };
 
 if (authMode === "clerk") {
-  app.use(clerkMiddleware());
+  app.use(
+    clerkMiddleware({
+      secretKey: process.env.CLERK_SECRET_KEY,
+      publishableKey: process.env.CLERK_PUBLISHABLE_KEY
+    })
+  );
 }
 
 function productionCorsOrigin(origin: string | undefined, callback: (error: Error | null, origin?: boolean | string) => void) {
@@ -253,6 +260,10 @@ function isJsonSyntaxError(err: unknown) {
   return err instanceof SyntaxError && typeof err === "object" && err !== null && "body" in err;
 }
 
+function isServerAuthMisconfigured() {
+  return authMode === "clerk" && !process.env.CLERK_PUBLISHABLE_KEY;
+}
+
 function apiErrorHandler(
   err: unknown,
   req: express.Request,
@@ -261,6 +272,13 @@ function apiErrorHandler(
 ) {
   console.error("[api] Unhandled request error", err);
   if (res.headersSent) return;
+  if (isServerAuthMisconfigured()) {
+    res.status(500).json({
+      error: "AUTH_CONFIGURATION_ERROR",
+      message: "Server authentication is missing CLERK_PUBLISHABLE_KEY. Add it to the backend environment and redeploy."
+    });
+    return;
+  }
   if (req.path.startsWith("/api/billing")) {
     res.status(500).json({
       error: "BILLING_INTERNAL_ERROR",
