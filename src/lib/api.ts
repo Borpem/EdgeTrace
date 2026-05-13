@@ -225,7 +225,11 @@ export async function getReport(id: string) {
 }
 
 export async function deleteReport(id: string) {
-  const response = await fetch(apiUrl(`/api/diagnostics/${id}`), { method: "DELETE", headers: await apiHeaders() });
+  const response = await fetch(apiUrl(`/api/diagnostics/${id}/delete`), {
+    method: "POST",
+    headers: await apiHeaders({ "Content-Type": "application/json" }),
+    body: JSON.stringify({})
+  });
   if (!response.ok) throw new Error(await readApiError(response, "Unable to delete report"));
 }
 
