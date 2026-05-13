@@ -418,21 +418,27 @@ app.post("/api/billing/confirm-checkout-session", async (req, res) => {
 });
 
 app.post("/api/billing/create-portal-session", async (req, res) => {
-  if (!process.env.STRIPE_SECRET_KEY) {
-    res.status(503).json({
-      error: "BILLING_NOT_CONFIGURED",
-      message: "Billing is not configured in this environment."
-    });
-    return;
-  }
-
+  let stage = "validate_request";
   try {
+    if (!isStripeConfigured()) {
+      res.status(503).json({
+        error: "BILLING_NOT_CONFIGURED",
+        stage,
+        message: "Billing is not configured in this environment."
+      });
+      return;
+    }
+
+    stage = "create_stripe_portal_session";
     const session = await createBillingPortalSession(getUserId(req), getRequestOrigin(req));
+    stage = "track_billing_portal_opened";
     await trackUserEvent(getUserId(req), { eventName: "billing_portal_opened" });
     res.json({ url: session.url });
   } catch (err) {
+    console.error(`[billing] Billing portal creation failed at ${stage}`, err);
     res.status(422).json({
       error: "BILLING_PORTAL_FAILED",
+      stage,
       message: billingApiErrorMessage(err, "Unable to open billing portal.")
     });
   }
@@ -790,6 +796,12 @@ function billingApiErrorMessage(err: unknown, fallback: string) {
   }
   if (details.code === "resource_missing" && /customer/i.test(details.message)) {
     return "Stripe could not find the customer linked to this account. Refresh the account page and try checkout again.";
+  }
+  if (/No Stripe customer exists/i.test(details.message)) {
+    return "No Stripe billing customer is linked to this account yet. Use Upgrade to Pro to start checkout, or refresh after checkout completes.";
+  }
+  if (/billing portal|customer portal|portal configuration|No configuration provided/i.test(details.message)) {
+    return "Stripe Customer Portal is not configured yet. Enable the customer portal in Stripe to manage billing.";
   }
   if (details.code === "resource_missing") {
     return "Stripe could not find a configured billing resource. Check the Pro price and customer configuration.";

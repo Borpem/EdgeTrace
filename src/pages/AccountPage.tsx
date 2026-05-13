@@ -44,6 +44,13 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
     setLocalProfile(profile);
   }, [profile]);
 
+  useEffect(() => {
+    if (currentPlanId !== "free" && error.toLowerCase().includes("checkout")) {
+      setError("");
+      setNotice("Pro access is active for this account.");
+    }
+  }, [currentPlanId, error]);
+
   const refreshProfile = async () => {
     setError("");
     setNotice("");
@@ -86,12 +93,18 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
       const { url } = await createBillingPortalSession();
       window.location.href = url;
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unable to open the billing portal.");
+      const message = err instanceof Error ? err.message : "Unable to open the billing portal.";
+      setError(
+        message.includes("billing service") || message.includes("EdgeTrace service")
+          ? "Billing portal could not open. Refresh account details and confirm Stripe Customer Portal is configured."
+          : message
+      );
       setActiveAction(null);
     }
   };
 
   const isPaid = currentPlanId !== "free";
+  const hasStripeCustomer = Boolean(effectiveProfile?.stripeCustomerId);
 
   return (
     <main className="EdgeTrace-shell py-8 md:py-12">
@@ -191,20 +204,31 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
                     ? "Open Stripe to update payment method, invoices, or cancellation settings."
                     : "Start Stripe Checkout to activate Pro access for this account."}
                 </p>
-                <button
-                  className="EdgeTrace-primary-button mt-5 w-full justify-center"
-                  disabled={!billingConfigured || activeAction === "pro" || activeAction === "portal"}
-                  onClick={() => void (isPaid ? openPortal() : startProCheckout())}
-                >
-                  {activeAction === "pro"
-                    ? "Opening Checkout..."
-                    : activeAction === "portal"
-                      ? "Opening Portal..."
-                      : isPaid
-                        ? "Manage Billing"
-                        : "Upgrade to Pro"}{" "}
-                  <ArrowRight size={16} />
-                </button>
+                {isPaid && !hasStripeCustomer ? (
+                  <button className="EdgeTrace-secondary-button mt-5 w-full justify-center" disabled={activeAction === "refresh"} onClick={() => void refreshProfile()}>
+                    <RefreshCw size={16} /> {activeAction === "refresh" ? "Refreshing..." : "Refresh billing status"}
+                  </button>
+                ) : (
+                  <button
+                    className="EdgeTrace-primary-button mt-5 w-full justify-center"
+                    disabled={!billingConfigured || activeAction === "pro" || activeAction === "portal"}
+                    onClick={() => void (isPaid ? openPortal() : startProCheckout())}
+                  >
+                    {activeAction === "pro"
+                      ? "Opening Checkout..."
+                      : activeAction === "portal"
+                        ? "Opening Portal..."
+                        : isPaid
+                          ? "Manage Billing"
+                          : "Upgrade to Pro"}{" "}
+                    <ArrowRight size={16} />
+                  </button>
+                )}
+                {isPaid && !hasStripeCustomer && (
+                  <p className="mt-3 text-xs leading-5 text-warning">
+                    Pro access is active, but no Stripe billing customer is linked yet. Refresh after checkout completes.
+                  </p>
+                )}
                 {effectiveProfile?.stripeCustomerId && !isPaid && (
                   <button className="mt-3 w-full border border-white/[0.1] px-4 py-3 text-sm font-semibold text-muted hover:border-white/25 hover:text-ink" onClick={() => void openPortal()}>
                     Open Billing Portal
@@ -231,6 +255,11 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
                       ? formatSubscriptionStatus(effectiveProfile.stripeSubscriptionStatus)
                       : "No active paid subscription"
                   }
+                />
+                <DetailRow
+                  label="Stripe customer"
+                  value={hasStripeCustomer ? "Connected" : "Not linked"}
+                  valueClass={hasStripeCustomer ? "text-cyan" : "text-warning"}
                 />
                 <DetailRow label="Current period" value={formatDate(effectiveProfile?.currentPeriodEnd) || "Not available"} />
               </dl>
