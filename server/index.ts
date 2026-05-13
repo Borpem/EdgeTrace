@@ -154,7 +154,9 @@ app.get("/api/health", (_req, res) => {
     service: "edgetrace-api",
     databaseProvider: getDatabaseProviderName(),
     authMode,
-    billingConfigured: isStripeConfigured()
+    billingConfigured: isStripeConfigured(),
+    billingApiVersion: "stripe-checkout-v2",
+    gitCommit: process.env.RAILWAY_GIT_COMMIT_SHA || process.env.VERCEL_GIT_COMMIT_SHA || ""
   });
 });
 
