@@ -19,6 +19,7 @@ import {
   updateReportDetails,
   uploadTrades
 } from "./lib/api";
+import { AccountPage } from "./pages/AccountPage";
 import { ComparePage } from "./pages/ComparePage";
 import { CompareDrilldownPage } from "./pages/CompareDrilldownPage";
 import { CollectionAttributionPage } from "./pages/CollectionAttributionPage";
@@ -39,7 +40,7 @@ import { StrategyDashboardPage } from "./pages/StrategyDashboardPage";
 import { UploadPage } from "./pages/UploadPage";
 import type { DiagnosticsResult, ReportSummary, UserProfile } from "./types";
 
-type Page = "home" | "pricing" | "login" | "signup" | "demo" | "strategyDashboard" | "upload" | "reports" | "collections" | "collectionDetail" | "collectionAttribution" | "collectionReviewWorkspace" | "compare" | "features" | "dashboard" | "drilldown" | "compareDrilldown" | "reconstructionAudit";
+type Page = "home" | "pricing" | "login" | "signup" | "demo" | "strategyDashboard" | "upload" | "reports" | "collections" | "collectionDetail" | "collectionAttribution" | "collectionReviewWorkspace" | "compare" | "features" | "account" | "dashboard" | "drilldown" | "compareDrilldown" | "reconstructionAudit";
 type DrilldownSelection = { dimension: BreakdownDimension; group: string };
 type CompareDrilldownSelection = {
   reportA: DiagnosticsResult;
@@ -118,6 +119,8 @@ export function App() {
         return "/app/compare";
       case "features":
         return "/app/how-it-works";
+      case "account":
+        return "/app/account";
       default:
         return "/app/dashboard";
     }
@@ -444,6 +447,10 @@ export function App() {
       setPage("features");
       return;
     }
+    if (pathname === "/app/account") {
+      setPage("account");
+      return;
+    }
 
     const compareParams = new URLSearchParams(search);
     const reportAId = compareParams.get("reportAId");
@@ -666,19 +673,24 @@ export function App() {
               <button className="EdgeTrace-compact-primary" onClick={() => navigate("upload")}>
                 + New Report
               </button>
+              {userProfile?.planId === "free" && (
+                <button className="EdgeTrace-secondary-button px-3 py-2 text-sm" onClick={() => navigate("account")}>
+                  Upgrade to Pro
+                </button>
+              )}
               <div className="hidden items-center gap-2 text-xs text-muted xl:flex">
                 <UserCircle size={16} />
                 <span>{user?.name ?? "Demo Account"}</span>
                 {userProfile && <span className="text-cyan">{userProfile.planId.toUpperCase()}</span>}
               </div>
-              {userProfile && (
-                <button
-                  className="border-b border-transparent py-1.5 text-sm font-semibold text-cyan hover:border-cyan/60 hover:text-ink"
-                  onClick={() => navigate("pricing", "/pricing")}
-                >
-                  {userProfile.planId === "free" ? "Upgrade" : "Billing"}
-                </button>
-              )}
+              <button
+                className={`border border-white/[0.1] px-3 py-2 text-sm font-semibold text-muted hover:border-cyan/45 hover:text-ink ${
+                  page === "account" ? "border-cyan/50 text-cyan" : ""
+                }`}
+                onClick={() => navigate("account")}
+              >
+                My Account{userProfile ? ` · ${userProfile.planId.toUpperCase()}` : ""}
+              </button>
               <button
                 className="border-b border-transparent py-1.5 text-sm font-semibold text-muted hover:border-white/20 hover:text-ink"
                 onClick={() => {
@@ -746,8 +758,17 @@ export function App() {
       {page === "pricing" && (
         <PricingPage
           profile={userProfile}
+          isAuthenticated={isAuthenticated}
           onStart={() => navigate(isAuthenticated ? "upload" : "signup", isAuthenticated ? "/app/upload" : "/signup?next=/app/upload")}
           onPlanChanged={setUserProfile}
+        />
+      )}
+      {page === "account" && isAuthenticated && (
+        <AccountPage
+          profile={userProfile}
+          onPlanChanged={setUserProfile}
+          onAnalyze={() => navigate("upload")}
+          onPricing={() => navigate("pricing", "/pricing")}
         />
       )}
       {page === "demo" && (

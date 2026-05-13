@@ -104,10 +104,12 @@ const trustItems: Array<{ title: string; body: string; icon: LucideIcon; accent:
 
 export function PricingPage({
   profile,
+  isAuthenticated = Boolean(profile),
   onStart,
   onPlanChanged
 }: {
   profile: UserProfile | null;
+  isAuthenticated?: boolean;
   onStart: () => void;
   onPlanChanged?: (profile: UserProfile) => void;
 }) {
@@ -115,6 +117,8 @@ export function PricingPage({
   const [notice, setNotice] = useState("");
   const [activeAction, setActiveAction] = useState<string | null>(null);
   const [confirmedSessionId, setConfirmedSessionId] = useState("");
+  const accountLoading = isAuthenticated && !profile;
+  const hasSignedInAccount = isAuthenticated || Boolean(profile);
   const currentPlanId = profile?.planId ?? "free";
   const billingConfigured = !profile || profile.billingConfigured === true;
 
@@ -205,7 +209,11 @@ export function PricingPage({
   };
 
   const handleProCta = () => {
-    if (!profile) {
+    if (accountLoading) {
+      setError("Your account profile is still loading. Try again in a moment.");
+      return;
+    }
+    if (!hasSignedInAccount) {
       onStart();
       return;
     }
@@ -231,10 +239,18 @@ export function PricingPage({
       );
     }
 
-    if (!profile) {
+    if (accountLoading) {
+      return (
+        <button className="EdgeTrace-secondary-button mt-7 w-full cursor-wait opacity-70" disabled>
+          Loading Account...
+        </button>
+      );
+    }
+
+    if (!hasSignedInAccount) {
       return (
         <button className={planId === "pro" ? "EdgeTrace-primary-button mt-7 w-full" : "EdgeTrace-secondary-button mt-7 w-full"} onClick={onStart}>
-          {planId === "free" ? "Start Free" : planId === "pro" ? "Sign In for Pro" : "Join Early Access"}
+          {planId === "free" ? "Start Free" : planId === "pro" ? "Create Account for Pro" : "Join Early Access"}
         </button>
       );
     }
@@ -376,7 +392,7 @@ export function PricingPage({
 
       <FeatureComparison currentPlanId={currentPlanId} />
       <TrustSection />
-      <FinalCta onStart={onStart} onPro={handleProCta} activeAction={activeAction} profile={profile} />
+      <FinalCta onStart={onStart} onPro={handleProCta} activeAction={activeAction} profile={profile} isAuthenticated={isAuthenticated} />
     </PageShell>
   );
 }
@@ -512,12 +528,14 @@ function FinalCta({
   onStart,
   onPro,
   activeAction,
-  profile
+  profile,
+  isAuthenticated
 }: {
   onStart: () => void;
   onPro: () => void;
   activeAction: string | null;
   profile: UserProfile | null;
+  isAuthenticated: boolean;
 }) {
   return (
     <section className="relative z-10">
@@ -530,7 +548,14 @@ function FinalCta({
             {profile ? "Analyze Trades" : "Create Free Account"}
           </button>
           <button className="EdgeTrace-primary-button" onClick={onPro}>
-            {activeAction === "pro" ? "Redirecting..." : profile ? "Upgrade to Pro" : "Choose Pro"} <ArrowRight size={16} />
+            {activeAction === "pro"
+              ? "Redirecting..."
+              : isAuthenticated
+                ? profile?.planId === "free"
+                  ? "Upgrade to Pro"
+                  : "Manage Billing"
+                : "Create Account for Pro"}{" "}
+            <ArrowRight size={16} />
           </button>
         </div>
       </div>
