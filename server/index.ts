@@ -190,7 +190,16 @@ async function requireEdgeTraceUser(req: express.Request, res: express.Response,
     const header = req.get("x-edgetrace-user-id");
     const userId = header?.trim() || DEFAULT_USER_ID;
     (req as EdgeTraceRequest).edgeTraceUserId = userId;
-    await getOrCreateUserProfile(userId, { email: "demo@edgetrace.local", name: "Demo Analyst" });
+    try {
+      await getOrCreateUserProfile(userId, { email: "demo@edgetrace.local", name: "Demo Analyst" });
+    } catch (err) {
+      console.error("[auth] Unable to prepare mock user profile", err);
+      res.status(500).json({
+        error: "ACCOUNT_PROFILE_FAILED",
+        message: accountProfileErrorMessage(req)
+      });
+      return;
+    }
     next();
     return;
   }
@@ -214,10 +223,19 @@ async function requireEdgeTraceUser(req: express.Request, res: express.Response,
 
   (req as EdgeTraceRequest).edgeTraceUserId = userId;
   const claims = auth.sessionClaims as Record<string, unknown> | undefined;
-  await getOrCreateUserProfile(userId, {
-    email: firstString(claims?.email, claims?.email_address, claims?.primary_email_address),
-    name: firstString(claims?.name, claims?.full_name)
-  });
+  try {
+    await getOrCreateUserProfile(userId, {
+      email: firstString(claims?.email, claims?.email_address, claims?.primary_email_address),
+      name: firstString(claims?.name, claims?.full_name)
+    });
+  } catch (err) {
+    console.error(`[auth] Unable to prepare profile for user=${userId}`, err);
+    res.status(500).json({
+      error: "ACCOUNT_PROFILE_FAILED",
+      message: accountProfileErrorMessage(req)
+    });
+    return;
+  }
   next();
 }
 
@@ -313,40 +331,47 @@ app.patch("/api/me/plan", async (req, res) => {
 });
 
 app.post("/api/billing/create-checkout-session", async (req, res) => {
-  if (!isStripeConfigured()) {
-    res.status(503).json({
-      error: "BILLING_NOT_CONFIGURED",
-      message: "Billing is not configured in this environment."
-    });
-    return;
-  }
-
-  const planId = normalizePaidPlan(req.body?.planId);
-  if (!planId) {
-    res.status(400).json({
-      error: "INVALID_PLAN",
-      message: "Checkout is currently available for Pro. Advanced monitoring features are coming soon."
-    });
-    return;
-  }
-
+  let stage = "validate_request";
   try {
+    if (!isStripeConfigured()) {
+      res.status(503).json({
+        error: "BILLING_NOT_CONFIGURED",
+        stage,
+        message: "Billing is not configured in this environment."
+      });
+      return;
+    }
+
+    const planId = normalizePaidPlan(req.body?.planId);
+    if (!planId) {
+      res.status(400).json({
+        error: "INVALID_PLAN",
+        stage,
+        message: "Checkout is currently available for Pro. Advanced monitoring features are coming soon."
+      });
+      return;
+    }
+
     const userId = getUserId(req);
+    stage = "create_stripe_checkout_session";
     console.info(`[billing] Checkout session request user=${userId} plan=${planId}.`);
     const session = await createCheckoutSession(userId, planId, getRequestOrigin(req));
     if (!session.url) {
       res.status(502).json({
         error: "CHECKOUT_SESSION_FAILED",
+        stage,
         message: "Stripe did not return a checkout URL."
       });
       return;
     }
+    stage = "track_checkout_started";
     await trackUserEvent(userId, { eventName: "checkout_started", properties: { planId } });
     res.json({ url: session.url });
   } catch (err) {
-    console.error("[billing] Checkout session creation failed", err);
+    console.error(`[billing] Checkout session creation failed at ${stage}`, err);
     res.status(422).json({
       error: "CHECKOUT_SESSION_FAILED",
+      stage,
       message: billingApiErrorMessage(err, "Checkout could not start. Check the billing configuration and try again.")
     });
   }
@@ -734,10 +759,19 @@ function safeApiErrorMessage(err: unknown, fallback: string) {
   return err instanceof Error ? err.message : fallback;
 }
 
+function accountProfileErrorMessage(req: express.Request) {
+  return req.path.startsWith("/billing")
+    ? "Billing could not start because your EdgeTrace account profile could not be loaded. Refresh and try again."
+    : "Your EdgeTrace account profile could not be loaded. Refresh and try again.";
+}
+
 function billingApiErrorMessage(err: unknown, fallback: string) {
   const details = stripeErrorDetails(err);
   if (details.code === "resource_missing" && /price/i.test(details.message)) {
     return "The configured Pro Stripe price ID could not be found. Check STRIPE_PRO_PRICE_ID and make sure it matches the Stripe key mode.";
+  }
+  if (details.code === "resource_missing" && /customer/i.test(details.message)) {
+    return "Stripe could not find the customer linked to this account. Refresh the account page and try checkout again.";
   }
   if (details.code === "resource_missing") {
     return "Stripe could not find a configured billing resource. Check the Pro price and customer configuration.";
