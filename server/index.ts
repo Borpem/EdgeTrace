@@ -5,6 +5,7 @@ import { randomUUID } from "node:crypto";
 import { getAllowedFrontendOrigins, validateServerEnvironment } from "./env";
 import {
   addReportToCollection,
+  archiveDiagnosticReport,
   countBillableReports,
   countCollections,
   countSavedComparisons,
@@ -525,6 +526,19 @@ app.get("/api/diagnostics/:id", async (req, res) => {
 
 app.patch("/api/diagnostics/:id", async (req, res) => {
   try {
+    if (req.body?.deleteReport === true) {
+      const deleted = await archiveDiagnosticReport(getUserId(req), String(req.params.id ?? ""));
+      if (!deleted) {
+        res.status(404).json({
+          error: "DIAGNOSTICS_NOT_FOUND",
+          message: "Report not found or already deleted."
+        });
+        return;
+      }
+      res.json({ deleted: true });
+      return;
+    }
+
     const updated = await updateDiagnosticReport(getUserId(req), req.params.id, {
       name: typeof req.body?.name === "string" ? req.body.name : undefined,
       notes: typeof req.body?.notes === "string" ? req.body.notes : undefined,

@@ -75,6 +75,10 @@ export async function deleteDiagnosticReport(userId: string, id: string) {
   return adapter.deleteDiagnosticReport(userId, id);
 }
 
+export async function archiveDiagnosticReport(userId: string, id: string) {
+  return adapter.archiveDiagnosticReport(userId, id);
+}
+
 export async function updateDiagnosticReport(userId: string, id: string, input: ReportUpdateInput) {
   return adapter.updateDiagnosticReport(userId, id, input);
 }

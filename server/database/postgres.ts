@@ -467,6 +467,30 @@ export async function deleteDiagnosticReport(userId: string, id: string): Promis
   });
 }
 
+export async function archiveDiagnosticReport(userId: string, id: string): Promise<boolean> {
+  return transaction(async (client) => {
+    const owned = await client.query("SELECT id FROM diagnostic_reports WHERE id = $1 AND user_id = $2", [id, userId]);
+    if ((owned.rowCount ?? 0) === 0) return false;
+
+    await client.query("DELETE FROM collection_review_states WHERE user_id = $1 AND (previous_report_id = $2 OR current_report_id = $2)", [userId, id]);
+    await client.query(
+      `DELETE FROM collection_review_states
+       WHERE user_id = $1
+         AND collection_id IN (
+           SELECT collection_id FROM collection_reports WHERE report_id = $2 AND user_id = $1
+         )`,
+      [userId, id]
+    );
+    await client.query("DELETE FROM saved_comparisons WHERE user_id = $1 AND (report_a_id = $2 OR report_b_id = $2)", [userId, id]);
+    await client.query("DELETE FROM collection_reports WHERE report_id = $1 AND user_id = $2", [id, userId]);
+    const result = await client.query(
+      "UPDATE diagnostic_reports SET user_id = $3, updated_at = $4 WHERE id = $1 AND user_id = $2",
+      [id, userId, deletedReportOwnerId(userId, id), new Date().toISOString()]
+    );
+    return (result.rowCount ?? 0) > 0;
+  });
+}
+
 export async function updateDiagnosticReport(userId: string, id: string, input: ReportUpdateInput): Promise<ReportSummary | null> {
   const existing = await getOne<Omit<ReportRow, "summary_json" | "insights_json" | "trades_json" | "charts_json">>(
     `SELECT id, user_id, name, notes, tags_json, strategy_label, report_type, created_at, updated_at,
@@ -500,6 +524,10 @@ export async function updateDiagnosticReport(userId: string, id: string, input: 
     ]
   );
   return result.rows[0] ? mapSummaryRow(result.rows[0]) : null;
+}
+
+function deletedReportOwnerId(userId: string, reportId: string) {
+  return `deleted:${userId}:${reportId}:${Date.now()}`;
 }
 
 export async function listCollections(userId: string): Promise<ReportCollectionSummary[]> {

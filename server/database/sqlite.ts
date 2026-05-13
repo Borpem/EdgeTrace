@@ -483,6 +483,28 @@ export function deleteDiagnosticReport(userId: string, id: string) {
   return tx();
 }
 
+export function archiveDiagnosticReport(userId: string, id: string) {
+  const tx = db.transaction(() => {
+    const owned = db.prepare("SELECT id FROM diagnostic_reports WHERE id = ? AND user_id = ?").get(id, userId);
+    if (!owned) return false;
+
+    db.prepare("DELETE FROM collection_review_states WHERE user_id = ? AND (previous_report_id = ? OR current_report_id = ?)").run(userId, id, id);
+    db.prepare(
+      `DELETE FROM collection_review_states
+       WHERE user_id = ?
+         AND collection_id IN (
+           SELECT collection_id FROM collection_reports WHERE report_id = ? AND user_id = ?
+         )`
+    ).run(userId, id, userId);
+    db.prepare("DELETE FROM saved_comparisons WHERE user_id = ? AND (report_a_id = ? OR report_b_id = ?)").run(userId, id, id);
+    db.prepare("DELETE FROM collection_reports WHERE report_id = ? AND user_id = ?").run(id, userId);
+    return db
+      .prepare("UPDATE diagnostic_reports SET user_id = ?, updated_at = ? WHERE id = ? AND user_id = ?")
+      .run(deletedReportOwnerId(userId, id), new Date().toISOString(), id, userId).changes > 0;
+  });
+  return tx();
+}
+
 export function updateDiagnosticReport(userId: string, id: string, input: ReportUpdateInput): ReportSummary | null {
   const existing = db
     .prepare(
@@ -526,6 +548,10 @@ export function updateDiagnosticReport(userId: string, id: string, input: Report
     .get(id, userId) as Omit<ReportRow, "summary_json" | "insights_json" | "trades_json" | "charts_json">;
 
   return mapSummaryRow(updated);
+}
+
+function deletedReportOwnerId(userId: string, reportId: string) {
+  return `deleted:${userId}:${reportId}:${Date.now()}`;
 }
 
 function normalizeReportType(value: string | null | undefined): ReportType {

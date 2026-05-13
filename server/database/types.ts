@@ -50,6 +50,7 @@ export type DatabaseAdapter = {
   listDiagnosticReports: (userId: string) => ReportSummary[] | Promise<ReportSummary[]>;
   getDiagnosticReport: (userId: string, id: string) => DiagnosticsResult | null | Promise<DiagnosticsResult | null>;
   deleteDiagnosticReport: (userId: string, id: string) => boolean | Promise<boolean>;
+  archiveDiagnosticReport: (userId: string, id: string) => boolean | Promise<boolean>;
   updateDiagnosticReport: (userId: string, id: string, input: ReportUpdateInput) => ReportSummary | null | Promise<ReportSummary | null>;
   listCollections: (userId: string) => ReportCollectionSummary[] | Promise<ReportCollectionSummary[]>;
   createCollection: (userId: string, input: CollectionInput) => ReportCollectionSummary | Promise<ReportCollectionSummary>;
