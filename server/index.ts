@@ -345,7 +345,7 @@ app.post("/api/billing/create-checkout-session", async (req, res) => {
     console.error("[billing] Checkout session creation failed", err);
     res.status(422).json({
       error: "CHECKOUT_SESSION_FAILED",
-      message: safeApiErrorMessage(err, "Unable to create checkout session.")
+      message: billingApiErrorMessage(err, "Checkout could not start. Check the billing configuration and try again.")
     });
   }
 });
@@ -367,7 +367,7 @@ app.post("/api/billing/confirm-checkout-session", async (req, res) => {
     console.error("[billing] Checkout confirmation failed", err);
     res.status(422).json({
       error: "CHECKOUT_CONFIRMATION_FAILED",
-      message: safeApiErrorMessage(err, "Checkout completed, but the plan could not be refreshed yet.")
+      message: billingApiErrorMessage(err, "Checkout completed, but the plan could not be refreshed yet.")
     });
   }
 });
@@ -388,7 +388,7 @@ app.post("/api/billing/create-portal-session", async (req, res) => {
   } catch (err) {
     res.status(422).json({
       error: "BILLING_PORTAL_FAILED",
-      message: safeApiErrorMessage(err, "Unable to open billing portal.")
+      message: billingApiErrorMessage(err, "Unable to open billing portal.")
     });
   }
 });
@@ -730,6 +730,41 @@ function firstString(...values: unknown[]) {
 function safeApiErrorMessage(err: unknown, fallback: string) {
   if (isProduction) return fallback;
   return err instanceof Error ? err.message : fallback;
+}
+
+function billingApiErrorMessage(err: unknown, fallback: string) {
+  const details = stripeErrorDetails(err);
+  if (details.code === "resource_missing" && /price/i.test(details.message)) {
+    return "The configured Pro Stripe price ID could not be found. Check STRIPE_PRO_PRICE_ID and make sure it matches the Stripe key mode.";
+  }
+  if (details.code === "resource_missing") {
+    return "Stripe could not find a configured billing resource. Check the Pro price and customer configuration.";
+  }
+  if (details.code === "invalid_api_key" || details.statusCode === 401 || details.type === "StripeAuthenticationError") {
+    return "The Stripe secret key is invalid or unavailable. Check STRIPE_SECRET_KEY in the backend environment.";
+  }
+  if (details.type === "StripeConnectionError") {
+    return "Stripe could not be reached from the backend. Try again in a moment.";
+  }
+  if (details.message && !isProduction) return details.message;
+  return fallback;
+}
+
+function stripeErrorDetails(err: unknown) {
+  if (!err || typeof err !== "object") return { message: "" };
+  const input = err as {
+    type?: string;
+    code?: string;
+    message?: string;
+    statusCode?: number;
+    raw?: { type?: string; code?: string; message?: string };
+  };
+  return {
+    type: input.type ?? input.raw?.type ?? "",
+    code: input.code ?? input.raw?.code ?? "",
+    message: input.message ?? input.raw?.message ?? "",
+    statusCode: input.statusCode ?? 0
+  };
 }
 
 function getRequestOrigin(req: express.Request) {

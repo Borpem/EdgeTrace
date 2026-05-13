@@ -12,34 +12,33 @@ import {
 let stripeClient: InstanceType<typeof Stripe> | null = null;
 
 export function isStripeConfigured() {
-  return Boolean(
-    process.env.STRIPE_SECRET_KEY &&
-      process.env.STRIPE_PRO_PRICE_ID
-  );
+  return Boolean(envValue("STRIPE_SECRET_KEY") && envValue("STRIPE_PRO_PRICE_ID"));
 }
 
 export function isStripeWebhookConfigured() {
-  return Boolean(process.env.STRIPE_SECRET_KEY && process.env.STRIPE_WEBHOOK_SECRET);
+  return Boolean(envValue("STRIPE_SECRET_KEY") && envValue("STRIPE_WEBHOOK_SECRET"));
 }
 
 function getStripe() {
-  if (!process.env.STRIPE_SECRET_KEY) {
+  const secretKey = envValue("STRIPE_SECRET_KEY");
+  if (!secretKey) {
     throw new Error("Stripe is not configured in this environment.");
   }
 
-  stripeClient ??= new Stripe(process.env.STRIPE_SECRET_KEY);
+  stripeClient ??= new Stripe(secretKey);
   return stripeClient;
 }
 
 function priceIdForPlan(planId: PlanId) {
-  if (planId === "pro") return process.env.STRIPE_PRO_PRICE_ID;
-  if (planId === "advanced") return process.env.STRIPE_ADVANCED_PRICE_ID;
+  if (planId === "pro") return envValue("STRIPE_PRO_PRICE_ID");
+  if (planId === "advanced") return envValue("STRIPE_ADVANCED_PRICE_ID");
   return undefined;
 }
 
 export function mapStripePriceToPlan(priceId: string | null | undefined): PlanId {
-  if (priceId && priceId === process.env.STRIPE_PRO_PRICE_ID) return "pro";
-  if (priceId && priceId === process.env.STRIPE_ADVANCED_PRICE_ID) return "advanced";
+  const normalizedPriceId = priceId?.trim();
+  if (normalizedPriceId && normalizedPriceId === envValue("STRIPE_PRO_PRICE_ID")) return "pro";
+  if (normalizedPriceId && normalizedPriceId === envValue("STRIPE_ADVANCED_PRICE_ID")) return "advanced";
   return "free";
 }
 
@@ -100,7 +99,7 @@ export async function createCheckoutSession(userId: string, planId: PlanId, orig
 }
 
 export async function createBillingPortalSession(userId: string, origin: string) {
-  if (!process.env.STRIPE_SECRET_KEY) {
+  if (!envValue("STRIPE_SECRET_KEY")) {
     throw new Error("Billing is not configured in this environment.");
   }
 
@@ -117,7 +116,8 @@ export async function createBillingPortalSession(userId: string, origin: string)
 }
 
 export function constructStripeWebhookEvent(rawBody: Buffer, signature: string | string[] | undefined) {
-  if (!process.env.STRIPE_WEBHOOK_SECRET) {
+  const webhookSecret = envValue("STRIPE_WEBHOOK_SECRET");
+  if (!webhookSecret) {
     throw new Error("Stripe webhook secret is not configured.");
   }
 
@@ -126,7 +126,7 @@ export function constructStripeWebhookEvent(rawBody: Buffer, signature: string |
     throw new Error("Missing Stripe signature.");
   }
 
-  return getStripe().webhooks.constructEvent(rawBody, sig, process.env.STRIPE_WEBHOOK_SECRET);
+  return getStripe().webhooks.constructEvent(rawBody, sig, webhookSecret);
 }
 
 export async function updateUserPlanFromSubscription(subscription: any) {
@@ -248,4 +248,8 @@ export async function handleInvoicePaymentFailed(invoice: any) {
 export function normalizePaidPlan(planId: unknown): PlanId | null {
   const normalized = normalizePlanId(typeof planId === "string" ? planId : undefined);
   return normalized === "pro" ? normalized : null;
+}
+
+function envValue(key: string) {
+  return process.env[key]?.trim() ?? "";
 }
