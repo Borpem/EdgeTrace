@@ -12,6 +12,7 @@ import type { DiagnosticsResult, ReportSummary, ReportType, UserProfile } from "
 const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
 const percent = new Intl.NumberFormat("en-US", { style: "percent", maximumFractionDigits: 1 });
 const reportTypes: ReportType[] = ["backtest", "paper", "live", "imported", "unknown"];
+type ReportsPageError = { source: "load" | "open" | "delete"; message: string };
 
 export function ReportsPage({
   profile,
@@ -27,7 +28,7 @@ export function ReportsPage({
   onExploreDemo?: () => void;
 }) {
   const [reports, setReports] = useState<ReportSummary[]>([]);
-  const [error, setError] = useState("");
+  const [error, setError] = useState<ReportsPageError | null>(null);
   const [isLoadingReports, setIsLoadingReports] = useState(true);
   const [loadingId, setLoadingId] = useState<string | null>(null);
   const [editingReport, setEditingReport] = useState<ReportSummary | null>(null);
@@ -45,7 +46,7 @@ export function ReportsPage({
 
   const loadReports = async () => {
     const loadId = ++loadSequenceRef.current;
-    setError("");
+    setError(null);
     setIsLoadingReports(true);
     try {
       const response = await listReports();
@@ -57,7 +58,7 @@ export function ReportsPage({
         console.warn("[reports] Non-blocking reports refresh failed after reports were already loaded.", err);
         return;
       }
-      setError(formatReportsLoadError(err));
+      setError({ source: "load", message: formatReportsLoadError(err) });
     } finally {
       if (loadId === loadSequenceRef.current) setIsLoadingReports(false);
     }
@@ -102,11 +103,11 @@ export function ReportsPage({
 
   const openReport = async (id: string) => {
     setLoadingId(id);
-    setError("");
+    setError(null);
     try {
       onOpen(await getReport(id));
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unable to open report");
+      setError({ source: "open", message: err instanceof Error ? err.message : "Unable to open report" });
     } finally {
       setLoadingId(null);
     }
@@ -115,12 +116,15 @@ export function ReportsPage({
   const removeReport = async (id: string) => {
     if (!window.confirm("Delete this report? This cannot be undone.")) return;
     setLoadingId(id);
-    setError("");
+    setError(null);
     try {
       await deleteReport(id);
       setReports((current) => current.filter((report) => report.id !== id));
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unable to delete report. No other reports were changed.");
+      setError({
+        source: "delete",
+        message: err instanceof Error ? err.message : "Unable to delete report. No other reports were changed."
+      });
     } finally {
       setLoadingId(null);
     }
@@ -131,6 +135,7 @@ export function ReportsPage({
     setReports((current) => current.map((report) => (report.id === normalized.id ? normalized : report)));
     setEditingReport(null);
   };
+  const visibleError = shouldShowReportsError(error, reports.length) ? error : null;
 
   return (
     <main className="EdgeTrace-shell py-10">
@@ -157,7 +162,9 @@ export function ReportsPage({
         </div>
       </div>
 
-      {error && <div className="mb-5 rounded-md border border-loss/60 bg-loss/10 p-4 text-loss">{error}</div>}
+      {visibleError && (
+        <div className="mb-5 rounded-md border border-loss/60 bg-loss/10 p-4 text-loss">{visibleError.message}</div>
+      )}
 
       {reports.length > 0 && (
         <section className="EdgeTrace-card mb-6 p-5">
@@ -478,7 +485,15 @@ function formatCount(value: number | undefined) {
 
 function formatReportsLoadError(err: unknown) {
   const message = err instanceof Error ? err.message : "Unable to load reports. Try refreshing the page.";
-  return import.meta.env.DEV ? `Reports list failed: ${message}` : message;
+  if (message.includes("The EdgeTrace service hit an internal error")) {
+    return "Reports list failed. The backend returned an internal error while refreshing the library.";
+  }
+  return `Reports list failed: ${message}`;
+}
+
+function shouldShowReportsError(error: ReportsPageError | null, reportCount: number) {
+  if (!error) return false;
+  return error.source !== "load" || reportCount === 0;
 }
 
 function openFeatureGuide() {
