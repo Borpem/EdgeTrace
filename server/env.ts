@@ -7,7 +7,11 @@ export type DatabaseProvider = "sqlite" | "postgres";
 loadDotEnv();
 
 const isProduction = process.env.NODE_ENV === "production";
-const DEFAULT_PRODUCTION_FRONTEND_ORIGINS = ["https://www.edgetrace.app", "https://edge-trace.vercel.app"];
+const DEFAULT_PRODUCTION_FRONTEND_ORIGINS = [
+  "https://www.edgetrace.app",
+  "https://edgetrace.app",
+  "https://edge-trace.vercel.app"
+];
 
 export function getAuthMode(): AuthMode {
   if (isProduction) return "clerk";
@@ -26,10 +30,10 @@ export function getAllowedFrontendOrigins() {
     ...parseOriginList(process.env.APP_URL)
   ];
 
-  const origins = configuredOrigins.length
-    ? configuredOrigins
-    : isProduction
-      ? DEFAULT_PRODUCTION_FRONTEND_ORIGINS
+  const origins = isProduction
+    ? [...DEFAULT_PRODUCTION_FRONTEND_ORIGINS, ...configuredOrigins]
+    : configuredOrigins.length
+      ? configuredOrigins
       : ["http://localhost:5173"];
 
   return Array.from(new Set(origins));
