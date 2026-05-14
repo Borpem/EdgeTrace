@@ -214,7 +214,7 @@ function isHtmlErrorBody(text: string) {
 
 export async function listReports() {
   const response = await fetch(apiUrl("/api/diagnostics"), { headers: await apiHeaders() });
-  if (!response.ok) throw new Error("Unable to load reports");
+  if (!response.ok) throw new Error(await readApiError(response, "Unable to load reports"));
   return response.json() as Promise<{ reports: ReportSummary[] }>;
 }
 
@@ -225,10 +225,10 @@ export async function getReport(id: string) {
 }
 
 export async function deleteReport(id: string) {
-  const response = await fetch(apiUrl(`/api/diagnostics/${id}`), {
-    method: "PATCH",
+  const response = await fetch(apiUrl("/api/reports/archive"), {
+    method: "POST",
     headers: await apiHeaders({ "Content-Type": "application/json" }),
-    body: JSON.stringify({ deleteReport: true })
+    body: JSON.stringify({ reportId: id })
   });
   if (!response.ok) throw new Error(await readApiError(response, "Unable to delete report"));
 }

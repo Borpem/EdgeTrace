@@ -11,6 +11,7 @@ import type { DiagnosticsResult, ReportSummary, ReportType, UserProfile } from "
 
 const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
 const percent = new Intl.NumberFormat("en-US", { style: "percent", maximumFractionDigits: 1 });
+const reportTypes: ReportType[] = ["backtest", "paper", "live", "imported", "unknown"];
 
 export function ReportsPage({
   profile,
@@ -41,7 +42,7 @@ export function ReportsPage({
     setIsLoadingReports(true);
     try {
       const response = await listReports();
-      setReports(Array.isArray(response.reports) ? response.reports : []);
+      setReports(Array.isArray(response.reports) ? response.reports.map(normalizeReportSummary) : []);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to load reports. Try refreshing the page.");
     } finally {
@@ -69,11 +70,11 @@ export function ReportsPage({
     const query = search.trim().toLowerCase();
     return reports.filter((report) => {
       const haystack = [
-        report.name,
-        report.notes ?? "",
-        report.notesPreview ?? "",
-        report.strategyLabel ?? "",
-        report.reportType,
+        safeText(report.name),
+        safeText(report.notes),
+        safeText(report.notesPreview),
+        safeText(report.strategyLabel),
+        safeText(report.reportType),
         ...(report.tags ?? [])
       ]
         .join(" ")
@@ -113,7 +114,8 @@ export function ReportsPage({
   };
 
   const updateReportInList = (updated: ReportSummary) => {
-    setReports((current) => current.map((report) => (report.id === updated.id ? updated : report)));
+    const normalized = normalizeReportSummary(updated);
+    setReports((current) => current.map((report) => (report.id === normalized.id ? normalized : report)));
     setEditingReport(null);
   };
 
@@ -165,7 +167,7 @@ export function ReportsPage({
               onChange={(value) => setReportTypeFilter(value as "all" | ReportType)}
             >
               <option value="all">All types</option>
-              {(["backtest", "paper", "live", "imported", "unknown"] as ReportType[]).map((type) => (
+              {reportTypes.map((type) => (
                 <option key={type} value={type}>
                   {formatReportType(type)}
                 </option>
@@ -254,25 +256,24 @@ export function ReportsPage({
                     <p className="mt-3 max-w-4xl text-sm leading-6 text-muted">{report.notesPreview ?? report.notes}</p>
                   )}
                   <p className="mt-3 text-xs text-muted">
-                    Created {new Date(report.createdAt).toLocaleString()} · Updated{" "}
-                    {new Date(report.updatedAt).toLocaleString()}
+                    Created {formatDate(report.createdAt)} · Updated {formatDate(report.updatedAt)}
                   </p>
                   <p className="mt-2 text-xs text-muted">
                     Source: {formatProvenanceSource(report)} · Confidence:{" "}
                     {report.importProvenance?.confidenceLabel ?? "Unavailable"} · Trades:{" "}
-                    {report.importProvenance?.normalizedTradeCount ?? report.totalTrades}
+                    {formatCount(report.importProvenance?.normalizedTradeCount ?? report.totalTrades)}
                   </p>
                 </div>
 
                 <div className="grid min-w-full gap-3 text-sm sm:grid-cols-4 xl:min-w-[520px]">
-                  <Metric label="Trades" value={String(report.totalTrades)} />
-                  <Metric label="Win Rate" value={percent.format(report.winRate)} />
+                  <Metric label="Trades" value={formatCount(report.totalTrades)} />
+                  <Metric label="Win Rate" value={formatPercent(report.winRate)} />
                   <Metric
                     label="Net PnL"
-                    value={currency.format(report.netPnl)}
-                    tone={report.netPnl >= 0 ? "accent" : "loss"}
+                    value={formatCurrency(report.netPnl)}
+                    tone={isFiniteNumber(report.netPnl) ? (report.netPnl >= 0 ? "accent" : "loss") : undefined}
                   />
-                  <Metric label="Expectancy" value={currency.format(report.expectancy)} />
+                  <Metric label="Expectancy" value={formatCurrency(report.expectancy)} />
                 </div>
               </div>
 
@@ -389,6 +390,33 @@ function unique(values: string[]) {
   return [...new Set(values)].sort((a, b) => a.localeCompare(b));
 }
 
+function normalizeReportSummary(report: Partial<ReportSummary> & { id?: unknown }): ReportSummary {
+  const notes = safeText(report.notes);
+  const name = safeText(report.name) || "Untitled diagnostic report";
+  const tags = Array.isArray(report.tags) ? report.tags.map(safeText).filter(Boolean) : [];
+  const reportType = reportTypes.includes(report.reportType as ReportType) ? (report.reportType as ReportType) : "unknown";
+  return {
+    id: safeText(report.id) || `report-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+    name,
+    createdAt: safeText(report.createdAt),
+    updatedAt: safeText(report.updatedAt) || safeText(report.createdAt),
+    notes,
+    notesPreview: safeText(report.notesPreview) || (notes.length > 140 ? `${notes.slice(0, 137)}...` : notes),
+    tags,
+    strategyLabel: safeText(report.strategyLabel),
+    reportType,
+    totalTrades: toNumber(report.totalTrades),
+    winRate: toNumber(report.winRate),
+    grossPnl: toNumber(report.grossPnl),
+    totalCosts: toNumber(report.totalCosts),
+    netPnl: toNumber(report.netPnl),
+    expectancy: toNumber(report.expectancy),
+    averageRealizedR: isFiniteNumber(report.averageRealizedR) ? Number(report.averageRealizedR) : undefined,
+    profitFactor: isFiniteNumber(report.profitFactor) ? Number(report.profitFactor) : undefined,
+    importProvenance: report.importProvenance
+  };
+}
+
 function formatProvenanceSource(report: ReportSummary) {
   const provenance = report.importProvenance;
   return provenance?.brokerDisplayName ?? provenance?.selectedSource ?? provenance?.detectedSource ?? "Unavailable";
@@ -396,11 +424,43 @@ function formatProvenanceSource(report: ReportSummary) {
 
 function isDemoReport(report: ReportSummary) {
   return (
-    report.name.startsWith("Demo Report") ||
-    report.name.startsWith("ORB Demo") ||
+    safeText(report.name).startsWith("Demo Report") ||
+    safeText(report.name).startsWith("ORB Demo") ||
     report.strategyLabel === "ORB Demo Strategy" ||
     (report.tags ?? []).some((tag) => tag.toLowerCase() === "demo")
   );
+}
+
+function safeText(value: unknown) {
+  return typeof value === "string" ? value.trim() : value === null || value === undefined ? "" : String(value).trim();
+}
+
+function toNumber(value: unknown) {
+  const next = Number(value);
+  return Number.isFinite(next) ? next : Number.NaN;
+}
+
+function isFiniteNumber(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value);
+}
+
+function formatDate(value: string | undefined) {
+  const timestamp = safeText(value);
+  if (!timestamp) return "—";
+  const date = new Date(timestamp);
+  return Number.isNaN(date.getTime()) ? "—" : date.toLocaleString();
+}
+
+function formatCurrency(value: number | undefined) {
+  return isFiniteNumber(value) ? currency.format(value) : "—";
+}
+
+function formatPercent(value: number | undefined) {
+  return isFiniteNumber(value) ? percent.format(value) : "—";
+}
+
+function formatCount(value: number | undefined) {
+  return isFiniteNumber(value) ? String(value) : "—";
 }
 
 function openFeatureGuide() {

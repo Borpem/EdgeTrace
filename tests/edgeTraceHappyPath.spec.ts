@@ -62,6 +62,21 @@ test.describe.serial("EdgeTrace happy path", () => {
     await expect(page.getByText("Metric Comparison")).toBeVisible();
     await expect(page.getByText("Interpretation", { exact: true })).toBeVisible();
     await expect(page.getByText("Breakdown Comparison")).toBeVisible();
+
+    await page.getByRole("navigation").getByRole("button", { name: "Reports" }).click();
+    await expect(page.getByTestId("reports-list")).toBeVisible();
+    page.once("dialog", (dialog) => dialog.accept());
+    await page
+      .getByTestId("reports-list")
+      .locator("article")
+      .filter({ hasText: reports[0].name })
+      .getByRole("button", { name: /Delete/ })
+      .click();
+    await expect(page.getByText("The EdgeTrace service hit an internal error")).toHaveCount(0);
+    await expect(page.getByTestId("reports-list").locator("article").filter({ hasText: reports[0].name })).toHaveCount(0);
+
+    const remainingReports = await listReports(request);
+    expect(remainingReports.some((report) => report.id === reports[0].id)).toBeFalsy();
   });
 
   test("Public interactive demo flow", async ({ page }) => {

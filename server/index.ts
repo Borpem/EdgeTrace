@@ -507,7 +507,44 @@ app.post("/api/diagnostics/run", async (req, res) => {
 });
 
 app.get("/api/diagnostics", async (req, res) => {
-  res.json({ reports: await listDiagnosticReports(getUserId(req)) });
+  try {
+    res.json({ reports: await listDiagnosticReports(getUserId(req)) });
+  } catch (err) {
+    console.error(`[diagnostics] Unable to list reports for user=${getUserId(req)}`, err);
+    res.status(422).json({
+      error: "REPORTS_LIST_FAILED",
+      message: safeApiErrorMessage(err, "Reports could not be loaded. Refresh the page and try again.")
+    });
+  }
+});
+
+app.post("/api/reports/archive", async (req, res) => {
+  const reportId = typeof req.body?.reportId === "string" ? req.body.reportId.trim() : "";
+  if (!reportId) {
+    res.status(400).json({
+      error: "REPORT_ID_REQUIRED",
+      message: "Select a report before deleting it."
+    });
+    return;
+  }
+
+  try {
+    const deleted = await archiveDiagnosticReport(getUserId(req), reportId);
+    if (!deleted) {
+      res.status(404).json({
+        error: "DIAGNOSTICS_NOT_FOUND",
+        message: "Report not found or already deleted."
+      });
+      return;
+    }
+    res.json({ deleted: true });
+  } catch (err) {
+    console.error(`[diagnostics] Archive failed for report=${reportId} user=${getUserId(req)}`, err);
+    res.status(422).json({
+      error: "REPORT_DELETE_FAILED",
+      message: safeApiErrorMessage(err, "Unable to delete report. Refresh the reports page and try again.")
+    });
+  }
 });
 
 app.get("/api/diagnostics/:id", async (req, res) => {
@@ -539,7 +576,7 @@ app.patch("/api/diagnostics/:id", async (req, res) => {
       return;
     }
 
-    const updated = await updateDiagnosticReport(getUserId(req), req.params.id, {
+    const updated = await updateDiagnosticReport(getUserId(req), String(req.params.id ?? ""), {
       name: typeof req.body?.name === "string" ? req.body.name : undefined,
       notes: typeof req.body?.notes === "string" ? req.body.notes : undefined,
       tags: Array.isArray(req.body?.tags) ? req.body.tags : undefined,
@@ -553,8 +590,12 @@ app.patch("/api/diagnostics/:id", async (req, res) => {
     }
 
     res.json(updated);
-  } catch {
-    res.status(422).json({ error: "Report details could not be updated" });
+  } catch (err) {
+    console.error(`[diagnostics] Report details update failed for report=${String(req.params.id ?? "")} user=${getUserId(req)}`, err);
+    res.status(422).json({
+      error: "REPORT_UPDATE_FAILED",
+      message: safeApiErrorMessage(err, "Report details could not be updated. Refresh the reports page and try again.")
+    });
   }
 });
 
