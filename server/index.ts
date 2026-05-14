@@ -274,6 +274,21 @@ function isReportsDebugRequest(req: express.Request) {
   return !isProduction || Boolean(req.get("x-debug-request-id")) || req.query.debugReports === "1";
 }
 
+function isReportDeleteRequest(req: express.Request) {
+  if (req.method === "POST" && req.path === "/api/reports/archive") return true;
+  return req.method === "DELETE" && /^\/api\/diagnostics\/[^/]+$/.test(req.path);
+}
+
+function sanitizeDebugException(err: unknown) {
+  const message = err instanceof Error ? err.message : "Unknown server exception";
+  return message
+    .replace(/Bearer\s+[A-Za-z0-9._-]+/g, "Bearer [redacted]")
+    .replace(/sk_(?:test|live)_[A-Za-z0-9]+/g, "sk_[redacted]")
+    .replace(/pk_(?:test|live)_[A-Za-z0-9]+/g, "pk_[redacted]")
+    .replace(/whsec_[A-Za-z0-9]+/g, "whsec_[redacted]")
+    .slice(0, 500);
+}
+
 function apiErrorHandler(
   err: unknown,
   req: express.Request,
@@ -310,6 +325,19 @@ function apiErrorHandler(
               : err instanceof Error
                 ? err.message
                 : "Unknown diagnostics route exception"
+          }
+        : {})
+    });
+    return;
+  }
+  if (isReportDeleteRequest(req)) {
+    res.status(500).json({
+      error: "REPORT_DELETE_FAILED",
+      message: "Unable to delete report. Refresh the reports page and try again.",
+      debugRequestId,
+      ...(isReportsDebugRequest(req)
+        ? {
+            debugHint: sanitizeDebugException(err)
           }
         : {})
     });
