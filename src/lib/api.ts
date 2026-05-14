@@ -214,7 +214,10 @@ function isHtmlErrorBody(text: string) {
 
 export async function listReports() {
   const response = await fetch(apiUrl("/api/diagnostics"), { headers: await apiHeaders() });
-  if (!response.ok) throw new Error(await readApiError(response, "Unable to load reports"));
+  if (!response.ok) {
+    const message = await readApiError(response, "Unable to load reports");
+    throw new Error(import.meta.env.DEV ? `GET /api/diagnostics failed: ${message}` : message);
+  }
   return response.json() as Promise<{ reports: ReportSummary[] }>;
 }
 

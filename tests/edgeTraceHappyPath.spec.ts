@@ -53,6 +53,7 @@ test.describe.serial("EdgeTrace happy path", () => {
 
     await login(page, "/app/reports");
     await expect(page.getByTestId("reports-list")).toBeVisible();
+    await expect(page.getByText("The EdgeTrace service hit an internal error")).toHaveCount(0);
 
     await page.getByRole("navigation").getByRole("button", { name: "Compare" }).click();
     await expect(page.getByTestId("compare-page")).toBeVisible();

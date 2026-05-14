@@ -1,5 +1,5 @@
 import { Pencil, Search, Trash2 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { AddToStrategySetDialog } from "../components/AddToStrategySetDialog";
 import { CommandPath } from "../components/onboarding/CommandPath";
@@ -36,17 +36,30 @@ export function ReportsPage({
   const [reportTypeFilter, setReportTypeFilter] = useState<"all" | ReportType>("all");
   const [strategyFilter, setStrategyFilter] = useState("all");
   const [tagFilter, setTagFilter] = useState("all");
+  const reportsRef = useRef<ReportSummary[]>([]);
+  const loadSequenceRef = useRef(0);
+
+  useEffect(() => {
+    reportsRef.current = reports;
+  }, [reports]);
 
   const loadReports = async () => {
+    const loadId = ++loadSequenceRef.current;
     setError("");
     setIsLoadingReports(true);
     try {
       const response = await listReports();
+      if (loadId !== loadSequenceRef.current) return;
       setReports(Array.isArray(response.reports) ? response.reports.map(normalizeReportSummary) : []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unable to load reports. Try refreshing the page.");
+      if (loadId !== loadSequenceRef.current) return;
+      if (reportsRef.current.length > 0) {
+        console.warn("[reports] Non-blocking reports refresh failed after reports were already loaded.", err);
+        return;
+      }
+      setError(formatReportsLoadError(err));
     } finally {
-      setIsLoadingReports(false);
+      if (loadId === loadSequenceRef.current) setIsLoadingReports(false);
     }
   };
 
@@ -461,6 +474,11 @@ function formatPercent(value: number | undefined) {
 
 function formatCount(value: number | undefined) {
   return isFiniteNumber(value) ? String(value) : "—";
+}
+
+function formatReportsLoadError(err: unknown) {
+  const message = err instanceof Error ? err.message : "Unable to load reports. Try refreshing the page.";
+  return import.meta.env.DEV ? `Reports list failed: ${message}` : message;
 }
 
 function openFeatureGuide() {

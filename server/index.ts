@@ -300,16 +300,32 @@ function getUserId(req: express.Request) {
 app.use("/api", requireEdgeTraceUser);
 
 app.get("/api/me", async (req, res) => {
-  res.json({
-    profile: {
-      ...(await getOrCreateUserProfile(getUserId(req))),
-      billingConfigured: isStripeConfigured()
-    }
-  });
+  try {
+    res.json({
+      profile: {
+        ...(await getOrCreateUserProfile(getUserId(req))),
+        billingConfigured: isStripeConfigured()
+      }
+    });
+  } catch (err) {
+    console.error(`[account] Unable to load profile for user=${getUserId(req)}`, err);
+    res.status(422).json({
+      error: "PROFILE_LOAD_FAILED",
+      message: safeApiErrorMessage(err, "Account profile could not be loaded. Refresh the page and try again.")
+    });
+  }
 });
 
 app.get("/api/me/activation", async (req, res) => {
-  res.json(await getActivationSummary(getUserId(req)));
+  try {
+    res.json(await getActivationSummary(getUserId(req)));
+  } catch (err) {
+    console.error(`[activation] Unable to load activation summary for user=${getUserId(req)}`, err);
+    res.status(422).json({
+      error: "ACTIVATION_SUMMARY_FAILED",
+      message: safeApiErrorMessage(err, "Workflow progress could not be loaded.")
+    });
+  }
 });
 
 app.post("/api/events", async (req, res) => {
@@ -637,7 +653,15 @@ app.delete("/api/demo-data", async (req, res) => {
 });
 
 app.get("/api/collections", async (req, res) => {
-  res.json({ collections: await listCollections(getUserId(req)) });
+  try {
+    res.json({ collections: await listCollections(getUserId(req)) });
+  } catch (err) {
+    console.error(`[collections] Unable to list collections for user=${getUserId(req)}`, err);
+    res.status(422).json({
+      error: "COLLECTIONS_LIST_FAILED",
+      message: safeApiErrorMessage(err, "Strategy sets could not be loaded.")
+    });
+  }
 });
 
 app.post("/api/collections", async (req, res) => {
