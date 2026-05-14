@@ -574,11 +574,18 @@ app.get("/api/diagnostics", async (req, res) => {
 });
 
 app.post("/api/reports/archive", async (req, res) => {
+  const debugRequestId = getDebugRequestId(req);
+  const debugEnabled = isReportsDebugRequest(req);
+  res.setHeader("x-debug-request-id", debugRequestId);
   const reportId = typeof req.body?.reportId === "string" ? req.body.reportId.trim() : "";
+  console.info(
+    `[diagnostics] archive entry request=${debugRequestId} userPresent=${Boolean(getUserId(req))} reportPresent=${Boolean(reportId)} debug=${debugEnabled}`
+  );
   if (!reportId) {
     res.status(400).json({
       error: "REPORT_ID_REQUIRED",
-      message: "Select a report before deleting it."
+      message: "Select a report before deleting it.",
+      debugRequestId
     });
     return;
   }
@@ -588,16 +595,32 @@ app.post("/api/reports/archive", async (req, res) => {
     if (!deleted) {
       res.status(404).json({
         error: "DIAGNOSTICS_NOT_FOUND",
-        message: "Report not found or already deleted."
+        message: "Report not found or already deleted.",
+        debugRequestId
       });
       return;
     }
-    res.json({ deleted: true });
+    console.info(`[diagnostics] archive success request=${debugRequestId}`);
+    res.json({ deleted: true, debugRequestId });
   } catch (err) {
-    console.error(`[diagnostics] Archive failed for report=${reportId} user=${getUserId(req)}`, err);
+    const archiveMessage = err instanceof Error ? err.message : "Unknown report archive exception";
+    console.error(`[diagnostics] archive failed request=${debugRequestId} message=${archiveMessage}`, err);
+    try {
+      const hardDeleted = await deleteDiagnosticReport(getUserId(req), reportId);
+      if (hardDeleted) {
+        console.info(`[diagnostics] archive fallback hard delete success request=${debugRequestId}`);
+        res.json({ deleted: true, mode: "hard_delete_fallback", debugRequestId });
+        return;
+      }
+    } catch (fallbackErr) {
+      const fallbackMessage = fallbackErr instanceof Error ? fallbackErr.message : "Unknown hard delete fallback exception";
+      console.error(`[diagnostics] archive fallback hard delete failed request=${debugRequestId} message=${fallbackMessage}`, fallbackErr);
+    }
     res.status(422).json({
       error: "REPORT_DELETE_FAILED",
-      message: safeApiErrorMessage(err, "Unable to delete report. Refresh the reports page and try again.")
+      message: safeApiErrorMessage(err, "Unable to delete report. Refresh the reports page and try again."),
+      debugRequestId,
+      ...(debugEnabled ? { debugHint: isProduction ? "Check Railway logs for this debugRequestId." : archiveMessage } : {})
     });
   }
 });
@@ -664,25 +687,36 @@ app.post("/api/diagnostics/:id/delete", async (req, res) => {
 
 async function handleDeleteDiagnosticReport(req: express.Request, res: express.Response, options: { emptySuccess: boolean }) {
   const reportId = String(req.params.id ?? "");
+  const debugRequestId = getDebugRequestId(req);
+  const debugEnabled = isReportsDebugRequest(req);
+  res.setHeader("x-debug-request-id", debugRequestId);
+  console.info(
+    `[diagnostics] hard delete entry request=${debugRequestId} userPresent=${Boolean(getUserId(req))} reportPresent=${Boolean(reportId)} debug=${debugEnabled}`
+  );
   try {
     const deleted = await deleteDiagnosticReport(getUserId(req), reportId);
     if (!deleted) {
       res.status(404).json({
         error: "DIAGNOSTICS_NOT_FOUND",
-        message: "Report not found or already deleted."
+        message: "Report not found or already deleted.",
+        debugRequestId
       });
       return;
     }
+    console.info(`[diagnostics] hard delete success request=${debugRequestId}`);
     if (options.emptySuccess) {
       res.status(204).send();
       return;
     }
-    res.json({ deleted: true });
+    res.json({ deleted: true, debugRequestId });
   } catch (err) {
-    console.error(`[diagnostics] Delete failed for report=${reportId} user=${getUserId(req)}`, err);
+    const message = err instanceof Error ? err.message : "Unknown hard delete exception";
+    console.error(`[diagnostics] hard delete failed request=${debugRequestId} message=${message}`, err);
     res.status(422).json({
       error: "REPORT_DELETE_FAILED",
-      message: safeApiErrorMessage(err, "Unable to delete report. Remove it from strategy sets or saved comparisons and try again.")
+      message: safeApiErrorMessage(err, "Unable to delete report. Remove it from strategy sets or saved comparisons and try again."),
+      debugRequestId,
+      ...(debugEnabled ? { debugHint: isProduction ? "Check Railway logs for this debugRequestId." : message } : {})
     });
   }
 }

@@ -370,12 +370,88 @@ export async function getReport(id: string) {
 }
 
 export async function deleteReport(id: string) {
-  const response = await fetch(apiUrl("/api/reports/archive"), {
+  const debugEnabled = isReportsDebugEnabled();
+  const debugRequestId = debugEnabled ? createDebugRequestId() : undefined;
+  const endpoint = "/api/reports/archive";
+  emitReportsDebug("POST /api/reports/archive request started", {
+    endpoint,
     method: "POST",
-    headers: await apiHeaders({ "Content-Type": "application/json" }),
+    debugRequestId
+  });
+  const response = await fetch(apiUrl(endpoint), {
+    method: "POST",
+    headers: await apiHeaders({
+      "Content-Type": "application/json",
+      ...(debugRequestId ? { "x-debug-request-id": debugRequestId } : {})
+    }),
     body: JSON.stringify({ reportId: id })
   });
-  if (!response.ok) throw new Error(await readApiError(response, "Unable to delete report"));
+  if (response.ok) {
+    emitReportsDebug("POST /api/reports/archive succeeded", {
+      endpoint,
+      method: "POST",
+      status: response.status,
+      debugRequestId: response.headers.get("x-debug-request-id") || debugRequestId
+    });
+    return;
+  }
+
+  const archiveText = await response.text().catch(() => "");
+  const archiveMessage = readApiErrorText(archiveText, "Unable to delete report");
+  emitReportsDebug("POST /api/reports/archive failed", {
+    endpoint,
+    method: "POST",
+    status: response.status,
+    debugRequestId: response.headers.get("x-debug-request-id") || debugRequestId,
+    bodySummary: summarizeReportsApiBody(archiveText),
+    errorMessage: archiveMessage
+  });
+
+  if (shouldTryLegacyDeleteFallback(response.status, archiveMessage)) {
+    await deleteReportWithLegacyEndpoint(id, debugRequestId);
+    return;
+  }
+
+  throw new Error(archiveMessage);
+}
+
+async function deleteReportWithLegacyEndpoint(id: string, parentDebugRequestId: string | undefined) {
+  const endpoint = `/api/diagnostics/${encodeURIComponent(id)}`;
+  const debugRequestId = parentDebugRequestId ? `${parentDebugRequestId}-fallback` : undefined;
+  emitReportsDebug("DELETE /api/diagnostics/:id fallback request started", {
+    endpoint: "/api/diagnostics/:id",
+    method: "DELETE",
+    debugRequestId
+  });
+  const response = await fetch(apiUrl(endpoint), {
+    method: "DELETE",
+    headers: await apiHeaders(debugRequestId ? { "x-debug-request-id": debugRequestId } : undefined)
+  });
+  if (response.ok) {
+    emitReportsDebug("DELETE /api/diagnostics/:id fallback succeeded", {
+      endpoint: "/api/diagnostics/:id",
+      method: "DELETE",
+      status: response.status,
+      debugRequestId: response.headers.get("x-debug-request-id") || debugRequestId
+    });
+    return;
+  }
+
+  const text = await response.text().catch(() => "");
+  const message = readApiErrorText(text, "Unable to delete report");
+  emitReportsDebug("DELETE /api/diagnostics/:id fallback failed", {
+    endpoint: "/api/diagnostics/:id",
+    method: "DELETE",
+    status: response.status,
+    debugRequestId: response.headers.get("x-debug-request-id") || debugRequestId,
+    bodySummary: summarizeReportsApiBody(text),
+    errorMessage: message
+  });
+  throw new Error(message);
+}
+
+function shouldTryLegacyDeleteFallback(status: number, message: string) {
+  return status >= 500 || /EdgeTrace service hit an internal error|internal error/i.test(message);
 }
 
 export async function updateReportDetails(id: string, input: ReportUpdateInput) {
