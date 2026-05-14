@@ -271,7 +271,7 @@ function apiErrorHandler(
   res: express.Response,
   _next: express.NextFunction
 ) {
-  console.error("[api] Unhandled request error", err);
+  console.error(`[api] Unhandled request error ${req.method} ${req.originalUrl || req.path}`, err);
   if (res.headersSent) return;
   if (isServerAuthMisconfigured()) {
     res.status(500).json({
@@ -284,6 +284,13 @@ function apiErrorHandler(
     res.status(500).json({
       error: "BILLING_INTERNAL_ERROR",
       message: "The billing service hit an internal error. Try again in a moment."
+    });
+    return;
+  }
+  if (req.method === "GET" && req.path === "/api/diagnostics") {
+    res.status(500).json({
+      error: "REPORTS_LIST_FAILED",
+      message: "Reports could not be loaded. Refresh the page and try again."
     });
     return;
   }
