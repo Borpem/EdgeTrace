@@ -265,14 +265,25 @@ function isServerAuthMisconfigured() {
   return authMode === "clerk" && !process.env.CLERK_PUBLISHABLE_KEY;
 }
 
+function getDebugRequestId(req: express.Request) {
+  const header = req.get("x-debug-request-id")?.trim();
+  return header || `server-${randomUUID()}`;
+}
+
+function isReportsDebugRequest(req: express.Request) {
+  return !isProduction || Boolean(req.get("x-debug-request-id")) || req.query.debugReports === "1";
+}
+
 function apiErrorHandler(
   err: unknown,
   req: express.Request,
   res: express.Response,
   _next: express.NextFunction
 ) {
-  console.error(`[api] Unhandled request error ${req.method} ${req.originalUrl || req.path}`, err);
+  const debugRequestId = getDebugRequestId(req);
+  console.error(`[api] Unhandled request error ${req.method} ${req.originalUrl || req.path} request=${debugRequestId}`, err);
   if (res.headersSent) return;
+  res.setHeader("x-debug-request-id", debugRequestId);
   if (isServerAuthMisconfigured()) {
     res.status(500).json({
       error: "AUTH_CONFIGURATION_ERROR",
@@ -290,7 +301,17 @@ function apiErrorHandler(
   if (req.method === "GET" && req.path === "/api/diagnostics") {
     res.status(500).json({
       error: "REPORTS_LIST_FAILED",
-      message: "Reports could not be loaded. Refresh the page and try again."
+      message: "Reports could not be loaded. Refresh the page and try again.",
+      debugRequestId,
+      ...(isReportsDebugRequest(req)
+        ? {
+            debugHint: isProduction
+              ? "Check Railway logs for this debugRequestId."
+              : err instanceof Error
+                ? err.message
+                : "Unknown diagnostics route exception"
+          }
+        : {})
     });
     return;
   }
@@ -530,13 +551,24 @@ app.post("/api/diagnostics/run", async (req, res) => {
 });
 
 app.get("/api/diagnostics", async (req, res) => {
+  const debugRequestId = getDebugRequestId(req);
+  const debugEnabled = isReportsDebugRequest(req);
+  res.setHeader("x-debug-request-id", debugRequestId);
+  console.info(
+    `[diagnostics] list entry request=${debugRequestId} userPresent=${Boolean(getUserId(req))} db=${getDatabaseProviderName()} debug=${debugEnabled}`
+  );
   try {
-    res.json({ reports: await listDiagnosticReports(getUserId(req)) });
+    const reports = await listDiagnosticReports(getUserId(req));
+    console.info(`[diagnostics] list success request=${debugRequestId} reportCount=${reports.length}`);
+    res.json({ reports });
   } catch (err) {
-    console.error(`[diagnostics] Unable to list reports for user=${getUserId(req)}`, err);
+    const message = err instanceof Error ? err.message : "Unknown reports list exception";
+    console.error(`[diagnostics] list failed request=${debugRequestId} userPresent=${Boolean(getUserId(req))} message=${message}`, err);
     res.status(422).json({
       error: "REPORTS_LIST_FAILED",
-      message: safeApiErrorMessage(err, "Reports could not be loaded. Refresh the page and try again.")
+      message: safeApiErrorMessage(err, "Reports could not be loaded. Refresh the page and try again."),
+      debugRequestId,
+      ...(debugEnabled ? { debugHint: isProduction ? "Check Railway logs for this debugRequestId." : message } : {})
     });
   }
 });

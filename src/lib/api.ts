@@ -25,6 +25,14 @@ let currentUserId = DEFAULT_USER_ID;
 let currentAuthMode: "mock" | "clerk" = "mock";
 let accessTokenProvider: (() => Promise<string | null>) | undefined;
 
+export type ReportsDebugEvent = {
+  timestamp: string;
+  label: string;
+  details?: Record<string, unknown>;
+};
+
+const REPORTS_DEBUG_EVENT = "edgetrace:reports-debug";
+
 export function setApiUserId(userId: string | null | undefined) {
   currentUserId = userId?.trim() || DEFAULT_USER_ID;
 }
@@ -53,8 +61,35 @@ async function apiHeaders(extra?: HeadersInit): Promise<HeadersInit> {
   return headers;
 }
 
+export function isReportsDebugEnabled() {
+  if (typeof window === "undefined") return false;
+  return !import.meta.env.PROD || new URLSearchParams(window.location.search).get("debugReports") === "1";
+}
+
+export function emitReportsDebug(label: string, details?: Record<string, unknown>) {
+  if (!isReportsDebugEnabled()) return;
+  const event: ReportsDebugEvent = {
+    timestamp: new Date().toISOString(),
+    label,
+    details: sanitizeReportsDebugDetails(details)
+  };
+  console.info("[reports-debug]", event);
+  window.dispatchEvent(new CustomEvent<ReportsDebugEvent>(REPORTS_DEBUG_EVENT, { detail: event }));
+}
+
+export function subscribeReportsDebug(listener: (event: ReportsDebugEvent) => void) {
+  if (typeof window === "undefined") return () => undefined;
+  const handler = (event: Event) => listener((event as CustomEvent<ReportsDebugEvent>).detail);
+  window.addEventListener(REPORTS_DEBUG_EVENT, handler);
+  return () => window.removeEventListener(REPORTS_DEBUG_EVENT, handler);
+}
+
 async function readApiError(response: Response, fallback: string) {
   const text = await response.text().catch(() => "");
+  return readApiErrorText(text, fallback);
+}
+
+function readApiErrorText(text: string, fallback: string) {
   if (!text) return fallback;
   if (isHtmlErrorBody(text)) return fallback;
   try {
@@ -212,13 +247,120 @@ function isHtmlErrorBody(text: string) {
   return /^\s*(?:<!doctype html|<html|<pre>)/i.test(text) || /<pre>\s*Internal Server Error\s*<\/pre>/i.test(text);
 }
 
-export async function listReports() {
-  const response = await fetch(apiUrl("/api/diagnostics"), { headers: await apiHeaders() });
-  if (!response.ok) {
-    const message = await readApiError(response, "Unable to load reports");
-    throw new Error(import.meta.env.DEV ? `GET /api/diagnostics failed: ${message}` : message);
+function createDebugRequestId() {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) return `reports-${crypto.randomUUID()}`;
+  return `reports-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
+
+function summarizeReportsApiBody(text: string) {
+  if (!text) return { empty: true };
+  if (isHtmlErrorBody(text)) {
+    return { type: "html_error", length: text.length, preview: text.slice(0, 120) };
   }
-  return response.json() as Promise<{ reports: ReportSummary[] }>;
+  try {
+    const body = JSON.parse(text) as {
+      reports?: unknown[];
+      error?: unknown;
+      message?: unknown;
+      debugRequestId?: unknown;
+      debugHint?: unknown;
+    };
+    return {
+      type: Array.isArray(body.reports) ? "reports" : "json",
+      reportCount: Array.isArray(body.reports) ? body.reports.length : undefined,
+      error: typeof body.error === "string" ? body.error : undefined,
+      message: typeof body.message === "string" ? body.message : undefined,
+      debugRequestId: typeof body.debugRequestId === "string" ? body.debugRequestId : undefined,
+      debugHint: typeof body.debugHint === "string" ? body.debugHint : undefined
+    };
+  } catch {
+    return { type: "text", length: text.length, preview: text.slice(0, 160) };
+  }
+}
+
+function sanitizeReportsDebugDetails(details: Record<string, unknown> | undefined) {
+  if (!details) return undefined;
+  const output: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(details)) {
+    if (isReportsDebugSensitiveKey(key)) continue;
+    if (isDebugPrimitive(value)) {
+      output[key] = value;
+    } else if (Array.isArray(value)) {
+      output[key] = value.slice(0, 20).map((item) => (isDebugPrimitive(item) ? item : "[object]"));
+    } else if (value && typeof value === "object") {
+      output[key] = sanitizeReportsDebugDetails(value as Record<string, unknown>);
+    }
+  }
+  return output;
+}
+
+function isDebugPrimitive(value: unknown): value is string | number | boolean | null | undefined {
+  return value === null || value === undefined || ["string", "number", "boolean"].includes(typeof value);
+}
+
+function isReportsDebugSensitiveKey(key: string) {
+  const normalized = key.toLowerCase();
+  if (normalized === "userid" || normalized === "user_id" || normalized === "accountid" || normalized === "account_id") return true;
+  return /(token|secret|password|authorization|clerk|stripe|payment|card|raw|csv|trade|execution)/i.test(normalized);
+}
+
+export async function listReports() {
+  const debugEnabled = isReportsDebugEnabled();
+  const debugRequestId = debugEnabled ? createDebugRequestId() : undefined;
+  const endpoint = "/api/diagnostics";
+  emitReportsDebug("GET /api/diagnostics request started", {
+    endpoint,
+    method: "GET",
+    debugRequestId
+  });
+  try {
+    const response = await fetch(apiUrl(endpoint), {
+      headers: await apiHeaders(debugRequestId ? { "x-debug-request-id": debugRequestId } : undefined)
+    });
+    const text = await response.text().catch(() => "");
+    const bodySummary = summarizeReportsApiBody(text);
+    emitReportsDebug("GET /api/diagnostics response received", {
+      endpoint,
+      method: "GET",
+      status: response.status,
+      ok: response.ok,
+      debugRequestId: response.headers.get("x-debug-request-id") || debugRequestId,
+      bodySummary
+    });
+
+    if (!response.ok) {
+      const message = readApiErrorText(text, "Unable to load reports");
+      const error = new Error(import.meta.env.DEV ? `GET /api/diagnostics failed: ${message}` : message);
+      emitReportsDebug("GET /api/diagnostics thrown error", {
+        endpoint,
+        method: "GET",
+        status: response.status,
+        debugRequestId,
+        errorName: error.name,
+        errorMessage: error.message,
+        bodySummary
+      });
+      throw error;
+    }
+
+    const parsed = text ? (JSON.parse(text) as { reports?: ReportSummary[] }) : { reports: [] };
+    emitReportsDebug("GET /api/diagnostics reports parsed", {
+      endpoint,
+      method: "GET",
+      debugRequestId,
+      reportCount: Array.isArray(parsed.reports) ? parsed.reports.length : 0
+    });
+    return parsed as { reports: ReportSummary[] };
+  } catch (err) {
+    emitReportsDebug("GET /api/diagnostics request failed", {
+      endpoint,
+      method: "GET",
+      debugRequestId,
+      thrownErrorName: err instanceof Error ? err.name : typeof err,
+      thrownErrorMessage: err instanceof Error ? err.message : "Unknown reports request failure"
+    });
+    throw err;
+  }
 }
 
 export async function getReport(id: string) {
