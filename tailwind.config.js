@@ -15,27 +15,6 @@ export default {
         profit: "#3DDC97",
         warning: "#FFB84D",
         loss: "#D92D50"
-      },
-      fontFamily: {
-        sans: [
-          "var(--font-ui)",
-          "ui-sans-serif",
-          "system-ui",
-          "-apple-system",
-          "BlinkMacSystemFont",
-          "\"Segoe UI\"",
-          "sans-serif"
-        ],
-        display: [
-          "var(--font-display)",
-          "var(--font-ui)",
-          "ui-sans-serif",
-          "system-ui",
-          "-apple-system",
-          "BlinkMacSystemFont",
-          "\"Segoe UI\"",
-          "sans-serif"
-        ]
       }
     }
   },

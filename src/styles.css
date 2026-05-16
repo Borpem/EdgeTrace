@@ -1,59 +1,3 @@
-@font-face {
-  font-family: "Satoshi";
-  src: url("/fonts/satoshi/satoshi-400.woff2") format("woff2");
-  font-display: swap;
-  font-style: normal;
-  font-weight: 400;
-}
-
-@font-face {
-  font-family: "Satoshi";
-  src: url("/fonts/satoshi/satoshi-500.woff2") format("woff2");
-  font-display: swap;
-  font-style: normal;
-  font-weight: 500;
-}
-
-@font-face {
-  font-family: "Satoshi";
-  src: url("/fonts/satoshi/satoshi-700.woff2") format("woff2");
-  font-display: swap;
-  font-style: normal;
-  font-weight: 700;
-}
-
-@font-face {
-  font-family: "Satoshi";
-  src: url("/fonts/satoshi/satoshi-900.woff2") format("woff2");
-  font-display: swap;
-  font-style: normal;
-  font-weight: 900;
-}
-
-@font-face {
-  font-family: "Cabinet Grotesk";
-  src: url("/fonts/cabinet-grotesk/cabinet-grotesk-500.woff2") format("woff2");
-  font-display: swap;
-  font-style: normal;
-  font-weight: 500;
-}
-
-@font-face {
-  font-family: "Cabinet Grotesk";
-  src: url("/fonts/cabinet-grotesk/cabinet-grotesk-700.woff2") format("woff2");
-  font-display: swap;
-  font-style: normal;
-  font-weight: 700;
-}
-
-@font-face {
-  font-family: "Cabinet Grotesk";
-  src: url("/fonts/cabinet-grotesk/cabinet-grotesk-800.woff2") format("woff2");
-  font-display: swap;
-  font-style: normal;
-  font-weight: 800;
-}
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -90,18 +34,17 @@
   .EdgeTrace-eyebrow {
     color: #9b9b95;
     font-size: 0.75rem;
-    font-weight: 500;
-    letter-spacing: 0.11em;
+    font-weight: 700;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
   }
 
   .EdgeTrace-title {
-    font-family: var(--font-display);
     margin-top: 1rem;
     color: #f7f7f3;
     font-size: 2.75rem;
-    font-weight: 800;
-    letter-spacing: -0.012em;
+    font-weight: 760;
+    letter-spacing: -0.034em;
     line-height: 1.08;
     text-wrap: balance;
     font-kerning: normal;
@@ -186,9 +129,9 @@
     border-bottom: 1px solid rgba(88, 214, 255, 0.13);
     background: rgba(88, 214, 255, 0.045);
     color: #9b9b95;
-    font-size: 0.68rem;
-    font-weight: 500;
-    letter-spacing: 0.055em;
+    font-size: 0.72rem;
+    font-weight: 760;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
   }
 
@@ -241,8 +184,7 @@
     background: linear-gradient(135deg, #1596d4 0%, #2867e8 48%, #5d4ae6 100%);
     color: #f7fbff;
     padding: 0.65rem 1.1rem;
-    font-weight: 700;
-    letter-spacing: 0;
+    font-weight: 780;
     white-space: nowrap;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.42);
     box-shadow:
@@ -267,8 +209,7 @@
     color: #f7f7f3;
     padding: 0.6rem 0.95rem;
     font-size: 0.875rem;
-    font-weight: 700;
-    letter-spacing: 0;
+    font-weight: 760;
     white-space: nowrap;
   }
 
@@ -288,8 +229,7 @@
     color: #f7fbff;
     padding: 0.55rem 1rem;
     font-size: 0.875rem;
-    font-weight: 700;
-    letter-spacing: 0;
+    font-weight: 760;
     white-space: nowrap;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.42);
     box-shadow: 0 16px 40px -32px rgba(88, 214, 255, 0.68);
@@ -310,8 +250,7 @@
     color: #f7f7f3;
     padding: 0.55rem 1rem;
     font-size: 0.875rem;
-    font-weight: 700;
-    letter-spacing: 0;
+    font-weight: 760;
     white-space: nowrap;
   }
 
@@ -331,8 +270,7 @@
     color: #f7fbff;
     padding: 0.72rem 1rem;
     font-size: 0.875rem;
-    font-weight: 700;
-    letter-spacing: 0;
+    font-weight: 800;
     white-space: nowrap;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.42);
     box-shadow:
@@ -359,8 +297,8 @@
     top: 0.9rem;
     color: #58d6ff;
     font-size: 0.62rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
+    font-weight: 800;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
   }
 
@@ -383,31 +321,19 @@
 
 :root {
   color-scheme: dark;
-  --font-ui: "Satoshi", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-display: "Cabinet Grotesk", "Satoshi", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    sans-serif;
-  font-family: var(--font-ui);
-  font-feature-settings:
-    "kern" 1,
-    "liga" 1,
-    "calt" 1;
-  font-kerning: normal;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 body {
   margin: 0;
   background: #03060c;
-  font-family: var(--font-ui);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
 }
 
 .EdgeTrace-contours {
   position: relative;
   isolation: isolate;
   min-height: 100vh;
-  font-family: var(--font-ui);
   background-color: #03060c;
   background-image:
     linear-gradient(rgba(88, 214, 255, 0.011) 1px, transparent 1px),
@@ -455,8 +381,7 @@ body {
   border-bottom: 1px solid transparent;
   padding: 0.4rem 0;
   color: #9b9b95;
-  font-weight: 500;
-  letter-spacing: 0;
+  font-weight: 720;
 }
 
 .EdgeTrace-nav-link:hover {
@@ -485,7 +410,6 @@ body {
 .EdgeTrace-contours select,
 .EdgeTrace-contours textarea {
   border-radius: 0.125rem;
-  font-family: var(--font-ui);
 }
 
 .EdgeTrace-contours button svg {
@@ -552,7 +476,6 @@ body {
 .EdgeTrace-contours th,
 .EdgeTrace-contours td {
   border-color: rgba(247, 247, 243, 0.065);
-  font-variant-numeric: tabular-nums;
 }
 
 .EdgeTrace-contours .overflow-x-auto.border-line {
@@ -580,72 +503,30 @@ body {
 }
 
 .EdgeTrace-hero-title {
-  font-family: var(--font-display);
   text-wrap: balance;
   font-kerning: normal;
   text-rendering: geometricPrecision;
-  font-weight: 800;
-  letter-spacing: -0.012em;
+  letter-spacing: -0.032em;
   line-height: 1.06;
 }
 
 .EdgeTrace-contours h1,
 .EdgeTrace-contours h2,
 .EdgeTrace-contours h3 {
-  font-family: var(--font-display);
   text-wrap: balance;
   font-kerning: normal;
   text-rendering: geometricPrecision;
-  letter-spacing: -0.014em;
-}
-
-.EdgeTrace-contours h1 {
-  font-weight: 800;
-  line-height: 1.04;
-}
-
-.EdgeTrace-contours h2 {
-  font-weight: 700;
-  line-height: 1.08;
-}
-
-.EdgeTrace-contours h3 {
-  font-weight: 700;
-  line-height: 1.12;
-  letter-spacing: -0.01em;
-}
-
-.EdgeTrace-contours .uppercase,
-.EdgeTrace-contours [class*="uppercase"] {
-  font-weight: 500;
-  letter-spacing: 0.1em;
-}
-
-.EdgeTrace-contours table,
-.EdgeTrace-contours [class*="text-7xl"],
-.EdgeTrace-contours [class*="text-6xl"],
-.EdgeTrace-contours [class*="text-5xl"],
-.EdgeTrace-contours [class*="text-4xl"],
-.EdgeTrace-contours [class*="text-3xl"],
-.EdgeTrace-contours [class*="text-2xl"] {
-  font-variant-numeric: tabular-nums;
 }
 
 @media (max-width: 767px) {
   .EdgeTrace-hero-title {
-    letter-spacing: -0.008em;
+    letter-spacing: -0.022em;
     line-height: 1.1;
   }
 
   .EdgeTrace-title {
-    letter-spacing: -0.008em;
+    letter-spacing: -0.026em;
     line-height: 1.1;
-  }
-
-  .EdgeTrace-contours h1,
-  .EdgeTrace-contours h2,
-  .EdgeTrace-contours h3 {
-    letter-spacing: -0.008em;
   }
 }
 
