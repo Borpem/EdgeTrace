@@ -333,14 +333,13 @@ export function StrategyDashboardPage({
 
       {error && <div className="mt-5 border border-loss/50 bg-loss/10 p-4 text-sm text-loss">{error}</div>}
 
-      <section
-        className="relative overflow-hidden rounded-[2.25rem] bg-[radial-gradient(circle_at_82%_4%,rgba(88,214,255,0.17),transparent_28rem),radial-gradient(circle_at_6%_94%,rgba(120,97,255,0.14),transparent_30rem),linear-gradient(135deg,rgba(14,24,36,0.86),rgba(5,7,14,0.96))] p-5 shadow-[0_42px_150px_-88px_rgba(88,214,255,0.9),inset_0_1px_0_rgba(255,255,255,0.075)] backdrop-blur md:p-8"
-        data-testid="dashboard-health-card"
-      >
-        <div className="pointer-events-none absolute inset-x-8 top-0 z-0 h-px bg-gradient-to-r from-transparent via-cyan/60 to-transparent" />
-        <div className="pointer-events-none absolute -right-20 -top-20 z-0 h-72 w-72 rounded-full bg-cyan/10 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-24 left-1/4 z-0 h-80 w-80 rounded-full bg-violet/10 blur-3xl" />
-        <div className="relative z-10 grid gap-7 xl:grid-cols-[minmax(0,1fr)_400px]">
+      <div className="relative overflow-hidden rounded-[2.75rem] bg-[radial-gradient(circle_at_78%_5%,rgba(88,214,255,0.18),transparent_30rem),radial-gradient(circle_at_16%_42%,rgba(120,97,255,0.12),transparent_34rem),radial-gradient(circle_at_78%_88%,rgba(255,193,7,0.055),transparent_24rem),linear-gradient(135deg,rgba(11,18,29,0.9),rgba(4,7,13,0.98))] p-5 shadow-[0_48px_180px_-96px_rgba(88,214,255,0.95),inset_0_1px_0_rgba(255,255,255,0.07)] md:p-8">
+        <div className="pointer-events-none absolute inset-x-10 top-0 z-0 h-px bg-gradient-to-r from-transparent via-cyan/50 to-transparent" />
+        <div className="pointer-events-none absolute left-[-12rem] top-28 z-0 h-96 w-96 rounded-full bg-cyan/[0.055] blur-3xl" />
+        <div className="pointer-events-none absolute right-[-10rem] top-16 z-0 h-[30rem] w-[30rem] rounded-full bg-violet/[0.08] blur-3xl" />
+        <div className="pointer-events-none absolute inset-x-8 top-[31rem] z-0 h-px bg-gradient-to-r from-transparent via-white/[0.09] to-transparent" />
+        <section className="relative z-10" data-testid="dashboard-health-card">
+          <div className="grid gap-9 xl:grid-cols-[minmax(0,1fr)_400px]">
           <div>
             <div className="flex flex-wrap items-center gap-3">
               <span className="inline-flex items-center gap-2 rounded-full border border-cyan/25 bg-cyan/[0.08] px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-cyan shadow-[0_0_22px_-14px_rgba(88,214,255,0.9)]">
@@ -386,7 +385,9 @@ export function StrategyDashboardPage({
             </div>
           </div>
 
-          <aside className="rounded-[1.75rem] bg-[linear-gradient(155deg,rgba(255,255,255,0.055),rgba(0,0,0,0.18))] p-5 shadow-[0_28px_92px_-70px_rgba(120,97,255,0.75),inset_0_1px_0_rgba(255,255,255,0.055)] backdrop-blur">
+          <aside className="relative overflow-hidden p-3">
+            <div className="pointer-events-none absolute right-2 top-8 h-52 w-52 rounded-full bg-[conic-gradient(from_210deg,rgba(88,214,255,0.35),rgba(120,97,255,0.18),rgba(255,255,255,0.04),rgba(88,214,255,0.35))] opacity-55 blur-sm" />
+            <div className="pointer-events-none absolute right-14 top-20 h-28 w-28 rounded-full bg-black/70 blur-xl" />
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">Strategy health</p>
@@ -400,7 +401,7 @@ export function StrategyDashboardPage({
               </div>
             </div>
             <p className="mt-5 text-sm leading-6 text-muted">{intelligence.primaryExplanation}</p>
-            <div className="mt-6 h-28">
+            <div className="relative mt-6 h-28">
               {charts.equityCurve.length ? (
                 <ResponsiveContainer width="100%" height="100%">
                   <RechartsLineChart data={charts.equityCurve}>
@@ -421,9 +422,9 @@ export function StrategyDashboardPage({
               )}
             </div>
           </aside>
-        </div>
+          </div>
 
-        <div className="relative z-10 mt-7 grid gap-y-5 rounded-[1.6rem] bg-black/18 px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.045)] sm:grid-cols-2 xl:grid-cols-6 xl:divide-x xl:divide-white/[0.055]">
+        <div className="relative z-10 mt-8 grid gap-y-5 rounded-[1.6rem] bg-black/14 px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.035)] sm:grid-cols-2 xl:grid-cols-6 xl:divide-x xl:divide-white/[0.05]">
           <BriefMetric
             label="Net PnL"
             value={currency.format(metrics.netPnl)}
@@ -461,14 +462,14 @@ export function StrategyDashboardPage({
             status={metrics.profitFactor >= 1.5 ? "healthy" : metrics.profitFactor >= 1 ? "warning" : "weak"}
           />
         </div>
-      </section>
+        </section>
 
-      <section className="mt-8 grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
+      <section className="relative z-10 mt-14 grid gap-10 xl:grid-cols-[0.92fr_1.08fr]">
         <RecentChangePanel change={recentChange} />
         <InspectionPanel items={attentionItems} onOpenReport={() => onOpenReport(safeReport)} />
       </section>
 
-      <section className="mt-8 grid gap-6 xl:grid-cols-[1.08fr_0.92fr]">
+      <section className="relative z-10 mt-14 grid gap-10 xl:grid-cols-[1.08fr_0.92fr]">
         <RecentReportsPanel
           reports={recentReports}
           activeReportId={safeReport.id}
@@ -483,6 +484,7 @@ export function StrategyDashboardPage({
           onCreateStrategySet={() => openStrategySets()}
         />
       </section>
+      </div>
     </main>
   );
 }
@@ -514,8 +516,8 @@ function BriefMetric({
 
 function RecentChangePanel({ change }: { change: ReturnType<typeof buildRecentChange> }) {
   return (
-    <section className="relative overflow-hidden rounded-[2rem] bg-[radial-gradient(circle_at_14%_0%,rgba(88,214,255,0.08),transparent_22rem),linear-gradient(145deg,rgba(14,22,34,0.62),rgba(5,7,13,0.86))] p-5 shadow-[0_28px_100px_-82px_rgba(88,214,255,0.72),inset_0_1px_0_rgba(255,255,255,0.045)] md:p-6">
-      <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-cyan/35 to-transparent" />
+    <section className="relative py-2">
+      <div className="pointer-events-none absolute -left-8 top-6 h-32 w-32 rounded-full bg-cyan/[0.055] blur-3xl" />
       <div className="flex items-start justify-between gap-4">
         <div>
           <h2 className="text-3xl font-semibold tracking-[-0.045em] text-ink">What changed recently</h2>
@@ -524,7 +526,7 @@ function RecentChangePanel({ change }: { change: ReturnType<typeof buildRecentCh
         <TrendBadge trend={change.direction} />
       </div>
 
-      <div className="mt-5 grid gap-y-5 rounded-[1.35rem] bg-black/14 px-4 py-4 sm:grid-cols-2 sm:divide-x sm:divide-y-0 sm:divide-white/[0.055]">
+      <div className="mt-6 grid gap-y-6 bg-black/[0.08] px-4 py-4 sm:grid-cols-2 sm:divide-x sm:divide-y-0 sm:divide-white/[0.045]">
         {change.metrics.map((metric) => (
           <DeltaCard key={metric.label} metric={metric} />
         ))}
@@ -556,8 +558,8 @@ function DeltaCard({ metric }: { metric: RecentChangeMetric }) {
 
 function InspectionPanel({ items, onOpenReport }: { items: AttentionItem[]; onOpenReport: () => void }) {
   return (
-    <section className="relative overflow-hidden rounded-[2rem] bg-[radial-gradient(circle_at_92%_0%,rgba(120,97,255,0.1),transparent_22rem),linear-gradient(145deg,rgba(14,22,34,0.62),rgba(5,7,13,0.86))] p-5 shadow-[0_28px_100px_-82px_rgba(120,97,255,0.72),inset_0_1px_0_rgba(255,255,255,0.045)] md:p-6">
-      <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-violet/35 to-transparent" />
+    <section className="relative py-2">
+      <div className="pointer-events-none absolute -right-8 top-0 h-36 w-36 rounded-full bg-violet/[0.055] blur-3xl" />
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h2 className="text-3xl font-semibold tracking-[-0.045em] text-ink">What needs inspection</h2>
@@ -569,7 +571,7 @@ function InspectionPanel({ items, onOpenReport }: { items: AttentionItem[]; onOp
           Open report
         </button>
       </div>
-      <div className="mt-5 grid gap-3">
+      <div className="mt-5">
         {items.map((item, index) => (
           <AttentionRow key={`${item.title}-${index}`} item={item} index={index + 1} />
         ))}
@@ -627,7 +629,7 @@ function RecentReportsPanel({
           View all reports
         </button>
       </div>
-      <div className="overflow-hidden rounded-[2rem] bg-[linear-gradient(145deg,rgba(12,21,32,0.64),rgba(4,7,13,0.88))] p-2 shadow-[0_28px_100px_-82px_rgba(88,214,255,0.72),inset_0_1px_0_rgba(255,255,255,0.045)]">
+      <div className="overflow-hidden bg-black/[0.08] p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
         <div className="hidden grid-cols-[minmax(0,1.2fr)_84px_112px_112px_112px_minmax(160px,0.8fr)_96px] px-3 py-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted xl:grid">
           <span>Report</span>
           <span>Health</span>
@@ -712,8 +714,8 @@ function StrategySetPanel({
   onCreateStrategySet: () => void;
 }) {
   return (
-    <section className="relative overflow-hidden rounded-[2rem] bg-[radial-gradient(circle_at_88%_0%,rgba(120,97,255,0.14),transparent_22rem),linear-gradient(145deg,rgba(14,20,35,0.64),rgba(5,7,13,0.88))] p-5 shadow-[0_28px_100px_-82px_rgba(120,97,255,0.75),inset_0_1px_0_rgba(255,255,255,0.045)] md:p-6">
-      <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-violet/40 to-transparent" />
+    <section className="relative overflow-hidden py-2">
+      <div className="pointer-events-none absolute right-0 top-6 h-48 w-48 rounded-full bg-violet/[0.06] blur-3xl" />
       <div className="relative">
         <div className="flex items-start justify-between gap-4">
           <div>
@@ -729,7 +731,7 @@ function StrategySetPanel({
 
         {monitoring.collection ? (
           <div className="mt-6">
-            <div className="bg-[linear-gradient(145deg,rgba(120,97,255,0.075),rgba(0,0,0,0.12))] p-1">
+            <div className="bg-[linear-gradient(145deg,rgba(120,97,255,0.055),rgba(0,0,0,0.08))] p-1">
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.15em] text-violet">Top strategy set</p>
