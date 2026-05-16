@@ -223,7 +223,7 @@ export function StrategyDashboardPage({
   if (isLoading && !safeReport) {
     return (
       <main className="EdgeTrace-shell py-8 md:py-10">
-        <section className="relative overflow-hidden rounded-[1.75rem] border border-white/[0.08] bg-[radial-gradient(circle_at_20%_0%,rgba(88,214,255,0.08),transparent_28rem),linear-gradient(135deg,rgba(17,24,39,0.78),rgba(4,7,13,0.92))] p-6 shadow-[0_28px_90px_-70px_rgba(88,214,255,0.75)] md:p-8">
+        <section className="relative overflow-hidden rounded-[2rem] bg-[radial-gradient(circle_at_20%_0%,rgba(88,214,255,0.08),transparent_28rem),linear-gradient(135deg,rgba(17,24,39,0.72),rgba(4,7,13,0.9))] p-6 shadow-[0_34px_120px_-86px_rgba(88,214,255,0.8)] md:p-8">
           <h1 className="max-w-4xl text-4xl font-semibold leading-[1.04] tracking-[-0.035em] text-ink md:text-6xl">
             Loading dashboard
           </h1>
@@ -238,7 +238,7 @@ export function StrategyDashboardPage({
   if (!safeReport || !intelligence || !activeReportLike) {
     return (
       <main className="EdgeTrace-shell py-8 md:py-10">
-        <section className="relative overflow-hidden rounded-[1.75rem] border border-white/[0.08] bg-[radial-gradient(circle_at_8%_0%,rgba(88,214,255,0.1),transparent_28rem),radial-gradient(circle_at_90%_20%,rgba(120,97,255,0.12),transparent_26rem),linear-gradient(135deg,rgba(17,24,39,0.78),rgba(4,7,13,0.92))] p-6 shadow-[0_28px_90px_-70px_rgba(88,214,255,0.75)] md:p-8">
+        <section className="relative overflow-hidden rounded-[2rem] bg-[radial-gradient(circle_at_8%_0%,rgba(88,214,255,0.11),transparent_28rem),radial-gradient(circle_at_90%_20%,rgba(120,97,255,0.12),transparent_26rem),linear-gradient(135deg,rgba(17,24,39,0.72),rgba(4,7,13,0.9))] p-6 shadow-[0_34px_120px_-86px_rgba(88,214,255,0.8)] md:p-8">
           <div className="grid gap-8 lg:grid-cols-[1fr_360px] lg:items-end">
             <div>
               <h1 className="max-w-5xl text-4xl font-semibold leading-[1.05] tracking-[-0.035em] text-ink md:text-6xl">
@@ -257,7 +257,7 @@ export function StrategyDashboardPage({
                 </button>
               </div>
             </div>
-            <div className="rounded-[1.35rem] border border-cyan/15 bg-[linear-gradient(145deg,rgba(11,22,31,0.82),rgba(8,11,19,0.72))] p-5 shadow-[0_24px_80px_-64px_rgba(88,214,255,0.75)]">
+            <div className="rounded-[1.35rem] bg-[linear-gradient(145deg,rgba(11,22,31,0.68),rgba(8,11,19,0.5))] p-5 shadow-[0_24px_80px_-64px_rgba(88,214,255,0.75),inset_0_1px_0_rgba(255,255,255,0.06)]">
               <UploadCloud className="text-cyan" size={30} strokeWidth={1.6} />
               <h2 className="mt-5 text-2xl font-semibold tracking-[-0.035em] text-ink">
                 Start with your first diagnostic report.
@@ -292,7 +292,7 @@ export function StrategyDashboardPage({
 
   return (
     <main className="EdgeTrace-shell py-8 md:py-10">
-      <section className="relative mb-7 overflow-hidden rounded-[1.85rem] border border-white/[0.08] bg-[radial-gradient(circle_at_8%_0%,rgba(88,214,255,0.1),transparent_28rem),radial-gradient(circle_at_90%_16%,rgba(120,97,255,0.13),transparent_28rem),linear-gradient(135deg,rgba(14,21,33,0.82),rgba(4,7,13,0.94))] p-6 shadow-[0_30px_110px_-82px_rgba(88,214,255,0.85)] md:p-8">
+      <section className="relative mb-7 overflow-hidden rounded-[2.15rem] bg-[radial-gradient(circle_at_8%_0%,rgba(88,214,255,0.11),transparent_28rem),radial-gradient(circle_at_90%_16%,rgba(120,97,255,0.14),transparent_28rem),linear-gradient(135deg,rgba(14,21,33,0.72),rgba(4,7,13,0.9))] p-6 shadow-[0_34px_120px_-88px_rgba(88,214,255,0.85),inset_0_1px_0_rgba(255,255,255,0.045)] md:p-8">
         <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px] xl:items-end">
           <div>
             <h1 className="max-w-5xl text-4xl font-semibold leading-[1.05] tracking-[-0.035em] text-ink md:text-6xl">
@@ -311,7 +311,7 @@ export function StrategyDashboardPage({
             </div>
           </div>
 
-          <div className="rounded-[1.25rem] border border-cyan/15 bg-[linear-gradient(145deg,rgba(7,18,28,0.9),rgba(10,10,20,0.72))] p-5 shadow-[0_22px_75px_-58px_rgba(88,214,255,0.8)] backdrop-blur">
+          <div className="rounded-[1.35rem] bg-[linear-gradient(145deg,rgba(7,18,28,0.78),rgba(10,10,20,0.54))] p-5 shadow-[0_24px_82px_-62px_rgba(88,214,255,0.8),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur">
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">Report focus</p>
             <select
               className="mt-3 w-full rounded-xl border border-white/[0.12] bg-black/35 px-4 py-3 text-sm font-semibold text-ink outline-none transition hover:border-white/[0.2] focus:border-cyan"
@@ -334,7 +334,7 @@ export function StrategyDashboardPage({
       {error && <div className="mt-5 border border-loss/50 bg-loss/10 p-4 text-sm text-loss">{error}</div>}
 
       <section
-        className="relative overflow-hidden rounded-[2rem] border border-cyan/15 bg-[radial-gradient(circle_at_82%_4%,rgba(88,214,255,0.16),transparent_28rem),radial-gradient(circle_at_6%_94%,rgba(120,97,255,0.13),transparent_30rem),linear-gradient(135deg,rgba(14,24,36,0.9),rgba(5,7,14,0.96))] p-5 shadow-[0_36px_130px_-82px_rgba(88,214,255,0.85),inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur md:p-8"
+        className="relative overflow-hidden rounded-[2.25rem] bg-[radial-gradient(circle_at_82%_4%,rgba(88,214,255,0.17),transparent_28rem),radial-gradient(circle_at_6%_94%,rgba(120,97,255,0.14),transparent_30rem),linear-gradient(135deg,rgba(14,24,36,0.86),rgba(5,7,14,0.96))] p-5 shadow-[0_42px_150px_-88px_rgba(88,214,255,0.9),inset_0_1px_0_rgba(255,255,255,0.075)] backdrop-blur md:p-8"
         data-testid="dashboard-health-card"
       >
         <div className="pointer-events-none absolute inset-x-8 top-0 z-0 h-px bg-gradient-to-r from-transparent via-cyan/60 to-transparent" />
@@ -355,8 +355,9 @@ export function StrategyDashboardPage({
             </h2>
             <p className="mt-4 max-w-3xl text-base leading-7 text-muted">{intelligence.primaryLeak.explanation}</p>
 
-            <div className="mt-7 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(260px,0.65fr)]">
-              <div className="rounded-[1.35rem] border border-cyan/18 bg-[linear-gradient(145deg,rgba(88,214,255,0.08),rgba(0,0,0,0.24))] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+            <div className="mt-7 grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(260px,0.65fr)]">
+              <div className="relative py-2 pl-5">
+                <div className="absolute bottom-1 left-0 top-1 w-px bg-gradient-to-b from-cyan/65 via-cyan/22 to-transparent" />
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-cyan">Where to inspect next</p>
                 <p className="mt-3 text-2xl font-semibold tracking-[-0.035em] text-ink">{inspectionTitle}</p>
                 <p className="mt-2 text-sm leading-6 text-muted">{inspectionReason}</p>
@@ -376,7 +377,8 @@ export function StrategyDashboardPage({
                 )}
               </div>
 
-              <div className="rounded-[1.35rem] border border-white/[0.1] bg-white/[0.035] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.045)]">
+              <div className="relative py-2 pl-5">
+                <div className="absolute bottom-1 left-0 top-1 w-px bg-gradient-to-b from-violet/55 via-white/[0.08] to-transparent" />
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">Primary leak</p>
                 <p className="mt-3 text-xl font-semibold tracking-[-0.035em] text-ink">{intelligence.primaryLeak.title}</p>
                 <p className="mt-2 text-sm leading-6 text-muted">{intelligence.primaryLeak.supportingMetric}</p>
@@ -384,7 +386,7 @@ export function StrategyDashboardPage({
             </div>
           </div>
 
-          <aside className="rounded-[1.55rem] border border-white/[0.1] bg-[linear-gradient(155deg,rgba(255,255,255,0.06),rgba(0,0,0,0.26))] p-5 shadow-[0_24px_80px_-66px_rgba(120,97,255,0.75),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur">
+          <aside className="rounded-[1.75rem] bg-[linear-gradient(155deg,rgba(255,255,255,0.055),rgba(0,0,0,0.18))] p-5 shadow-[0_28px_92px_-70px_rgba(120,97,255,0.75),inset_0_1px_0_rgba(255,255,255,0.055)] backdrop-blur">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">Strategy health</p>
@@ -421,7 +423,7 @@ export function StrategyDashboardPage({
           </aside>
         </div>
 
-        <div className="relative z-10 mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
+        <div className="relative z-10 mt-7 grid gap-y-5 rounded-[1.6rem] bg-black/18 px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.045)] sm:grid-cols-2 xl:grid-cols-6 xl:divide-x xl:divide-white/[0.055]">
           <BriefMetric
             label="Net PnL"
             value={currency.format(metrics.netPnl)}
@@ -498,7 +500,7 @@ function BriefMetric({
 }) {
   return (
     <div
-      className={`rounded-[1.15rem] border bg-[linear-gradient(145deg,rgba(255,255,255,0.055),rgba(0,0,0,0.24))] p-4 shadow-[0_18px_54px_-44px_rgba(88,214,255,0.6),inset_0_1px_0_rgba(247,247,243,0.045)] ${metricBorderClass(status)}`}
+      className={`px-2 py-1 xl:px-4 ${metricBorderClass(status)}`}
     >
       <div className="flex items-center justify-between gap-3">
         <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-muted">{label}</p>
@@ -512,7 +514,7 @@ function BriefMetric({
 
 function RecentChangePanel({ change }: { change: ReturnType<typeof buildRecentChange> }) {
   return (
-    <section className="relative overflow-hidden rounded-[1.65rem] border border-white/[0.09] bg-[radial-gradient(circle_at_14%_0%,rgba(88,214,255,0.08),transparent_22rem),linear-gradient(145deg,rgba(14,22,34,0.82),rgba(5,7,13,0.92))] p-5 shadow-[0_28px_90px_-74px_rgba(88,214,255,0.72)] md:p-6">
+    <section className="relative overflow-hidden rounded-[2rem] bg-[radial-gradient(circle_at_14%_0%,rgba(88,214,255,0.08),transparent_22rem),linear-gradient(145deg,rgba(14,22,34,0.62),rgba(5,7,13,0.86))] p-5 shadow-[0_28px_100px_-82px_rgba(88,214,255,0.72),inset_0_1px_0_rgba(255,255,255,0.045)] md:p-6">
       <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-cyan/35 to-transparent" />
       <div className="flex items-start justify-between gap-4">
         <div>
@@ -522,13 +524,13 @@ function RecentChangePanel({ change }: { change: ReturnType<typeof buildRecentCh
         <TrendBadge trend={change.direction} />
       </div>
 
-      <div className="mt-5 grid gap-3 sm:grid-cols-2">
+      <div className="mt-5 grid gap-y-5 rounded-[1.35rem] bg-black/14 px-4 py-4 sm:grid-cols-2 sm:divide-x sm:divide-y-0 sm:divide-white/[0.055]">
         {change.metrics.map((metric) => (
           <DeltaCard key={metric.label} metric={metric} />
         ))}
       </div>
 
-      <div className="mt-5 rounded-[1.15rem] border border-cyan/12 bg-[linear-gradient(145deg,rgba(88,214,255,0.055),rgba(0,0,0,0.22))] p-4">
+      <div className="mt-5 border-l border-cyan/40 py-2 pl-4">
         <p className="text-xs font-semibold uppercase tracking-[0.15em] text-muted">Primary change driver</p>
         <p className="mt-2 text-lg font-semibold tracking-[-0.035em] text-ink">{change.driver}</p>
       </div>
@@ -539,7 +541,7 @@ function RecentChangePanel({ change }: { change: ReturnType<typeof buildRecentCh
 function DeltaCard({ metric }: { metric: RecentChangeMetric }) {
   const Icon = metric.tone === "negative" || metric.tone === "warning" ? TrendingDown : metric.tone === "positive" ? TrendingUp : BarChart3;
   return (
-    <div className={`rounded-[1.1rem] border bg-[linear-gradient(145deg,rgba(255,255,255,0.05),rgba(0,0,0,0.24))] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.045)] ${deltaBorderClass(metric.tone)}`}>
+    <div className={`px-1 py-1 sm:px-4 ${deltaBorderClass(metric.tone)}`}>
       <div className="flex items-center justify-between gap-3">
         <p className="text-xs font-semibold uppercase tracking-[0.15em] text-muted">{metric.label}</p>
         <span className={`rounded-full border p-1.5 ${deltaIconClass(metric.tone)}`}>
@@ -554,7 +556,7 @@ function DeltaCard({ metric }: { metric: RecentChangeMetric }) {
 
 function InspectionPanel({ items, onOpenReport }: { items: AttentionItem[]; onOpenReport: () => void }) {
   return (
-    <section className="relative overflow-hidden rounded-[1.65rem] border border-white/[0.09] bg-[radial-gradient(circle_at_92%_0%,rgba(120,97,255,0.1),transparent_22rem),linear-gradient(145deg,rgba(14,22,34,0.82),rgba(5,7,13,0.92))] p-5 shadow-[0_28px_90px_-74px_rgba(120,97,255,0.72)] md:p-6">
+    <section className="relative overflow-hidden rounded-[2rem] bg-[radial-gradient(circle_at_92%_0%,rgba(120,97,255,0.1),transparent_22rem),linear-gradient(145deg,rgba(14,22,34,0.62),rgba(5,7,13,0.86))] p-5 shadow-[0_28px_100px_-82px_rgba(120,97,255,0.72),inset_0_1px_0_rgba(255,255,255,0.045)] md:p-6">
       <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-violet/35 to-transparent" />
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
@@ -579,9 +581,9 @@ function InspectionPanel({ items, onOpenReport }: { items: AttentionItem[]; onOp
 function AttentionRow({ item, index }: { item: AttentionItem; index: number }) {
   return (
     <article
-      className={`grid gap-4 rounded-[1.2rem] border bg-[linear-gradient(145deg,rgba(255,255,255,0.045),rgba(0,0,0,0.24))] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.035)] transition hover:-translate-y-0.5 hover:bg-white/[0.055] md:grid-cols-[44px_minmax(0,1fr)_auto] md:items-center ${attentionBorderClass(item.severity)}`}
+      className={`grid gap-4 border-b border-white/[0.06] px-1 py-4 transition last:border-b-0 hover:bg-white/[0.025] md:grid-cols-[44px_minmax(0,1fr)_auto] md:items-center ${attentionBorderClass(item.severity)}`}
     >
-      <div className={`flex h-11 w-11 items-center justify-center rounded-2xl border ${attentionBadgeClass(item.severity)}`}>
+      <div className={`flex h-11 w-11 items-center justify-center rounded-2xl ${attentionBadgeClass(item.severity)}`}>
         {item.icon}
       </div>
       <div className="min-w-0">
@@ -625,8 +627,8 @@ function RecentReportsPanel({
           View all reports
         </button>
       </div>
-      <div className="overflow-hidden rounded-[1.65rem] border border-cyan/12 bg-[linear-gradient(145deg,rgba(12,21,32,0.86),rgba(4,7,13,0.94))] p-0 shadow-[0_28px_90px_-74px_rgba(88,214,255,0.72),inset_0_1px_0_rgba(255,255,255,0.05)]">
-        <div className="hidden grid-cols-[minmax(0,1.2fr)_84px_112px_112px_112px_minmax(160px,0.8fr)_96px] border-b border-white/[0.08] bg-white/[0.035] px-4 py-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted xl:grid">
+      <div className="overflow-hidden rounded-[2rem] bg-[linear-gradient(145deg,rgba(12,21,32,0.64),rgba(4,7,13,0.88))] p-2 shadow-[0_28px_100px_-82px_rgba(88,214,255,0.72),inset_0_1px_0_rgba(255,255,255,0.045)]">
+        <div className="hidden grid-cols-[minmax(0,1.2fr)_84px_112px_112px_112px_minmax(160px,0.8fr)_96px] px-3 py-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted xl:grid">
           <span>Report</span>
           <span>Health</span>
           <span>Net PnL</span>
@@ -635,7 +637,7 @@ function RecentReportsPanel({
           <span>Diagnosis</span>
           <span>Action</span>
         </div>
-        <div className="divide-y divide-white/[0.065]">
+        <div>
           {reports.map((report) => (
             <RecentReportRow
               key={report.id}
@@ -667,8 +669,8 @@ function RecentReportRow({
   const costDrag = costDragRatio(report);
   return (
     <div
-      className={`grid gap-4 px-4 py-4 transition hover:translate-x-0.5 xl:grid-cols-[minmax(0,1.2fr)_84px_112px_112px_112px_minmax(160px,0.8fr)_96px] xl:items-center ${
-        active ? "bg-cyan/[0.06]" : "hover:bg-white/[0.035]"
+      className={`grid gap-4 rounded-[1.25rem] px-3 py-4 transition hover:translate-x-0.5 xl:grid-cols-[minmax(0,1.2fr)_84px_112px_112px_112px_minmax(160px,0.8fr)_96px] xl:items-center ${
+        active ? "bg-cyan/[0.06] shadow-[inset_0_1px_0_rgba(255,255,255,0.045)]" : "hover:bg-white/[0.035]"
       }`}
     >
       <button className="min-w-0 text-left" onClick={onFocus}>
@@ -710,7 +712,7 @@ function StrategySetPanel({
   onCreateStrategySet: () => void;
 }) {
   return (
-    <section className="relative overflow-hidden rounded-[1.65rem] border border-violet/15 bg-[radial-gradient(circle_at_88%_0%,rgba(120,97,255,0.14),transparent_22rem),linear-gradient(145deg,rgba(14,20,35,0.86),rgba(5,7,13,0.94))] p-5 shadow-[0_28px_90px_-74px_rgba(120,97,255,0.75),inset_0_1px_0_rgba(255,255,255,0.05)] md:p-6">
+    <section className="relative overflow-hidden rounded-[2rem] bg-[radial-gradient(circle_at_88%_0%,rgba(120,97,255,0.14),transparent_22rem),linear-gradient(145deg,rgba(14,20,35,0.64),rgba(5,7,13,0.88))] p-5 shadow-[0_28px_100px_-82px_rgba(120,97,255,0.75),inset_0_1px_0_rgba(255,255,255,0.045)] md:p-6">
       <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-violet/40 to-transparent" />
       <div className="relative">
         <div className="flex items-start justify-between gap-4">
@@ -727,7 +729,7 @@ function StrategySetPanel({
 
         {monitoring.collection ? (
           <div className="mt-6">
-            <div className="rounded-[1.35rem] border border-violet/25 bg-[linear-gradient(145deg,rgba(120,97,255,0.095),rgba(0,0,0,0.2))] p-5">
+            <div className="bg-[linear-gradient(145deg,rgba(120,97,255,0.075),rgba(0,0,0,0.12))] p-1">
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.15em] text-violet">Top strategy set</p>
@@ -736,7 +738,7 @@ function StrategySetPanel({
                 </div>
                 <TrendBadge trend={monitoring.direction} />
               </div>
-              <div className="mt-5 grid gap-3 sm:grid-cols-3">
+              <div className="mt-5 grid gap-y-4 rounded-[1.25rem] bg-black/16 px-3 py-3 sm:grid-cols-3 sm:divide-x sm:divide-white/[0.055]">
                 <MiniStatus label="Confidence" value={monitoring.confidence} />
                 <MiniStatus label="Latest iteration" value={monitoring.latestIteration} />
                 <MiniStatus label="Reports" value={String(monitoring.collection.reportCount)} />
@@ -748,7 +750,7 @@ function StrategySetPanel({
             </div>
           </div>
         ) : (
-          <div className="mt-6 rounded-[1.35rem] border border-white/[0.1] bg-white/[0.035] p-5">
+          <div className="mt-6 border-l border-violet/40 py-2 pl-5">
             <p className="text-xl font-semibold tracking-[-0.035em] text-ink">Create a Strategy Set to track iterations over time.</p>
             <p className="mt-2 text-sm leading-6 text-muted">
               Strategy sets group related reports so you can see whether changes are improving performance or creating new leakage.
@@ -764,7 +766,7 @@ function StrategySetPanel({
             {collections.slice(1, 3).map((collection) => (
               <button
                 key={collection.id}
-                className="flex items-center justify-between gap-3 rounded-xl border border-white/[0.08] bg-black/18 px-4 py-3 text-left transition hover:border-violet/35 hover:bg-violet/[0.045]"
+                className="flex items-center justify-between gap-3 rounded-xl bg-black/16 px-4 py-3 text-left transition hover:bg-violet/[0.045]"
                 onClick={() => onOpenStrategySet(collection.id)}
               >
                 <span className="min-w-0 truncate text-sm font-semibold text-ink">{collection.name}</span>
@@ -780,7 +782,7 @@ function StrategySetPanel({
 
 function MiniStatus({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-white/[0.08] bg-black/24 p-3">
+    <div className="px-3 py-1">
       <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted">{label}</p>
       <p className="mt-2 text-sm font-semibold text-ink">{value}</p>
     </div>
@@ -791,14 +793,14 @@ function StrategyProgression({ reports }: { reports: ReportSummary[] }) {
   const visibleReports = reports.slice(-3);
   if (!visibleReports.length) return null;
   return (
-    <div className="mt-5 rounded-[1.15rem] border border-white/[0.08] bg-black/20 p-4">
+    <div className="mt-5 rounded-[1.15rem] bg-black/18 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.035)]">
       <div className="grid grid-cols-[repeat(3,minmax(0,1fr))] items-center gap-2">
         {visibleReports.map((report, index) => {
           const score = scoreReportSummary(report);
           return (
             <div key={report.id} className="relative">
               {index > 0 && <div className="absolute right-1/2 top-4 h-px w-full bg-gradient-to-r from-violet/15 to-cyan/35" />}
-              <div className="relative z-10 mx-auto flex h-8 w-8 items-center justify-center rounded-full border border-cyan/25 bg-black text-xs font-semibold text-cyan shadow-[0_0_26px_-16px_rgba(88,214,255,0.9)]">
+              <div className="relative z-10 mx-auto flex h-8 w-8 items-center justify-center rounded-full bg-black/80 text-xs font-semibold text-cyan shadow-[0_0_26px_-16px_rgba(88,214,255,0.9),inset_0_1px_0_rgba(255,255,255,0.08)]">
                 {index + 1}
               </div>
               <p className={`mt-2 text-center text-sm font-semibold ${scoreClass(score)}`}>{score}</p>
