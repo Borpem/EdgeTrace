@@ -353,9 +353,8 @@ export function StrategyDashboardPage({
             </h2>
             <p className="mt-4 max-w-3xl text-base leading-7 text-muted">{intelligence.primaryLeak.explanation}</p>
 
-            <div className="mt-7 grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(260px,0.65fr)]">
-              <div className="relative py-2 pl-5">
-                <div className="absolute bottom-1 left-0 top-1 w-px bg-gradient-to-b from-cyan/55 via-cyan/20 to-transparent" />
+            <div className="mt-7 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(260px,0.65fr)]">
+              <div className="border border-cyan/20 bg-black/30 p-5">
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-cyan">Where to inspect next</p>
                 <p className="mt-3 text-2xl font-semibold tracking-[-0.035em] text-ink">{inspectionTitle}</p>
                 <p className="mt-2 text-sm leading-6 text-muted">{inspectionReason}</p>
@@ -375,8 +374,7 @@ export function StrategyDashboardPage({
                 )}
               </div>
 
-              <div className="relative py-2 pl-5">
-                <div className="absolute bottom-1 left-0 top-1 w-px bg-gradient-to-b from-white/[0.18] via-white/[0.08] to-transparent" />
+              <div className="border border-white/[0.1] bg-black/25 p-5">
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">Primary leak</p>
                 <p className="mt-3 text-xl font-semibold tracking-[-0.035em] text-ink">{intelligence.primaryLeak.title}</p>
                 <p className="mt-2 text-sm leading-6 text-muted">{intelligence.primaryLeak.supportingMetric}</p>
@@ -495,7 +493,7 @@ function BriefMetric({
   status: MetricStatus;
 }) {
   return (
-    <div className={`border bg-black/20 p-4 shadow-[inset_0_1px_0_rgba(247,247,243,0.03)] ${metricBorderClass(status)}`}>
+    <div className={`border bg-black/28 p-4 shadow-[inset_0_1px_0_rgba(247,247,243,0.035)] ${metricBorderClass(status)}`}>
       <div className="flex items-center justify-between gap-3">
         <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-muted">{label}</p>
         <StatusDot status={status} />
@@ -523,7 +521,7 @@ function RecentChangePanel({ change }: { change: ReturnType<typeof buildRecentCh
         ))}
       </div>
 
-      <div className="mt-5 border-l border-cyan/35 py-2 pl-4">
+      <div className="mt-5 border border-white/[0.09] bg-black/24 p-4">
         <p className="text-xs font-semibold uppercase tracking-[0.15em] text-muted">Primary change driver</p>
         <p className="mt-2 text-lg font-semibold tracking-[-0.035em] text-ink">{change.driver}</p>
       </div>
@@ -533,7 +531,7 @@ function RecentChangePanel({ change }: { change: ReturnType<typeof buildRecentCh
 
 function DeltaCard({ metric }: { metric: RecentChangeMetric }) {
   return (
-    <div className={`border bg-black/18 p-4 ${deltaBorderClass(metric.tone)}`}>
+    <div className={`border bg-black/24 p-4 ${deltaBorderClass(metric.tone)}`}>
       <p className="text-xs font-semibold uppercase tracking-[0.15em] text-muted">{metric.label}</p>
       <p className={`mt-3 text-2xl font-semibold tracking-[-0.045em] ${deltaTextClass(metric.tone)}`}>{metric.value}</p>
       <p className="mt-1 text-xs leading-5 text-muted">{metric.detail}</p>
@@ -555,7 +553,7 @@ function InspectionPanel({ items, onOpenReport }: { items: AttentionItem[]; onOp
           Open report
         </button>
       </div>
-      <div className="mt-5">
+      <div className="mt-5 grid gap-3">
         {items.map((item, index) => (
           <AttentionRow key={`${item.title}-${index}`} item={item} index={index + 1} />
         ))}
@@ -566,15 +564,15 @@ function InspectionPanel({ items, onOpenReport }: { items: AttentionItem[]; onOp
 
 function AttentionRow({ item, index }: { item: AttentionItem; index: number }) {
   return (
-    <article className={`grid gap-4 border-b border-white/[0.07] py-4 last:border-b-0 md:grid-cols-[44px_minmax(0,1fr)_auto] md:items-center ${attentionBorderClass(item.severity)}`}>
-      <div className={`flex h-11 w-11 items-center justify-center ${attentionBadgeClass(item.severity)}`}>
+    <article className={`grid gap-4 border bg-black/24 p-4 md:grid-cols-[44px_minmax(0,1fr)_auto] md:items-center ${attentionBorderClass(item.severity)}`}>
+      <div className={`flex h-11 w-11 items-center justify-center border ${attentionBadgeClass(item.severity)}`}>
         {item.icon}
       </div>
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-3">
           <span className="text-xs font-semibold uppercase tracking-[0.15em] text-muted">0{index}</span>
           <h3 className="text-lg font-semibold tracking-[-0.035em] text-ink">{item.title}</h3>
-          <span className={`px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] ${attentionBadgeClass(item.severity)}`}>
+          <span className={`border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] ${attentionBadgeClass(item.severity)}`}>
             {item.metric}
           </span>
         </div>
@@ -661,7 +659,7 @@ function RecentReportRow({
         <div className="flex flex-wrap items-center gap-2">
           <p className="truncate text-base font-semibold text-ink">{report.name}</p>
           {active && (
-            <span className="bg-cyan/[0.08] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.13em] text-cyan">
+            <span className="border border-cyan/35 bg-cyan/[0.08] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.13em] text-cyan">
               Focused
             </span>
           )}
@@ -711,7 +709,7 @@ function StrategySetPanel({
 
         {monitoring.collection ? (
           <div className="mt-6">
-            <div className="border-l border-violet/35 bg-violet/[0.035] py-2 pl-5">
+            <div className="border border-violet/30 bg-violet/[0.055] p-5">
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.15em] text-violet">Top strategy set</p>
@@ -731,7 +729,7 @@ function StrategySetPanel({
             </div>
           </div>
         ) : (
-          <div className="mt-6 border-l border-violet/35 py-2 pl-5">
+          <div className="mt-6 border border-white/[0.1] bg-black/24 p-5">
             <p className="text-xl font-semibold tracking-[-0.035em] text-ink">Create a Strategy Set to track iterations over time.</p>
             <p className="mt-2 text-sm leading-6 text-muted">
               Strategy sets group related reports so you can see whether changes are improving performance or creating new leakage.
@@ -747,7 +745,7 @@ function StrategySetPanel({
             {collections.slice(1, 3).map((collection) => (
               <button
                 key={collection.id}
-                className="flex items-center justify-between gap-3 bg-black/18 px-4 py-3 text-left hover:bg-violet/[0.045]"
+                className="flex items-center justify-between gap-3 border border-white/[0.08] bg-black/18 px-4 py-3 text-left hover:border-violet/35"
                 onClick={() => onOpenStrategySet(collection.id)}
               >
                 <span className="min-w-0 truncate text-sm font-semibold text-ink">{collection.name}</span>
@@ -763,7 +761,7 @@ function StrategySetPanel({
 
 function MiniStatus({ label, value }: { label: string; value: string }) {
   return (
-    <div className="bg-black/18 p-3">
+    <div className="border border-white/[0.08] bg-black/24 p-3">
       <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted">{label}</p>
       <p className="mt-2 text-sm font-semibold text-ink">{value}</p>
     </div>
@@ -1141,9 +1139,9 @@ function scoreClass(score: number) {
 }
 
 function metricBorderClass(status: MetricStatus) {
-  if (status === "healthy") return "border-cyan/24";
-  if (status === "warning") return "border-warning/32";
-  if (status === "weak") return "border-loss/32";
+  if (status === "healthy") return "border-cyan/35";
+  if (status === "warning") return "border-warning/45";
+  if (status === "weak") return "border-loss/45";
   return "border-white/[0.1]";
 }
 
@@ -1162,9 +1160,9 @@ function statusDotClass(status: MetricStatus) {
 }
 
 function trendClass(trend: TrendDirection) {
-  if (trend === "improving") return "border-cyan/38 bg-cyan/[0.08] text-cyan";
-  if (trend === "degrading") return "border-loss/36 bg-loss/[0.08] text-loss";
-  if (trend === "stable") return "border-violet/36 bg-violet/[0.08] text-violet";
+  if (trend === "improving") return "border-cyan/50 bg-cyan/[0.08] text-cyan";
+  if (trend === "degrading") return "border-loss/50 bg-loss/[0.08] text-loss";
+  if (trend === "stable") return "border-violet/45 bg-violet/[0.08] text-violet";
   return "border-white/[0.12] bg-white/[0.035] text-muted";
 }
 
@@ -1176,9 +1174,9 @@ function trendLabel(trend: TrendDirection) {
 }
 
 function deltaBorderClass(tone: RecentChangeMetric["tone"]) {
-  if (tone === "positive") return "border-cyan/24";
-  if (tone === "negative") return "border-loss/32";
-  if (tone === "warning") return "border-warning/32";
+  if (tone === "positive") return "border-cyan/35";
+  if (tone === "negative") return "border-loss/45";
+  if (tone === "warning") return "border-warning/45";
   return "border-white/[0.1]";
 }
 
@@ -1190,15 +1188,15 @@ function deltaTextClass(tone: RecentChangeMetric["tone"]) {
 }
 
 function attentionBorderClass(severity: AttentionItem["severity"]) {
-  if (severity === "critical") return "border-loss/28";
-  if (severity === "warning") return "border-warning/28";
-  return "border-white/[0.07]";
+  if (severity === "critical") return "border-loss/45";
+  if (severity === "warning") return "border-warning/45";
+  return "border-cyan/25";
 }
 
 function attentionBadgeClass(severity: AttentionItem["severity"]) {
-  if (severity === "critical") return "bg-loss/[0.08] text-loss";
-  if (severity === "warning") return "bg-warning/[0.08] text-warning";
-  return "bg-cyan/[0.08] text-cyan";
+  if (severity === "critical") return "border-loss/45 bg-loss/[0.08] text-loss";
+  if (severity === "warning") return "border-warning/45 bg-warning/[0.08] text-warning";
+  return "border-cyan/35 bg-cyan/[0.08] text-cyan";
 }
 
 function formatTooltipCurrency(value: unknown) {
