@@ -1,33 +1,57 @@
 @font-face {
-  font-family: "General Sans";
-  src: url("/fonts/general-sans/general-sans-400.woff2") format("woff2");
+  font-family: "Satoshi";
+  src: url("/fonts/satoshi/satoshi-400.woff2") format("woff2");
   font-display: swap;
   font-style: normal;
   font-weight: 400;
 }
 
 @font-face {
-  font-family: "General Sans";
-  src: url("/fonts/general-sans/general-sans-500.woff2") format("woff2");
+  font-family: "Satoshi";
+  src: url("/fonts/satoshi/satoshi-500.woff2") format("woff2");
   font-display: swap;
   font-style: normal;
   font-weight: 500;
 }
 
 @font-face {
-  font-family: "General Sans";
-  src: url("/fonts/general-sans/general-sans-600.woff2") format("woff2");
-  font-display: swap;
-  font-style: normal;
-  font-weight: 600;
-}
-
-@font-face {
-  font-family: "General Sans";
-  src: url("/fonts/general-sans/general-sans-700.woff2") format("woff2");
+  font-family: "Satoshi";
+  src: url("/fonts/satoshi/satoshi-700.woff2") format("woff2");
   font-display: swap;
   font-style: normal;
   font-weight: 700;
+}
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("/fonts/satoshi/satoshi-900.woff2") format("woff2");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 900;
+}
+
+@font-face {
+  font-family: "Cabinet Grotesk";
+  src: url("/fonts/cabinet-grotesk/cabinet-grotesk-500.woff2") format("woff2");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "Cabinet Grotesk";
+  src: url("/fonts/cabinet-grotesk/cabinet-grotesk-700.woff2") format("woff2");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "Cabinet Grotesk";
+  src: url("/fonts/cabinet-grotesk/cabinet-grotesk-800.woff2") format("woff2");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 800;
 }
 
 @tailwind base;
@@ -66,8 +90,8 @@
   .EdgeTrace-eyebrow {
     color: #9b9b95;
     font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.14em;
+    font-weight: 500;
+    letter-spacing: 0.11em;
     text-transform: uppercase;
   }
 
@@ -76,8 +100,8 @@
     margin-top: 1rem;
     color: #f7f7f3;
     font-size: 2.75rem;
-    font-weight: 700;
-    letter-spacing: -0.024em;
+    font-weight: 800;
+    letter-spacing: -0.012em;
     line-height: 1.08;
     text-wrap: balance;
     font-kerning: normal;
@@ -163,8 +187,8 @@
     background: rgba(88, 214, 255, 0.045);
     color: #9b9b95;
     font-size: 0.68rem;
-    font-weight: 600;
-    letter-spacing: 0.075em;
+    font-weight: 500;
+    letter-spacing: 0.055em;
     text-transform: uppercase;
   }
 
@@ -217,8 +241,8 @@
     background: linear-gradient(135deg, #1596d4 0%, #2867e8 48%, #5d4ae6 100%);
     color: #f7fbff;
     padding: 0.65rem 1.1rem;
-    font-weight: 600;
-    letter-spacing: -0.005em;
+    font-weight: 700;
+    letter-spacing: 0;
     white-space: nowrap;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.42);
     box-shadow:
@@ -243,8 +267,8 @@
     color: #f7f7f3;
     padding: 0.6rem 0.95rem;
     font-size: 0.875rem;
-    font-weight: 600;
-    letter-spacing: -0.005em;
+    font-weight: 700;
+    letter-spacing: 0;
     white-space: nowrap;
   }
 
@@ -264,8 +288,8 @@
     color: #f7fbff;
     padding: 0.55rem 1rem;
     font-size: 0.875rem;
-    font-weight: 600;
-    letter-spacing: -0.005em;
+    font-weight: 700;
+    letter-spacing: 0;
     white-space: nowrap;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.42);
     box-shadow: 0 16px 40px -32px rgba(88, 214, 255, 0.68);
@@ -286,8 +310,8 @@
     color: #f7f7f3;
     padding: 0.55rem 1rem;
     font-size: 0.875rem;
-    font-weight: 600;
-    letter-spacing: -0.005em;
+    font-weight: 700;
+    letter-spacing: 0;
     white-space: nowrap;
   }
 
@@ -308,7 +332,7 @@
     padding: 0.72rem 1rem;
     font-size: 0.875rem;
     font-weight: 700;
-    letter-spacing: -0.005em;
+    letter-spacing: 0;
     white-space: nowrap;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.42);
     box-shadow:
@@ -336,7 +360,7 @@
     color: #58d6ff;
     font-size: 0.62rem;
     font-weight: 700;
-    letter-spacing: 0.13em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
   }
 
@@ -359,8 +383,8 @@
 
 :root {
   color-scheme: dark;
-  --font-ui: "Geist Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-display: "General Sans", "Geist Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+  --font-ui: "Satoshi", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-display: "Cabinet Grotesk", "Satoshi", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
   font-family: var(--font-ui);
   font-feature-settings:
@@ -431,8 +455,8 @@ body {
   border-bottom: 1px solid transparent;
   padding: 0.4rem 0;
   color: #9b9b95;
-  font-weight: 600;
-  letter-spacing: -0.002em;
+  font-weight: 500;
+  letter-spacing: 0;
 }
 
 .EdgeTrace-nav-link:hover {
@@ -560,7 +584,8 @@ body {
   text-wrap: balance;
   font-kerning: normal;
   text-rendering: geometricPrecision;
-  letter-spacing: -0.024em;
+  font-weight: 800;
+  letter-spacing: -0.012em;
   line-height: 1.06;
 }
 
@@ -571,20 +596,29 @@ body {
   text-wrap: balance;
   font-kerning: normal;
   text-rendering: geometricPrecision;
-  letter-spacing: -0.026em;
+  letter-spacing: -0.014em;
 }
 
 .EdgeTrace-contours h1 {
+  font-weight: 800;
   line-height: 1.04;
 }
 
 .EdgeTrace-contours h2 {
+  font-weight: 700;
   line-height: 1.08;
 }
 
 .EdgeTrace-contours h3 {
+  font-weight: 700;
   line-height: 1.12;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
+}
+
+.EdgeTrace-contours .uppercase,
+.EdgeTrace-contours [class*="uppercase"] {
+  font-weight: 500;
+  letter-spacing: 0.1em;
 }
 
 .EdgeTrace-contours table,
@@ -599,19 +633,19 @@ body {
 
 @media (max-width: 767px) {
   .EdgeTrace-hero-title {
-    letter-spacing: -0.018em;
+    letter-spacing: -0.008em;
     line-height: 1.1;
   }
 
   .EdgeTrace-title {
-    letter-spacing: -0.018em;
+    letter-spacing: -0.008em;
     line-height: 1.1;
   }
 
   .EdgeTrace-contours h1,
   .EdgeTrace-contours h2,
   .EdgeTrace-contours h3 {
-    letter-spacing: -0.018em;
+    letter-spacing: -0.008em;
   }
 }
 
