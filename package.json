@@ -27,6 +27,7 @@
   "dependencies": {
     "@clerk/clerk-react": "^5.61.6",
     "@clerk/express": "^2.1.15",
+    "@fontsource/geist-sans": "^5.2.5",
     "@types/pg": "^8.20.0",
     "@vercel/analytics": "^2.0.1",
     "@vitejs/plugin-react": "^5.0.4",
