@@ -43,7 +43,7 @@ type BreakdownSortKey =
   | "expectancy"
   | "averageRealizedR"
   | "costDragPct";
-type DashboardTab = "overview" | "breakdown" | "charts" | "trades";
+type DashboardTab = "overview" | "breakdown" | "trades";
 
 export function DashboardPage({
   result,
@@ -387,7 +387,9 @@ export function DashboardPage({
         </section>
       )}
 
-      <section className="mt-6 grid gap-5 lg:grid-cols-[1.08fr_0.92fr]">
+      <section className="mt-6 grid gap-5 xl:grid-cols-[minmax(0,1fr)_420px] xl:items-start">
+        <div className="min-w-0">
+          <div className="grid gap-5 lg:grid-cols-[1.08fr_0.92fr]">
         <div
           className="EdgeTrace-card relative overflow-hidden p-7 md:p-8"
           data-testid="dashboard-health-card"
@@ -403,20 +405,6 @@ export function DashboardPage({
                 <p className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-ink">{intelligence.healthBand}</p>
               </div>
               <p className="max-w-3xl pb-1 text-sm leading-6 text-muted">{intelligence.primaryExplanation}</p>
-            </div>
-            <div className="mt-8 h-32">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={charts.equityCurve}>
-                  <CartesianGrid stroke="#272727" strokeOpacity={0.7} vertical={false} />
-                  <XAxis dataKey="trade" hide />
-                  <YAxis hide />
-                  <Tooltip
-                    contentStyle={{ background: "#101010", border: "1px solid #272727" }}
-                    formatter={(value) => [formatTooltipCurrency(value), "Equity"]}
-                  />
-                  <Line type="monotone" dataKey="equity" stroke="#58D6FF" strokeWidth={3} dot={false} />
-                </LineChart>
-              </ResponsiveContainer>
             </div>
           </div>
         </div>
@@ -441,10 +429,10 @@ export function DashboardPage({
               <p className="mt-1 text-sm text-muted">{primaryInspection.reason}</p>
             </button>
           )}
-        </div>
-      </section>
+          </div>
+          </div>
 
-      <section className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <section className="mt-5 grid gap-4 md:grid-cols-2 2xl:grid-cols-4">
         <DashboardSummaryCard
           label="Trades analyzed"
           value={String(normalizedTradeCount)}
@@ -470,6 +458,47 @@ export function DashboardPage({
           tone="text-ink"
         />
       </section>
+        </div>
+
+        <aside className="grid gap-4 xl:sticky xl:top-24">
+          <ChartPanel title="Equity Curve">
+            <ResponsiveContainer width="100%" height={165}>
+              <LineChart data={charts.equityCurve}>
+                <CartesianGrid stroke="#243B64" strokeOpacity={0.45} />
+                <XAxis dataKey="trade" stroke="#9CA8C7" />
+                <YAxis stroke="#9CA8C7" />
+                <Tooltip
+                  contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }}
+                  formatter={(value) => [formatTooltipCurrency(value), "Equity"]}
+                />
+                <Line type="monotone" dataKey="equity" stroke="#45D5FF" strokeWidth={2} dot={false} />
+              </LineChart>
+            </ResponsiveContainer>
+          </ChartPanel>
+          <ChartPanel title="PnL by Symbol">
+            <ResponsiveContainer width="100%" height={165}>
+              <BarChart data={charts.pnlBySymbol}>
+                <CartesianGrid stroke="#243B64" strokeOpacity={0.45} />
+                <XAxis dataKey="symbol" stroke="#9CA8C7" />
+                <YAxis stroke="#9CA8C7" />
+                <Tooltip contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }} />
+                <Bar dataKey="pnl" fill="#3E8BFF" />
+              </BarChart>
+            </ResponsiveContainer>
+          </ChartPanel>
+          <ChartPanel title="PnL by Time of Day">
+            <ResponsiveContainer width="100%" height={165}>
+              <BarChart data={charts.pnlByHour}>
+                <CartesianGrid stroke="#243B64" strokeOpacity={0.45} />
+                <XAxis dataKey="hour" stroke="#9CA8C7" />
+                <YAxis stroke="#9CA8C7" />
+                <Tooltip contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }} />
+                <Bar dataKey="pnl" fill="#FFB84D" />
+              </BarChart>
+            </ResponsiveContainer>
+          </ChartPanel>
+        </aside>
+      </section>
 
       <DisclosurePanel
         className="mt-6"
@@ -494,7 +523,7 @@ export function DashboardPage({
       />
 
       <section className="mt-8 flex flex-wrap gap-5 border-b border-white/[0.1]">
-        {(["overview", "breakdown", "charts", "trades"] as DashboardTab[]).map((tab) => (
+        {(["overview", "breakdown", "trades"] as DashboardTab[]).map((tab) => (
           <button
             key={tab}
             className={`border-b pb-3 text-sm font-semibold capitalize ${
@@ -583,47 +612,6 @@ export function DashboardPage({
             </div>
           </div>
         </section>
-      )}
-
-      {activeTab === "charts" && (
-      <section className="mt-5 grid gap-5 xl:grid-cols-3">
-        <ChartPanel title="Equity Curve">
-          <ResponsiveContainer width="100%" height={260}>
-            <LineChart data={charts.equityCurve}>
-              <CartesianGrid stroke="#243B64" strokeOpacity={0.45} />
-              <XAxis dataKey="trade" stroke="#9CA8C7" />
-              <YAxis stroke="#9CA8C7" />
-              <Tooltip
-                contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }}
-                formatter={(value) => [formatTooltipCurrency(value), "Equity"]}
-              />
-              <Line type="monotone" dataKey="equity" stroke="#45D5FF" strokeWidth={2} dot={false} />
-            </LineChart>
-          </ResponsiveContainer>
-        </ChartPanel>
-        <ChartPanel title="PnL by Symbol">
-          <ResponsiveContainer width="100%" height={260}>
-            <BarChart data={charts.pnlBySymbol}>
-              <CartesianGrid stroke="#243B64" strokeOpacity={0.45} />
-              <XAxis dataKey="symbol" stroke="#9CA8C7" />
-              <YAxis stroke="#9CA8C7" />
-              <Tooltip contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }} />
-              <Bar dataKey="pnl" fill="#3E8BFF" />
-            </BarChart>
-          </ResponsiveContainer>
-        </ChartPanel>
-        <ChartPanel title="PnL by Time of Day">
-          <ResponsiveContainer width="100%" height={260}>
-            <BarChart data={charts.pnlByHour}>
-              <CartesianGrid stroke="#243B64" strokeOpacity={0.45} />
-              <XAxis dataKey="hour" stroke="#9CA8C7" />
-              <YAxis stroke="#9CA8C7" />
-              <Tooltip contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }} />
-              <Bar dataKey="pnl" fill="#FFB84D" />
-            </BarChart>
-          </ResponsiveContainer>
-        </ChartPanel>
-      </section>
       )}
 
       {activeTab === "breakdown" && (
