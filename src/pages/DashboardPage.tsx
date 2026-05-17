@@ -217,7 +217,6 @@ export function DashboardPage({
     ["Profit Factor", formatNumber(metrics.profitFactor), intelligence.keyMetricStatuses.profitFactor],
     ["Win Rate", percent.format(metrics.winRate), intelligence.keyMetricStatuses.winRate]
   ];
-  const reportTabs: DashboardTab[] = ["overview", "breakdown", "trades"];
 
   const sort = (key: SortKey) => {
     if (sortKey === key) {
@@ -388,22 +387,7 @@ export function DashboardPage({
         </section>
       )}
 
-      <section className="mt-6 grid gap-5 xl:grid-cols-[132px_minmax(0,1fr)_420px] xl:items-start">
-        <nav className="EdgeTrace-report-tab-rail xl:sticky xl:top-24" aria-label="Report views">
-          {reportTabs.map((tab) => (
-            <button
-              key={tab}
-              className={`EdgeTrace-report-tab-button ${activeTab === tab ? "is-active" : ""}`}
-              onClick={() => {
-                setActiveTab(tab);
-                trackEvent("report_tab_opened", { reportId: result.id, tab });
-              }}
-            >
-              <span>{tab}</span>
-            </button>
-          ))}
-        </nav>
-
+      <section className="mt-6 grid gap-5 xl:grid-cols-[minmax(0,1fr)_420px] xl:items-start">
         <div className="min-w-0">
           <div className="grid gap-5 lg:grid-cols-[1.08fr_0.92fr]">
         <div
@@ -481,6 +465,77 @@ export function DashboardPage({
         </div>
 
         <aside className="grid gap-4 xl:sticky xl:top-24">
+          <div className="EdgeTrace-card-soft p-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted">Primary Leak</p>
+            <h2 className="mt-3 text-xl font-semibold tracking-[-0.04em] text-ink">{intelligence.primaryLeak.title}</h2>
+            <p className="mt-3 text-sm leading-6 text-muted">{intelligence.primaryLeak.explanation}</p>
+            <div className="mt-5 grid gap-3 text-sm">
+              <MetricMini label="Supporting Metric" value={intelligence.primaryLeak.supportingMetric} />
+              <MetricMini label="Recommended Next Step" value={intelligence.primaryLeak.recommendedInspection} />
+            </div>
+          </div>
+
+          <div className="EdgeTrace-card-soft p-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan">Recommended next steps</p>
+            {workflowAction && (
+              <div className="EdgeTrace-subpanel EdgeTrace-recommended mt-4 p-4">
+                <p className="text-lg font-semibold tracking-[-0.04em] text-ink">{workflowAction.title}</p>
+                <p className="mt-2 text-sm leading-6 text-muted">{workflowAction.why}</p>
+                <button className="EdgeTrace-command-button mt-4 w-full" onClick={workflowAction.action}>
+                  {workflowAction.button}
+                </button>
+              </div>
+            )}
+            <div className="mt-4 grid gap-3">
+              {primaryInspection && (
+                <button
+                  className="EdgeTrace-subpanel p-4 text-left transition hover:border-accent/70"
+                  onClick={inspectPrimarySegment}
+                >
+                  <p className="font-semibold text-ink">Inspect weakest segment</p>
+                  <p className="mt-1 text-sm text-muted">{primaryInspection.title}</p>
+                  <p className="mt-2 text-sm text-accent">{primaryInspection.metric}</p>
+                </button>
+              )}
+              {onCompareReport && (
+                <button
+                  className="EdgeTrace-subpanel p-4 text-left transition hover:border-accent/70"
+                  onClick={() => onCompareReport(result.id)}
+                >
+                  <p className="font-semibold text-ink">Compare this report</p>
+                  <p className="mt-1 text-sm text-muted">See what improved, degraded, or leaked.</p>
+                  <p className="mt-2 text-sm text-accent">Open comparison</p>
+                </button>
+              )}
+              <button
+                className="EdgeTrace-subpanel p-4 text-left transition hover:border-accent/70"
+                onClick={() => setIsAddingToStrategySet(true)}
+              >
+                <p className="font-semibold text-ink">Add to strategy set</p>
+                <p className="mt-1 text-sm text-muted">Group this report with related iterations.</p>
+                <p className="mt-2 text-sm text-accent">Organize iteration</p>
+              </button>
+              {hasReconstructionAudit && (
+                <button
+                  className="EdgeTrace-subpanel p-4 text-left transition hover:border-accent/70"
+                  onClick={() => {
+                    trackEvent("reconstruction_audit_opened", { reportId: result.id });
+                    onReconstructionAudit?.();
+                  }}
+                >
+                  <p className="font-semibold text-ink">Review reconstruction audit</p>
+                  <p className="mt-1 text-sm text-muted">Confirm which broker executions formed each completed trade.</p>
+                  <p className="mt-2 text-sm text-accent">Audit lineage</p>
+                </button>
+              )}
+              {!primaryInspection && !onCompareReport && (
+                <div className="EdgeTrace-subpanel p-4 text-sm text-muted">
+                  No segment-level workflow action is available for this report yet.
+                </div>
+              )}
+            </div>
+          </div>
+
           <ChartPanel title="Equity Curve">
             <ResponsiveContainer width="100%" height={165}>
               <LineChart data={charts.equityCurve}>
@@ -542,78 +597,29 @@ export function DashboardPage({
         onCreateStrategySet={() => setIsAddingToStrategySet(true)}
       />
 
-      {activeTab === "overview" && (
-        <section className="mt-6 grid gap-5 lg:grid-cols-[1fr_1.1fr]">
-          <div className="EdgeTrace-subpanel p-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted">Primary Leak</p>
-            <h2 className="mt-3 text-2xl font-semibold tracking-[-0.045em] text-ink">{intelligence.primaryLeak.title}</h2>
-            <p className="mt-4 text-sm leading-6 text-muted">{intelligence.primaryLeak.explanation}</p>
-            <div className="mt-5 grid gap-3 text-sm md:grid-cols-2">
-              <MetricMini label="Supporting Metric" value={intelligence.primaryLeak.supportingMetric} />
-              <MetricMini label="Recommended Next Step" value={intelligence.primaryLeak.recommendedInspection} />
-            </div>
-          </div>
+      <section className="mt-8 flex flex-wrap gap-5 border-b border-white/[0.1]">
+        {(["overview", "breakdown", "trades"] as DashboardTab[]).map((tab) => (
+          <button
+            key={tab}
+            className={`border-b pb-3 text-sm font-semibold capitalize ${
+              activeTab === tab ? "border-ink text-ink" : "border-transparent text-muted hover:border-white/20 hover:text-ink"
+            }`}
+            onClick={() => {
+              setActiveTab(tab);
+              trackEvent("report_tab_opened", { reportId: result.id, tab });
+            }}
+          >
+            {tab}
+          </button>
+        ))}
+      </section>
 
-          <div className="EdgeTrace-card-soft p-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan">Recommended next steps</p>
-            {workflowAction && (
-              <div className="EdgeTrace-subpanel EdgeTrace-recommended mt-4 p-5">
-                <p className="text-xl font-semibold tracking-[-0.04em] text-ink">{workflowAction.title}</p>
-                <p className="mt-2 text-sm leading-6 text-muted">{workflowAction.why}</p>
-                <button className="EdgeTrace-command-button mt-5" onClick={workflowAction.action}>
-                  {workflowAction.button}
-                </button>
-              </div>
-            )}
-            <div className="mt-4 grid gap-3">
-              {primaryInspection && (
-                <button
-                  className="EdgeTrace-subpanel p-4 text-left transition hover:border-accent/70"
-                  onClick={inspectPrimarySegment}
-                >
-                  <p className="font-semibold text-ink">Inspect weakest segment</p>
-                  <p className="mt-1 text-sm text-muted">{primaryInspection.title}</p>
-                  <p className="mt-2 text-sm text-accent">{primaryInspection.metric}</p>
-                </button>
-              )}
-              {onCompareReport && (
-                <button
-                  className="EdgeTrace-subpanel p-4 text-left transition hover:border-accent/70"
-                  onClick={() => onCompareReport(result.id)}
-                >
-                  <p className="font-semibold text-ink">Compare this report</p>
-                  <p className="mt-1 text-sm text-muted">Select another report to see what improved, degraded, or leaked.</p>
-                  <p className="mt-2 text-sm text-accent">Open comparison</p>
-                </button>
-              )}
-              <button
-                className="EdgeTrace-subpanel p-4 text-left transition hover:border-accent/70"
-                onClick={() => setIsAddingToStrategySet(true)}
-              >
-                <p className="font-semibold text-ink">Add to strategy set</p>
-                <p className="mt-1 text-sm text-muted">Group this report with related iterations for trend and attribution review.</p>
-                <p className="mt-2 text-sm text-accent">Organize iteration</p>
-              </button>
-              {!primaryInspection && !onCompareReport && (
-                <div className="EdgeTrace-subpanel p-4 text-sm text-muted">
-                  No segment-level workflow action is available for this report yet.
-                </div>
-              )}
-              {hasReconstructionAudit && (
-                <button
-                  className="EdgeTrace-subpanel p-4 text-left transition hover:border-accent/70"
-                  onClick={() => {
-                    trackEvent("reconstruction_audit_opened", { reportId: result.id });
-                    onReconstructionAudit?.();
-                  }}
-                >
-                  <p className="font-semibold text-ink">Review reconstruction audit</p>
-                  <p className="mt-1 text-sm text-muted">Confirm which broker executions formed each completed trade.</p>
-                  <p className="mt-2 text-sm text-accent">Audit lineage</p>
-                </button>
-              )}
-            </div>
-          </div>
+      {activeTab === "overview" && (
+        <section className="mt-6 EdgeTrace-card-soft p-6">
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted">Overview</p>
+          <p className="mt-3 max-w-3xl text-sm leading-6 text-muted">
+            Primary leak guidance and recommended actions are pinned in the sidebar beside the health readout.
+          </p>
         </section>
       )}
 
