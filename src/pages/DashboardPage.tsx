@@ -417,7 +417,7 @@ export function DashboardPage({
 
       <MetricFlowGraphic className="mt-6" />
 
-      <section className="mt-4 border border-white/[0.1] bg-white/[0.025]">
+      <section className="EdgeTrace-subpanel mt-4">
         <button
           className="flex w-full items-center justify-between gap-4 p-4 text-left"
           type="button"
@@ -433,17 +433,17 @@ export function DashboardPage({
           <span className="text-sm font-semibold text-cyan">{calculationOpen ? "Hide" : "Show"}</span>
         </button>
         {calculationOpen && (
-          <div className="border-t border-white/[0.1] p-4">
+          <div className="border-t border-white/[0.07] p-5">
             <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
               {calculationRows.map(([label, value]) => (
-                <div key={label} className="border border-white/[0.08] bg-black/25 p-3">
+                <div key={label} className="EdgeTrace-subpanel p-4">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted">{label}</p>
                   <p className="mt-1 text-sm text-ink">{value}</p>
                 </div>
               ))}
             </div>
             {provenance?.reconstructionSummary && (
-              <div className="mt-3 border border-white/[0.08] bg-black/25 p-3">
+              <div className="EdgeTrace-subpanel mt-4 p-4">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted">Reconstruction summary</p>
                 <p className="mt-1 text-sm leading-6 text-ink">
                   {provenance.reconstructionSummary.rawExecutions ?? 0} executions ·{" "}
@@ -521,7 +521,7 @@ export function DashboardPage({
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-warning">Primary Diagnosis</p>
           <h2 className="mt-7 text-3xl font-semibold tracking-[-0.055em] text-ink">{intelligence.primaryDiagnosis}</h2>
           <p className="mt-5 text-sm leading-6 text-muted">{intelligence.primaryLeak.explanation}</p>
-          <div className="mt-8 border border-white/[0.1] bg-black/24 p-5">
+          <div className="EdgeTrace-subpanel mt-8 p-5">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted">Supporting Metric</p>
             <p className="mt-2 text-xl font-semibold tracking-[-0.035em] text-ink">
               {intelligence.primaryLeak.supportingMetric}
@@ -529,7 +529,7 @@ export function DashboardPage({
           </div>
           {primaryInspection && (
             <button
-              className="EdgeTrace-recommended mt-4 w-full border border-white/[0.1] bg-black/24 p-5 text-left hover:border-accent/70"
+              className="EdgeTrace-subpanel EdgeTrace-recommended mt-4 w-full p-5 text-left transition hover:border-accent/70"
               onClick={inspectPrimarySegment}
             >
               <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted">Next Inspection</p>
@@ -580,7 +580,7 @@ export function DashboardPage({
 
       {activeTab === "overview" && (
         <section className="mt-6 grid gap-5 lg:grid-cols-[1fr_1.1fr]">
-          <div className="border border-white/[0.1] bg-white/[0.025] p-6">
+          <div className="EdgeTrace-subpanel p-6">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted">Primary Leak</p>
             <h2 className="mt-3 text-2xl font-semibold tracking-[-0.045em] text-ink">{intelligence.primaryLeak.title}</h2>
             <p className="mt-4 text-sm leading-6 text-muted">{intelligence.primaryLeak.explanation}</p>
@@ -590,10 +590,10 @@ export function DashboardPage({
             </div>
           </div>
 
-          <div className="border border-cyan/30 bg-cyan/[0.045] p-6">
+          <div className="EdgeTrace-card-soft p-6">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan">Recommended next steps</p>
             {workflowAction && (
-              <div className="EdgeTrace-recommended mt-4 border border-cyan/35 bg-black/35 p-5">
+              <div className="EdgeTrace-subpanel EdgeTrace-recommended mt-4 p-5">
                 <p className="text-xl font-semibold tracking-[-0.04em] text-ink">{workflowAction.title}</p>
                 <p className="mt-2 text-sm leading-6 text-muted">{workflowAction.why}</p>
                 <button className="EdgeTrace-command-button mt-5" onClick={workflowAction.action}>
@@ -604,7 +604,7 @@ export function DashboardPage({
             <div className="mt-4 grid gap-3">
               {primaryInspection && (
                 <button
-                  className="border border-white/[0.1] bg-black/24 p-4 text-left hover:border-accent/70"
+                  className="EdgeTrace-subpanel p-4 text-left transition hover:border-accent/70"
                   onClick={inspectPrimarySegment}
                 >
                   <p className="font-semibold text-ink">Inspect weakest segment</p>
@@ -614,7 +614,7 @@ export function DashboardPage({
               )}
               {onCompareReport && (
                 <button
-                  className="border border-white/[0.1] bg-black/24 p-4 text-left hover:border-accent/70"
+                  className="EdgeTrace-subpanel p-4 text-left transition hover:border-accent/70"
                   onClick={() => onCompareReport(result.id)}
                 >
                   <p className="font-semibold text-ink">Compare this report</p>
@@ -623,7 +623,7 @@ export function DashboardPage({
                 </button>
               )}
               <button
-                className="border border-white/[0.1] bg-black/24 p-4 text-left hover:border-accent/70"
+                className="EdgeTrace-subpanel p-4 text-left transition hover:border-accent/70"
                 onClick={() => setIsAddingToStrategySet(true)}
               >
                 <p className="font-semibold text-ink">Add to strategy set</p>
@@ -631,13 +631,13 @@ export function DashboardPage({
                 <p className="mt-2 text-sm text-accent">Organize iteration</p>
               </button>
               {!primaryInspection && !onCompareReport && (
-                <div className="border border-white/[0.1] bg-black/24 p-4 text-sm text-muted">
+                <div className="EdgeTrace-subpanel p-4 text-sm text-muted">
                   No segment-level workflow action is available for this report yet.
                 </div>
               )}
               {hasReconstructionAudit && (
                 <button
-                  className="border border-white/[0.1] bg-black/24 p-4 text-left hover:border-accent/70"
+                  className="EdgeTrace-subpanel p-4 text-left transition hover:border-accent/70"
                   onClick={() => {
                     trackEvent("reconstruction_audit_opened", { reportId: result.id });
                     onReconstructionAudit?.();

@@ -15,16 +15,35 @@
   .EdgeTrace-page-header {
     position: relative;
     overflow: visible;
+    isolation: isolate;
     border-radius: 0;
     border: 0;
-    border-top: 1px solid rgba(88, 214, 255, 0.13);
-    border-bottom: 1px solid rgba(247, 247, 243, 0.11);
+    border-top: 1px solid rgba(88, 214, 255, 0.1);
+    border-bottom: 1px solid rgba(247, 247, 243, 0.085);
     background:
-      radial-gradient(circle at 100% 0%, rgba(88, 214, 255, 0.11), transparent 26rem),
-      radial-gradient(circle at 0% 100%, rgba(120, 97, 255, 0.07), transparent 22rem),
+      radial-gradient(circle at 100% 0%, rgba(88, 214, 255, 0.09), transparent 27rem),
+      radial-gradient(circle at 0% 100%, rgba(120, 97, 255, 0.055), transparent 24rem),
       transparent;
-    padding: 2.5rem 0;
+    padding: 2.75rem 1.25rem;
     box-shadow: none;
+  }
+
+  .EdgeTrace-page-header::before {
+    content: "";
+    position: absolute;
+    inset: 0 -1.25rem;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(90deg, transparent, rgba(7, 12, 20, 0.38) 9%, rgba(7, 12, 20, 0.34) 91%, transparent),
+      linear-gradient(180deg, rgba(247, 247, 243, 0.025), transparent 38%, rgba(3, 6, 12, 0.28));
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 4rem, #000 calc(100% - 4rem), transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 4rem, #000 calc(100% - 4rem), transparent);
+  }
+
+  .EdgeTrace-page-header > * {
+    position: relative;
+    z-index: 1;
   }
 
   .EdgeTrace-page-header::after {
@@ -64,32 +83,44 @@
   }
 
   .EdgeTrace-card {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
     border-radius: 0.125rem;
-    border: 1px solid rgba(88, 214, 255, 0.15);
+    border: 1px solid rgba(88, 214, 255, 0.115);
     background:
-      radial-gradient(circle at 100% 0%, rgba(88, 214, 255, 0.105), transparent 24rem),
-      linear-gradient(135deg, rgba(247, 247, 243, 0.06), rgba(79, 140, 255, 0.025)),
-      rgba(7, 12, 20, 0.88);
+      radial-gradient(circle at 100% 0%, rgba(88, 214, 255, 0.092), transparent 25rem),
+      radial-gradient(circle at 0% 100%, rgba(120, 97, 255, 0.035), transparent 24rem),
+      linear-gradient(135deg, rgba(247, 247, 243, 0.052), rgba(79, 140, 255, 0.02)),
+      rgba(7, 12, 20, 0.86);
     box-shadow:
       inset 0 1px 0 rgba(247, 247, 243, 0.045),
-      0 24px 80px -64px rgba(88, 214, 255, 0.48);
+      inset 0 -1px 0 rgba(3, 6, 12, 0.38),
+      0 24px 80px -64px rgba(88, 214, 255, 0.42);
     transition:
       border-color 160ms ease,
       background-color 160ms ease;
   }
 
   .EdgeTrace-card-soft {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
     border-radius: 0.125rem;
-    border: 1px solid rgba(247, 247, 243, 0.12);
+    border: 1px solid rgba(247, 247, 243, 0.09);
     background:
-      radial-gradient(circle at 100% 0%, rgba(120, 97, 255, 0.105), transparent 22rem),
-      linear-gradient(135deg, rgba(247, 247, 243, 0.055), rgba(88, 214, 255, 0.018)),
-      rgba(7, 12, 20, 0.82);
+      radial-gradient(circle at 100% 0%, rgba(120, 97, 255, 0.085), transparent 23rem),
+      radial-gradient(circle at 0% 100%, rgba(88, 214, 255, 0.035), transparent 20rem),
+      linear-gradient(135deg, rgba(247, 247, 243, 0.047), rgba(88, 214, 255, 0.014)),
+      rgba(7, 12, 20, 0.8);
   }
 
   .EdgeTrace-summary-panel {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
     border-radius: 0.125rem;
-    border: 1px solid rgba(88, 214, 255, 0.16);
+    border: 1px solid rgba(88, 214, 255, 0.12);
     background:
       radial-gradient(circle at 100% 0%, rgba(88, 214, 255, 0.08), transparent 20rem),
       linear-gradient(135deg, rgba(247, 247, 243, 0.055), rgba(120, 97, 255, 0.025)),
@@ -101,17 +132,66 @@
   }
 
   .EdgeTrace-info-card {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
     border-radius: 0.125rem;
-    border: 1px solid rgba(247, 247, 243, 0.095);
+    border: 1px solid rgba(247, 247, 243, 0.075);
     background:
       linear-gradient(135deg, rgba(247, 247, 243, 0.045), rgba(88, 214, 255, 0.015)),
       rgba(7, 12, 20, 0.78);
   }
 
+  .EdgeTrace-card::after,
+  .EdgeTrace-card-soft::after,
+  .EdgeTrace-summary-panel::after,
+  .EdgeTrace-info-card::after,
+  .EdgeTrace-table-container::after,
+  .EdgeTrace-workflow-panel::after,
+  .EdgeTrace-subpanel::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    background:
+      linear-gradient(90deg, rgba(3, 6, 12, 0.34), transparent 9%, transparent 91%, rgba(3, 6, 12, 0.28)),
+      linear-gradient(180deg, rgba(247, 247, 243, 0.025), transparent 19%, transparent 81%, rgba(3, 6, 12, 0.3));
+  }
+
+  .EdgeTrace-card > *,
+  .EdgeTrace-card-soft > *,
+  .EdgeTrace-summary-panel > *,
+  .EdgeTrace-info-card > *,
+  .EdgeTrace-table-container > *,
+  .EdgeTrace-workflow-panel > *,
+  .EdgeTrace-subpanel > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .EdgeTrace-subpanel {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border-radius: 0.125rem;
+    border: 1px solid rgba(247, 247, 243, 0.075);
+    background:
+      radial-gradient(circle at 100% 0%, rgba(88, 214, 255, 0.055), transparent 16rem),
+      linear-gradient(135deg, rgba(247, 247, 243, 0.035), rgba(88, 214, 255, 0.011)),
+      rgba(3, 6, 12, 0.46);
+    box-shadow:
+      inset 0 1px 0 rgba(247, 247, 243, 0.025),
+      0 16px 46px -42px rgba(88, 214, 255, 0.28);
+  }
+
   .EdgeTrace-table-container {
+    position: relative;
+    isolation: isolate;
     overflow-x: auto;
     border-radius: 0.125rem;
-    border: 1px solid rgba(88, 214, 255, 0.14);
+    border: 1px solid rgba(88, 214, 255, 0.11);
     background:
       radial-gradient(circle at 100% 0%, rgba(88, 214, 255, 0.065), transparent 18rem),
       rgba(7, 12, 20, 0.84);
@@ -148,12 +228,15 @@
   }
 
   .EdgeTrace-workflow-panel {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
     border-radius: 0.125rem;
-    border: 1px solid rgba(247, 247, 243, 0.1);
+    border: 1px solid rgba(247, 247, 243, 0.08);
     background:
       linear-gradient(135deg, rgba(247, 247, 243, 0.045), rgba(88, 214, 255, 0.015)),
       rgba(7, 12, 20, 0.78);
-    padding: 1rem;
+    padding: 1.2rem;
   }
 
   .EdgeTrace-workflow-step {
@@ -309,7 +392,7 @@
     }
 
     .EdgeTrace-page-header {
-      padding: 2rem 0;
+      padding: 2.25rem 1.5rem;
     }
 
     .EdgeTrace-title {
@@ -423,21 +506,23 @@ body {
 }
 
 .EdgeTrace-contours .p-8 {
-  padding: 1.5rem;
+  padding: 1.75rem;
 }
 
 .EdgeTrace-contours .p-6 {
-  padding: 1.25rem;
+  padding: 1.5rem;
 }
 
 .EdgeTrace-contours .p-5 {
-  padding: 1rem;
+  padding: 1.2rem;
 }
 
 .EdgeTrace-contours .bg-panel {
   background:
-    radial-gradient(circle at 100% 0%, rgba(88, 214, 255, 0.075), transparent 18rem),
-    rgba(11, 17, 28, 0.86);
+    radial-gradient(circle at 100% 0%, rgba(88, 214, 255, 0.065), transparent 19rem),
+    radial-gradient(circle at 0% 100%, rgba(120, 97, 255, 0.028), transparent 18rem),
+    linear-gradient(135deg, rgba(247, 247, 243, 0.026), rgba(88, 214, 255, 0.01)),
+    rgba(11, 17, 28, 0.84);
 }
 
 .EdgeTrace-contours .bg-graphite {
@@ -490,10 +575,14 @@ body {
 
 .EdgeTrace-contours .border.border-line.bg-panel,
 .EdgeTrace-contours .border.border-line.bg-graphite {
-  border-color: rgba(88, 214, 255, 0.13);
+  border-color: rgba(88, 214, 255, 0.105);
   background:
-    linear-gradient(135deg, rgba(247, 247, 243, 0.045), rgba(88, 214, 255, 0.014)),
-    rgba(7, 12, 20, 0.82);
+    radial-gradient(circle at 100% 0%, rgba(88, 214, 255, 0.055), transparent 17rem),
+    linear-gradient(135deg, rgba(247, 247, 243, 0.038), rgba(88, 214, 255, 0.012)),
+    rgba(7, 12, 20, 0.8);
+  box-shadow:
+    inset 0 1px 0 rgba(247, 247, 243, 0.026),
+    0 16px 46px -42px rgba(88, 214, 255, 0.26);
 }
 
 .EdgeTrace-hero-logo {
