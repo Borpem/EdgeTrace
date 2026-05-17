@@ -16,7 +16,6 @@ import { CommandPath } from "../components/onboarding/CommandPath";
 import { PaywallGate } from "../components/PaywallGate";
 import { formatReportType, ReportDetailsEditor } from "../components/ReportDetailsEditor";
 import { TableContainer } from "../components/ui/Primitives";
-import { MetricFlowGraphic } from "../components/visuals/MetricFlowGraphic";
 import { trackEvent } from "../lib/analytics";
 import { getActivationSummary } from "../lib/api";
 import {
@@ -414,8 +413,6 @@ export function DashboardPage({
           )}
         </section>
       )}
-
-      <MetricFlowGraphic className="mt-6" />
 
       <section className="EdgeTrace-subpanel mt-4">
         <button
