@@ -170,7 +170,7 @@ function buildPrimaryLeak(
   if (report.metrics.grossPnl > 0 && report.metrics.netPnl < 0) {
     return {
       title: "Primary Leak: Cost Drag",
-      explanation: `Gross PnL is positive, but costs consume ${costDrag.label} of gross gains. Inspect high-cost symbols and setups first.`,
+      explanation: `Gross PnL is positive, but costs consume ${costDrag.label} of gross gains. Inspect high-cost symbols and time buckets first.`,
       supportingMetric: `Costs: ${currency.format(report.metrics.totalCosts)}`,
       recommendedInspection: "Start with highest cost-drag segments."
     };
@@ -180,7 +180,7 @@ function buildPrimaryLeak(
       title: "Primary Leak: Negative Expectancy",
       explanation: "The average trade is losing money after costs, so the strategy needs edge-level review before execution refinements.",
       supportingMetric: `Expectancy: ${currency.format(report.metrics.expectancy)}`,
-      recommendedInspection: "Inspect the weakest setup and time bucket."
+      recommendedInspection: "Inspect the weakest symbol and time bucket."
     };
   }
   if ((report.metrics.averageRealizedR ?? 1) < 0.2) {
@@ -188,7 +188,7 @@ function buildPrimaryLeak(
       title: "Primary Leak: Poor R Capture",
       explanation: "Average realized R is very low, indicating weak reward capture relative to planned risk.",
       supportingMetric: `Average R: ${number.format(report.metrics.averageRealizedR ?? 0)}`,
-      recommendedInspection: "Inspect setups with low realized R."
+      recommendedInspection: "Inspect symbols with low realized R."
     };
   }
   if (largestLossRatio > 3) {
@@ -196,7 +196,7 @@ function buildPrimaryLeak(
       title: "Primary Leak: Large Loss Concentration",
       explanation: "One or two losses are large enough to materially distort report performance.",
       supportingMetric: `Largest loss / avg loss: ${number.format(largestLossRatio)}x`,
-      recommendedInspection: "Inspect largest-loss symbols and setups."
+      recommendedInspection: "Inspect largest-loss symbols and time buckets."
     };
   }
   if (worstSegment && worstSegment.row.netPnl < 0) {
@@ -253,7 +253,7 @@ function buildNextBestInspections(
 }
 
 function buildAllBreakdowns(report: DiagnosticsResult) {
-  const dimensions: BreakdownDimension[] = ["symbol", "setup", "strategy", "timeOfDay"];
+  const dimensions: BreakdownDimension[] = ["symbol", "strategy", "timeOfDay"];
   return dimensions.map((dimension) => ({ dimension, rows: buildBreakdown(report.trades, dimension) }));
 }
 

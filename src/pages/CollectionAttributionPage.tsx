@@ -120,7 +120,6 @@ export function CollectionAttributionPage({
                       <th className="px-3 py-2 font-medium">Symbol</th>
                       <th className="px-3 py-2 font-medium">Side</th>
                       <th className="px-3 py-2 font-medium">Entry Time</th>
-                      <th className="px-3 py-2 font-medium">Setup</th>
                       <th className="px-3 py-2 font-medium">Strategy</th>
                       <th className="px-3 py-2 font-medium">Costs</th>
                       <th className="px-3 py-2 font-medium">Net PnL</th>
@@ -133,7 +132,6 @@ export function CollectionAttributionPage({
                         <td className="px-3 py-2 font-medium">{trade.symbol}</td>
                         <td className="px-3 py-2 text-muted">{trade.side}</td>
                         <td className="px-3 py-2 text-muted">{trade.entryTime}</td>
-                        <td className="px-3 py-2 text-muted">{trade.setup ?? "Unspecified"}</td>
                         <td className="px-3 py-2 text-muted">{trade.strategy ?? "Unspecified"}</td>
                         <td className="px-3 py-2 text-warning">{currency.format(trade.estimatedCosts)}</td>
                         <td className={trade.netPnl >= 0 ? "px-3 py-2 text-accent" : "px-3 py-2 text-loss"}>{currency.format(trade.netPnl)}</td>

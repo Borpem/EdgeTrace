@@ -138,7 +138,7 @@ export function detectSegmentPatterns(segmentTrades: NormalizedTrade[]) {
 
   return [
     { label: "Most Common Symbol", value: mostCommon(segmentTrades.map((trade) => trade.symbol)) },
-    { label: "Most Common Setup", value: mostCommon(segmentTrades.map((trade) => trade.setup || "Unspecified")) },
+    { label: "Most Common Strategy", value: mostCommon(segmentTrades.map((trade) => trade.strategy || "Unspecified")) },
     { label: "Average Hold Duration", value: averageHoldDuration(segmentTrades) },
     { label: "Largest Winner", value: largestWinner ? `${largestWinner.symbol} ${formatSigned(largestWinner.netPnl)}` : "N/A" },
     { label: "Largest Loser", value: largestLoser ? `${largestLoser.symbol} ${formatSigned(largestLoser.netPnl)}` : "N/A" },

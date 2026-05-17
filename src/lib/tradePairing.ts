@@ -11,7 +11,6 @@ export type MatchedTradePair = {
   audit: {
     symbolMatch: boolean;
     sideMatch: boolean;
-    setupMatch: boolean;
     strategyMatch: boolean;
     timeBucketMatch: boolean;
     entryTimeDifferenceMinutes?: number;
@@ -103,7 +102,6 @@ function bestMatchIndex(
 function matchScore(tradeA: NormalizedTrade, tradeB: NormalizedTrade) {
   if (tradeA.symbol !== tradeB.symbol) return undefined;
   if (tradeA.side !== tradeB.side) return undefined;
-  if (tradeA.setup && tradeB.setup && tradeA.setup !== tradeB.setup) return undefined;
   if (tradeA.strategy && tradeB.strategy && tradeA.strategy !== tradeB.strategy) return undefined;
   if (timeOfDayBucket(tradeA.entryTime) !== timeOfDayBucket(tradeB.entryTime)) return undefined;
 
@@ -159,7 +157,6 @@ function manualConfidence(tradeA: NormalizedTrade, tradeB: NormalizedTrade) {
     audit: {
       symbolMatch: tradeA.symbol === tradeB.symbol,
       sideMatch: tradeA.side === tradeB.side,
-      setupMatch: Boolean(tradeA.setup && tradeB.setup && tradeA.setup === tradeB.setup),
       strategyMatch: Boolean(tradeA.strategy && tradeB.strategy && tradeA.strategy === tradeB.strategy),
       timeBucketMatch: timeOfDayBucket(tradeA.entryTime) === timeOfDayBucket(tradeB.entryTime),
       entryTimeDifferenceMinutes: entryDifferenceMinutes(tradeA, tradeB),
@@ -265,7 +262,6 @@ function scoreConfidence(tradeA: NormalizedTrade, tradeB: NormalizedTrade) {
   const entryTimeDifferenceMinutes = entryDifferenceMinutes(tradeA, tradeB);
   const symbolMatch = tradeA.symbol === tradeB.symbol;
   const sideMatch = tradeA.side === tradeB.side;
-  const setupMatch = Boolean(tradeA.setup && tradeB.setup && tradeA.setup === tradeB.setup);
   const strategyMatch = Boolean(tradeA.strategy && tradeB.strategy && tradeA.strategy === tradeB.strategy);
   const timeBucketMatch = reportATimeBucket === reportBTimeBucket;
 
@@ -276,10 +272,6 @@ function scoreConfidence(tradeA: NormalizedTrade, tradeB: NormalizedTrade) {
   if (sideMatch) {
     score += 15;
     reasons.push("Same side");
-  }
-  if (setupMatch) {
-    score += 15;
-    reasons.push("Same setup");
   }
   if (strategyMatch) {
     score += 15;
@@ -305,7 +297,6 @@ function scoreConfidence(tradeA: NormalizedTrade, tradeB: NormalizedTrade) {
     audit: {
       symbolMatch,
       sideMatch,
-      setupMatch,
       strategyMatch,
       timeBucketMatch,
       entryTimeDifferenceMinutes,

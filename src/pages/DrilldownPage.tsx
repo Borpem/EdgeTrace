@@ -36,8 +36,7 @@ type TradeSortKey =
   | "estimatedCosts"
   | "netPnl"
   | "realizedR"
-  | "strategy"
-  | "setup";
+  | "strategy";
 
 export function DrilldownPage({
   result,
@@ -99,7 +98,7 @@ export function DrilldownPage({
           feature="full_drilldowns"
           accessLevel="locked"
           title="Upgrade to Pro to unlock full drilldowns."
-          description="Pro shows the exact symbols, setups, time windows, and trades behind the primary leak."
+          description="Pro shows the exact symbols, strategies, time windows, and trades behind the primary leak."
         />
       </main>
     );
@@ -230,8 +229,7 @@ export function DrilldownPage({
                 ["estimatedCosts", "Costs"],
                 ["netPnl", "Net PnL"],
                 ["realizedR", "R"],
-                ["strategy", "Strategy"],
-                ["setup", "Setup"]
+                ["strategy", "Strategy"]
               ].map(([key, label]) => (
                 <th key={key} className="px-4 py-3 font-medium">
                   <button onClick={() => sort(key as TradeSortKey)}>{label}</button>
@@ -253,7 +251,6 @@ export function DrilldownPage({
                 </td>
                 <td className="px-4 py-3 text-muted">{formatNumber(trade.realizedR)}</td>
                 <td className="px-4 py-3 text-muted">{trade.strategy ?? "Unspecified"}</td>
-                <td className="px-4 py-3 text-muted">{trade.setup ?? "Unspecified"}</td>
               </tr>
             ))}
           </tbody>

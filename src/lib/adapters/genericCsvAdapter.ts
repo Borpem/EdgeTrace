@@ -11,7 +11,6 @@ export const genericFieldCandidates: Record<string, string[]> = {
   commission: ["commission"],
   fees: ["fees"],
   strategy: ["strategy"],
-  setup: ["setup"],
   plannedStop: ["planned_stop"],
   plannedTarget: ["planned_target"],
   actualPnl: ["actual_pnl", "pnl", "net_pnl"]

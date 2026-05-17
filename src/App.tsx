@@ -339,7 +339,7 @@ export function App() {
   };
 
   const routeToPath = async (rawPath: string, replace = false, authOverride = isAuthenticated) => {
-    const dimensions: BreakdownDimension[] = ["symbol", "setup", "strategy", "timeOfDay"];
+    const dimensions: BreakdownDimension[] = ["symbol", "strategy", "timeOfDay"];
     const url = new URL(rawPath, window.location.origin);
     let pathname = url.pathname;
     let search = url.search;

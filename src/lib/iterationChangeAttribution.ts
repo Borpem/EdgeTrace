@@ -208,7 +208,7 @@ function largestLossConcentration(report: DiagnosticsResult) {
 }
 
 function findLargestSegmentShift(previous: DiagnosticsResult, current: DiagnosticsResult) {
-  const dimensions: BreakdownDimension[] = ["symbol", "setup", "timeOfDay"];
+  const dimensions: BreakdownDimension[] = ["symbol", "strategy", "timeOfDay"];
   return dimensions
     .flatMap((dimension) => {
       const previousRows = new Map(buildBreakdown(previous.trades, dimension).map((row) => [row.group, row]));
@@ -254,7 +254,7 @@ function buildRecommendedAction(summary: IterationChangeSummary) {
   }
   if (summary.primaryChangeDriver.includes("large_loss")) return "Review the largest losing trades and loss concentration in both reports.";
   if (summary.primaryChangeDriver.includes("r_capture")) return "Inspect realized R distribution and exit quality between these reports.";
-  return "Open the pair in Compare and review breakdown deltas by symbol, setup, and time of day.";
+  return "Open the pair in Compare and review breakdown deltas by symbol, strategy, and time of day.";
 }
 
 export function formatDriver(driver: ChangeDriver) {

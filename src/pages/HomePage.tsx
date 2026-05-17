@@ -26,7 +26,7 @@ const capabilityItems: Array<{ icon: LucideIcon; title: string; body: string }> 
 const workflowSteps: Array<{ icon: LucideIcon; title: string; body: string; visual: "upload" | "report" | "bars" | "compare" | "monitor" }> = [
   { icon: Upload, title: "Import Trades", body: "Upload broker exports or a generic CSV.", visual: "upload" },
   { icon: CheckCircle2, title: "Diagnostic Report", body: "See expectancy, cost drag, R capture, and health.", visual: "report" },
-  { icon: BarChart3, title: "Drilldowns", body: "Break performance down by symbol, setup, strategy, and time.", visual: "bars" },
+  { icon: BarChart3, title: "Drilldowns", body: "Break performance down by symbol, strategy, and time.", visual: "bars" },
   { icon: GitCompare, title: "Compare", body: "Measure whether an iteration improved or introduced leakage.", visual: "compare" },
   { icon: Activity, title: "Strategy Monitoring", body: "Track whether edge is strengthening or deteriorating.", visual: "monitor" }
 ];
@@ -324,7 +324,7 @@ function LeakDiagnosticsSection() {
             {[
               "Cost analysis and cost drag",
               "Expectancy and R-multiple breakdowns",
-              "Symbol, setup, strategy, and time attribution",
+              "Symbol, strategy, and time attribution",
               "Trade quality & execution insights",
               "Drawdown and large-loss diagnostics"
             ].map((item, index) => (

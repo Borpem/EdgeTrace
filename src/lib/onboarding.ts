@@ -61,7 +61,7 @@ export const onboardingSteps: OnboardingStep[] = [
   {
     id: "inspect_leaks",
     title: "Inspect leaks",
-    message: "Use drilldowns and next-step recommendations to inspect the symbols, setups, and time windows driving performance.",
+    message: "Use drilldowns and next-step recommendations to inspect the symbols, strategies, and time windows driving performance.",
     ctaLabel: "View Reports",
     targetPage: "reports"
   },

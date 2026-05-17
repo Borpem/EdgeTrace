@@ -12,7 +12,6 @@ export type NormalizedTrade = {
   commission: number;
   fees: number;
   strategy?: string;
-  setup?: string;
   plannedStop?: number;
   plannedTarget?: number;
   actualPnl?: number;

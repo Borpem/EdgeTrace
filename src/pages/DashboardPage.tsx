@@ -635,7 +635,7 @@ export function DashboardPage({
         feature="advanced_attribution"
         accessLevel={fullAttributionAccess ? "full" : "preview"}
         title="Upgrade to Pro to unlock the full attribution breakdown."
-        description="EdgeTrace detected a performance leak. Pro shows which symbols, setups, and time windows contributed most."
+        description="EdgeTrace detected a performance leak. Pro shows which symbols, strategies, and time windows contributed most."
       >
       <section className="mt-8">
         <div className="mb-4 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
@@ -644,7 +644,7 @@ export function DashboardPage({
             <h2 className="mt-2 text-2xl font-semibold">Breakdown analytics</h2>
           </div>
           <div className="flex flex-wrap gap-2">
-            {(["symbol", "setup", "strategy", "timeOfDay"] as BreakdownDimension[]).map((dimension) => (
+            {(["symbol", "strategy", "timeOfDay"] as BreakdownDimension[]).map((dimension) => (
               <button
                 key={dimension}
                 className={`rounded-md border px-4 py-2 text-sm ${

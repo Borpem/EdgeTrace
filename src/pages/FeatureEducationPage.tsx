@@ -48,10 +48,10 @@ const insightGroups: Array<{
   {
     title: "Attribution",
     body:
-      "Separate where performance is being created or lost across symbols, setups, time windows, and strategy comparisons.",
+      "Separate where performance is being created or lost across symbols, strategies, time windows, and report comparisons.",
     tone: "purple",
     icon: Search,
-    bullets: ["Symbol performance", "Setup breakdowns", "Time-window attribution", "Report comparisons"],
+    bullets: ["Symbol performance", "Strategy breakdowns", "Time-window attribution", "Report comparisons"],
     anchorIds: ["drilldowns", "compare", "full-drilldowns", "full-compare", "reconstruction-audit"]
   },
   {
@@ -278,7 +278,7 @@ function WorkflowWalkthrough() {
         />
         <WalkthroughSection
           title="Identify what actually drives performance."
-          body="EdgeTrace separates expectancy, cost drag, R capture, symbol performance, setup behavior, and time-window attribution so traders can isolate the largest source of edge or leakage."
+          body="EdgeTrace separates expectancy, cost drag, R capture, symbol performance, strategy behavior, and time-window attribution so traders can isolate the largest source of edge or leakage."
           visual={<AttributionVisual />}
           reverse
         />

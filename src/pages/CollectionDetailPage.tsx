@@ -306,7 +306,7 @@ export function CollectionDetailPage({
               feature="collection_attribution"
               accessLevel={canUseFeature(plan, "collection_attribution") ? "full" : "preview"}
               title="Upgrade to Pro to unlock full attribution."
-              description="Pro shows which symbols, setups, strategies, and time buckets are driving improvement or degradation across reports."
+              description="Pro shows which symbols, strategies, and time buckets are driving improvement or degradation across reports."
             >
             <CollectionAttributionSection
               attribution={attribution}
@@ -414,7 +414,7 @@ const collectionDemoSteps = [
   },
   {
     title: "What Changed identifies the segments driving movement.",
-    text: "Use symbol, setup, strategy, and time-of-day attribution to find what helped or hurt."
+    text: "Use symbol, strategy, and time-of-day attribution to find what helped or hurt."
   },
   {
     title: "Review Queue ranks transitions worth inspecting first.",
@@ -980,7 +980,7 @@ function CollectionAttributionSection({
           <h2 className="mt-2 text-2xl font-semibold">Strategy set attribution drilldowns</h2>
         </div>
         <div className="flex flex-wrap gap-2">
-          {(["symbol", "setup", "strategy", "timeOfDay"] as BreakdownDimension[]).map((item) => (
+          {(["symbol", "strategy", "timeOfDay"] as BreakdownDimension[]).map((item) => (
             <button
               key={item}
               className={`rounded-md border px-4 py-2 text-sm ${

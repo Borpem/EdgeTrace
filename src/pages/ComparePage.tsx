@@ -355,7 +355,7 @@ export function ComparePage({
             onOpen={(comparison) => {
               setReportAId(comparison.reportAId);
               setReportBId(comparison.reportBId);
-              if (comparison.dimension && ["symbol", "setup", "strategy", "timeOfDay"].includes(comparison.dimension)) {
+              if (comparison.dimension && ["symbol", "strategy", "timeOfDay"].includes(comparison.dimension)) {
                 setBreakdownDimension(comparison.dimension as BreakdownDimension);
               }
             }}
@@ -434,7 +434,7 @@ export function ComparePage({
                 <h2 className="mt-2 text-2xl font-semibold">Where performance changed</h2>
               </div>
               <div className="flex flex-wrap gap-2">
-                {(["symbol", "setup", "strategy", "timeOfDay"] as BreakdownDimension[]).map((dimension) => (
+                {(["symbol", "strategy", "timeOfDay"] as BreakdownDimension[]).map((dimension) => (
                   <button
                     key={dimension}
                     className={`rounded-md border px-4 py-2 text-sm ${

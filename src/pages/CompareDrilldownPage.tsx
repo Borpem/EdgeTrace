@@ -37,7 +37,6 @@ type TradeSortKey =
   | "grossPnl"
   | "estimatedCosts"
   | "realizedR"
-  | "setup"
   | "strategy";
 type TradeFilterMode = "all" | "winners" | "losers" | "highCost" | "largeLoss";
 type MatchConfidenceFilter = "all" | "high" | "mediumPlus" | "low";
@@ -61,7 +60,6 @@ export function CompareDrilldownPage({
   const [filters, setFilters] = useState({
     symbol: "",
     side: "",
-    setup: "",
     strategy: "",
     mode: "all" as TradeFilterMode
   });
@@ -337,12 +335,6 @@ export function CompareDrilldownPage({
             onChange={(value) => setFilters((current) => ({ ...current, side: value }))}
           />
           <SelectControl
-            label="Setup"
-            value={filters.setup}
-            options={filterOptions.setups}
-            onChange={(value) => setFilters((current) => ({ ...current, setup: value }))}
-          />
-          <SelectControl
             label="Strategy"
             value={filters.strategy}
             options={filterOptions.strategies}
@@ -372,7 +364,6 @@ export function CompareDrilldownPage({
               "grossPnl:desc",
               "estimatedCosts:desc",
               "realizedR:desc",
-              "setup:asc",
               "strategy:asc"
             ]}
             labels={{
@@ -383,7 +374,6 @@ export function CompareDrilldownPage({
               "grossPnl:desc": "Gross PnL",
               "estimatedCosts:desc": "Costs",
               "realizedR:desc": "Realized R",
-              "setup:asc": "Setup",
               "strategy:asc": "Strategy"
             }}
             onChange={(value) => {
@@ -444,7 +434,6 @@ export function CompareDrilldownPage({
                 {[
                   "Symbol",
                   "Side",
-                  "Setup",
                   "Strategy",
                   "A Net PnL",
                   "B Net PnL",
@@ -580,7 +569,7 @@ function TradeTable({ title, trades }: { title: string; trades: NormalizedTrade[
       <table className="min-w-full divide-y divide-line text-sm">
         <thead className="bg-panel text-left text-muted">
           <tr>
-            {["Symbol", "Side", "Entry Time", "Gross PnL", "Net PnL", "R", "Costs", "Strategy", "Setup"].map((label) => (
+            {["Symbol", "Side", "Entry Time", "Gross PnL", "Net PnL", "R", "Costs", "Strategy"].map((label) => (
               <th key={label} className="px-4 py-3 font-medium">{label}</th>
             ))}
           </tr>
@@ -596,7 +585,6 @@ function TradeTable({ title, trades }: { title: string; trades: NormalizedTrade[
               <td className="px-4 py-3 text-muted">{formatNumber(trade.realizedR)}</td>
               <td className="px-4 py-3 text-warning">{currency.format(trade.estimatedCosts)}</td>
               <td className="px-4 py-3 text-muted">{trade.strategy ?? "Unspecified"}</td>
-              <td className="px-4 py-3 text-muted">{trade.setup ?? "Unspecified"}</td>
             </tr>
           ))}
         </tbody>
@@ -616,7 +604,6 @@ function MatchedPairRow({
     <tr className={pair.reviewState === "rejected" ? "opacity-50" : ""}>
       <td className="px-4 py-3 font-medium">{pair.tradeA.symbol}</td>
       <td className="px-4 py-3 text-muted">{pair.tradeA.side}</td>
-      <td className="px-4 py-3 text-muted">{pair.tradeA.setup ?? pair.tradeB.setup ?? "Unspecified"}</td>
       <td className="px-4 py-3 text-muted">{pair.tradeA.strategy ?? pair.tradeB.strategy ?? "Unspecified"}</td>
       <td className="px-4 py-3">{currency.format(pair.tradeA.netPnl)}</td>
       <td className="px-4 py-3">{currency.format(pair.tradeB.netPnl)}</td>
@@ -648,7 +635,6 @@ function MatchedPairRow({
             <p>Report B entry: {pair.tradeB.entryTime}</p>
             <p>Symbol match: {yesNo(pair.audit.symbolMatch)}</p>
             <p>Side match: {yesNo(pair.audit.sideMatch)}</p>
-            <p>Setup match: {yesNo(pair.audit.setupMatch)}</p>
             <p>Strategy match: {yesNo(pair.audit.strategyMatch)}</p>
             <p>Time bucket match: {yesNo(pair.audit.timeBucketMatch)}</p>
             <p>Report A bucket: {pair.audit.reportATimeBucket}</p>
@@ -814,7 +800,6 @@ function signedCurrency(value: number) {
 function buildFilterOptions(trades: NormalizedTrade[]) {
   return {
     symbols: unique(trades.map((trade) => trade.symbol)),
-    setups: unique(trades.map((trade) => trade.setup ?? "Unspecified")),
     strategies: unique(trades.map((trade) => trade.strategy ?? "Unspecified"))
   };
 }
@@ -824,7 +809,6 @@ function filterTrades(
   filters: {
     symbol: string;
     side: string;
-    setup: string;
     strategy: string;
     mode: TradeFilterMode;
   }
@@ -838,7 +822,6 @@ function filterTrades(
   return trades.filter((trade) => {
     if (filters.symbol && trade.symbol !== filters.symbol) return false;
     if (filters.side && trade.side !== filters.side) return false;
-    if (filters.setup && (trade.setup ?? "Unspecified") !== filters.setup) return false;
     if (filters.strategy && (trade.strategy ?? "Unspecified") !== filters.strategy) return false;
     if (filters.mode === "winners" && trade.netPnl <= 0) return false;
     if (filters.mode === "losers" && trade.netPnl >= 0) return false;
@@ -898,7 +881,6 @@ function compactReasons(reasons: string[]) {
   return reasons
     .join(", ")
     .replace("Same symbol, Same side", "Same symbol, side")
-    .replace("Same setup, Same strategy", "Same setup, strategy")
     .replace("Entry times within 30 minutes", "entry within 30m")
     .replace("Entry times within 60 minutes", "entry within 60m");
 }

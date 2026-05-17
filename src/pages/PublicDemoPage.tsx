@@ -88,7 +88,7 @@ const guidedSteps: StepConfig[] = [
     number: "02",
     title: "Inspect the segment causing the leak.",
     shortTitle: "Inspect",
-    body: "Drilldowns show which symbols, setups, or time windows are contributing most to the issue.",
+    body: "Drilldowns show which symbols, strategies, or time windows are contributing most to the issue.",
     why: "Attribution turns a vague problem into a concrete segment to review.",
     cta: "Compare Iterations"
   },
@@ -494,7 +494,7 @@ function InspectStep({
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          {(["timeOfDay", "symbol", "setup"] as BreakdownDimension[]).map((item) => (
+          {(["timeOfDay", "symbol", "strategy"] as BreakdownDimension[]).map((item) => (
             <button
               key={item}
               className={`border px-3 py-2 text-sm font-semibold ${

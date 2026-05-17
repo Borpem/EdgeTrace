@@ -45,7 +45,7 @@ const commandSteps: Array<{
     id: "inspect_leak",
     number: "03",
     title: "Inspect Leak",
-    description: "Use drilldowns to find the symbols, setups, or time windows causing the issue.",
+    description: "Use drilldowns to find the symbols, strategies, or time windows causing the issue.",
     cta: "Inspect Weakest Segment"
   },
   {

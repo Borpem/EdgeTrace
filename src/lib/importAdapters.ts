@@ -40,7 +40,6 @@ export const edgeTraceFieldOptions: Array<{ value: EdgeTraceField | ""; label: s
   { value: "fees", label: "Fees" },
   { value: "actualPnl", label: "Actual PnL" },
   { value: "strategy", label: "Strategy" },
-  { value: "setup", label: "Setup" },
   { value: "plannedStop", label: "Planned stop" },
   { value: "plannedTarget", label: "Planned target" },
   { value: "currency", label: "Currency" },
@@ -133,7 +132,7 @@ export function getImportWarnings(
     warnings.push("E*TRADE activity exports can include non-trade cash activity. EdgeTrace excludes recognized non-trade rows before diagnostics.");
   }
   if (!targets.has("commission") && !targets.has("fees")) warnings.push("Cost fields were not mapped, so cost drag may be understated.");
-  if (!targets.has("setup") || !targets.has("strategy")) warnings.push("Setup or strategy tags are missing, so tag breakdowns may be limited.");
+  if (!targets.has("strategy")) warnings.push("Strategy tags are missing, so strategy breakdowns may be limited.");
   if (!targets.has("plannedStop")) warnings.push("R-multiple analysis is unavailable because planned stop is missing.");
   if (normalizedTradeCount === 0 && !missing.length) warnings.push("No analyzable trades were produced from the current mapping.");
   return warnings;

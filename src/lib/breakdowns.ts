@@ -1,7 +1,7 @@
 import type { NormalizedTrade } from "../types";
 import { classifyCostDrag, costDragSortValue, type CostDragState } from "./costDrag";
 
-export type BreakdownDimension = "symbol" | "setup" | "strategy" | "timeOfDay";
+export type BreakdownDimension = "symbol" | "strategy" | "timeOfDay";
 
 export type BreakdownRow = {
   group: string;
@@ -41,7 +41,6 @@ const average = (values: number[]) => (values.length ? sum(values) / values.leng
 
 export const breakdownLabels: Record<BreakdownDimension, string> = {
   symbol: "Symbol",
-  setup: "Setup",
   strategy: "Strategy",
   timeOfDay: "Time of Day"
 };
@@ -60,7 +59,6 @@ export function timeOfDayBucket(entryTime: string) {
 
 export function groupForDimension(trade: NormalizedTrade, dimension: BreakdownDimension) {
   if (dimension === "symbol") return trade.symbol || "Unspecified";
-  if (dimension === "setup") return trade.setup?.trim() || "Unspecified";
   if (dimension === "strategy") return trade.strategy?.trim() || "Unspecified";
   return timeOfDayBucket(trade.entryTime);
 }

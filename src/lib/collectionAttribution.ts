@@ -48,7 +48,7 @@ export type CollectionAttribution = {
 
 export function buildCollectionAttribution(collection: ReportCollectionDetail): CollectionAttribution {
   const reports = collection.fullReports ?? [];
-  const dimensions: BreakdownDimension[] = ["symbol", "setup", "strategy", "timeOfDay"];
+  const dimensions: BreakdownDimension[] = ["symbol", "strategy", "timeOfDay"];
   const rowsByDimension = Object.fromEntries(
     dimensions.map((dimension) => [dimension, buildDimensionRows(reports, dimension)])
   ) as Record<BreakdownDimension, CollectionAttributionRow[]>;
