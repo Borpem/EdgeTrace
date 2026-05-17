@@ -334,29 +334,35 @@ export function StrategyDashboardPage({
       {error && <div className="mt-5 border border-loss/50 bg-loss/10 p-4 text-sm text-loss">{error}</div>}
 
       <section
-        className="EdgeTrace-card relative overflow-hidden p-5 shadow-[0_28px_100px_-74px_rgba(88,214,255,0.95)] md:p-8"
+        className="EdgeTrace-card relative overflow-hidden p-5 shadow-[0_28px_100px_-78px_rgba(88,214,255,0.72)] md:p-8"
         data-testid="dashboard-health-card"
       >
-        <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_82%_8%,rgba(88,214,255,0.13),transparent_24rem),radial-gradient(circle_at_8%_100%,rgba(120,97,255,0.11),transparent_28rem)]" />
-        <div className="relative z-10 grid gap-7 xl:grid-cols-[minmax(0,1fr)_390px]">
+        <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_85%_5%,rgba(88,214,255,0.1),transparent_26rem),radial-gradient(circle_at_0%_100%,rgba(120,97,255,0.07),transparent_30rem)]" />
+        <div className="relative z-10 mb-7 flex flex-col gap-3 border-b border-white/[0.07] pb-5 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">Current report state</p>
+            <h2 className="mt-2 text-3xl font-semibold tracking-[-0.045em] text-ink md:text-4xl">
+              {safeReport.name ?? "Focused diagnostic report"}
+            </h2>
+          </div>
+          <p className="text-sm text-muted">{formatDate(safeReport.updatedAt || safeReport.createdAt)}</p>
+        </div>
+
+        <div className="relative z-10 grid gap-8 xl:grid-cols-[minmax(0,1fr)_360px]">
           <div>
             <div className="flex flex-wrap items-center gap-3">
-              <span className="inline-flex items-center gap-2 border border-cyan/30 bg-cyan/[0.07] px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-cyan">
-                Current diagnosis
-              </span>
               <TrendBadge trend={activeTrend} />
-              <span className="text-sm text-muted">{formatDate(safeReport.updatedAt || safeReport.createdAt)}</span>
             </div>
 
-            <h2 className="mt-6 max-w-4xl text-4xl font-semibold leading-[1.04] tracking-[-0.045em] text-ink md:text-5xl">
+            <h3 className="mt-6 max-w-4xl text-4xl font-semibold leading-[1.04] tracking-[-0.045em] text-ink md:text-6xl">
               {intelligence.primaryDiagnosis}
-            </h2>
+            </h3>
             <p className="mt-4 max-w-3xl text-base leading-7 text-muted">{intelligence.primaryLeak.explanation}</p>
 
-            <div className="mt-7 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(260px,0.65fr)]">
-              <div className="border border-cyan/20 bg-black/30 p-5">
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-cyan">Where to inspect next</p>
-                <p className="mt-3 text-2xl font-semibold tracking-[-0.035em] text-ink">{inspectionTitle}</p>
+            <div className="mt-8 grid gap-6 border-t border-white/[0.07] pt-6 lg:grid-cols-[minmax(0,1fr)_minmax(260px,0.72fr)]">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-cyan">Primary action</p>
+                <p className="mt-3 text-3xl font-semibold tracking-[-0.045em] text-ink">{inspectionTitle}</p>
                 <p className="mt-2 text-sm leading-6 text-muted">{inspectionReason}</p>
                 {primaryInspection ? (
                   <button
@@ -374,18 +380,18 @@ export function StrategyDashboardPage({
                 )}
               </div>
 
-              <div className="border border-white/[0.1] bg-black/25 p-5">
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">Primary leak</p>
+              <div className="border-l border-white/[0.08] pl-5">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Why it matters</p>
                 <p className="mt-3 text-xl font-semibold tracking-[-0.035em] text-ink">{intelligence.primaryLeak.title}</p>
                 <p className="mt-2 text-sm leading-6 text-muted">{intelligence.primaryLeak.supportingMetric}</p>
               </div>
             </div>
           </div>
 
-          <aside className="border border-white/[0.1] bg-black/32 p-5">
+          <aside className="border-t border-white/[0.08] pt-6 xl:border-l xl:border-t-0 xl:pl-7 xl:pt-0">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">Strategy health</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Strategy health</p>
                 <p className={`mt-4 text-7xl font-semibold leading-none tracking-[-0.06em] ${scoreClass(intelligence.strategyHealthScore)}`}>
                   {intelligence.strategyHealthScore}
                 </p>
@@ -419,12 +425,12 @@ export function StrategyDashboardPage({
 
         <div className="relative z-10 mt-7 border-t border-white/[0.08] pt-5">
           <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">Decision metrics</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Decision metrics</p>
             <p className="max-w-2xl text-xs leading-5 text-muted">
               Read these after the diagnosis to judge whether the issue is performance, cost, conversion, or consistency.
             </p>
           </div>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+          <div className="mt-4 grid gap-x-5 gap-y-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
             <BriefMetric
               label="Net PnL"
               value={currency.format(metrics.netPnl)}
@@ -504,9 +510,9 @@ function BriefMetric({
   status: MetricStatus;
 }) {
   return (
-    <div className={`border bg-black/28 p-4 shadow-[inset_0_1px_0_rgba(247,247,243,0.035)] ${metricBorderClass(status)}`}>
+    <div className="border-l border-white/[0.08] pl-4">
       <div className="flex items-center justify-between gap-3">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-muted">{label}</p>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">{label}</p>
         <StatusDot status={status} />
       </div>
       <p className={`mt-3 text-2xl font-semibold tracking-[-0.04em] ${metricTextClass(status)}`}>{value}</p>
@@ -517,22 +523,24 @@ function BriefMetric({
 
 function RecentChangePanel({ change }: { change: ReturnType<typeof buildRecentChange> }) {
   return (
-    <section className="EdgeTrace-card p-5 shadow-[0_24px_90px_-76px_rgba(120,97,255,0.65)] md:p-7">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+    <section className="EdgeTrace-card p-5 shadow-[0_24px_90px_-82px_rgba(120,97,255,0.5)] md:p-7">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_220px] lg:items-start">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-violet">Why performance changed</p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-[-0.045em] text-ink md:text-4xl">Root cause evolution</h2>
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-violet">Recent performance changes</p>
+          <h2 className="mt-3 text-3xl font-semibold tracking-[-0.045em] text-ink md:text-4xl">What changed recently</h2>
           <p className="mt-3 max-w-3xl text-base leading-7 text-muted">{change.summary}</p>
         </div>
-        <TrendBadge trend={change.direction} />
+        <div className="flex lg:justify-end">
+          <TrendBadge trend={change.direction} />
+        </div>
       </div>
 
-      <div className="mt-6 border border-white/[0.09] bg-black/24 p-5">
-        <p className="text-xs font-semibold uppercase tracking-[0.15em] text-muted">Primary change driver</p>
-        <p className="mt-2 text-xl font-semibold tracking-[-0.035em] text-ink">{change.driver}</p>
+      <div className="mt-7 border-y border-white/[0.07] py-5">
+        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted">Primary change driver</p>
+        <p className="mt-2 max-w-4xl text-2xl font-semibold leading-tight tracking-[-0.04em] text-ink">{change.driver}</p>
       </div>
 
-      <div className="mt-5 grid gap-3 md:grid-cols-4">
+      <div className="mt-5 grid gap-x-5 gap-y-4 md:grid-cols-4">
         {change.metrics.map((metric) => (
           <DeltaCard key={metric.label} metric={metric} />
         ))}
@@ -543,8 +551,8 @@ function RecentChangePanel({ change }: { change: ReturnType<typeof buildRecentCh
 
 function DeltaCard({ metric }: { metric: RecentChangeMetric }) {
   return (
-    <div className={`border bg-black/20 p-4 ${deltaBorderClass(metric.tone)}`}>
-      <p className="text-xs font-semibold uppercase tracking-[0.15em] text-muted">{metric.label}</p>
+    <div className={`border-l pl-4 ${deltaBorderClass(metric.tone)}`}>
+      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted">{metric.label}</p>
       <p className={`mt-3 text-2xl font-semibold tracking-[-0.045em] ${deltaTextClass(metric.tone)}`}>{metric.value}</p>
       <p className="mt-1 text-xs leading-5 text-muted">{metric.detail}</p>
     </div>
@@ -554,10 +562,10 @@ function DeltaCard({ metric }: { metric: RecentChangeMetric }) {
 function InspectionPanel({ items, onOpenReport }: { items: AttentionItem[]; onOpenReport: () => void }) {
   return (
     <section className="EdgeTrace-card p-5 md:p-7">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+      <div className="flex flex-col gap-4 border-b border-white/[0.07] pb-5 lg:flex-row lg:items-start lg:justify-between">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-cyan">Action queue</p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-[-0.045em] text-ink md:text-4xl">What needs inspection</h2>
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-cyan">Priority queue</p>
+          <h2 className="mt-3 text-3xl font-semibold tracking-[-0.045em] text-ink md:text-4xl">What needs action</h2>
           <p className="mt-3 max-w-3xl text-base leading-7 text-muted">
             Investigate these priorities in order. Each item points to the segment most likely to explain the current diagnosis.
           </p>
@@ -566,7 +574,7 @@ function InspectionPanel({ items, onOpenReport }: { items: AttentionItem[]; onOp
           Open full report
         </button>
       </div>
-      <div className="mt-6 grid gap-3">
+      <div className="divide-y divide-white/[0.07]">
         {items.map((item, index) => (
           <AttentionRow key={`${item.title}-${index}`} item={item} index={index + 1} />
         ))}
@@ -577,15 +585,15 @@ function InspectionPanel({ items, onOpenReport }: { items: AttentionItem[]; onOp
 
 function AttentionRow({ item, index }: { item: AttentionItem; index: number }) {
   return (
-    <article className={`grid gap-4 border bg-black/24 p-4 md:grid-cols-[52px_minmax(0,1fr)_auto] md:items-center ${attentionBorderClass(item.severity)}`}>
-      <div className={`flex h-11 w-11 items-center justify-center border ${attentionBadgeClass(item.severity)}`}>
+    <article className="grid gap-4 py-5 md:grid-cols-[56px_minmax(0,1fr)_auto] md:items-center">
+      <div className={`flex h-12 w-12 items-center justify-center border ${attentionBadgeClass(item.severity)}`}>
         <span className="text-sm font-semibold tracking-[-0.02em]">0{index}</span>
       </div>
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-3">
           <span className="text-muted">{item.icon}</span>
           <h3 className="text-lg font-semibold tracking-[-0.035em] text-ink">{item.title}</h3>
-          <span className={`border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] ${attentionBadgeClass(item.severity)}`}>
+          <span className={`border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] ${attentionBadgeClass(item.severity)}`}>
             {item.metric}
           </span>
         </div>
@@ -615,7 +623,7 @@ function RecentReportsPanel({
     <section>
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">Supporting context</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Research library snapshot</p>
           <h2 className="mt-2 text-3xl font-semibold tracking-[-0.045em] text-ink">Report activity</h2>
           <p className="mt-2 text-sm text-muted">Recent diagnostics for confirming whether the current read is isolated or repeating.</p>
         </div>
@@ -623,8 +631,8 @@ function RecentReportsPanel({
           View all reports
         </button>
       </div>
-      <div className="EdgeTrace-card overflow-hidden p-0 shadow-[0_24px_80px_-66px_rgba(88,214,255,0.55)]">
-        <div className="hidden grid-cols-[minmax(0,1.2fr)_84px_112px_112px_112px_minmax(160px,0.8fr)_96px] border-b border-white/[0.08] bg-white/[0.025] px-4 py-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted xl:grid">
+      <div className="EdgeTrace-card overflow-hidden p-0 shadow-[0_24px_80px_-72px_rgba(88,214,255,0.45)]">
+        <div className="hidden grid-cols-[minmax(0,1.2fr)_84px_112px_112px_112px_minmax(160px,0.8fr)_96px] border-b border-white/[0.07] bg-white/[0.018] px-5 py-3 text-[10px] font-semibold uppercase tracking-[0.12em] text-muted xl:grid">
           <span>Report</span>
           <span>Health</span>
           <span>Net PnL</span>
@@ -633,7 +641,7 @@ function RecentReportsPanel({
           <span>Diagnosis</span>
           <span>Action</span>
         </div>
-        <div className="divide-y divide-white/[0.08]">
+        <div className="divide-y divide-white/[0.06]">
           {reports.map((report) => (
             <RecentReportRow
               key={report.id}
@@ -665,8 +673,8 @@ function RecentReportRow({
   const costDrag = costDragRatio(report);
   return (
     <div
-      className={`grid gap-4 px-4 py-4 transition xl:grid-cols-[minmax(0,1.2fr)_84px_112px_112px_112px_minmax(160px,0.8fr)_96px] xl:items-center ${
-        active ? "bg-cyan/[0.045]" : "hover:bg-white/[0.025]"
+      className={`grid gap-4 px-5 py-4 transition xl:grid-cols-[minmax(0,1.2fr)_84px_112px_112px_112px_minmax(160px,0.8fr)_96px] xl:items-center ${
+        active ? "bg-cyan/[0.04]" : "hover:bg-white/[0.022]"
       }`}
     >
       <button className="min-w-0 text-left" onClick={onFocus}>
@@ -708,12 +716,12 @@ function StrategySetPanel({
   onCreateStrategySet: () => void;
 }) {
   return (
-    <section className="EdgeTrace-card-soft relative overflow-hidden p-5 md:p-6">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_88%_0%,rgba(120,97,255,0.08),transparent_18rem)]" />
+    <section className="EdgeTrace-card-soft relative overflow-hidden p-5 shadow-[0_24px_80px_-72px_rgba(120,97,255,0.42)] md:p-6">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_88%_0%,rgba(120,97,255,0.06),transparent_18rem)]" />
       <div className="relative">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">Longer-term monitoring</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Strategy monitoring</p>
             <h2 className="mt-2 text-3xl font-semibold tracking-[-0.045em] text-ink">Strategy set monitoring</h2>
             <p className="mt-2 text-sm leading-6 text-muted">
               Use this after the current report read to track related diagnostics as strategy iterations.
@@ -724,16 +732,16 @@ function StrategySetPanel({
 
         {monitoring.collection ? (
           <div className="mt-6">
-            <div className="border border-violet/30 bg-violet/[0.055] p-5">
+            <div className="border-t border-violet/30 bg-violet/[0.035] pt-5">
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.15em] text-violet">Top strategy set</p>
+                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-violet">Top strategy set</p>
                   <h3 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-ink">{monitoring.collection.name}</h3>
                   <p className="mt-2 text-sm leading-6 text-muted">{monitoring.summary}</p>
                 </div>
                 <TrendBadge trend={monitoring.direction} />
               </div>
-              <div className="mt-5 grid gap-3 sm:grid-cols-3">
+              <div className="mt-5 grid gap-4 border-y border-white/[0.06] py-4 sm:grid-cols-3">
                 <MiniStatus label="Confidence" value={monitoring.confidence} />
                 <MiniStatus label="Latest iteration" value={monitoring.latestIteration} />
                 <MiniStatus label="Reports" value={String(monitoring.collection.reportCount)} />
@@ -744,7 +752,7 @@ function StrategySetPanel({
             </div>
           </div>
         ) : (
-          <div className="mt-6 border border-white/[0.1] bg-black/24 p-5">
+          <div className="mt-6 border-t border-white/[0.08] pt-5">
             <p className="text-xl font-semibold tracking-[-0.035em] text-ink">Create a Strategy Set to track iterations over time.</p>
             <p className="mt-2 text-sm leading-6 text-muted">
               Once you have related reports, strategy sets show whether changes are improving performance or creating new leakage.
@@ -776,8 +784,8 @@ function StrategySetPanel({
 
 function MiniStatus({ label, value }: { label: string; value: string }) {
   return (
-    <div className="border border-white/[0.08] bg-black/24 p-3">
-      <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted">{label}</p>
+    <div>
+      <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted">{label}</p>
       <p className="mt-2 text-sm font-semibold text-ink">{value}</p>
     </div>
   );
@@ -1153,13 +1161,6 @@ function scoreClass(score: number) {
   return "text-loss";
 }
 
-function metricBorderClass(status: MetricStatus) {
-  if (status === "healthy") return "border-cyan/35";
-  if (status === "warning") return "border-warning/45";
-  if (status === "weak") return "border-loss/45";
-  return "border-white/[0.1]";
-}
-
 function metricTextClass(status: MetricStatus) {
   if (status === "healthy") return "text-cyan";
   if (status === "warning") return "text-warning";
@@ -1200,12 +1201,6 @@ function deltaTextClass(tone: RecentChangeMetric["tone"]) {
   if (tone === "negative") return "text-loss";
   if (tone === "warning") return "text-warning";
   return "text-ink";
-}
-
-function attentionBorderClass(severity: AttentionItem["severity"]) {
-  if (severity === "critical") return "border-loss/45";
-  if (severity === "warning") return "border-warning/45";
-  return "border-cyan/25";
 }
 
 function attentionBadgeClass(severity: AttentionItem["severity"]) {
