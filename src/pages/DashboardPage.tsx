@@ -427,6 +427,9 @@ export function DashboardPage({
               <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted">Next Inspection</p>
               <p className="mt-2 text-xl font-semibold tracking-[-0.035em] text-ink">{primaryInspection.title}</p>
               <p className="mt-1 text-sm text-muted">{primaryInspection.reason}</p>
+              <p className="EdgeTrace-next-action mt-4 inline-flex items-center gap-2 text-sm font-semibold text-cyan">
+                Click to drill down <span aria-hidden="true">→</span>
+              </p>
             </button>
           )}
           </div>
