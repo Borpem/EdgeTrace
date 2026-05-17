@@ -424,11 +424,12 @@ export function DashboardPage({
               className="EdgeTrace-subpanel EdgeTrace-recommended mt-4 w-full p-5 text-left transition hover:border-accent/70"
               onClick={inspectPrimarySegment}
             >
+              <span className="EdgeTrace-recommended-signal" aria-hidden="true" />
               <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted">Next Inspection</p>
               <p className="mt-2 text-xl font-semibold tracking-[-0.035em] text-ink">{primaryInspection.title}</p>
               <p className="mt-1 text-sm text-muted">{primaryInspection.reason}</p>
               <p className="EdgeTrace-next-action mt-4 inline-flex items-center gap-2 text-sm font-semibold text-cyan">
-                Click to drill down <span aria-hidden="true">→</span>
+                Open drilldown <span aria-hidden="true">-&gt;</span>
               </p>
             </button>
           )}
