@@ -44,7 +44,6 @@ type BreakdownSortKey =
   | "averageRealizedR"
   | "costDragPct";
 type DashboardTab = "overview" | "breakdown" | "charts" | "trades";
-type CalculationTone = "cyan" | "violet" | "profit" | "warning" | "neutral";
 
 export function DashboardPage({
   result,
@@ -152,85 +151,6 @@ export function DashboardPage({
     Boolean(reportJustCreated) &&
     (activation ? !activation.firstReportCreatedAt || activation.firstReportCreatedAt === result.createdAt : true);
   const normalizedTradeCount = provenance?.normalizedTradeCount ?? metrics.totalTrades ?? trades.length;
-  const excludedRowCount = provenance?.excludedRowCount ?? 0;
-  const warningCount = provenance?.warningCount ?? provenance?.warnings?.length ?? 0;
-  const sourceLabel =
-    provenance?.brokerDisplayName ??
-    provenance?.selectedSource ??
-    provenance?.detectedSource ??
-    (hasReconstructionAudit ? "Broker executions" : "Completed trade records");
-  const confidenceValue =
-    provenance?.confidenceLabel ??
-    (provenance ? "Unavailable" : "Legacy report");
-  const confidenceDetail =
-    typeof provenance?.detectionConfidence === "number"
-      ? `${Math.round(provenance.detectionConfidence)}% detection confidence`
-      : provenance
-        ? "No confidence score was stored."
-        : "Import provenance was not stored for this older report.";
-  const confidenceTone: CalculationTone =
-    typeof provenance?.detectionConfidence === "number"
-      ? provenance.detectionConfidence >= 80
-        ? "profit"
-        : provenance.detectionConfidence >= 60
-          ? "cyan"
-          : "warning"
-      : "neutral";
-  const calculationCards: Array<{
-    label: string;
-    value: string;
-    helper: string;
-    tone: CalculationTone;
-  }> = [
-    {
-      label: "Trades analyzed",
-      value: String(normalizedTradeCount),
-      helper: "Completed trades included in this diagnostic.",
-      tone: "cyan"
-    },
-    {
-      label: "Import source",
-      value: sourceLabel,
-      helper: provenance?.originalFilename ? `File: ${provenance.originalFilename}` : "Uploaded completed trade records.",
-      tone: "violet"
-    },
-    {
-      label: "Costs",
-      value: costsIncluded ? "Included" : "Not detected",
-      helper: costsIncluded ? `Total costs: ${currency.format(metrics.totalCosts)}` : "Net performance may be overstated.",
-      tone: costsIncluded ? "profit" : "warning"
-    },
-    {
-      label: "R values",
-      value: rValuesAvailable ? "Available" : "Limited",
-      helper: rValuesAvailable ? "Risk conversion is included in the report." : "R capture is limited for this import.",
-      tone: rValuesAvailable ? "cyan" : "warning"
-    },
-    {
-      label: "Rows excluded",
-      value: String(excludedRowCount),
-      helper: excludedRowCount > 0 ? "Rows skipped during normalization." : "No rows were excluded.",
-      tone: excludedRowCount > 0 ? "warning" : "neutral"
-    },
-    {
-      label: "Import confidence",
-      value: confidenceValue,
-      helper: confidenceDetail,
-      tone: confidenceTone
-    },
-    {
-      label: "Reconstruction",
-      value: reconstructionUsed ? "Used" : "Not used",
-      helper: reconstructionUsed ? "Executions were reconstructed into completed trades." : "Report used completed trade records.",
-      tone: reconstructionUsed ? "violet" : "neutral"
-    },
-    {
-      label: "Report timestamp",
-      value: result.createdAt ? new Date(result.createdAt).toLocaleString() : "Unavailable",
-      helper: warningCount > 0 ? `${warningCount} import warning${warningCount === 1 ? "" : "s"} detected.` : "No import warnings stored.",
-      tone: warningCount > 0 ? "warning" : "neutral"
-    }
-  ];
 
   useEffect(() => {
     let active = true;
@@ -467,76 +387,6 @@ export function DashboardPage({
         </section>
       )}
 
-      <section className="EdgeTrace-card mt-5 p-6 md:p-7">
-        <div className="flex flex-col gap-3 border-b border-white/[0.07] pb-5 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-cyan">Report calculation</p>
-            <h2 className="mt-2 text-2xl font-semibold tracking-[-0.045em] text-ink">How this report was calculated</h2>
-            <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">
-              {normalizedTradeCount} trades analyzed. Costs {costsIncluded ? "included" : "not detected"}. R values{" "}
-              {rValuesAvailable ? "available" : "limited"}.
-            </p>
-          </div>
-          <div className="text-left lg:text-right">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted">Diagnostic scope</p>
-            <p className="mt-1 text-lg font-semibold text-ink">{sourceLabel}</p>
-          </div>
-        </div>
-
-        <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-          {calculationCards.map((card) => {
-            const tone = calculationToneStyles[card.tone];
-            return (
-              <article key={card.label} className={`EdgeTrace-subpanel p-4 ${tone.border}`}>
-                <div className={`h-1 w-10 ${tone.bar}`} />
-                <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted">{card.label}</p>
-                <p className={`mt-2 text-xl font-semibold tracking-[-0.035em] ${tone.text}`}>{card.value}</p>
-                <p className="mt-2 text-xs leading-5 text-muted">{card.helper}</p>
-              </article>
-            );
-          })}
-        </div>
-
-        {provenance?.reconstructionSummary && (
-          <div className="EdgeTrace-subpanel mt-4 p-4">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-violet">Reconstruction summary</p>
-            <p className="mt-2 text-sm leading-6 text-ink">
-              {provenance.reconstructionSummary.rawExecutions ?? 0} executions ·{" "}
-              {provenance.reconstructionSummary.completedTrades ?? 0} completed trades ·{" "}
-              {provenance.reconstructionSummary.openPositions ?? 0} open positions excluded ·{" "}
-              {provenance.reconstructionSummary.partialExits ?? 0} partial exits ·{" "}
-              {provenance.reconstructionSummary.positionFlips ?? 0} flips
-            </p>
-          </div>
-        )}
-
-        <p className="mt-4 text-xs leading-5 text-muted">
-          EdgeTrace stores normalized diagnostics and import metadata, not the original raw CSV.
-        </p>
-      </section>
-
-      <DisclosurePanel
-        className="mt-3"
-        compact
-        title="What cost drag and R capture mean"
-        subtitle="Open for metric definitions."
-      >
-        <div className="grid gap-3 text-sm leading-6 text-muted md:grid-cols-2">
-          <p>Cost drag estimates how much execution costs reduce gross performance before it reaches net results.</p>
-          <p>R capture measures realized reward relative to risk when risk data is available or can be inferred.</p>
-        </div>
-      </DisclosurePanel>
-
-      <CommandPath
-        className="mt-6"
-        context="report"
-        onAnalyze={onCreateReport}
-        onDashboard={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        onInspectLeak={inspectPrimarySegment}
-        onCompare={() => onCompareReport?.(result.id)}
-        onCreateStrategySet={() => setIsAddingToStrategySet(true)}
-      />
-
       <section className="mt-6 grid gap-5 lg:grid-cols-[1.08fr_0.92fr]">
         <div
           className="EdgeTrace-card relative overflow-hidden p-7 md:p-8"
@@ -594,7 +444,13 @@ export function DashboardPage({
         </div>
       </section>
 
-      <section className="mt-5 grid gap-4 md:grid-cols-3">
+      <section className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <DashboardSummaryCard
+          label="Trades analyzed"
+          value={String(normalizedTradeCount)}
+          detail="Completed trades in this report"
+          tone="text-cyan"
+        />
         <DashboardSummaryCard
           label="After-cost performance"
           value={currency.format(metrics.netPnl)}
@@ -614,6 +470,28 @@ export function DashboardPage({
           tone="text-ink"
         />
       </section>
+
+      <DisclosurePanel
+        className="mt-6"
+        compact
+        title="What cost drag and R capture mean"
+        subtitle="Open for metric definitions."
+      >
+        <div className="grid gap-3 text-sm leading-6 text-muted md:grid-cols-2">
+          <p>Cost drag estimates how much execution costs reduce gross performance before it reaches net results.</p>
+          <p>R capture measures realized reward relative to risk when risk data is available or can be inferred.</p>
+        </div>
+      </DisclosurePanel>
+
+      <CommandPath
+        className="mt-6"
+        context="report"
+        onAnalyze={onCreateReport}
+        onDashboard={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        onInspectLeak={inspectPrimarySegment}
+        onCompare={() => onCompareReport?.(result.id)}
+        onCreateStrategySet={() => setIsAddingToStrategySet(true)}
+      />
 
       <section className="mt-8 flex flex-wrap gap-5 border-b border-white/[0.1]">
         {(["overview", "breakdown", "charts", "trades"] as DashboardTab[]).map((tab) => (
@@ -1058,34 +936,6 @@ function MetricMini({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
-
-const calculationToneStyles: Record<CalculationTone, { border: string; text: string; bar: string }> = {
-  cyan: {
-    border: "border-cyan/30",
-    text: "text-cyan",
-    bar: "bg-cyan"
-  },
-  violet: {
-    border: "border-violet/35",
-    text: "text-violet",
-    bar: "bg-violet"
-  },
-  profit: {
-    border: "border-profit/30",
-    text: "text-profit",
-    bar: "bg-profit"
-  },
-  warning: {
-    border: "border-warning/35",
-    text: "text-warning",
-    bar: "bg-warning"
-  },
-  neutral: {
-    border: "border-white/[0.08]",
-    text: "text-ink",
-    bar: "bg-white/25"
-  }
-};
 
 function DashboardSummaryCard({
   label,
