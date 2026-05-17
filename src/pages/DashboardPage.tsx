@@ -415,78 +415,9 @@ export function DashboardPage({
         </section>
       )}
 
-      <section
-        id="primary-diagnosis"
-        className="EdgeTrace-card relative mt-8 scroll-mt-28 overflow-hidden p-6 shadow-[0_28px_100px_-76px_rgba(88,214,255,0.82)] md:p-8"
-        data-testid="dashboard-health-card"
-      >
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_85%_10%,rgba(88,214,255,0.12),transparent_25rem),radial-gradient(circle_at_4%_100%,rgba(255,184,77,0.08),transparent_22rem)]" />
-        <div className="relative grid gap-8 xl:grid-cols-[320px_minmax(0,1fr)_360px] xl:items-stretch">
-          <aside className="border-b border-white/[0.08] pb-6 xl:border-b-0 xl:border-r xl:pr-7">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan">Strategy Health</p>
-            <p className={`mt-5 text-8xl font-semibold leading-none tracking-[-0.08em] ${scoreClass(intelligence.strategyHealthScore)}`}>
-              {intelligence.strategyHealthScore}
-            </p>
-            <p className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-ink">{intelligence.healthBand}</p>
-            <p className="mt-4 text-sm leading-6 text-muted">{intelligence.primaryExplanation}</p>
-            <div className="mt-6 h-24">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={charts.equityCurve}>
-                  <CartesianGrid stroke="#272727" strokeOpacity={0.45} vertical={false} />
-                  <XAxis dataKey="trade" hide />
-                  <YAxis hide />
-                  <Tooltip
-                    contentStyle={{ background: "#101010", border: "1px solid #272727" }}
-                    formatter={(value) => [formatTooltipCurrency(value), "Equity"]}
-                  />
-                  <Line type="monotone" dataKey="equity" stroke="#58D6FF" strokeWidth={3} dot={false} />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </aside>
+      <MetricFlowGraphic className="mt-6" />
 
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-warning">Primary Diagnosis</p>
-            <h2 className="mt-5 max-w-4xl text-4xl font-semibold leading-[1.03] tracking-[-0.055em] text-ink md:text-5xl">
-              {intelligence.primaryDiagnosis}
-            </h2>
-            <p className="mt-5 max-w-3xl text-base leading-7 text-muted">{intelligence.primaryLeak.explanation}</p>
-            <div className="mt-7 max-w-3xl border-l border-warning/45 pl-5">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">Supporting Metric</p>
-              <p className="mt-2 text-xl font-semibold tracking-[-0.035em] text-ink">
-                {intelligence.primaryLeak.supportingMetric}
-              </p>
-            </div>
-          </div>
-
-          <aside className="border-t border-white/[0.08] pt-6 xl:border-l xl:border-t-0 xl:pl-7 xl:pt-0">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan">Next Inspection</p>
-            {primaryInspection ? (
-              <>
-                <h3 className="mt-4 text-3xl font-semibold leading-tight tracking-[-0.045em] text-ink">
-                  {primaryInspection.title}
-                </h3>
-                <p className="mt-4 text-sm leading-6 text-muted">{primaryInspection.reason}</p>
-                <p className="mt-4 text-sm font-semibold text-cyan">{primaryInspection.metric}</p>
-                <button className="EdgeTrace-command-button mt-6 w-full" onClick={inspectPrimarySegment}>
-                  Inspect this segment
-                </button>
-              </>
-            ) : (
-              <>
-                <h3 className="mt-4 text-3xl font-semibold leading-tight tracking-[-0.045em] text-ink">
-                  No drilldown priority yet
-                </h3>
-                <p className="mt-4 text-sm leading-6 text-muted">
-                  This report does not have enough segment evidence for a confident next inspection.
-                </p>
-              </>
-            )}
-          </aside>
-        </div>
-      </section>
-
-      <section className="hidden">
+      <section className="mt-4 border border-white/[0.1] bg-white/[0.025]">
         <button
           className="flex w-full items-center justify-between gap-4 p-4 text-left"
           type="button"
@@ -531,7 +462,7 @@ export function DashboardPage({
       </section>
 
       <DisclosurePanel
-        className="hidden"
+        className="mt-3"
         compact
         title="What cost drag and R capture mean"
         subtitle="Open for metric definitions."
@@ -543,7 +474,7 @@ export function DashboardPage({
       </DisclosurePanel>
 
       <CommandPath
-        className="hidden"
+        className="mt-6"
         context="report"
         onAnalyze={onCreateReport}
         onDashboard={() => window.scrollTo({ top: 0, behavior: "smooth" })}
@@ -552,10 +483,10 @@ export function DashboardPage({
         onCreateStrategySet={() => setIsAddingToStrategySet(true)}
       />
 
-      <section className="hidden">
+      <section className="mt-6 grid gap-5 lg:grid-cols-[1.08fr_0.92fr]">
         <div
           className="EdgeTrace-card relative overflow-hidden p-7 md:p-8"
-          data-testid="dashboard-health-card-legacy"
+          data-testid="dashboard-health-card"
         >
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_86%_28%,rgba(61,220,151,0.13),transparent_17rem)]" />
           <div className="relative">
@@ -586,7 +517,7 @@ export function DashboardPage({
           </div>
         </div>
 
-        <div id="primary-diagnosis-legacy" className="EdgeTrace-card scroll-mt-28 p-7 md:p-8">
+        <div id="primary-diagnosis" className="EdgeTrace-card scroll-mt-28 p-7 md:p-8">
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-warning">Primary Diagnosis</p>
           <h2 className="mt-7 text-3xl font-semibold tracking-[-0.055em] text-ink">{intelligence.primaryDiagnosis}</h2>
           <p className="mt-5 text-sm leading-6 text-muted">{intelligence.primaryLeak.explanation}</p>
@@ -630,83 +561,12 @@ export function DashboardPage({
         />
       </section>
 
-      <section className="mt-7 border border-cyan/18 bg-cyan/[0.035] p-5 md:p-6">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan">Recommended next steps</p>
-            <h2 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-ink">What should happen next?</h2>
-            <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">
-              Start with the recommended inspection, then compare or organize this report once the primary leak is understood.
-            </p>
-          </div>
-          {workflowAction && (
-            <button className="EdgeTrace-command-button shrink-0" onClick={workflowAction.action}>
-              {workflowAction.button}
-            </button>
-          )}
-        </div>
-
-        <div className="mt-5 grid gap-3 md:grid-cols-3">
-          {primaryInspection && (
-            <button
-              className="border border-cyan/25 bg-black/22 p-4 text-left hover:border-cyan/60"
-              onClick={inspectPrimarySegment}
-            >
-              <p className="font-semibold text-ink">Inspect weakest segment</p>
-              <p className="mt-1 text-sm leading-6 text-muted">{primaryInspection.title}</p>
-              <p className="mt-2 text-sm text-cyan">{primaryInspection.metric}</p>
-            </button>
-          )}
-          {onCompareReport && (
-            <button
-              className="border border-white/[0.08] bg-black/18 p-4 text-left hover:border-accent/55"
-              onClick={() => onCompareReport(result.id)}
-            >
-              <p className="font-semibold text-ink">Compare this report</p>
-              <p className="mt-1 text-sm leading-6 text-muted">See what improved, degraded, or leaked versus another report.</p>
-              <p className="mt-2 text-sm text-accent">Open comparison</p>
-            </button>
-          )}
-          <button
-            className="border border-white/[0.08] bg-black/18 p-4 text-left hover:border-accent/55"
-            onClick={() => setIsAddingToStrategySet(true)}
-          >
-            <p className="font-semibold text-ink">Add to strategy set</p>
-            <p className="mt-1 text-sm leading-6 text-muted">Group this report with related iterations for monitoring.</p>
-            <p className="mt-2 text-sm text-accent">Organize iteration</p>
-          </button>
-          {hasReconstructionAudit && (
-            <button
-              className="border border-white/[0.08] bg-black/18 p-4 text-left hover:border-accent/55"
-              onClick={() => {
-                trackEvent("reconstruction_audit_opened", { reportId: result.id });
-                onReconstructionAudit?.();
-              }}
-            >
-              <p className="font-semibold text-ink">Review reconstruction audit</p>
-              <p className="mt-1 text-sm leading-6 text-muted">Confirm which broker executions formed each completed trade.</p>
-              <p className="mt-2 text-sm text-accent">Audit lineage</p>
-            </button>
-          )}
-        </div>
-      </section>
-
-      <CommandPath
-        className="mt-5"
-        context="report"
-        onAnalyze={onCreateReport}
-        onDashboard={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        onInspectLeak={inspectPrimarySegment}
-        onCompare={() => onCompareReport?.(result.id)}
-        onCreateStrategySet={() => setIsAddingToStrategySet(true)}
-      />
-
-      <section className="mt-10 flex flex-wrap gap-2 border-b border-white/[0.08]">
+      <section className="mt-8 flex flex-wrap gap-5 border-b border-white/[0.1]">
         {(["overview", "breakdown", "charts", "trades"] as DashboardTab[]).map((tab) => (
           <button
             key={tab}
-            className={`border-b px-3 pb-3 pt-1 text-sm font-semibold capitalize ${
-              activeTab === tab ? "border-cyan text-ink" : "border-transparent text-muted hover:border-white/20 hover:text-ink"
+            className={`border-b pb-3 text-sm font-semibold capitalize ${
+              activeTab === tab ? "border-ink text-ink" : "border-transparent text-muted hover:border-white/20 hover:text-ink"
             }`}
             onClick={() => {
               setActiveTab(tab);
@@ -730,57 +590,65 @@ export function DashboardPage({
             </div>
           </div>
 
-          <div className="grid gap-3">
-            <MetricFlowGraphic />
-            <section className="border border-white/[0.08] bg-white/[0.018]">
+          <div className="border border-cyan/30 bg-cyan/[0.045] p-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan">Recommended next steps</p>
+            {workflowAction && (
+              <div className="EdgeTrace-recommended mt-4 border border-cyan/35 bg-black/35 p-5">
+                <p className="text-xl font-semibold tracking-[-0.04em] text-ink">{workflowAction.title}</p>
+                <p className="mt-2 text-sm leading-6 text-muted">{workflowAction.why}</p>
+                <button className="EdgeTrace-command-button mt-5" onClick={workflowAction.action}>
+                  {workflowAction.button}
+                </button>
+              </div>
+            )}
+            <div className="mt-4 grid gap-3">
+              {primaryInspection && (
+                <button
+                  className="border border-white/[0.1] bg-black/24 p-4 text-left hover:border-accent/70"
+                  onClick={inspectPrimarySegment}
+                >
+                  <p className="font-semibold text-ink">Inspect weakest segment</p>
+                  <p className="mt-1 text-sm text-muted">{primaryInspection.title}</p>
+                  <p className="mt-2 text-sm text-accent">{primaryInspection.metric}</p>
+                </button>
+              )}
+              {onCompareReport && (
+                <button
+                  className="border border-white/[0.1] bg-black/24 p-4 text-left hover:border-accent/70"
+                  onClick={() => onCompareReport(result.id)}
+                >
+                  <p className="font-semibold text-ink">Compare this report</p>
+                  <p className="mt-1 text-sm text-muted">Select another report to see what improved, degraded, or leaked.</p>
+                  <p className="mt-2 text-sm text-accent">Open comparison</p>
+                </button>
+              )}
               <button
-                className="flex w-full items-center justify-between gap-4 p-4 text-left"
-                type="button"
-                onClick={() => setCalculationOpen((current) => !current)}
+                className="border border-white/[0.1] bg-black/24 p-4 text-left hover:border-accent/70"
+                onClick={() => setIsAddingToStrategySet(true)}
               >
-                <div>
-                  <p className="text-sm font-semibold text-ink">How this report was calculated</p>
-                  <p className="mt-1 text-xs text-muted">
-                    {metrics.totalTrades ?? trades.length} trades analyzed · Costs {costsIncluded ? "included" : "not detected"} · R values{" "}
-                    {rValuesAvailable ? "available" : "limited"}
-                  </p>
-                </div>
-                <span className="text-sm font-semibold text-cyan">{calculationOpen ? "Hide" : "Show"}</span>
+                <p className="font-semibold text-ink">Add to strategy set</p>
+                <p className="mt-1 text-sm text-muted">Group this report with related iterations for trend and attribution review.</p>
+                <p className="mt-2 text-sm text-accent">Organize iteration</p>
               </button>
-              {calculationOpen && (
-                <div className="border-t border-white/[0.08] p-4">
-                  <div className="grid gap-3 md:grid-cols-2">
-                    {calculationRows.map(([label, value]) => (
-                      <div key={label} className="border border-white/[0.06] bg-black/20 p-3">
-                        <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted">{label}</p>
-                        <p className="mt-1 text-sm text-ink">{value}</p>
-                      </div>
-                    ))}
-                  </div>
-                  {provenance?.reconstructionSummary && (
-                    <div className="mt-3 border border-white/[0.06] bg-black/20 p-3">
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted">Reconstruction summary</p>
-                      <p className="mt-1 text-sm leading-6 text-ink">
-                        {provenance.reconstructionSummary.rawExecutions ?? 0} executions ·{" "}
-                        {provenance.reconstructionSummary.completedTrades ?? 0} completed trades ·{" "}
-                        {provenance.reconstructionSummary.openPositions ?? 0} open positions excluded ·{" "}
-                        {provenance.reconstructionSummary.partialExits ?? 0} partial exits ·{" "}
-                        {provenance.reconstructionSummary.positionFlips ?? 0} flips
-                      </p>
-                    </div>
-                  )}
-                  <p className="mt-3 text-xs text-muted">
-                    EdgeTrace stores normalized diagnostics and import metadata, not the original raw CSV.
-                  </p>
+              {!primaryInspection && !onCompareReport && (
+                <div className="border border-white/[0.1] bg-black/24 p-4 text-sm text-muted">
+                  No segment-level workflow action is available for this report yet.
                 </div>
               )}
-            </section>
-            <DisclosurePanel compact title="What cost drag and R capture mean" subtitle="Metric definitions.">
-              <div className="grid gap-3 text-sm leading-6 text-muted md:grid-cols-2">
-                <p>Cost drag estimates how much execution costs reduce gross performance before it reaches net results.</p>
-                <p>R capture measures realized reward relative to risk when risk data is available or can be inferred.</p>
-              </div>
-            </DisclosurePanel>
+              {hasReconstructionAudit && (
+                <button
+                  className="border border-white/[0.1] bg-black/24 p-4 text-left hover:border-accent/70"
+                  onClick={() => {
+                    trackEvent("reconstruction_audit_opened", { reportId: result.id });
+                    onReconstructionAudit?.();
+                  }}
+                >
+                  <p className="font-semibold text-ink">Review reconstruction audit</p>
+                  <p className="mt-1 text-sm text-muted">Confirm which broker executions formed each completed trade.</p>
+                  <p className="mt-2 text-sm text-accent">Audit lineage</p>
+                </button>
+              )}
+            </div>
           </div>
         </section>
       )}
@@ -1149,10 +1017,10 @@ function DashboardSummaryCard({
   tone: string;
 }) {
   return (
-    <div className="border-t border-white/[0.1] bg-white/[0.018] px-1 py-5">
-      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">{label}</p>
-      <p className={`mt-4 text-4xl font-semibold tracking-[-0.06em] ${tone}`}>{value}</p>
-      <p className="mt-3 text-sm text-muted">{detail}</p>
+    <div className="EdgeTrace-card-soft p-5">
+      <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted">{label}</p>
+      <p className={`mt-6 text-4xl font-semibold tracking-[-0.06em] ${tone}`}>{value}</p>
+      <p className="mt-4 text-sm text-muted">{detail}</p>
     </div>
   );
 }
