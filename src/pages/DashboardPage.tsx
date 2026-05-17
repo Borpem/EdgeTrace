@@ -462,6 +462,44 @@ export function DashboardPage({
           tone="text-ink"
         />
       </section>
+      <section className="mt-5 grid gap-4 lg:grid-cols-3">
+        <ChartPanel title="Equity Curve">
+          <ResponsiveContainer width="100%" height={210}>
+            <LineChart data={charts.equityCurve}>
+              <CartesianGrid stroke="#243B64" strokeOpacity={0.45} />
+              <XAxis dataKey="trade" stroke="#9CA8C7" />
+              <YAxis stroke="#9CA8C7" />
+              <Tooltip
+                contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }}
+                formatter={(value) => [formatTooltipCurrency(value), "Equity"]}
+              />
+              <Line type="monotone" dataKey="equity" stroke="#45D5FF" strokeWidth={2} dot={false} />
+            </LineChart>
+          </ResponsiveContainer>
+        </ChartPanel>
+        <ChartPanel title="PnL by Symbol">
+          <ResponsiveContainer width="100%" height={210}>
+            <BarChart data={charts.pnlBySymbol}>
+              <CartesianGrid stroke="#243B64" strokeOpacity={0.45} />
+              <XAxis dataKey="symbol" stroke="#9CA8C7" />
+              <YAxis stroke="#9CA8C7" />
+              <Tooltip contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }} />
+              <Bar dataKey="pnl" fill="#3E8BFF" />
+            </BarChart>
+          </ResponsiveContainer>
+        </ChartPanel>
+        <ChartPanel title="PnL by Time of Day">
+          <ResponsiveContainer width="100%" height={210}>
+            <BarChart data={charts.pnlByHour}>
+              <CartesianGrid stroke="#243B64" strokeOpacity={0.45} />
+              <XAxis dataKey="hour" stroke="#9CA8C7" />
+              <YAxis stroke="#9CA8C7" />
+              <Tooltip contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }} />
+              <Bar dataKey="pnl" fill="#FFB84D" />
+            </BarChart>
+          </ResponsiveContainer>
+        </ChartPanel>
+      </section>
         </div>
 
         <aside className="grid gap-4 xl:sticky xl:top-24">
@@ -535,43 +573,6 @@ export function DashboardPage({
               )}
             </div>
           </div>
-
-          <ChartPanel title="Equity Curve">
-            <ResponsiveContainer width="100%" height={165}>
-              <LineChart data={charts.equityCurve}>
-                <CartesianGrid stroke="#243B64" strokeOpacity={0.45} />
-                <XAxis dataKey="trade" stroke="#9CA8C7" />
-                <YAxis stroke="#9CA8C7" />
-                <Tooltip
-                  contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }}
-                  formatter={(value) => [formatTooltipCurrency(value), "Equity"]}
-                />
-                <Line type="monotone" dataKey="equity" stroke="#45D5FF" strokeWidth={2} dot={false} />
-              </LineChart>
-            </ResponsiveContainer>
-          </ChartPanel>
-          <ChartPanel title="PnL by Symbol">
-            <ResponsiveContainer width="100%" height={165}>
-              <BarChart data={charts.pnlBySymbol}>
-                <CartesianGrid stroke="#243B64" strokeOpacity={0.45} />
-                <XAxis dataKey="symbol" stroke="#9CA8C7" />
-                <YAxis stroke="#9CA8C7" />
-                <Tooltip contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }} />
-                <Bar dataKey="pnl" fill="#3E8BFF" />
-              </BarChart>
-            </ResponsiveContainer>
-          </ChartPanel>
-          <ChartPanel title="PnL by Time of Day">
-            <ResponsiveContainer width="100%" height={165}>
-              <BarChart data={charts.pnlByHour}>
-                <CartesianGrid stroke="#243B64" strokeOpacity={0.45} />
-                <XAxis dataKey="hour" stroke="#9CA8C7" />
-                <YAxis stroke="#9CA8C7" />
-                <Tooltip contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }} />
-                <Bar dataKey="pnl" fill="#FFB84D" />
-              </BarChart>
-            </ResponsiveContainer>
-          </ChartPanel>
         </aside>
       </section>
 
