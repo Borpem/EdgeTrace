@@ -483,7 +483,10 @@ export function DashboardPage({
               <CartesianGrid stroke="#243B64" strokeOpacity={0.45} />
               <XAxis dataKey="symbol" stroke="#9CA8C7" />
               <YAxis stroke="#9CA8C7" />
-              <Tooltip contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }} />
+              <Tooltip
+                contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }}
+                formatter={(value) => [formatTooltipCurrency(value), "PnL"]}
+              />
               <Bar dataKey="pnl" fill="#3E8BFF" />
             </BarChart>
           </ResponsiveContainer>
@@ -494,7 +497,10 @@ export function DashboardPage({
               <CartesianGrid stroke="#243B64" strokeOpacity={0.45} />
               <XAxis dataKey="hour" stroke="#9CA8C7" />
               <YAxis stroke="#9CA8C7" />
-              <Tooltip contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }} />
+              <Tooltip
+                contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }}
+                formatter={(value) => [formatTooltipCurrency(value), "PnL"]}
+              />
               <Bar dataKey="pnl" fill="#FFB84D" />
             </BarChart>
           </ResponsiveContainer>
