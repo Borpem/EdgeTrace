@@ -291,28 +291,138 @@ export function StrategyDashboardPage({
   });
 
   return (
-    <main className="EdgeTrace-shell py-10">
-      <section className="EdgeTrace-page-header mb-9">
-        <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px] xl:items-end">
-          <div>
-            <h1 className="max-w-5xl text-4xl font-semibold leading-[1.05] tracking-[-0.035em] text-ink md:text-6xl">
-              Dashboard
-            </h1>
-            <p className="mt-5 max-w-3xl text-base leading-7 text-muted">
-              Start with the current diagnosis, then follow the cause, inspection queue, and supporting report history.
-            </p>
-            <div className="mt-7 flex flex-wrap gap-3">
-              <button className="EdgeTrace-primary-button" onClick={onUpload}>
-                Analyze Trades
-              </button>
-              <button className="EdgeTrace-secondary-button" onClick={onReports}>
-                View Reports
-              </button>
+    <main className="EdgeTrace-shell py-8">
+      <section className="mb-6 flex flex-col gap-5 border-b border-white/[0.07] pb-6 xl:flex-row xl:items-end xl:justify-between">
+        <div>
+          <h1 className="text-4xl font-semibold leading-[1.05] tracking-[-0.035em] text-ink md:text-5xl">Dashboard</h1>
+          <p className="mt-3 max-w-3xl text-sm leading-6 text-muted">
+            Strategy workspace for current report state, operational priorities, and supporting research history.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-3">
+          <button className="EdgeTrace-primary-button" onClick={onUpload}>
+            Analyze Trades
+          </button>
+          <button className="EdgeTrace-secondary-button" onClick={onReports}>
+            View Reports
+          </button>
+        </div>
+      </section>
+
+      {error && <div className="mb-5 border border-loss/50 bg-loss/10 p-4 text-sm text-loss">{error}</div>}
+
+      <section className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_370px] xl:items-start">
+        <section
+          className="EdgeTrace-card relative min-h-[680px] overflow-hidden p-5 shadow-[0_28px_100px_-82px_rgba(88,214,255,0.72)] md:p-8"
+          data-testid="dashboard-health-card"
+        >
+          <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_84%_4%,rgba(88,214,255,0.1),transparent_27rem),radial-gradient(circle_at_0%_100%,rgba(120,97,255,0.07),transparent_32rem)]" />
+          <div className="relative z-10">
+            <div className="flex flex-col gap-4 border-b border-white/[0.07] pb-5 lg:flex-row lg:items-end lg:justify-between">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Current report state</p>
+                <h2 className="mt-2 text-3xl font-semibold tracking-[-0.045em] text-ink md:text-4xl">
+                  {safeReport.name ?? "Focused diagnostic report"}
+                </h2>
+              </div>
+              <div className="flex flex-wrap items-center gap-3">
+                <TrendBadge trend={activeTrend} />
+                <span className="text-sm text-muted">{formatDate(safeReport.updatedAt || safeReport.createdAt)}</span>
+              </div>
             </div>
+
+            <div className="mt-7 grid gap-8 xl:grid-cols-[minmax(0,1fr)_300px]">
+              <div>
+                <h3 className="max-w-4xl text-5xl font-semibold leading-[0.98] tracking-[-0.055em] text-ink md:text-7xl">
+                  {intelligence.primaryDiagnosis}
+                </h3>
+                <p className="mt-5 max-w-3xl text-base leading-7 text-muted">{intelligence.primaryLeak.explanation}</p>
+
+                <div className="mt-8 grid gap-6 border-t border-white/[0.07] pt-6 lg:grid-cols-[minmax(0,1fr)_minmax(260px,0.72fr)]">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-cyan">Inspect next</p>
+                    <p className="mt-3 text-3xl font-semibold tracking-[-0.045em] text-ink">{inspectionTitle}</p>
+                    <p className="mt-2 text-sm leading-6 text-muted">{inspectionReason}</p>
+                    {primaryInspection ? (
+                      <button
+                        className="EdgeTrace-command-button mt-5"
+                        onClick={() =>
+                          onDrillDown(safeReport, { dimension: primaryInspection.dimension, group: primaryInspection.group })
+                        }
+                      >
+                        Inspect this leak <ArrowRight size={16} />
+                      </button>
+                    ) : (
+                      <button className="EdgeTrace-compact-secondary mt-5" onClick={() => onOpenReport(safeReport)}>
+                        Open report <ArrowRight size={16} />
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="border-l border-white/[0.08] pl-5">
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Why it matters</p>
+                    <p className="mt-3 text-xl font-semibold tracking-[-0.035em] text-ink">{intelligence.primaryLeak.title}</p>
+                    <p className="mt-2 text-sm leading-6 text-muted">{intelligence.primaryLeak.supportingMetric}</p>
+                  </div>
+                </div>
+              </div>
+
+              <aside className="border-t border-white/[0.08] pt-6 xl:border-l xl:border-t-0 xl:pl-7 xl:pt-0">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Strategy health</p>
+                <div className="mt-4 flex items-end gap-4">
+                  <p className={`text-8xl font-semibold leading-none tracking-[-0.07em] ${scoreClass(intelligence.strategyHealthScore)}`}>
+                    {intelligence.strategyHealthScore}
+                  </p>
+                  <p className="pb-2 text-xl font-semibold tracking-[-0.035em] text-ink">{intelligence.healthBand}</p>
+                </div>
+                <p className="mt-4 text-sm leading-6 text-muted">{intelligence.primaryExplanation}</p>
+                <div className="mt-6 h-32">
+                  {charts.equityCurve.length ? (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <RechartsLineChart data={charts.equityCurve}>
+                        <CartesianGrid stroke="#272727" strokeOpacity={0.38} vertical={false} />
+                        <XAxis dataKey="trade" hide />
+                        <YAxis hide />
+                        <Tooltip
+                          contentStyle={{ background: "#101010", border: "1px solid #272727" }}
+                          formatter={(value) => [formatTooltipCurrency(value), "Equity"]}
+                        />
+                        <Line type="monotone" dataKey="equity" stroke="#58D6FF" strokeWidth={3} dot={false} />
+                      </RechartsLineChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="flex h-full items-center justify-center border border-white/[0.08] bg-black/20 text-xs text-muted">
+                      Equity curve unavailable
+                    </div>
+                  )}
+                </div>
+              </aside>
+            </div>
+
+            <div className="mt-8 border-y border-white/[0.07] py-5">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Decision metrics</p>
+              <div className="mt-4 grid gap-x-5 gap-y-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-6">
+                <BriefMetric label="Net PnL" value={currency.format(metrics.netPnl)} detail={`${metrics.totalTrades} trades`} status={intelligence.keyMetricStatuses.netPnl} />
+                <BriefMetric label="Expectancy" value={currency.format(metrics.expectancy)} detail="After-cost average" status={intelligence.keyMetricStatuses.expectancy} />
+                <BriefMetric label="Cost Drag" value={intelligence.costDragLabel} detail={currency.format(metrics.totalCosts)} status={intelligence.keyMetricStatuses.costDrag} />
+                <BriefMetric label="R Capture" value={metrics.averageRealizedR === undefined ? "Unavailable" : `${number.format(metrics.averageRealizedR)}R`} detail="Risk conversion" status={intelligence.keyMetricStatuses.averageR} />
+                <BriefMetric label="Win Rate" value={percent.format(metrics.winRate)} detail="Closed trades" status={metrics.winRate >= 0.5 ? "healthy" : metrics.winRate >= 0.4 ? "warning" : "weak"} />
+                <BriefMetric label="Profit Factor" value={number.format(metrics.profitFactor)} detail="Gross win/loss" status={metrics.profitFactor >= 1.5 ? "healthy" : metrics.profitFactor >= 1 ? "warning" : "weak"} />
+              </div>
+            </div>
+
+            <ChangeMatrix change={recentChange} />
+          </div>
+        </section>
+
+        <aside className="EdgeTrace-card-soft p-5 shadow-[0_24px_80px_-72px_rgba(88,214,255,0.45)] xl:sticky xl:top-6">
+          <div className="border-b border-white/[0.07] pb-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Operational rail</p>
+            <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-ink">Needs inspection</h2>
           </div>
 
-          <div className="EdgeTrace-card-soft p-5 shadow-[0_24px_80px_-66px_rgba(88,214,255,0.55)]">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">Report focus</p>
+          <div className="mt-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted">Report focus</p>
             <select
               className="mt-3 w-full border border-white/[0.12] bg-black/35 px-4 py-3 text-sm font-semibold text-ink outline-none transition focus:border-cyan"
               value={selectedId}
@@ -324,162 +434,37 @@ export function StrategyDashboardPage({
                 </option>
               ))}
             </select>
-            <button className="EdgeTrace-compact-secondary mt-4 w-full justify-center" onClick={() => onOpenReport(safeReport)}>
-              Open focused report <ArrowRight size={15} />
+          </div>
+
+          <div className="mt-6 divide-y divide-white/[0.07]">
+            {attentionItems.slice(0, 4).map((item, index) => (
+              <RailPriorityItem key={`${item.title}-${index}`} item={item} index={index + 1} />
+            ))}
+          </div>
+
+          <div className="mt-6 border-t border-white/[0.07] pt-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted">Monitoring alert</p>
+            <div className="mt-3 flex items-center justify-between gap-3">
+              <p className="min-w-0 text-sm font-semibold text-ink">
+                {monitoring.collection ? monitoring.collection.name : "No active strategy set"}
+              </p>
+              <TrendBadge trend={monitoring.direction} />
+            </div>
+            <p className="mt-3 text-sm leading-6 text-muted">{monitoring.summary}</p>
+          </div>
+
+          <div className="mt-6 grid gap-2 border-t border-white/[0.07] pt-5">
+            <button className="EdgeTrace-command-button justify-center" onClick={() => onOpenReport(safeReport)}>
+              Open focused report <ArrowRight size={16} />
+            </button>
+            <button className="EdgeTrace-compact-secondary justify-center" onClick={onUpload}>
+              Analyze trades
             </button>
           </div>
-        </div>
+        </aside>
       </section>
 
-      {error && <div className="mt-5 border border-loss/50 bg-loss/10 p-4 text-sm text-loss">{error}</div>}
-
-      <section
-        className="EdgeTrace-card relative overflow-hidden p-5 shadow-[0_28px_100px_-78px_rgba(88,214,255,0.72)] md:p-8"
-        data-testid="dashboard-health-card"
-      >
-        <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_85%_5%,rgba(88,214,255,0.1),transparent_26rem),radial-gradient(circle_at_0%_100%,rgba(120,97,255,0.07),transparent_30rem)]" />
-        <div className="relative z-10 mb-7 flex flex-col gap-3 border-b border-white/[0.07] pb-5 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">Current report state</p>
-            <h2 className="mt-2 text-3xl font-semibold tracking-[-0.045em] text-ink md:text-4xl">
-              {safeReport.name ?? "Focused diagnostic report"}
-            </h2>
-          </div>
-          <p className="text-sm text-muted">{formatDate(safeReport.updatedAt || safeReport.createdAt)}</p>
-        </div>
-
-        <div className="relative z-10 grid gap-8 xl:grid-cols-[minmax(0,1fr)_360px]">
-          <div>
-            <div className="flex flex-wrap items-center gap-3">
-              <TrendBadge trend={activeTrend} />
-            </div>
-
-            <h3 className="mt-6 max-w-4xl text-4xl font-semibold leading-[1.04] tracking-[-0.045em] text-ink md:text-6xl">
-              {intelligence.primaryDiagnosis}
-            </h3>
-            <p className="mt-4 max-w-3xl text-base leading-7 text-muted">{intelligence.primaryLeak.explanation}</p>
-
-            <div className="mt-8 grid gap-6 border-t border-white/[0.07] pt-6 lg:grid-cols-[minmax(0,1fr)_minmax(260px,0.72fr)]">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-cyan">Primary action</p>
-                <p className="mt-3 text-3xl font-semibold tracking-[-0.045em] text-ink">{inspectionTitle}</p>
-                <p className="mt-2 text-sm leading-6 text-muted">{inspectionReason}</p>
-                {primaryInspection ? (
-                  <button
-                    className="EdgeTrace-command-button mt-5"
-                    onClick={() =>
-                      onDrillDown(safeReport, { dimension: primaryInspection.dimension, group: primaryInspection.group })
-                    }
-                  >
-                    Inspect this leak <ArrowRight size={16} />
-                  </button>
-                ) : (
-                  <button className="EdgeTrace-compact-secondary mt-5" onClick={() => onOpenReport(safeReport)}>
-                    Open report <ArrowRight size={16} />
-                  </button>
-                )}
-              </div>
-
-              <div className="border-l border-white/[0.08] pl-5">
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Why it matters</p>
-                <p className="mt-3 text-xl font-semibold tracking-[-0.035em] text-ink">{intelligence.primaryLeak.title}</p>
-                <p className="mt-2 text-sm leading-6 text-muted">{intelligence.primaryLeak.supportingMetric}</p>
-              </div>
-            </div>
-          </div>
-
-          <aside className="border-t border-white/[0.08] pt-6 xl:border-l xl:border-t-0 xl:pl-7 xl:pt-0">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Strategy health</p>
-                <p className={`mt-4 text-7xl font-semibold leading-none tracking-[-0.06em] ${scoreClass(intelligence.strategyHealthScore)}`}>
-                  {intelligence.strategyHealthScore}
-                </p>
-                <p className="mt-2 text-xl font-semibold tracking-[-0.035em] text-ink">{intelligence.healthBand}</p>
-              </div>
-              <BarChart3 className="text-cyan" size={28} strokeWidth={1.5} />
-            </div>
-            <p className="mt-5 text-sm leading-6 text-muted">{intelligence.primaryExplanation}</p>
-            <div className="mt-6 h-28">
-              {charts.equityCurve.length ? (
-                <ResponsiveContainer width="100%" height="100%">
-                  <RechartsLineChart data={charts.equityCurve}>
-                    <CartesianGrid stroke="#272727" strokeOpacity={0.45} vertical={false} />
-                    <XAxis dataKey="trade" hide />
-                    <YAxis hide />
-                    <Tooltip
-                      contentStyle={{ background: "#101010", border: "1px solid #272727" }}
-                      formatter={(value) => [formatTooltipCurrency(value), "Equity"]}
-                    />
-                    <Line type="monotone" dataKey="equity" stroke="#58D6FF" strokeWidth={3} dot={false} />
-                  </RechartsLineChart>
-                </ResponsiveContainer>
-              ) : (
-                <div className="flex h-full items-center justify-center border border-white/[0.08] bg-black/20 text-xs text-muted">
-                  Equity curve unavailable
-                </div>
-              )}
-            </div>
-          </aside>
-        </div>
-
-        <div className="relative z-10 mt-7 border-t border-white/[0.08] pt-5">
-          <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Decision metrics</p>
-            <p className="max-w-2xl text-xs leading-5 text-muted">
-              Read these after the diagnosis to judge whether the issue is performance, cost, conversion, or consistency.
-            </p>
-          </div>
-          <div className="mt-4 grid gap-x-5 gap-y-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-            <BriefMetric
-              label="Net PnL"
-              value={currency.format(metrics.netPnl)}
-              detail={`${metrics.totalTrades} trades`}
-              status={intelligence.keyMetricStatuses.netPnl}
-            />
-            <BriefMetric
-              label="Expectancy"
-              value={currency.format(metrics.expectancy)}
-              detail="After-cost average"
-              status={intelligence.keyMetricStatuses.expectancy}
-            />
-            <BriefMetric
-              label="Cost Drag"
-              value={intelligence.costDragLabel}
-              detail={currency.format(metrics.totalCosts)}
-              status={intelligence.keyMetricStatuses.costDrag}
-            />
-            <BriefMetric
-              label="R Capture"
-              value={metrics.averageRealizedR === undefined ? "Unavailable" : `${number.format(metrics.averageRealizedR)}R`}
-              detail="Risk conversion"
-              status={intelligence.keyMetricStatuses.averageR}
-            />
-            <BriefMetric
-              label="Win Rate"
-              value={percent.format(metrics.winRate)}
-              detail="Closed trades"
-              status={metrics.winRate >= 0.5 ? "healthy" : metrics.winRate >= 0.4 ? "warning" : "weak"}
-            />
-            <BriefMetric
-              label="Profit Factor"
-              value={number.format(metrics.profitFactor)}
-              detail="Gross win/loss"
-              status={metrics.profitFactor >= 1.5 ? "healthy" : metrics.profitFactor >= 1 ? "warning" : "weak"}
-            />
-          </div>
-        </div>
-      </section>
-
-      <section className="mt-12">
-        <RecentChangePanel change={recentChange} />
-      </section>
-
-      <section className="mt-10">
-        <InspectionPanel items={attentionItems} onOpenReport={() => onOpenReport(safeReport)} />
-      </section>
-
-      <section className="mt-12 grid gap-6 xl:grid-cols-[1.08fr_0.92fr]">
+      <section className="mt-6 grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
         <RecentReportsPanel
           reports={recentReports}
           activeReportId={safeReport.id}
@@ -521,25 +506,19 @@ function BriefMetric({
   );
 }
 
-function RecentChangePanel({ change }: { change: ReturnType<typeof buildRecentChange> }) {
+function ChangeMatrix({ change }: { change: ReturnType<typeof buildRecentChange> }) {
   return (
-    <section className="EdgeTrace-card p-5 shadow-[0_24px_90px_-82px_rgba(120,97,255,0.5)] md:p-7">
+    <section className="mt-7">
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_220px] lg:items-start">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-violet">Recent performance changes</p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-[-0.045em] text-ink md:text-4xl">What changed recently</h2>
-          <p className="mt-3 max-w-3xl text-base leading-7 text-muted">{change.summary}</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-violet">What changed</p>
+          <h2 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-ink">{change.driver}</h2>
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">{change.summary}</p>
         </div>
         <div className="flex lg:justify-end">
           <TrendBadge trend={change.direction} />
         </div>
       </div>
-
-      <div className="mt-7 border-y border-white/[0.07] py-5">
-        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted">Primary change driver</p>
-        <p className="mt-2 max-w-4xl text-2xl font-semibold leading-tight tracking-[-0.04em] text-ink">{change.driver}</p>
-      </div>
-
       <div className="mt-5 grid gap-x-5 gap-y-4 md:grid-cols-4">
         {change.metrics.map((metric) => (
           <DeltaCard key={metric.label} metric={metric} />
@@ -559,50 +538,25 @@ function DeltaCard({ metric }: { metric: RecentChangeMetric }) {
   );
 }
 
-function InspectionPanel({ items, onOpenReport }: { items: AttentionItem[]; onOpenReport: () => void }) {
+function RailPriorityItem({ item, index }: { item: AttentionItem; index: number }) {
   return (
-    <section className="EdgeTrace-card p-5 md:p-7">
-      <div className="flex flex-col gap-4 border-b border-white/[0.07] pb-5 lg:flex-row lg:items-start lg:justify-between">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-cyan">Priority queue</p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-[-0.045em] text-ink md:text-4xl">What needs action</h2>
-          <p className="mt-3 max-w-3xl text-base leading-7 text-muted">
-            Investigate these priorities in order. Each item points to the segment most likely to explain the current diagnosis.
-          </p>
-        </div>
-        <button className="EdgeTrace-compact-secondary shrink-0" onClick={onOpenReport}>
-          Open full report
-        </button>
-      </div>
-      <div className="divide-y divide-white/[0.07]">
-        {items.map((item, index) => (
-          <AttentionRow key={`${item.title}-${index}`} item={item} index={index + 1} />
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function AttentionRow({ item, index }: { item: AttentionItem; index: number }) {
-  return (
-    <article className="grid gap-4 py-5 md:grid-cols-[56px_minmax(0,1fr)_auto] md:items-center">
-      <div className={`flex h-12 w-12 items-center justify-center border ${attentionBadgeClass(item.severity)}`}>
-        <span className="text-sm font-semibold tracking-[-0.02em]">0{index}</span>
-      </div>
-      <div className="min-w-0">
-        <div className="flex flex-wrap items-center gap-3">
-          <span className="text-muted">{item.icon}</span>
-          <h3 className="text-lg font-semibold tracking-[-0.035em] text-ink">{item.title}</h3>
-          <span className={`border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] ${attentionBadgeClass(item.severity)}`}>
-            {item.metric}
+    <button className="group w-full py-4 text-left" onClick={item.onAction}>
+      <div className="flex items-start gap-3">
+        <span className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center border text-xs font-semibold ${attentionBadgeClass(item.severity)}`}>
+          {index}
+        </span>
+        <span className="min-w-0">
+          <span className="flex flex-wrap items-center gap-2">
+            <span className="text-sm font-semibold text-ink group-hover:text-cyan">{item.title}</span>
+            <span className={`border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.11em] ${attentionBadgeClass(item.severity)}`}>
+              {item.metric}
+            </span>
           </span>
-        </div>
-        <p className="mt-2 text-sm leading-6 text-muted">{item.body}</p>
+          <span className="mt-2 block text-sm leading-6 text-muted">{item.body}</span>
+          <span className="mt-2 block text-xs font-semibold text-cyan">{item.actionLabel}</span>
+        </span>
       </div>
-      <button className={`${index === 1 ? "EdgeTrace-compact-primary" : "EdgeTrace-compact-secondary"} justify-center`} onClick={item.onAction}>
-        {item.actionLabel}
-      </button>
-    </article>
+    </button>
   );
 }
 
