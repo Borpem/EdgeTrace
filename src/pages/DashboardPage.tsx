@@ -11,9 +11,12 @@ import {
   YAxis
 } from "recharts";
 import { AddToStrategySetDialog } from "../components/AddToStrategySetDialog";
+import { DisclosurePanel } from "../components/DisclosurePanel";
+import { CommandPath } from "../components/onboarding/CommandPath";
 import { PaywallGate } from "../components/PaywallGate";
 import { formatReportType, ReportDetailsEditor } from "../components/ReportDetailsEditor";
 import { TableContainer } from "../components/ui/Primitives";
+import { MetricFlowGraphic } from "../components/visuals/MetricFlowGraphic";
 import { trackEvent } from "../lib/analytics";
 import { getActivationSummary } from "../lib/api";
 import {
@@ -97,8 +100,6 @@ export function DashboardPage({
     averageRealizedR: undefined
   };
   const safeResult = useMemo(() => ({ ...result, trades, charts, metrics }), [charts, metrics, result, trades]);
-  const reportTitle = result.name ?? "Diagnostic Report";
-  const reportCreatedLabel = result.createdAt ? new Date(result.createdAt).toLocaleString() : "Date unavailable";
 
   const sortedTrades = useMemo(() => {
     return [...trades].sort((a, b) => {
@@ -208,6 +209,34 @@ export function DashboardPage({
     onDrillDown?.({ dimension: primaryInspection.dimension, group: primaryInspection.group });
   };
 
+  const workflowAction = useMemo(() => {
+    if (!activation?.hasClickedDrilldown && primaryInspection) {
+      return {
+        title: "Inspect the weakest segment",
+        why: "Drilldowns show the exact trades behind the primary leak.",
+        button: "Inspect Weakest Segment",
+        action: inspectPrimarySegment
+      };
+    }
+    if (!activation?.hasCreatedComparison && onCompareReport) {
+      return {
+        title: "Compare this report",
+        why: "Comparisons show whether changes improved or degraded performance.",
+        button: "Compare This Report",
+        action: () => onCompareReport(result.id)
+      };
+    }
+    if (!activation?.hasCreatedCollection) {
+      return {
+        title: "Add to strategy set",
+        why: "Strategy sets track performance across related iterations.",
+        button: "Add to Strategy Set",
+        action: () => setIsAddingToStrategySet(true)
+      };
+    }
+    return undefined;
+  }, [activation, onCompareReport, primaryInspection, result.id]);
+
   const metricCards: Array<[string, string, MetricStatus]> = [
     ["Net PnL", currency.format(metrics.netPnl), intelligence.keyMetricStatuses.netPnl],
     ["Expectancy", currency.format(metrics.expectancy), intelligence.keyMetricStatuses.expectancy],
@@ -241,7 +270,7 @@ export function DashboardPage({
         <div className="grid gap-8 lg:grid-cols-[1fr_420px] lg:items-center">
           <div>
             <h1 className="max-w-5xl text-4xl font-semibold leading-[1.04] tracking-[-0.045em] text-ink md:text-6xl">
-              {reportTitle}
+              {result.name ?? "Diagnostic Report"}
             </h1>
             <p className="mt-5 max-w-4xl text-base leading-7 text-muted">
               A report is a single diagnostic analysis generated from one uploaded trade file. This summary-first readout
@@ -388,86 +417,72 @@ export function DashboardPage({
 
       <section
         id="primary-diagnosis"
-        className="EdgeTrace-card relative mt-9 scroll-mt-28 overflow-hidden p-7 shadow-[0_28px_100px_-82px_rgba(88,214,255,0.7)] md:p-10"
+        className="EdgeTrace-card relative mt-8 scroll-mt-28 overflow-hidden p-6 shadow-[0_28px_100px_-76px_rgba(88,214,255,0.82)] md:p-8"
         data-testid="dashboard-health-card"
       >
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_82%_10%,rgba(88,214,255,0.1),transparent_25rem),radial-gradient(circle_at_4%_100%,rgba(255,184,77,0.06),transparent_22rem)]" />
-        <div className="relative grid gap-10 xl:grid-cols-[minmax(0,1fr)_360px] xl:items-stretch">
-          <div>
-            <div className="flex flex-wrap gap-x-10 gap-y-5">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">Strategy Health</p>
-                <div className="mt-3 flex items-end gap-4">
-                  <p className={`text-7xl font-semibold leading-none tracking-[-0.08em] md:text-8xl ${scoreClass(intelligence.strategyHealthScore)}`}>
-                    {intelligence.strategyHealthScore}
-                  </p>
-                  <div className="pb-2">
-                    <p className="text-xl font-semibold tracking-[-0.04em] text-ink">{intelligence.healthBand}</p>
-                    <p className="mt-1 max-w-sm text-sm leading-6 text-muted">{intelligence.primaryExplanation}</p>
-                  </div>
-                </div>
-              </div>
-              <div className="min-w-[190px] pt-1">
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">Latest Report</p>
-                <p className="mt-3 text-lg font-semibold tracking-[-0.03em] text-ink">{reportTitle}</p>
-                <p className="mt-1 text-sm text-muted">{reportCreatedLabel}</p>
-              </div>
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_85%_10%,rgba(88,214,255,0.12),transparent_25rem),radial-gradient(circle_at_4%_100%,rgba(255,184,77,0.08),transparent_22rem)]" />
+        <div className="relative grid gap-8 xl:grid-cols-[320px_minmax(0,1fr)_360px] xl:items-stretch">
+          <aside className="border-b border-white/[0.08] pb-6 xl:border-b-0 xl:border-r xl:pr-7">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan">Strategy Health</p>
+            <p className={`mt-5 text-8xl font-semibold leading-none tracking-[-0.08em] ${scoreClass(intelligence.strategyHealthScore)}`}>
+              {intelligence.strategyHealthScore}
+            </p>
+            <p className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-ink">{intelligence.healthBand}</p>
+            <p className="mt-4 text-sm leading-6 text-muted">{intelligence.primaryExplanation}</p>
+            <div className="mt-6 h-24">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={charts.equityCurve}>
+                  <CartesianGrid stroke="#272727" strokeOpacity={0.45} vertical={false} />
+                  <XAxis dataKey="trade" hide />
+                  <YAxis hide />
+                  <Tooltip
+                    contentStyle={{ background: "#101010", border: "1px solid #272727" }}
+                    formatter={(value) => [formatTooltipCurrency(value), "Equity"]}
+                  />
+                  <Line type="monotone" dataKey="equity" stroke="#58D6FF" strokeWidth={3} dot={false} />
+                </LineChart>
+              </ResponsiveContainer>
             </div>
+          </aside>
 
-            <p className="mt-10 text-xs font-semibold uppercase tracking-[0.16em] text-warning">Current Diagnosis</p>
-            <h2 className="mt-4 max-w-5xl text-5xl font-semibold leading-[0.98] tracking-[-0.06em] text-ink md:text-7xl">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-warning">Primary Diagnosis</p>
+            <h2 className="mt-5 max-w-4xl text-4xl font-semibold leading-[1.03] tracking-[-0.055em] text-ink md:text-5xl">
               {intelligence.primaryDiagnosis}
             </h2>
-            <p className="mt-6 max-w-3xl text-lg leading-8 text-muted">{intelligence.primaryLeak.explanation}</p>
-            <div className="mt-8 max-w-3xl border-l border-warning/45 pl-5">
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Why it matters</p>
-              <p className="mt-2 text-xl font-semibold leading-7 tracking-[-0.035em] text-ink">
+            <p className="mt-5 max-w-3xl text-base leading-7 text-muted">{intelligence.primaryLeak.explanation}</p>
+            <div className="mt-7 max-w-3xl border-l border-warning/45 pl-5">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">Supporting Metric</p>
+              <p className="mt-2 text-xl font-semibold tracking-[-0.035em] text-ink">
                 {intelligence.primaryLeak.supportingMetric}
               </p>
             </div>
           </div>
 
-          <aside className="flex flex-col justify-between border-t border-white/[0.08] pt-7 xl:border-l xl:border-t-0 xl:pl-8 xl:pt-0">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-cyan">Inspect Next</p>
-              {primaryInspection ? (
-                <>
-                  <h3 className="mt-5 text-4xl font-semibold leading-[1.02] tracking-[-0.055em] text-ink">
-                    {primaryInspection.title}
-                  </h3>
-                  <p className="mt-5 text-base leading-7 text-muted">{primaryInspection.reason}</p>
-                  <p className="mt-5 text-sm font-semibold text-cyan">{primaryInspection.metric}</p>
-                </>
-              ) : (
-                <>
-                  <h3 className="mt-5 text-4xl font-semibold leading-[1.02] tracking-[-0.055em] text-ink">
-                    No drilldown priority yet
-                  </h3>
-                  <p className="mt-5 text-base leading-7 text-muted">
-                    This report does not have enough segment evidence for a confident next inspection.
-                  </p>
-                </>
-              )}
-            </div>
-            <button className="EdgeTrace-command-button mt-8 w-full" onClick={inspectPrimarySegment} disabled={!primaryInspection}>
-              Inspect this segment
-            </button>
+          <aside className="border-t border-white/[0.08] pt-6 xl:border-l xl:border-t-0 xl:pl-7 xl:pt-0">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan">Next Inspection</p>
+            {primaryInspection ? (
+              <>
+                <h3 className="mt-4 text-3xl font-semibold leading-tight tracking-[-0.045em] text-ink">
+                  {primaryInspection.title}
+                </h3>
+                <p className="mt-4 text-sm leading-6 text-muted">{primaryInspection.reason}</p>
+                <p className="mt-4 text-sm font-semibold text-cyan">{primaryInspection.metric}</p>
+                <button className="EdgeTrace-command-button mt-6 w-full" onClick={inspectPrimarySegment}>
+                  Inspect this segment
+                </button>
+              </>
+            ) : (
+              <>
+                <h3 className="mt-4 text-3xl font-semibold leading-tight tracking-[-0.045em] text-ink">
+                  No drilldown priority yet
+                </h3>
+                <p className="mt-4 text-sm leading-6 text-muted">
+                  This report does not have enough segment evidence for a confident next inspection.
+                </p>
+              </>
+            )}
           </aside>
-        </div>
-
-        <div className="relative mt-9 h-24 opacity-75">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={charts.equityCurve}>
-              <CartesianGrid stroke="#272727" strokeOpacity={0.28} vertical={false} />
-              <XAxis dataKey="trade" hide />
-              <YAxis hide />
-              <Tooltip
-                contentStyle={{ background: "#101010", border: "1px solid #272727" }}
-                formatter={(value) => [formatTooltipCurrency(value), "Equity"]}
-              />
-              <Line type="monotone" dataKey="equity" stroke="#58D6FF" strokeWidth={3} dot={false} />
-            </LineChart>
-          </ResponsiveContainer>
         </div>
       </section>
 
@@ -515,7 +530,86 @@ export function DashboardPage({
         )}
       </section>
 
-      <section className="mt-8 grid gap-6 border-y border-white/[0.06] py-6 md:grid-cols-3">
+      <DisclosurePanel
+        className="hidden"
+        compact
+        title="What cost drag and R capture mean"
+        subtitle="Open for metric definitions."
+      >
+        <div className="grid gap-3 text-sm leading-6 text-muted md:grid-cols-2">
+          <p>Cost drag estimates how much execution costs reduce gross performance before it reaches net results.</p>
+          <p>R capture measures realized reward relative to risk when risk data is available or can be inferred.</p>
+        </div>
+      </DisclosurePanel>
+
+      <CommandPath
+        className="hidden"
+        context="report"
+        onAnalyze={onCreateReport}
+        onDashboard={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        onInspectLeak={inspectPrimarySegment}
+        onCompare={() => onCompareReport?.(result.id)}
+        onCreateStrategySet={() => setIsAddingToStrategySet(true)}
+      />
+
+      <section className="hidden">
+        <div
+          className="EdgeTrace-card relative overflow-hidden p-7 md:p-8"
+          data-testid="dashboard-health-card-legacy"
+        >
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_86%_28%,rgba(61,220,151,0.13),transparent_17rem)]" />
+          <div className="relative">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-cyan">Strategy Health</p>
+            <div className="mt-7 flex flex-col gap-7 md:flex-row md:items-end">
+              <div>
+                <p className={`text-8xl font-semibold leading-none tracking-[-0.08em] ${scoreClass(intelligence.strategyHealthScore)}`}>
+                  {intelligence.strategyHealthScore}
+                </p>
+                <p className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-ink">{intelligence.healthBand}</p>
+              </div>
+              <p className="max-w-3xl pb-1 text-sm leading-6 text-muted">{intelligence.primaryExplanation}</p>
+            </div>
+            <div className="mt-8 h-32">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={charts.equityCurve}>
+                  <CartesianGrid stroke="#272727" strokeOpacity={0.7} vertical={false} />
+                  <XAxis dataKey="trade" hide />
+                  <YAxis hide />
+                  <Tooltip
+                    contentStyle={{ background: "#101010", border: "1px solid #272727" }}
+                    formatter={(value) => [formatTooltipCurrency(value), "Equity"]}
+                  />
+                  <Line type="monotone" dataKey="equity" stroke="#58D6FF" strokeWidth={3} dot={false} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+
+        <div id="primary-diagnosis-legacy" className="EdgeTrace-card scroll-mt-28 p-7 md:p-8">
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-warning">Primary Diagnosis</p>
+          <h2 className="mt-7 text-3xl font-semibold tracking-[-0.055em] text-ink">{intelligence.primaryDiagnosis}</h2>
+          <p className="mt-5 text-sm leading-6 text-muted">{intelligence.primaryLeak.explanation}</p>
+          <div className="mt-8 border border-white/[0.1] bg-black/24 p-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted">Supporting Metric</p>
+            <p className="mt-2 text-xl font-semibold tracking-[-0.035em] text-ink">
+              {intelligence.primaryLeak.supportingMetric}
+            </p>
+          </div>
+          {primaryInspection && (
+            <button
+              className="EdgeTrace-recommended mt-4 w-full border border-white/[0.1] bg-black/24 p-5 text-left hover:border-accent/70"
+              onClick={inspectPrimarySegment}
+            >
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted">Next Inspection</p>
+              <p className="mt-2 text-xl font-semibold tracking-[-0.035em] text-ink">{primaryInspection.title}</p>
+              <p className="mt-1 text-sm text-muted">{primaryInspection.reason}</p>
+            </button>
+          )}
+        </div>
+      </section>
+
+      <section className="mt-5 grid gap-4 md:grid-cols-3">
         <DashboardSummaryCard
           label="After-cost performance"
           value={currency.format(metrics.netPnl)}
@@ -536,61 +630,83 @@ export function DashboardPage({
         />
       </section>
 
-      <section className="mt-10 border-t border-white/[0.08] pt-7">
-        <div>
+      <section className="mt-7 border border-cyan/18 bg-cyan/[0.035] p-5 md:p-6">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Recommended next step</p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-[-0.045em] text-ink">Start with the inspection path.</h2>
-            <p className="mt-3 max-w-3xl text-sm leading-6 text-muted">
-              Resolve the primary leak first. Compare or organize this report after the weak segment is understood.
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan">Recommended next steps</p>
+            <h2 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-ink">What should happen next?</h2>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">
+              Start with the recommended inspection, then compare or organize this report once the primary leak is understood.
             </p>
           </div>
-        </div>
-
-        <div className="mt-6 grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.65fr)]">
-          {primaryInspection && (
-            <button className="group text-left" onClick={inspectPrimarySegment}>
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-cyan">Primary action</p>
-              <p className="mt-3 text-2xl font-semibold tracking-[-0.045em] text-ink group-hover:text-cyan">
-                Inspect {primaryInspection.title}
-              </p>
-              <p className="mt-3 max-w-2xl text-sm leading-6 text-muted">{primaryInspection.reason}</p>
-              <p className="mt-3 text-sm font-semibold text-cyan">{primaryInspection.metric}</p>
+          {workflowAction && (
+            <button className="EdgeTrace-command-button shrink-0" onClick={workflowAction.action}>
+              {workflowAction.button}
             </button>
           )}
-          <div className="grid content-start gap-3 text-sm sm:grid-cols-2 lg:grid-cols-1">
-            {onCompareReport && (
-              <button className="text-left text-muted hover:text-ink" onClick={() => onCompareReport(result.id)}>
-                <span className="font-semibold text-ink">Compare this report</span>
-                <span className="block mt-1 leading-6">Check whether the leak improved or degraded versus another report.</span>
-              </button>
-            )}
-            <button className="text-left text-muted hover:text-ink" onClick={() => setIsAddingToStrategySet(true)}>
-              <span className="font-semibold text-ink">Add to strategy set</span>
-              <span className="block mt-1 leading-6">Group this report with related iterations for monitoring.</span>
+        </div>
+
+        <div className="mt-5 grid gap-3 md:grid-cols-3">
+          {primaryInspection && (
+            <button
+              className="border border-cyan/25 bg-black/22 p-4 text-left hover:border-cyan/60"
+              onClick={inspectPrimarySegment}
+            >
+              <p className="font-semibold text-ink">Inspect weakest segment</p>
+              <p className="mt-1 text-sm leading-6 text-muted">{primaryInspection.title}</p>
+              <p className="mt-2 text-sm text-cyan">{primaryInspection.metric}</p>
             </button>
-            {hasReconstructionAudit && (
-              <button
-                className="text-left text-muted hover:text-ink"
-                onClick={() => {
-                  trackEvent("reconstruction_audit_opened", { reportId: result.id });
-                  onReconstructionAudit?.();
-                }}
-              >
-                <span className="font-semibold text-ink">Review reconstruction audit</span>
-                <span className="block mt-1 leading-6">Confirm which executions formed each completed trade.</span>
-              </button>
-            )}
-          </div>
+          )}
+          {onCompareReport && (
+            <button
+              className="border border-white/[0.08] bg-black/18 p-4 text-left hover:border-accent/55"
+              onClick={() => onCompareReport(result.id)}
+            >
+              <p className="font-semibold text-ink">Compare this report</p>
+              <p className="mt-1 text-sm leading-6 text-muted">See what improved, degraded, or leaked versus another report.</p>
+              <p className="mt-2 text-sm text-accent">Open comparison</p>
+            </button>
+          )}
+          <button
+            className="border border-white/[0.08] bg-black/18 p-4 text-left hover:border-accent/55"
+            onClick={() => setIsAddingToStrategySet(true)}
+          >
+            <p className="font-semibold text-ink">Add to strategy set</p>
+            <p className="mt-1 text-sm leading-6 text-muted">Group this report with related iterations for monitoring.</p>
+            <p className="mt-2 text-sm text-accent">Organize iteration</p>
+          </button>
+          {hasReconstructionAudit && (
+            <button
+              className="border border-white/[0.08] bg-black/18 p-4 text-left hover:border-accent/55"
+              onClick={() => {
+                trackEvent("reconstruction_audit_opened", { reportId: result.id });
+                onReconstructionAudit?.();
+              }}
+            >
+              <p className="font-semibold text-ink">Review reconstruction audit</p>
+              <p className="mt-1 text-sm leading-6 text-muted">Confirm which broker executions formed each completed trade.</p>
+              <p className="mt-2 text-sm text-accent">Audit lineage</p>
+            </button>
+          )}
         </div>
       </section>
 
-      <section className="mt-12 flex flex-wrap gap-5 border-b border-white/[0.06]">
+      <CommandPath
+        className="mt-5"
+        context="report"
+        onAnalyze={onCreateReport}
+        onDashboard={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        onInspectLeak={inspectPrimarySegment}
+        onCompare={() => onCompareReport?.(result.id)}
+        onCreateStrategySet={() => setIsAddingToStrategySet(true)}
+      />
+
+      <section className="mt-10 flex flex-wrap gap-2 border-b border-white/[0.08]">
         {(["overview", "breakdown", "charts", "trades"] as DashboardTab[]).map((tab) => (
           <button
             key={tab}
-            className={`border-b pb-3 pt-1 text-sm font-semibold capitalize ${
-              activeTab === tab ? "border-white/45 text-ink" : "border-transparent text-muted/80 hover:border-white/20 hover:text-ink"
+            className={`border-b px-3 pb-3 pt-1 text-sm font-semibold capitalize ${
+              activeTab === tab ? "border-cyan text-ink" : "border-transparent text-muted hover:border-white/20 hover:text-ink"
             }`}
             onClick={() => {
               setActiveTab(tab);
@@ -603,21 +719,22 @@ export function DashboardPage({
       </section>
 
       {activeTab === "overview" && (
-        <section className="mt-7 grid gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1fr)]">
-          <div className="border-t border-white/[0.06] pt-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Supporting leak context</p>
+        <section className="mt-6 grid gap-5 lg:grid-cols-[1fr_1.1fr]">
+          <div className="border border-white/[0.1] bg-white/[0.025] p-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted">Primary Leak</p>
             <h2 className="mt-3 text-2xl font-semibold tracking-[-0.045em] text-ink">{intelligence.primaryLeak.title}</h2>
-            <p className="mt-4 max-w-2xl text-sm leading-6 text-muted">{intelligence.primaryLeak.explanation}</p>
-            <div className="mt-6 grid gap-5 text-sm md:grid-cols-2">
+            <p className="mt-4 text-sm leading-6 text-muted">{intelligence.primaryLeak.explanation}</p>
+            <div className="mt-5 grid gap-3 text-sm md:grid-cols-2">
               <MetricMini label="Supporting Metric" value={intelligence.primaryLeak.supportingMetric} />
               <MetricMini label="Recommended Next Step" value={intelligence.primaryLeak.recommendedInspection} />
             </div>
           </div>
 
-          <div className="grid gap-5 text-sm text-muted">
-            <section className="border-t border-white/[0.05] pt-5">
+          <div className="grid gap-3">
+            <MetricFlowGraphic />
+            <section className="border border-white/[0.08] bg-white/[0.018]">
               <button
-                className="flex w-full items-center justify-between gap-4 text-left"
+                className="flex w-full items-center justify-between gap-4 p-4 text-left"
                 type="button"
                 onClick={() => setCalculationOpen((current) => !current)}
               >
@@ -628,21 +745,21 @@ export function DashboardPage({
                     {rValuesAvailable ? "available" : "limited"}
                   </p>
                 </div>
-                <span className="text-sm font-semibold text-muted hover:text-ink">{calculationOpen ? "Hide" : "Show"}</span>
+                <span className="text-sm font-semibold text-cyan">{calculationOpen ? "Hide" : "Show"}</span>
               </button>
               {calculationOpen && (
-                <div className="mt-5 border-t border-white/[0.05] pt-5">
-                  <div className="grid gap-4 md:grid-cols-2">
+                <div className="border-t border-white/[0.08] p-4">
+                  <div className="grid gap-3 md:grid-cols-2">
                     {calculationRows.map(([label, value]) => (
-                      <div key={label}>
-                        <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted">{label}</p>
+                      <div key={label} className="border border-white/[0.06] bg-black/20 p-3">
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted">{label}</p>
                         <p className="mt-1 text-sm text-ink">{value}</p>
                       </div>
                     ))}
                   </div>
                   {provenance?.reconstructionSummary && (
-                    <div className="mt-5 border-t border-white/[0.05] pt-4">
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted">Reconstruction summary</p>
+                    <div className="mt-3 border border-white/[0.06] bg-black/20 p-3">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted">Reconstruction summary</p>
                       <p className="mt-1 text-sm leading-6 text-ink">
                         {provenance.reconstructionSummary.rawExecutions ?? 0} executions ·{" "}
                         {provenance.reconstructionSummary.completedTrades ?? 0} completed trades ·{" "}
@@ -658,13 +775,12 @@ export function DashboardPage({
                 </div>
               )}
             </section>
-            <section className="border-t border-white/[0.05] pt-5">
-              <p className="text-sm font-semibold text-ink">Metric definitions</p>
-              <div className="mt-3 grid gap-4 text-sm leading-6 text-muted md:grid-cols-2">
+            <DisclosurePanel compact title="What cost drag and R capture mean" subtitle="Metric definitions.">
+              <div className="grid gap-3 text-sm leading-6 text-muted md:grid-cols-2">
                 <p>Cost drag estimates how much execution costs reduce gross performance before it reaches net results.</p>
                 <p>R capture measures realized reward relative to risk when risk data is available or can be inferred.</p>
               </div>
-            </section>
+            </DisclosurePanel>
           </div>
         </section>
       )}
@@ -1033,10 +1149,10 @@ function DashboardSummaryCard({
   tone: string;
 }) {
   return (
-    <div className="px-1 py-1">
-      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted">{label}</p>
-      <p className={`mt-3 text-3xl font-semibold tracking-[-0.055em] ${tone}`}>{value}</p>
-      <p className="mt-2 text-sm text-muted">{detail}</p>
+    <div className="border-t border-white/[0.1] bg-white/[0.018] px-1 py-5">
+      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">{label}</p>
+      <p className={`mt-4 text-4xl font-semibold tracking-[-0.06em] ${tone}`}>{value}</p>
+      <p className="mt-3 text-sm text-muted">{detail}</p>
     </div>
   );
 }
