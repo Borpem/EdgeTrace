@@ -217,6 +217,7 @@ export function DashboardPage({
     ["Profit Factor", formatNumber(metrics.profitFactor), intelligence.keyMetricStatuses.profitFactor],
     ["Win Rate", percent.format(metrics.winRate), intelligence.keyMetricStatuses.winRate]
   ];
+  const reportTabs: DashboardTab[] = ["overview", "breakdown", "trades"];
 
   const sort = (key: SortKey) => {
     if (sortKey === key) {
@@ -387,7 +388,22 @@ export function DashboardPage({
         </section>
       )}
 
-      <section className="mt-6 grid gap-5 xl:grid-cols-[minmax(0,1fr)_420px] xl:items-start">
+      <section className="mt-6 grid gap-5 xl:grid-cols-[132px_minmax(0,1fr)_420px] xl:items-start">
+        <nav className="EdgeTrace-report-tab-rail xl:sticky xl:top-24" aria-label="Report views">
+          {reportTabs.map((tab) => (
+            <button
+              key={tab}
+              className={`EdgeTrace-report-tab-button ${activeTab === tab ? "is-active" : ""}`}
+              onClick={() => {
+                setActiveTab(tab);
+                trackEvent("report_tab_opened", { reportId: result.id, tab });
+              }}
+            >
+              <span>{tab}</span>
+            </button>
+          ))}
+        </nav>
+
         <div className="min-w-0">
           <div className="grid gap-5 lg:grid-cols-[1.08fr_0.92fr]">
         <div
@@ -525,23 +541,6 @@ export function DashboardPage({
         onCompare={() => onCompareReport?.(result.id)}
         onCreateStrategySet={() => setIsAddingToStrategySet(true)}
       />
-
-      <section className="mt-8 flex flex-wrap gap-5 border-b border-white/[0.1]">
-        {(["overview", "breakdown", "trades"] as DashboardTab[]).map((tab) => (
-          <button
-            key={tab}
-            className={`border-b pb-3 text-sm font-semibold capitalize ${
-              activeTab === tab ? "border-ink text-ink" : "border-transparent text-muted hover:border-white/20 hover:text-ink"
-            }`}
-            onClick={() => {
-              setActiveTab(tab);
-              trackEvent("report_tab_opened", { reportId: result.id, tab });
-            }}
-          >
-            {tab}
-          </button>
-        ))}
-      </section>
 
       {activeTab === "overview" && (
         <section className="mt-6 grid gap-5 lg:grid-cols-[1fr_1.1fr]">
