@@ -286,7 +286,7 @@ export function DashboardPage({
           </div>
 
           <div className="EdgeTrace-card-soft p-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted">Current Report</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-muted">Current Report</p>
             <div className="mt-4 border border-white/[0.12] bg-black/30 px-4 py-3">
               <p className="truncate text-sm font-semibold text-ink">{result.name ?? result.id}</p>
               <p className="mt-1 text-xs text-muted">
@@ -322,7 +322,7 @@ export function DashboardPage({
         <section className="mt-6 border border-profit/35 bg-profit/[0.08] p-5">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-profit">Report Created</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-profit">Report Created</p>
               <h2 className="mt-2 text-2xl font-semibold tracking-[-0.045em] text-ink">
                 Diagnostic report created successfully.
               </h2>
@@ -351,7 +351,7 @@ export function DashboardPage({
         <section className="mt-6 border border-cyan/35 bg-cyan/[0.06] p-5">
           <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-center">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan">First Report</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-cyan">First Report</p>
               <h2 className="mt-2 text-2xl font-semibold tracking-[-0.045em] text-ink">Your first report is ready.</h2>
               <ol className="mt-3 grid gap-2 text-sm leading-6 text-muted md:grid-cols-3">
                 <li>1. Review the primary diagnosis.</li>
@@ -396,7 +396,7 @@ export function DashboardPage({
         >
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_86%_28%,rgba(61,220,151,0.13),transparent_17rem)]" />
           <div className="relative">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-cyan">Strategy Health</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-cyan md:text-base">Strategy Health</p>
             <div className="mt-7 flex flex-col gap-7 md:flex-row md:items-end">
               <div>
                 <p className={`text-8xl font-semibold leading-none tracking-[-0.08em] ${scoreClass(intelligence.strategyHealthScore)}`}>
@@ -410,11 +410,11 @@ export function DashboardPage({
         </div>
 
         <div id="primary-diagnosis" className="EdgeTrace-card scroll-mt-28 p-7 md:p-8">
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-warning">Primary Diagnosis</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-warning md:text-base">Primary Diagnosis</p>
           <h2 className="mt-7 text-3xl font-semibold tracking-[-0.055em] text-ink">{intelligence.primaryDiagnosis}</h2>
           <p className="mt-5 text-sm leading-6 text-muted">{intelligence.primaryLeak.explanation}</p>
           <div className="EdgeTrace-subpanel mt-8 p-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted">Supporting Metric</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-muted">Supporting Metric</p>
             <p className="mt-2 text-xl font-semibold tracking-[-0.035em] text-ink">
               {intelligence.primaryLeak.supportingMetric}
             </p>
@@ -425,7 +425,7 @@ export function DashboardPage({
               onClick={inspectPrimarySegment}
             >
               <span className="EdgeTrace-recommended-signal" aria-hidden="true" />
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted">Next Inspection</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-muted">Next Inspection</p>
               <p className="mt-2 text-xl font-semibold tracking-[-0.035em] text-ink">{primaryInspection.title}</p>
               <p className="mt-1 text-sm text-muted">{primaryInspection.reason}</p>
               <p className="EdgeTrace-next-action mt-4 inline-flex items-center gap-2 text-sm font-semibold text-cyan">
@@ -504,7 +504,7 @@ export function DashboardPage({
 
         <aside className="grid gap-4 xl:sticky xl:top-24">
           <div className="EdgeTrace-card-soft p-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted">Primary Leak</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-muted md:text-base">Primary Leak</p>
             <h2 className="mt-3 text-xl font-semibold tracking-[-0.04em] text-ink">{intelligence.primaryLeak.title}</h2>
             <p className="mt-3 text-sm leading-6 text-muted">{intelligence.primaryLeak.explanation}</p>
             <div className="mt-5 grid gap-3 text-sm">
@@ -514,7 +514,7 @@ export function DashboardPage({
           </div>
 
           <div className="EdgeTrace-card-soft p-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan">Recommended next steps</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-cyan md:text-base">Recommended next steps</p>
             {workflowAction && (
               <div className="EdgeTrace-subpanel EdgeTrace-recommended mt-4 p-4">
                 <p className="text-lg font-semibold tracking-[-0.04em] text-ink">{workflowAction.title}</p>
@@ -617,7 +617,7 @@ export function DashboardPage({
 
       {activeTab === "overview" && (
         <section className="mt-6 EdgeTrace-card-soft p-6">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted">Overview</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-muted md:text-base">Overview</p>
           <p className="mt-3 max-w-3xl text-sm leading-6 text-muted">
             Primary leak guidance and recommended actions are pinned in the sidebar beside the health readout.
           </p>
@@ -909,7 +909,7 @@ function SegmentCard({
       disabled={!row}
       onClick={() => row && onSelect?.(row)}
     >
-      <p className="text-xs uppercase tracking-[0.16em] text-muted">{title}</p>
+      <p className="text-sm font-semibold uppercase tracking-[0.16em] text-muted">{title}</p>
       {row ? (
         <>
           <p className="mt-3 text-xl font-semibold">{row.group}</p>
@@ -948,7 +948,7 @@ function DashboardSummaryCard({
 }) {
   return (
     <div className="EdgeTrace-card-soft p-5">
-      <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted">{label}</p>
+      <p className="text-sm font-semibold uppercase tracking-[0.18em] text-muted">{label}</p>
       <p className={`mt-6 text-4xl font-semibold tracking-[-0.06em] ${tone}`}>{value}</p>
       <p className="mt-4 text-sm text-muted">{detail}</p>
     </div>
@@ -971,7 +971,7 @@ function metricStatusClass(status: MetricStatus) {
 function ChartPanel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="EdgeTrace-card p-5">
-      <h2 className="mb-4 text-sm font-semibold uppercase tracking-[0.16em] text-muted">{title}</h2>
+      <h2 className="mb-5 text-base font-semibold uppercase tracking-[0.16em] text-muted">{title}</h2>
       {children}
     </div>
   );
