@@ -313,15 +313,15 @@ export function StrategyDashboardPage({
 
       <section className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_370px] xl:items-start">
         <section
-          className="EdgeTrace-card relative min-h-[680px] overflow-hidden p-5 shadow-[0_28px_100px_-82px_rgba(88,214,255,0.72)] md:p-8"
+          className="EdgeTrace-card relative min-h-[680px] overflow-hidden p-5 shadow-[0_24px_72px_-68px_rgba(88,214,255,0.5)] md:p-7"
           data-testid="dashboard-health-card"
         >
-          <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_84%_4%,rgba(88,214,255,0.1),transparent_27rem),radial-gradient(circle_at_0%_100%,rgba(120,97,255,0.07),transparent_32rem)]" />
+          <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_84%_4%,rgba(88,214,255,0.075),transparent_27rem),radial-gradient(circle_at_0%_100%,rgba(120,97,255,0.045),transparent_32rem)]" />
           <div className="relative z-10">
-            <div className="EdgeTrace-subpanel flex flex-col gap-4 p-4 lg:flex-row lg:items-end lg:justify-between">
+            <div className="EdgeTrace-dashboard-cell flex flex-col gap-4 p-4 lg:flex-row lg:items-end lg:justify-between">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Current report state</p>
-                <h2 className="mt-2 text-3xl font-semibold tracking-[-0.045em] text-ink md:text-4xl">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.13em] text-muted">Current report state</p>
+                <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-ink md:text-3xl">
                   {safeReport.name ?? "Focused diagnostic report"}
                 </h2>
               </div>
@@ -332,16 +332,16 @@ export function StrategyDashboardPage({
             </div>
 
             <div className="mt-5 grid gap-5 xl:grid-cols-[minmax(0,1fr)_320px]">
-              <div className="EdgeTrace-subpanel p-5 md:p-6">
-                <h3 className="max-w-4xl text-5xl font-semibold leading-[0.98] tracking-[-0.055em] text-ink md:text-7xl">
+              <div className="EdgeTrace-dashboard-cell p-5 md:p-6">
+                <h3 className="max-w-4xl text-4xl font-semibold leading-[1.01] tracking-[-0.05em] text-ink md:text-6xl">
                   {intelligence.primaryDiagnosis}
                 </h3>
-                <p className="mt-5 max-w-3xl text-base leading-7 text-muted">{intelligence.primaryLeak.explanation}</p>
+                <p className="mt-4 max-w-3xl text-[15px] leading-7 text-muted">{intelligence.primaryLeak.explanation}</p>
 
-                <div className="mt-7 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(260px,0.72fr)]">
-                  <div className="EdgeTrace-subpanel border-cyan/25 bg-cyan/[0.035] p-4 shadow-[0_22px_62px_-56px_rgba(88,214,255,0.65)]">
-                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-cyan">Inspect next</p>
-                    <p className="mt-3 text-3xl font-semibold tracking-[-0.045em] text-ink">{inspectionTitle}</p>
+                <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(260px,0.72fr)]">
+                  <div className="EdgeTrace-dashboard-cell border-cyan/20 p-4 shadow-[0_18px_46px_-44px_rgba(88,214,255,0.46)]">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.13em] text-cyan">Inspect next</p>
+                    <p className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-ink">{inspectionTitle}</p>
                     <p className="mt-2 text-sm leading-6 text-muted">{inspectionReason}</p>
                     {primaryInspection ? (
                       <button
@@ -359,21 +359,21 @@ export function StrategyDashboardPage({
                     )}
                   </div>
 
-                  <div className="EdgeTrace-subpanel p-4">
-                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Why it matters</p>
-                    <p className="mt-3 text-xl font-semibold tracking-[-0.035em] text-ink">{intelligence.primaryLeak.title}</p>
+                  <div className="EdgeTrace-dashboard-cell p-4">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.13em] text-muted">Why it matters</p>
+                    <p className="mt-3 text-lg font-semibold tracking-[-0.03em] text-ink">{intelligence.primaryLeak.title}</p>
                     <p className="mt-2 text-sm leading-6 text-muted">{intelligence.primaryLeak.supportingMetric}</p>
                   </div>
                 </div>
               </div>
 
-              <aside className="EdgeTrace-subpanel p-5 md:p-6">
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Strategy health</p>
+              <aside className="EdgeTrace-dashboard-cell p-5 md:p-6">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.13em] text-muted">Strategy health</p>
                 <div className="mt-4 flex items-end gap-4">
-                  <p className={`text-8xl font-semibold leading-none tracking-[-0.07em] ${scoreClass(intelligence.strategyHealthScore)}`}>
+                  <p className={`text-7xl font-semibold leading-none tracking-[-0.065em] ${scoreClass(intelligence.strategyHealthScore)}`}>
                     {intelligence.strategyHealthScore}
                   </p>
-                  <p className="pb-2 text-xl font-semibold tracking-[-0.035em] text-ink">{intelligence.healthBand}</p>
+                  <p className="pb-2 text-lg font-semibold tracking-[-0.03em] text-ink">{intelligence.healthBand}</p>
                 </div>
                 <p className="mt-4 text-sm leading-6 text-muted">{intelligence.primaryExplanation}</p>
                 <div className="mt-6 h-32">
@@ -391,7 +391,7 @@ export function StrategyDashboardPage({
                       </RechartsLineChart>
                     </ResponsiveContainer>
                   ) : (
-                    <div className="EdgeTrace-subpanel flex h-full items-center justify-center text-xs text-muted">
+                    <div className="EdgeTrace-dashboard-cell flex h-full items-center justify-center text-xs text-muted">
                       Equity curve unavailable
                     </div>
                   )}
@@ -399,8 +399,8 @@ export function StrategyDashboardPage({
               </aside>
             </div>
 
-            <div className="EdgeTrace-subpanel mt-5 p-5">
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Decision metrics</p>
+            <div className="EdgeTrace-dashboard-cell mt-5 p-4">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.13em] text-muted">Decision metrics</p>
               <div className="mt-4 grid gap-x-5 gap-y-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-6">
                 <BriefMetric label="Net PnL" value={currency.format(metrics.netPnl)} detail={`${metrics.totalTrades} trades`} status={intelligence.keyMetricStatuses.netPnl} />
                 <BriefMetric label="Expectancy" value={currency.format(metrics.expectancy)} detail="After-cost average" status={intelligence.keyMetricStatuses.expectancy} />
@@ -415,16 +415,16 @@ export function StrategyDashboardPage({
           </div>
         </section>
 
-        <aside className="EdgeTrace-card-soft p-5 shadow-[0_24px_80px_-72px_rgba(88,214,255,0.45)] xl:sticky xl:top-6">
-          <div className="EdgeTrace-subpanel p-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Operational rail</p>
-            <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-ink">Needs inspection</h2>
+        <aside className="EdgeTrace-card-soft p-4 shadow-[0_20px_68px_-64px_rgba(88,214,255,0.32)] xl:sticky xl:top-6">
+          <div className="EdgeTrace-dashboard-cell p-4">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.13em] text-muted">Operational rail</p>
+            <h2 className="mt-2 text-xl font-semibold tracking-[-0.035em] text-ink">Needs inspection</h2>
           </div>
 
-          <div className="EdgeTrace-subpanel mt-4 p-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted">Report focus</p>
+          <div className="EdgeTrace-dashboard-cell mt-3 p-4">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">Report focus</p>
             <select
-              className="mt-3 w-full border border-white/[0.12] bg-black/35 px-4 py-3 text-sm font-semibold text-ink outline-none transition focus:border-cyan"
+              className="mt-3 w-full border border-white/[0.1] bg-black/35 px-4 py-2.5 text-sm font-semibold text-ink outline-none transition focus:border-cyan"
               value={selectedId}
               onChange={(event) => void handleSelectReport(event.target.value)}
             >
@@ -436,14 +436,14 @@ export function StrategyDashboardPage({
             </select>
           </div>
 
-          <div className="mt-4 grid gap-3">
+          <div className="mt-3 grid gap-2.5">
             {attentionItems.slice(0, 4).map((item, index) => (
               <RailPriorityItem key={`${item.title}-${index}`} item={item} index={index + 1} />
             ))}
           </div>
 
-          <div className="EdgeTrace-subpanel mt-4 p-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted">Monitoring alert</p>
+          <div className="EdgeTrace-dashboard-cell mt-3 p-4">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">Monitoring alert</p>
             <div className="mt-3 flex items-center justify-between gap-3">
               <p className="min-w-0 text-sm font-semibold text-ink">
                 {monitoring.collection ? monitoring.collection.name : "No active strategy set"}
@@ -453,7 +453,7 @@ export function StrategyDashboardPage({
             <p className="mt-3 text-sm leading-6 text-muted">{monitoring.summary}</p>
           </div>
 
-          <div className="EdgeTrace-subpanel mt-4 grid gap-2 p-3">
+          <div className="EdgeTrace-dashboard-cell mt-3 grid gap-2 p-3">
             <button className="EdgeTrace-command-button justify-center" onClick={() => onOpenReport(safeReport)}>
               Open focused report <ArrowRight size={16} />
             </button>
@@ -495,12 +495,12 @@ function BriefMetric({
   status: MetricStatus;
 }) {
   return (
-    <div className="EdgeTrace-subpanel p-4">
+    <div className="EdgeTrace-dashboard-cell p-3.5">
       <div className="flex items-center justify-between gap-3">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">{label}</p>
+        <p className="text-[10px] font-semibold uppercase tracking-[0.11em] text-muted">{label}</p>
         <StatusDot status={status} />
       </div>
-      <p className={`mt-3 text-2xl font-semibold tracking-[-0.04em] ${metricTextClass(status)}`}>{value}</p>
+      <p className={`mt-2.5 text-xl font-semibold tracking-[-0.035em] ${metricTextClass(status)}`}>{value}</p>
       <p className="mt-1 text-xs leading-5 text-muted">{detail}</p>
     </div>
   );
@@ -508,11 +508,11 @@ function BriefMetric({
 
 function ChangeMatrix({ change }: { change: ReturnType<typeof buildRecentChange> }) {
   return (
-    <section className="EdgeTrace-subpanel mt-5 p-5">
+    <section className="EdgeTrace-dashboard-cell mt-5 p-5">
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_220px] lg:items-start">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-violet">What changed</p>
-          <h2 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-ink">{change.driver}</h2>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.13em] text-violet">What changed</p>
+          <h2 className="mt-3 text-xl font-semibold tracking-[-0.035em] text-ink">{change.driver}</h2>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">{change.summary}</p>
         </div>
         <div className="flex lg:justify-end">
@@ -530,9 +530,9 @@ function ChangeMatrix({ change }: { change: ReturnType<typeof buildRecentChange>
 
 function DeltaCard({ metric }: { metric: RecentChangeMetric }) {
   return (
-    <div className={`EdgeTrace-subpanel border-l-2 p-4 ${deltaBorderClass(metric.tone)}`}>
-      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted">{metric.label}</p>
-      <p className={`mt-3 text-2xl font-semibold tracking-[-0.045em] ${deltaTextClass(metric.tone)}`}>{metric.value}</p>
+    <div className={`EdgeTrace-dashboard-cell border-l-2 p-3.5 ${deltaBorderClass(metric.tone)}`}>
+      <p className="text-[10px] font-semibold uppercase tracking-[0.11em] text-muted">{metric.label}</p>
+      <p className={`mt-2.5 text-xl font-semibold tracking-[-0.04em] ${deltaTextClass(metric.tone)}`}>{metric.value}</p>
       <p className="mt-1 text-xs leading-5 text-muted">{metric.detail}</p>
     </div>
   );
@@ -540,9 +540,9 @@ function DeltaCard({ metric }: { metric: RecentChangeMetric }) {
 
 function RailPriorityItem({ item, index }: { item: AttentionItem; index: number }) {
   return (
-    <button className="EdgeTrace-subpanel group w-full p-4 text-left transition hover:border-cyan/35 hover:bg-cyan/[0.035]" onClick={item.onAction}>
+    <button className="EdgeTrace-dashboard-cell group w-full p-3.5 text-left transition hover:border-cyan/30 hover:bg-cyan/[0.026]" onClick={item.onAction}>
       <div className="flex items-start gap-3">
-        <span className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center border text-xs font-semibold ${attentionBadgeClass(item.severity)}`}>
+        <span className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center border text-[11px] font-semibold ${attentionBadgeClass(item.severity)}`}>
           {index}
         </span>
         <span className="min-w-0">
@@ -574,19 +574,19 @@ function RecentReportsPanel({
   onReports: () => void;
 }) {
   return (
-    <section className="EdgeTrace-card-soft p-5 shadow-[0_24px_80px_-72px_rgba(88,214,255,0.35)]">
+    <section className="EdgeTrace-card-soft p-5 shadow-[0_18px_64px_-62px_rgba(88,214,255,0.24)]">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Research library snapshot</p>
-          <h2 className="mt-2 text-3xl font-semibold tracking-[-0.045em] text-ink">Report activity</h2>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.13em] text-muted">Research library snapshot</p>
+          <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-ink">Report activity</h2>
           <p className="mt-2 text-sm text-muted">Recent diagnostics for confirming whether the current read is isolated or repeating.</p>
         </div>
         <button className="EdgeTrace-compact-secondary" onClick={onReports}>
           View all reports
         </button>
       </div>
-      <div className="EdgeTrace-subpanel mt-5 overflow-hidden p-0">
-        <div className="hidden grid-cols-[minmax(0,1.2fr)_84px_112px_112px_112px_minmax(160px,0.8fr)_96px] border-b border-white/[0.07] bg-white/[0.018] px-5 py-3 text-[10px] font-semibold uppercase tracking-[0.12em] text-muted xl:grid">
+      <div className="EdgeTrace-dashboard-cell mt-5 overflow-hidden p-0">
+        <div className="hidden grid-cols-[minmax(0,1.2fr)_84px_112px_112px_112px_minmax(160px,0.8fr)_96px] border-b border-white/[0.055] bg-black/20 px-5 py-3 text-[10px] font-semibold uppercase tracking-[0.11em] text-muted xl:grid">
           <span>Report</span>
           <span>Health</span>
           <span>Net PnL</span>
@@ -595,7 +595,7 @@ function RecentReportsPanel({
           <span>Diagnosis</span>
           <span>Action</span>
         </div>
-        <div className="divide-y divide-white/[0.06]">
+        <div className="divide-y divide-white/[0.045]">
           {reports.map((report) => (
             <RecentReportRow
               key={report.id}
@@ -627,13 +627,13 @@ function RecentReportRow({
   const costDrag = costDragRatio(report);
   return (
     <div
-      className={`grid gap-4 px-5 py-4 transition xl:grid-cols-[minmax(0,1.2fr)_84px_112px_112px_112px_minmax(160px,0.8fr)_96px] xl:items-center ${
-        active ? "bg-cyan/[0.04]" : "hover:bg-white/[0.022]"
+      className={`grid gap-4 px-5 py-3.5 transition xl:grid-cols-[minmax(0,1.2fr)_84px_112px_112px_112px_minmax(160px,0.8fr)_96px] xl:items-center ${
+        active ? "bg-cyan/[0.03]" : "hover:bg-white/[0.018]"
       }`}
     >
       <button className="min-w-0 text-left" onClick={onFocus}>
         <div className="flex flex-wrap items-center gap-2">
-          <p className="truncate text-base font-semibold text-ink">{report.name}</p>
+          <p className="truncate text-sm font-semibold text-ink">{report.name}</p>
           {active && (
             <span className="border border-cyan/35 bg-cyan/[0.08] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.13em] text-cyan">
               Focused
@@ -670,13 +670,13 @@ function StrategySetPanel({
   onCreateStrategySet: () => void;
 }) {
   return (
-    <section className="EdgeTrace-card-soft relative overflow-hidden p-5 shadow-[0_24px_80px_-72px_rgba(120,97,255,0.42)] md:p-6">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_88%_0%,rgba(120,97,255,0.06),transparent_18rem)]" />
+    <section className="EdgeTrace-card-soft relative overflow-hidden p-5 shadow-[0_18px_64px_-62px_rgba(120,97,255,0.25)] md:p-5">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_88%_0%,rgba(120,97,255,0.04),transparent_18rem)]" />
       <div className="relative">
-        <div className="EdgeTrace-subpanel flex items-start justify-between gap-4 p-4">
+        <div className="EdgeTrace-dashboard-cell flex items-start justify-between gap-4 p-4">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Strategy monitoring</p>
-            <h2 className="mt-2 text-3xl font-semibold tracking-[-0.045em] text-ink">Strategy set monitoring</h2>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.13em] text-muted">Strategy monitoring</p>
+            <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-ink">Strategy set monitoring</h2>
             <p className="mt-2 text-sm leading-6 text-muted">
               Use this after the current report read to track related diagnostics as strategy iterations.
             </p>
@@ -685,29 +685,29 @@ function StrategySetPanel({
         </div>
 
         {monitoring.collection ? (
-          <div className="mt-6">
-            <div className="EdgeTrace-subpanel border-violet/25 bg-violet/[0.035] p-5">
+          <div className="mt-4">
+            <div className="EdgeTrace-dashboard-cell border-violet/20 p-4">
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-violet">Top strategy set</p>
-                  <h3 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-ink">{monitoring.collection.name}</h3>
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-violet">Top strategy set</p>
+                  <h3 className="mt-3 text-xl font-semibold tracking-[-0.035em] text-ink">{monitoring.collection.name}</h3>
                   <p className="mt-2 text-sm leading-6 text-muted">{monitoring.summary}</p>
                 </div>
                 <TrendBadge trend={monitoring.direction} />
               </div>
-              <div className="mt-5 grid gap-3 sm:grid-cols-3">
+              <div className="mt-4 grid gap-3 sm:grid-cols-3">
                 <MiniStatus label="Confidence" value={monitoring.confidence} />
                 <MiniStatus label="Latest iteration" value={monitoring.latestIteration} />
                 <MiniStatus label="Reports" value={String(monitoring.collection.reportCount)} />
               </div>
-              <button className="EdgeTrace-command-button mt-5" onClick={() => onOpenStrategySet(monitoring.collection!.id)}>
+              <button className="EdgeTrace-command-button mt-4" onClick={() => onOpenStrategySet(monitoring.collection!.id)}>
                 Open strategy set <ArrowRight size={16} />
               </button>
             </div>
           </div>
         ) : (
-          <div className="EdgeTrace-subpanel mt-6 p-5">
-            <p className="text-xl font-semibold tracking-[-0.035em] text-ink">Create a Strategy Set to track iterations over time.</p>
+          <div className="EdgeTrace-dashboard-cell mt-4 p-4">
+            <p className="text-lg font-semibold tracking-[-0.03em] text-ink">Create a Strategy Set to track iterations over time.</p>
             <p className="mt-2 text-sm leading-6 text-muted">
               Once you have related reports, strategy sets show whether changes are improving performance or creating new leakage.
             </p>
@@ -722,7 +722,7 @@ function StrategySetPanel({
             {collections.slice(1, 3).map((collection) => (
               <button
                 key={collection.id}
-                className="EdgeTrace-subpanel flex items-center justify-between gap-3 px-4 py-3 text-left hover:border-violet/35"
+                className="EdgeTrace-dashboard-cell flex items-center justify-between gap-3 px-4 py-3 text-left hover:border-violet/30"
                 onClick={() => onOpenStrategySet(collection.id)}
               >
                 <span className="min-w-0 truncate text-sm font-semibold text-ink">{collection.name}</span>
@@ -738,8 +738,8 @@ function StrategySetPanel({
 
 function MiniStatus({ label, value }: { label: string; value: string }) {
   return (
-    <div className="EdgeTrace-subpanel p-3">
-      <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted">{label}</p>
+    <div className="EdgeTrace-dashboard-cell p-3">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.11em] text-muted">{label}</p>
       <p className="mt-2 text-sm font-semibold text-ink">{value}</p>
     </div>
   );

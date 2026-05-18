@@ -186,6 +186,38 @@
       0 16px 46px -42px rgba(88, 214, 255, 0.28);
   }
 
+  .EdgeTrace-dashboard-cell {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border-radius: 0.125rem;
+    border: 1px solid rgba(247, 247, 243, 0.055);
+    background:
+      radial-gradient(circle at 100% 0%, rgba(88, 214, 255, 0.028), transparent 14rem),
+      linear-gradient(135deg, rgba(247, 247, 243, 0.028), rgba(88, 214, 255, 0.007)),
+      rgba(3, 6, 12, 0.38);
+    box-shadow:
+      inset 0 1px 0 rgba(247, 247, 243, 0.018),
+      0 14px 38px -36px rgba(88, 214, 255, 0.2);
+  }
+
+  .EdgeTrace-dashboard-cell::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    background:
+      linear-gradient(90deg, rgba(3, 6, 12, 0.22), transparent 12%, transparent 88%, rgba(3, 6, 12, 0.18)),
+      linear-gradient(180deg, rgba(247, 247, 243, 0.016), transparent 24%, transparent 82%, rgba(3, 6, 12, 0.18));
+  }
+
+  .EdgeTrace-dashboard-cell > * {
+    position: relative;
+    z-index: 1;
+  }
+
   .EdgeTrace-table-container {
     position: relative;
     isolation: isolate;
