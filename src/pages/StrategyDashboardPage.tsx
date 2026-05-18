@@ -339,8 +339,8 @@ export function StrategyDashboardPage({
                 <p className="mt-4 max-w-3xl text-[15px] leading-7 text-muted">{intelligence.primaryLeak.explanation}</p>
 
                 <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(260px,0.72fr)]">
-                  <div className="EdgeTrace-dashboard-cell border-cyan/20 p-4 shadow-[0_18px_46px_-44px_rgba(88,214,255,0.46)]">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.13em] text-cyan">Inspect next</p>
+                  <div className="EdgeTrace-dashboard-cell border-warning/25 p-4 shadow-[0_18px_46px_-44px_rgba(255,184,77,0.32)]">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.13em] text-warning">Inspect next</p>
                     <p className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-ink">{inspectionTitle}</p>
                     <p className="mt-2 text-sm leading-6 text-muted">{inspectionReason}</p>
                     {primaryInspection ? (
@@ -511,7 +511,7 @@ function ChangeMatrix({ change }: { change: ReturnType<typeof buildRecentChange>
     <section className="EdgeTrace-dashboard-cell mt-5 p-5">
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_220px] lg:items-start">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.13em] text-violet">What changed</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.13em] text-violet">Change analysis</p>
           <h2 className="mt-3 text-xl font-semibold tracking-[-0.035em] text-ink">{change.driver}</h2>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">{change.summary}</p>
         </div>
@@ -635,7 +635,7 @@ function RecentReportRow({
         <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center">
           <p className="min-w-0 max-w-full flex-1 truncate text-sm font-semibold text-ink">{report.name}</p>
           {active && (
-            <span className="w-fit shrink-0 border border-cyan/35 bg-cyan/[0.08] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.13em] text-cyan">
+            <span className="w-fit shrink-0 border border-white/[0.14] bg-white/[0.045] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.13em] text-muted">
               Focused
             </span>
           )}
@@ -648,7 +648,7 @@ function RecentReportRow({
       <ReportStat
         label="Cost Drag"
         value={costDrag === undefined ? "Unavailable" : percent.format(costDrag)}
-        tone={costDrag !== undefined && costDrag > 0.4 ? "warning" : "cyan"}
+        tone={costDrag === undefined ? "neutral" : costDrag > 0.4 ? "loss" : costDrag > 0.2 ? "warning" : "cyan"}
       />
       <p className="min-w-0 text-sm font-semibold text-ink sm:col-span-2 lg:col-span-1 2xl:col-span-1">{diagnosis}</p>
       <button className="EdgeTrace-compact-secondary justify-center sm:col-span-2 lg:col-span-1 2xl:col-span-1" onClick={onOpen}>
@@ -745,8 +745,9 @@ function MiniStatus({ label, value }: { label: string; value: string }) {
   );
 }
 
-function ReportStat({ label, value, tone }: { label: string; value: string; tone: "cyan" | "warning" | "loss" }) {
-  const toneClass = tone === "cyan" ? "text-cyan" : tone === "warning" ? "text-warning" : "text-loss";
+function ReportStat({ label, value, tone }: { label: string; value: string; tone: "cyan" | "warning" | "loss" | "neutral" }) {
+  const toneClass =
+    tone === "cyan" ? "text-cyan" : tone === "warning" ? "text-warning" : tone === "loss" ? "text-loss" : "text-muted";
   return (
     <div className="min-w-0">
       <p className="text-[10px] font-semibold uppercase tracking-[0.13em] text-muted 2xl:hidden">{label}</p>
@@ -1110,7 +1111,6 @@ function signedPercentagePoints(value: number) {
 
 function scoreClass(score: number) {
   if (score >= 80) return "text-cyan";
-  if (score >= 60) return "text-violet";
   if (score >= 40) return "text-warning";
   return "text-loss";
 }
@@ -1132,7 +1132,7 @@ function statusDotClass(status: MetricStatus) {
 function trendClass(trend: TrendDirection) {
   if (trend === "improving") return "border-cyan/50 bg-cyan/[0.08] text-cyan";
   if (trend === "degrading") return "border-loss/50 bg-loss/[0.08] text-loss";
-  if (trend === "stable") return "border-violet/45 bg-violet/[0.08] text-violet";
+  if (trend === "stable") return "border-cyan/40 bg-cyan/[0.06] text-cyan";
   return "border-white/[0.12] bg-white/[0.035] text-muted";
 }
 

@@ -403,20 +403,20 @@
     position: relative;
     overflow: visible;
     cursor: pointer;
-    border-color: rgba(88, 214, 255, 0.72) !important;
-    outline: 1px solid rgba(88, 214, 255, 0.2);
+    border-color: rgba(255, 184, 77, 0.58) !important;
+    outline: 1px solid rgba(255, 184, 77, 0.16);
     outline-offset: 4px;
     background:
-      radial-gradient(circle at 88% 12%, rgba(88, 214, 255, 0.2), transparent 12rem),
-      radial-gradient(circle at 6% 100%, rgba(120, 97, 255, 0.12), transparent 14rem),
-      linear-gradient(135deg, rgba(88, 214, 255, 0.12), rgba(120, 97, 255, 0.045)),
+      radial-gradient(circle at 88% 12%, rgba(255, 184, 77, 0.16), transparent 12rem),
+      radial-gradient(circle at 6% 100%, rgba(88, 214, 255, 0.07), transparent 14rem),
+      linear-gradient(135deg, rgba(255, 184, 77, 0.09), rgba(88, 214, 255, 0.035)),
       rgba(3, 8, 16, 0.88) !important;
     box-shadow:
-      inset 0 0 0 1px rgba(88, 214, 255, 0.2),
+      inset 0 0 0 1px rgba(255, 184, 77, 0.14),
       inset 0 1px 0 rgba(247, 247, 243, 0.08),
-      0 0 0 1px rgba(88, 214, 255, 0.18),
-      0 0 24px -10px rgba(88, 214, 255, 0.74),
-      0 22px 70px -50px rgba(120, 97, 255, 0.72);
+      0 0 0 1px rgba(255, 184, 77, 0.13),
+      0 0 22px -12px rgba(255, 184, 77, 0.66),
+      0 22px 70px -54px rgba(88, 214, 255, 0.44);
     transform: translateZ(0);
     animation: EdgeTrace-recommended-pulse 2.8s ease-in-out infinite;
   }
@@ -429,11 +429,11 @@
     z-index: 2;
     width: 0.22rem;
     border-radius: 999px;
-    background: linear-gradient(180deg, #d9f7ff, #58d6ff 45%, #7861ff 100%);
+    background: linear-gradient(180deg, #fff4d7, #ffb84d 45%, #58d6ff 100%);
     box-shadow:
-      0 0 10px rgba(88, 214, 255, 0.76),
-      0 0 24px rgba(88, 214, 255, 0.46),
-      0 0 38px rgba(120, 97, 255, 0.34);
+      0 0 10px rgba(255, 184, 77, 0.64),
+      0 0 24px rgba(255, 184, 77, 0.36),
+      0 0 38px rgba(88, 214, 255, 0.2);
     animation: EdgeTrace-recommended-rail 2.2s ease-in-out infinite;
   }
 
@@ -443,18 +443,18 @@
     right: 0.85rem;
     top: 0.75rem;
     z-index: 2;
-    border: 1px solid rgba(88, 214, 255, 0.46);
-    background: linear-gradient(135deg, rgba(88, 214, 255, 0.15), rgba(120, 97, 255, 0.1));
-    color: #9eeaff;
+    border: 1px solid rgba(255, 184, 77, 0.42);
+    background: linear-gradient(135deg, rgba(255, 184, 77, 0.16), rgba(255, 184, 77, 0.08));
+    color: #ffcf84;
     padding: 0.28rem 0.52rem;
-    text-shadow: 0 0 14px rgba(88, 214, 255, 0.72);
+    text-shadow: 0 0 14px rgba(255, 184, 77, 0.48);
     font-size: 0.62rem;
     font-weight: 800;
     letter-spacing: 0.18em;
     text-transform: uppercase;
     box-shadow:
       inset 0 1px 0 rgba(247, 247, 243, 0.08),
-      0 0 16px rgba(88, 214, 255, 0.16);
+      0 0 16px rgba(255, 184, 77, 0.12);
   }
 
   .EdgeTrace-recommended::after {
@@ -466,8 +466,8 @@
     border-radius: inherit;
     background:
       linear-gradient(105deg, transparent 0%, transparent 22%, rgba(247, 251, 255, 0.18) 40%, transparent 58%, transparent 100%),
-      linear-gradient(90deg, rgba(88, 214, 255, 0.18), transparent 24%, transparent 72%, rgba(120, 97, 255, 0.14)),
-      linear-gradient(180deg, rgba(88, 214, 255, 0.1), transparent 34%, rgba(3, 6, 12, 0.16));
+      linear-gradient(90deg, rgba(255, 184, 77, 0.16), transparent 24%, transparent 72%, rgba(88, 214, 255, 0.1)),
+      linear-gradient(180deg, rgba(255, 184, 77, 0.075), transparent 34%, rgba(3, 6, 12, 0.16));
     background-size: 220% 100%, 100% 100%, 100% 100%;
     opacity: 0.56;
     animation: EdgeTrace-recommended-sheen 4.2s ease-in-out infinite;
@@ -489,13 +489,13 @@
   }
 
   .EdgeTrace-recommended:hover {
-    border-color: rgba(88, 214, 255, 0.88) !important;
+    border-color: rgba(255, 184, 77, 0.75) !important;
     box-shadow:
-      inset 0 0 0 1px rgba(88, 214, 255, 0.22),
+      inset 0 0 0 1px rgba(255, 184, 77, 0.18),
       inset 0 1px 0 rgba(247, 247, 243, 0.09),
-      0 0 0 1px rgba(88, 214, 255, 0.22),
-      0 0 30px -8px rgba(88, 214, 255, 0.8),
-      0 26px 74px -50px rgba(120, 97, 255, 0.76);
+      0 0 0 1px rgba(255, 184, 77, 0.2),
+      0 0 28px -10px rgba(255, 184, 77, 0.64),
+      0 26px 74px -54px rgba(88, 214, 255, 0.44);
     transform: translateY(-1px);
   }
 
@@ -506,22 +506,22 @@
   @keyframes EdgeTrace-recommended-pulse {
     0%,
     100% {
-      outline-color: rgba(88, 214, 255, 0.18);
+      outline-color: rgba(255, 184, 77, 0.15);
       box-shadow:
-        inset 0 0 0 1px rgba(88, 214, 255, 0.18),
+        inset 0 0 0 1px rgba(255, 184, 77, 0.14),
         inset 0 1px 0 rgba(247, 247, 243, 0.08),
-        0 0 0 1px rgba(88, 214, 255, 0.18),
-        0 0 22px -11px rgba(88, 214, 255, 0.68),
-        0 22px 70px -52px rgba(120, 97, 255, 0.66);
+        0 0 0 1px rgba(255, 184, 77, 0.14),
+        0 0 22px -12px rgba(255, 184, 77, 0.54),
+        0 22px 70px -54px rgba(88, 214, 255, 0.38);
     }
     50% {
-      outline-color: rgba(88, 214, 255, 0.34);
+      outline-color: rgba(255, 184, 77, 0.25);
       box-shadow:
-        inset 0 0 0 1px rgba(88, 214, 255, 0.26),
+        inset 0 0 0 1px rgba(255, 184, 77, 0.22),
         inset 0 1px 0 rgba(247, 247, 243, 0.1),
-        0 0 0 1px rgba(88, 214, 255, 0.26),
-        0 0 30px -8px rgba(88, 214, 255, 0.82),
-        0 24px 78px -50px rgba(120, 97, 255, 0.78);
+        0 0 0 1px rgba(255, 184, 77, 0.2),
+        0 0 30px -10px rgba(255, 184, 77, 0.68),
+        0 24px 78px -54px rgba(88, 214, 255, 0.46);
     }
   }
 

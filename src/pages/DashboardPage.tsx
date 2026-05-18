@@ -253,7 +253,7 @@ export function DashboardPage({
                 {formatReportType(result.reportType)}
               </span>
               {result.strategyLabel && (
-                <span className="border border-accent/50 px-2.5 py-1 text-xs text-accent">
+                <span className="border border-violet/45 px-2.5 py-1 text-xs text-violet">
                   {result.strategyLabel}
                 </span>
               )}
@@ -319,10 +319,10 @@ export function DashboardPage({
       </section>
 
       {reportJustCreated && (
-        <section className="mt-6 border border-profit/35 bg-profit/[0.08] p-5">
+        <section className="mt-6 border border-cyan/35 bg-cyan/[0.08] p-5">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-profit">Report Created</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-cyan">Report Created</p>
               <h2 className="mt-2 text-2xl font-semibold tracking-[-0.045em] text-ink">
                 Diagnostic report created successfully.
               </h2>
@@ -394,9 +394,9 @@ export function DashboardPage({
           className="EdgeTrace-card relative overflow-hidden p-7 md:p-8"
           data-testid="dashboard-health-card"
         >
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_86%_28%,rgba(61,220,151,0.13),transparent_17rem)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_86%_28%,rgba(88,214,255,0.075),transparent_17rem)]" />
           <div className="relative">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-cyan md:text-base">Strategy Health</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-muted md:text-base">Strategy Health</p>
             <div className="mt-7 flex flex-col gap-7 md:flex-row md:items-end">
               <div>
                 <p className={`text-8xl font-semibold leading-none tracking-[-0.08em] ${scoreClass(intelligence.strategyHealthScore)}`}>
@@ -410,8 +410,10 @@ export function DashboardPage({
         </div>
 
         <div id="primary-diagnosis" className="EdgeTrace-card scroll-mt-28 p-7 md:p-8">
-          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-warning md:text-base">Primary Diagnosis</p>
-          <h2 className="mt-7 text-3xl font-semibold tracking-[-0.055em] text-ink">{intelligence.primaryDiagnosis}</h2>
+          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-muted md:text-base">Primary Diagnosis</p>
+          <h2 className={`mt-7 text-3xl font-semibold tracking-[-0.055em] ${diagnosisClass(intelligence.primaryDiagnosis)}`}>
+            {intelligence.primaryDiagnosis}
+          </h2>
           <p className="mt-5 text-sm leading-6 text-muted">{intelligence.primaryLeak.explanation}</p>
           <div className="EdgeTrace-subpanel mt-8 p-5">
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-muted">Supporting Metric</p>
@@ -421,7 +423,7 @@ export function DashboardPage({
           </div>
           {primaryInspection && (
             <button
-              className="EdgeTrace-subpanel EdgeTrace-recommended mt-4 w-full p-5 text-left transition hover:border-accent/70"
+              className="EdgeTrace-subpanel EdgeTrace-recommended mt-4 w-full p-5 text-left transition hover:border-warning/70"
               onClick={inspectPrimarySegment}
             >
               <span className="EdgeTrace-recommended-signal" aria-hidden="true" />
@@ -441,25 +443,25 @@ export function DashboardPage({
           label="Trades analyzed"
           value={String(normalizedTradeCount)}
           detail="Completed trades in this report"
-          tone="text-cyan"
+          tone="text-ink"
         />
         <DashboardSummaryCard
           label="After-cost performance"
           value={currency.format(metrics.netPnl)}
           detail={`Expectancy ${currency.format(metrics.expectancy)} per trade`}
-          tone={metrics.netPnl >= 0 ? "text-profit" : "text-loss"}
+          tone={metrics.netPnl >= 0 ? "text-cyan" : "text-loss"}
         />
         <DashboardSummaryCard
           label="Execution friction"
           value={intelligence.costDragLabel}
           detail={`Total costs ${currency.format(metrics.totalCosts)}`}
-          tone={intelligence.keyMetricStatuses.costDrag === "weak" ? "text-warning" : "text-cyan"}
+          tone={metricValueClass(intelligence.keyMetricStatuses.costDrag)}
         />
         <DashboardSummaryCard
           label="Trade quality"
           value={metrics.averageRealizedR !== undefined ? `${number.format(metrics.averageRealizedR)}R` : "N/A"}
           detail={`Win rate ${percent.format(metrics.winRate)} · PF ${formatNumber(metrics.profitFactor)}`}
-          tone="text-ink"
+          tone={metricValueClass(intelligence.keyMetricStatuses.averageR)}
         />
       </section>
       <section className="mt-5 grid gap-4 lg:grid-cols-3">
@@ -520,7 +522,7 @@ export function DashboardPage({
           </div>
 
           <div className="EdgeTrace-card-soft p-5">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-cyan md:text-base">Recommended next steps</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-warning md:text-base">Recommended next steps</p>
             {workflowAction && (
               <div className="EdgeTrace-subpanel EdgeTrace-recommended mt-4 p-4">
                 <p className="text-lg font-semibold tracking-[-0.04em] text-ink">{workflowAction.title}</p>
@@ -533,35 +535,35 @@ export function DashboardPage({
             <div className="mt-4 grid gap-3">
               {primaryInspection && (
                 <button
-                  className="EdgeTrace-subpanel p-4 text-left transition hover:border-accent/70"
+                  className="EdgeTrace-subpanel p-4 text-left transition hover:border-warning/60"
                   onClick={inspectPrimarySegment}
                 >
                   <p className="font-semibold text-ink">Inspect weakest segment</p>
                   <p className="mt-1 text-sm text-muted">{primaryInspection.title}</p>
-                  <p className="mt-2 text-sm text-accent">{primaryInspection.metric}</p>
+                  <p className="mt-2 text-sm text-warning">{primaryInspection.metric}</p>
                 </button>
               )}
               {onCompareReport && (
                 <button
-                  className="EdgeTrace-subpanel p-4 text-left transition hover:border-accent/70"
+                  className="EdgeTrace-subpanel p-4 text-left transition hover:border-violet/60"
                   onClick={() => onCompareReport(result.id)}
                 >
                   <p className="font-semibold text-ink">Compare this report</p>
                   <p className="mt-1 text-sm text-muted">See what improved, degraded, or leaked.</p>
-                  <p className="mt-2 text-sm text-accent">Open comparison</p>
+                  <p className="mt-2 text-sm text-violet">Open comparison</p>
                 </button>
               )}
               <button
-                className="EdgeTrace-subpanel p-4 text-left transition hover:border-accent/70"
+                className="EdgeTrace-subpanel p-4 text-left transition hover:border-violet/60"
                 onClick={() => setIsAddingToStrategySet(true)}
               >
                 <p className="font-semibold text-ink">Add to strategy set</p>
                 <p className="mt-1 text-sm text-muted">Group this report with related iterations.</p>
-                <p className="mt-2 text-sm text-accent">Organize iteration</p>
+                <p className="mt-2 text-sm text-violet">Organize iteration</p>
               </button>
               {hasReconstructionAudit && (
                 <button
-                  className="EdgeTrace-subpanel p-4 text-left transition hover:border-accent/70"
+                  className="EdgeTrace-subpanel p-4 text-left transition hover:border-violet/60"
                   onClick={() => {
                     trackEvent("reconstruction_audit_opened", { reportId: result.id });
                     onReconstructionAudit?.();
@@ -569,7 +571,7 @@ export function DashboardPage({
                 >
                   <p className="font-semibold text-ink">Review reconstruction audit</p>
                   <p className="mt-1 text-sm text-muted">Confirm which broker executions formed each completed trade.</p>
-                  <p className="mt-2 text-sm text-accent">Audit lineage</p>
+                  <p className="mt-2 text-sm text-violet">Audit lineage</p>
                 </button>
               )}
               {!primaryInspection && !onCompareReport && (
@@ -640,7 +642,7 @@ export function DashboardPage({
       <section className="mt-8">
         <div className="mb-4 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="text-sm uppercase tracking-[0.22em] text-accent">Strategy Health</p>
+            <p className="text-sm uppercase tracking-[0.22em] text-muted">Strategy Health</p>
             <h2 className="mt-2 text-2xl font-semibold">Breakdown analytics</h2>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -649,8 +651,8 @@ export function DashboardPage({
                 key={dimension}
                 className={`rounded-md border px-4 py-2 text-sm ${
                   breakdownDimension === dimension
-                    ? "border-accent text-accent"
-                    : "border-line text-ink hover:border-accent"
+                    ? "border-violet text-violet"
+                    : "border-line text-ink hover:border-violet"
                 }`}
                 onClick={() => {
                   setBreakdownDimension(dimension);
@@ -723,15 +725,17 @@ export function DashboardPage({
                   <td className="px-4 py-3 font-medium">{row.group}</td>
                   <td className="px-4 py-3 text-muted">{row.totalTrades}</td>
                   <td className="px-4 py-3">{percent.format(row.winRate)}</td>
-                  <td className={row.netPnl >= 0 ? "px-4 py-3 text-accent" : "px-4 py-3 text-loss"}>
+                  <td className={`px-4 py-3 ${numericValueClass(row.netPnl)}`}>
                     {currency.format(row.netPnl)}
                   </td>
-                  <td className="px-4 py-3">{currency.format(row.expectancy)}</td>
+                  <td className={`px-4 py-3 ${numericValueClass(row.expectancy)}`}>{currency.format(row.expectancy)}</td>
                   <td className="px-4 py-3 text-muted">{formatNumber(row.averageRealizedR)}</td>
-                  <td className="px-4 py-3 text-warning">{row.costDrag.label}</td>
+                  <td className={`px-4 py-3 ${costDragValueClass(row.costDragPct)}`}>{row.costDrag.label}</td>
                   <td className="px-4 py-3">{currency.format(row.grossPnl)}</td>
-                  <td className="px-4 py-3 text-warning">{currency.format(row.totalCosts)}</td>
-                  <td className="px-4 py-3 text-accent">{currency.format(row.averageWin)}</td>
+                  <td className={row.totalCosts > 0 ? "px-4 py-3 text-warning" : "px-4 py-3 text-muted"}>
+                    {currency.format(row.totalCosts)}
+                  </td>
+                  <td className="px-4 py-3 text-cyan">{currency.format(row.averageWin)}</td>
                   <td className="px-4 py-3 text-loss">{currency.format(row.averageLoss)}</td>
                   <td className="px-4 py-3 text-muted">{formatNumber(row.profitFactor)}</td>
                   <td className="px-4 py-3 text-muted">{formatPercent(row.netToGrossPct)}</td>
@@ -776,7 +780,7 @@ export function DashboardPage({
                 <td className="px-4 py-3 text-muted">{trade.side}</td>
                 <td className="px-4 py-3 text-muted">{trade.entryTime}</td>
                 <td className="px-4 py-3">{currency.format(trade.grossPnl)}</td>
-                <td className={trade.netPnl >= 0 ? "px-4 py-3 text-accent" : "px-4 py-3 text-loss"}>
+                <td className={`px-4 py-3 ${numericValueClass(trade.netPnl)}`}>
                   {currency.format(trade.netPnl)}
                 </td>
                 <td className="px-4 py-3 text-muted">{trade.realizedR?.toFixed(2) ?? "N/A"}</td>
@@ -869,16 +873,16 @@ function DemoTour({
 }) {
   const current = demoSteps[step];
   return (
-    <div className="fixed bottom-6 right-6 z-50 max-w-sm rounded-lg border border-accent/70 bg-panel p-5 shadow-2xl">
-      <p className="text-xs uppercase tracking-[0.18em] text-accent">Demo Guide {step + 1} / {demoSteps.length}</p>
+    <div className="fixed bottom-6 right-6 z-50 max-w-sm rounded-lg border border-violet/60 bg-panel p-5 shadow-2xl">
+      <p className="text-xs uppercase tracking-[0.18em] text-violet">Demo Guide {step + 1} / {demoSteps.length}</p>
       <h2 className="mt-2 text-lg font-semibold">{current.title}</h2>
       <p className="mt-3 text-sm leading-6 text-muted">{current.text}</p>
       <div className="mt-5 flex flex-wrap justify-between gap-2">
-        <button className="rounded-md border border-line px-3 py-1.5 text-xs text-muted hover:border-accent" onClick={onExit}>
+        <button className="rounded-md border border-line px-3 py-1.5 text-xs text-muted hover:border-cyan" onClick={onExit}>
           Exit Demo
         </button>
         <div className="flex gap-2">
-          <button className="rounded-md border border-line px-3 py-1.5 text-xs hover:border-accent disabled:opacity-40" disabled={step === 0} onClick={onBack}>
+          <button className="rounded-md border border-line px-3 py-1.5 text-xs hover:border-cyan disabled:opacity-40" disabled={step === 0} onClick={onBack}>
             Back
           </button>
           {step === demoSteps.length - 1 ? (
@@ -907,11 +911,11 @@ function SegmentCard({
   tone: "accent" | "loss";
   onSelect?: (row: BreakdownRow) => void;
 }) {
+  const borderClass = tone === "accent" ? "border-cyan/50" : "border-loss/50";
+  const hoverClass = row ? (tone === "accent" ? "hover:border-cyan" : "hover:border-loss") : "";
   return (
     <button
-      className={`rounded-lg border bg-panel p-5 text-left ${
-        tone === "accent" ? "border-accent/50" : "border-loss/50"
-      } ${row ? "hover:border-accent" : ""}`}
+      className={`rounded-lg border bg-panel p-5 text-left ${borderClass} ${hoverClass}`}
       disabled={!row}
       onClick={() => row && onSelect?.(row)}
     >
@@ -962,16 +966,41 @@ function DashboardSummaryCard({
 }
 
 function scoreClass(score: number) {
-  if (score >= 80) return "text-accent";
-  if (score >= 60) return "text-warning";
+  if (score >= 80) return "text-cyan";
+  if (score >= 40) return "text-warning";
   return "text-loss";
 }
 
 function metricStatusClass(status: MetricStatus) {
-  if (status === "healthy") return "border-accent/50";
+  if (status === "healthy") return "border-cyan/50";
   if (status === "warning") return "border-warning/60";
   if (status === "weak") return "border-loss/60";
   return "border-line";
+}
+
+function metricValueClass(status: MetricStatus) {
+  if (status === "healthy") return "text-cyan";
+  if (status === "warning") return "text-warning";
+  if (status === "weak") return "text-loss";
+  return "text-muted";
+}
+
+function diagnosisClass(diagnosis: string) {
+  if (diagnosis === "Healthy") return "text-cyan";
+  if (diagnosis === "Watchlist" || diagnosis === "Insufficient Data") return "text-warning";
+  return "text-loss";
+}
+
+function numericValueClass(value: number | undefined) {
+  if (value === undefined || !Number.isFinite(value)) return "text-muted";
+  return value >= 0 ? "text-cyan" : "text-loss";
+}
+
+function costDragValueClass(value: number | undefined) {
+  if (value === undefined || !Number.isFinite(value)) return "text-muted";
+  if (value > 0.4) return "text-loss";
+  if (value > 0.2) return "text-warning";
+  return "text-cyan";
 }
 
 function ChartPanel({ title, children }: { title: string; children: React.ReactNode }) {
