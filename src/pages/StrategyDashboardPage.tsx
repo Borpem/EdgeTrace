@@ -574,7 +574,7 @@ function RecentReportsPanel({
   onReports: () => void;
 }) {
   return (
-    <section className="EdgeTrace-card-soft p-5 shadow-[0_18px_64px_-62px_rgba(88,214,255,0.24)]">
+    <section className="EdgeTrace-card-soft min-w-0 p-5 shadow-[0_18px_64px_-62px_rgba(88,214,255,0.24)]">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-[0.13em] text-muted">Research library snapshot</p>
@@ -585,8 +585,8 @@ function RecentReportsPanel({
           View all reports
         </button>
       </div>
-      <div className="EdgeTrace-dashboard-cell mt-5 overflow-hidden p-0">
-        <div className="hidden grid-cols-[minmax(0,1.2fr)_84px_112px_112px_112px_minmax(160px,0.8fr)_96px] border-b border-white/[0.055] bg-black/20 px-5 py-3 text-[10px] font-semibold uppercase tracking-[0.11em] text-muted xl:grid">
+      <div className="EdgeTrace-dashboard-cell mt-5 min-w-0 overflow-x-auto p-0">
+        <div className="hidden min-w-[900px] grid-cols-[minmax(180px,1.2fr)_72px_104px_104px_104px_minmax(150px,0.8fr)_88px] border-b border-white/[0.055] bg-black/20 px-5 py-3 text-[10px] font-semibold uppercase tracking-[0.11em] text-muted 2xl:grid">
           <span>Report</span>
           <span>Health</span>
           <span>Net PnL</span>
@@ -627,15 +627,15 @@ function RecentReportRow({
   const costDrag = costDragRatio(report);
   return (
     <div
-      className={`grid gap-4 px-5 py-3.5 transition xl:grid-cols-[minmax(0,1.2fr)_84px_112px_112px_112px_minmax(160px,0.8fr)_96px] xl:items-center ${
+      className={`grid min-w-0 gap-x-4 gap-y-3 px-5 py-4 transition sm:grid-cols-2 lg:grid-cols-3 2xl:min-w-[900px] 2xl:grid-cols-[minmax(180px,1.2fr)_72px_104px_104px_104px_minmax(150px,0.8fr)_88px] 2xl:items-center ${
         active ? "bg-cyan/[0.03]" : "hover:bg-white/[0.018]"
       }`}
     >
-      <button className="min-w-0 text-left" onClick={onFocus}>
-        <div className="flex flex-wrap items-center gap-2">
-          <p className="truncate text-sm font-semibold text-ink">{report.name}</p>
+      <button className="min-w-0 text-left sm:col-span-2 lg:col-span-3 2xl:col-span-1" onClick={onFocus}>
+        <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center">
+          <p className="min-w-0 max-w-full flex-1 truncate text-sm font-semibold text-ink">{report.name}</p>
           {active && (
-            <span className="border border-cyan/35 bg-cyan/[0.08] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.13em] text-cyan">
+            <span className="w-fit shrink-0 border border-cyan/35 bg-cyan/[0.08] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.13em] text-cyan">
               Focused
             </span>
           )}
@@ -650,8 +650,8 @@ function RecentReportRow({
         value={costDrag === undefined ? "Unavailable" : percent.format(costDrag)}
         tone={costDrag !== undefined && costDrag > 0.4 ? "warning" : "cyan"}
       />
-      <p className="text-sm font-semibold text-ink">{diagnosis}</p>
-      <button className="EdgeTrace-compact-secondary justify-center" onClick={onOpen}>
+      <p className="min-w-0 text-sm font-semibold text-ink sm:col-span-2 lg:col-span-1 2xl:col-span-1">{diagnosis}</p>
+      <button className="EdgeTrace-compact-secondary justify-center sm:col-span-2 lg:col-span-1 2xl:col-span-1" onClick={onOpen}>
         Open
       </button>
     </div>
@@ -748,9 +748,9 @@ function MiniStatus({ label, value }: { label: string; value: string }) {
 function ReportStat({ label, value, tone }: { label: string; value: string; tone: "cyan" | "warning" | "loss" }) {
   const toneClass = tone === "cyan" ? "text-cyan" : tone === "warning" ? "text-warning" : "text-loss";
   return (
-    <div>
-      <p className="text-[10px] font-semibold uppercase tracking-[0.13em] text-muted xl:hidden">{label}</p>
-      <p className={`mt-1 font-semibold xl:mt-0 ${toneClass}`}>{value}</p>
+    <div className="min-w-0">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.13em] text-muted 2xl:hidden">{label}</p>
+      <p className={`mt-1 break-words font-semibold 2xl:mt-0 2xl:whitespace-nowrap ${toneClass}`}>{value}</p>
     </div>
   );
 }
