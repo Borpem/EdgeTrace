@@ -94,6 +94,7 @@ export function StrategyDashboardPage({
   const [selectedId, setSelectedId] = useState(selectedReport?.id ?? "");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [showSupportingAnalysis, setShowSupportingAnalysis] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -420,26 +421,52 @@ export function StrategyDashboardPage({
               </aside>
             </div>
 
-            <div className="relative z-10 mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-6">
-              <BriefMetric label="Net PnL" value={currency.format(metrics.netPnl)} detail={`${metrics.totalTrades} trades`} status={intelligence.keyMetricStatuses.netPnl} />
-              <BriefMetric label="Expectancy" value={currency.format(metrics.expectancy)} detail="After-cost average" status={intelligence.keyMetricStatuses.expectancy} />
-              <BriefMetric label="Cost Drag" value={intelligence.costDragLabel} detail={currency.format(metrics.totalCosts)} status={intelligence.keyMetricStatuses.costDrag} />
-              <BriefMetric label="R Capture" value={metrics.averageRealizedR === undefined ? "Unavailable" : `${number.format(metrics.averageRealizedR)}R`} detail="Risk conversion" status={intelligence.keyMetricStatuses.averageR} />
-              <BriefMetric label="Win Rate" value={percent.format(metrics.winRate)} detail="Closed trades" status={metrics.winRate >= 0.5 ? "healthy" : metrics.winRate >= 0.4 ? "warning" : "weak"} />
-              <BriefMetric label="Profit Factor" value={number.format(metrics.profitFactor)} detail="Gross win/loss" status={metrics.profitFactor >= 1.5 ? "healthy" : metrics.profitFactor >= 1 ? "warning" : "weak"} />
+            <div className="relative z-10 mt-5">
+              <button
+                className="EdgeTrace-analysis-reveal w-full px-4 py-4 text-left md:px-5"
+                type="button"
+                aria-expanded={showSupportingAnalysis}
+                onClick={() => setShowSupportingAnalysis((value) => !value)}
+              >
+                <span className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
+                  <span>
+                    <span className="block text-[11px] font-semibold uppercase tracking-[0.16em] text-cyan">Recommended next view</span>
+                    <span className="mt-2 block text-lg font-semibold tracking-[-0.035em] text-ink">
+                      {showSupportingAnalysis ? "Hide supporting analysis" : "Open supporting analysis"}
+                    </span>
+                  </span>
+                  <span className="mt-3 flex items-center gap-3 text-sm font-semibold text-cyan md:mt-0">
+                    Decision metrics, change history, and report activity
+                    <ArrowRight className={`transition ${showSupportingAnalysis ? "rotate-90" : ""}`} size={17} />
+                  </span>
+                </span>
+              </button>
+
+              {showSupportingAnalysis && (
+                <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-6">
+                  <BriefMetric label="Net PnL" value={currency.format(metrics.netPnl)} detail={`${metrics.totalTrades} trades`} status={intelligence.keyMetricStatuses.netPnl} />
+                  <BriefMetric label="Expectancy" value={currency.format(metrics.expectancy)} detail="After-cost average" status={intelligence.keyMetricStatuses.expectancy} />
+                  <BriefMetric label="Cost Drag" value={intelligence.costDragLabel} detail={currency.format(metrics.totalCosts)} status={intelligence.keyMetricStatuses.costDrag} />
+                  <BriefMetric label="R Capture" value={metrics.averageRealizedR === undefined ? "Unavailable" : `${number.format(metrics.averageRealizedR)}R`} detail="Risk conversion" status={intelligence.keyMetricStatuses.averageR} />
+                  <BriefMetric label="Win Rate" value={percent.format(metrics.winRate)} detail="Closed trades" status={metrics.winRate >= 0.5 ? "healthy" : metrics.winRate >= 0.4 ? "warning" : "weak"} />
+                  <BriefMetric label="Profit Factor" value={number.format(metrics.profitFactor)} detail="Gross win/loss" status={metrics.profitFactor >= 1.5 ? "healthy" : metrics.profitFactor >= 1 ? "warning" : "weak"} />
+                </div>
+              )}
             </div>
           </section>
 
-          <div className="grid gap-5 xl:grid-cols-[0.88fr_1.12fr]">
-            <ChangeMatrix change={recentChange} className="mt-0" />
-            <RecentReportsPanel
-              reports={recentReports}
-              activeReportId={safeReport.id}
-              onFocus={(id) => void handleSelectReport(id)}
-              onOpen={(id) => void openDetailedReport(id)}
-              onReports={onReports}
-            />
-          </div>
+          {showSupportingAnalysis && (
+            <div className="grid gap-5 xl:grid-cols-[0.88fr_1.12fr]">
+              <ChangeMatrix change={recentChange} className="mt-0" />
+              <RecentReportsPanel
+                reports={recentReports}
+                activeReportId={safeReport.id}
+                onFocus={(id) => void handleSelectReport(id)}
+                onOpen={(id) => void openDetailedReport(id)}
+                onReports={onReports}
+              />
+            </div>
+          )}
         </div>
 
         <aside className="grid gap-5 2xl:sticky 2xl:top-6">
