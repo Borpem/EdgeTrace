@@ -466,6 +466,70 @@
     transform: translateY(-1px);
   }
 
+  .EdgeTrace-rail-reveal {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border-radius: 0.125rem;
+    border: 1px solid rgba(255, 184, 77, 0.34);
+    background:
+      radial-gradient(circle at 90% 0%, rgba(255, 184, 77, 0.11), transparent 14rem),
+      linear-gradient(135deg, rgba(255, 184, 77, 0.07), rgba(88, 214, 255, 0.025)),
+      rgba(3, 8, 16, 0.76);
+    color: #f7f7f3;
+    box-shadow:
+      inset 0 1px 0 rgba(247, 247, 243, 0.06),
+      0 0 22px -16px rgba(255, 184, 77, 0.72),
+      0 14px 42px -36px rgba(88, 214, 255, 0.34);
+    cursor: pointer;
+    animation: EdgeTrace-rail-reveal-pulse 3.2s ease-in-out infinite;
+  }
+
+  .EdgeTrace-rail-reveal::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    background: linear-gradient(100deg, transparent 0%, transparent 34%, rgba(247, 251, 255, 0.11) 50%, transparent 66%, transparent 100%);
+    background-size: 220% 100%;
+    opacity: 0.42;
+    animation: EdgeTrace-analysis-reveal-sheen 5s ease-in-out infinite;
+  }
+
+  .EdgeTrace-rail-reveal > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .EdgeTrace-rail-reveal:hover {
+    border-color: rgba(255, 184, 77, 0.56);
+    box-shadow:
+      inset 0 1px 0 rgba(247, 247, 243, 0.08),
+      0 0 26px -14px rgba(255, 184, 77, 0.76),
+      0 18px 46px -36px rgba(88, 214, 255, 0.38);
+    transform: translateY(-1px);
+  }
+
+  @keyframes EdgeTrace-rail-reveal-pulse {
+    0%,
+    100% {
+      border-color: rgba(255, 184, 77, 0.3);
+      box-shadow:
+        inset 0 1px 0 rgba(247, 247, 243, 0.055),
+        0 0 20px -17px rgba(255, 184, 77, 0.62),
+        0 14px 42px -37px rgba(88, 214, 255, 0.3);
+    }
+    50% {
+      border-color: rgba(255, 184, 77, 0.46);
+      box-shadow:
+        inset 0 1px 0 rgba(247, 247, 243, 0.075),
+        0 0 25px -15px rgba(255, 184, 77, 0.74),
+        0 16px 46px -37px rgba(88, 214, 255, 0.36);
+    }
+  }
+
   @keyframes EdgeTrace-analysis-reveal-pulse {
     0%,
     100% {
@@ -651,6 +715,8 @@
   @media (prefers-reduced-motion: reduce) {
     .EdgeTrace-analysis-reveal,
     .EdgeTrace-analysis-reveal::before,
+    .EdgeTrace-rail-reveal,
+    .EdgeTrace-rail-reveal::after,
     .EdgeTrace-recommended,
     .EdgeTrace-recommended::after,
     .EdgeTrace-recommended-signal {

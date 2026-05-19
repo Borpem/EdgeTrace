@@ -95,6 +95,7 @@ export function StrategyDashboardPage({
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [showSupportingAnalysis, setShowSupportingAnalysis] = useState(false);
+  const [showFullActionQueue, setShowFullActionQueue] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -290,6 +291,9 @@ export function StrategyDashboardPage({
     onOpenActiveReport: () => onOpenReport(safeReport),
     onOpenReport: (id) => void openDetailedReport(id)
   });
+  const maxAttentionItems = Math.min(attentionItems.length, 5);
+  const visibleAttentionItems = showFullActionQueue ? attentionItems.slice(0, maxAttentionItems) : attentionItems.slice(0, 3);
+  const hiddenAttentionItems = Math.max(0, maxAttentionItems - visibleAttentionItems.length);
 
   return (
     <main className="EdgeTrace-shell py-7">
@@ -469,19 +473,42 @@ export function StrategyDashboardPage({
           )}
         </div>
 
-        <aside className="grid gap-5 2xl:sticky 2xl:top-6">
-          <section className="EdgeTrace-card-soft p-5 shadow-[0_20px_68px_-64px_rgba(255,184,77,0.26)]">
-            <div className="EdgeTrace-dashboard-cell p-5">
+        <aside className="grid gap-4 2xl:sticky 2xl:top-6">
+          <section className="EdgeTrace-card-soft p-4 shadow-[0_20px_68px_-64px_rgba(255,184,77,0.26)]">
+            <div className="EdgeTrace-dashboard-cell p-4">
               <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">Action queue</p>
               <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-ink">Needs inspection</h2>
               <p className="mt-2 text-sm leading-6 text-muted">Highest-value paths from summary diagnosis to concrete trades.</p>
             </div>
 
-            <div className="mt-4 grid gap-3">
-              {attentionItems.slice(0, 5).map((item, index) => (
+            <div className="mt-3 grid gap-2.5">
+              {visibleAttentionItems.map((item, index) => (
                 <RailPriorityItem key={`${item.title}-${index}`} item={item} index={index + 1} />
               ))}
             </div>
+
+            {hiddenAttentionItems > 0 && (
+              <button
+                className="EdgeTrace-rail-reveal mt-3 w-full px-4 py-3 text-left"
+                type="button"
+                aria-expanded={showFullActionQueue}
+                onClick={() => setShowFullActionQueue(true)}
+              >
+                <span className="flex items-center justify-between gap-3">
+                  <span>
+                    <span className="block text-[10px] font-semibold uppercase tracking-[0.14em] text-warning">More inspection paths</span>
+                    <span className="mt-1 block text-sm font-semibold text-ink">Show {hiddenAttentionItems} lower-priority items</span>
+                  </span>
+                  <ArrowRight size={16} />
+                </span>
+              </button>
+            )}
+
+            {showFullActionQueue && maxAttentionItems > 3 && (
+              <button className="mt-3 text-xs font-semibold text-muted transition hover:text-cyan" type="button" onClick={() => setShowFullActionQueue(false)}>
+                Collapse inspection queue
+              </button>
+            )}
 
             <div className="EdgeTrace-dashboard-cell mt-4 grid gap-2.5 p-4 sm:grid-cols-2">
               <button className="EdgeTrace-command-button justify-center" onClick={() => onOpenReport(safeReport)}>
