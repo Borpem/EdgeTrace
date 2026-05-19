@@ -334,7 +334,7 @@ export function StrategyDashboardPage({
 
       {error && <div className="mb-5 border border-loss/50 bg-loss/10 p-4 text-sm text-loss">{error}</div>}
 
-      <section className="grid gap-5 2xl:grid-cols-[minmax(0,1fr)_420px] 2xl:items-start">
+      <section className="grid gap-5 2xl:grid-cols-[minmax(0,1fr)_520px] 2xl:items-start">
         <div className="grid min-w-0 gap-5">
           <section
             className="EdgeTrace-card relative overflow-hidden p-4 shadow-[0_24px_80px_-70px_rgba(88,214,255,0.48)] md:p-6"
@@ -470,20 +470,20 @@ export function StrategyDashboardPage({
         </div>
 
         <aside className="grid gap-5 2xl:sticky 2xl:top-6">
-          <section className="EdgeTrace-card-soft p-4 shadow-[0_20px_68px_-64px_rgba(255,184,77,0.26)]">
-            <div className="EdgeTrace-dashboard-cell p-4">
+          <section className="EdgeTrace-card-soft p-5 shadow-[0_20px_68px_-64px_rgba(255,184,77,0.26)]">
+            <div className="EdgeTrace-dashboard-cell p-5">
               <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">Action queue</p>
               <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-ink">Needs inspection</h2>
               <p className="mt-2 text-sm leading-6 text-muted">Highest-value paths from summary diagnosis to concrete trades.</p>
             </div>
 
-            <div className="mt-3 grid gap-2.5">
+            <div className="mt-4 grid gap-3">
               {attentionItems.slice(0, 5).map((item, index) => (
                 <RailPriorityItem key={`${item.title}-${index}`} item={item} index={index + 1} />
               ))}
             </div>
 
-            <div className="EdgeTrace-dashboard-cell mt-3 grid gap-2 p-3">
+            <div className="EdgeTrace-dashboard-cell mt-4 grid gap-2.5 p-4 sm:grid-cols-2">
               <button className="EdgeTrace-command-button justify-center" onClick={() => onOpenReport(safeReport)}>
                 Open focused report <ArrowRight size={16} />
               </button>
@@ -717,7 +717,7 @@ function StrategySetPanel({
                 </div>
                 <TrendBadge trend={monitoring.direction} />
               </div>
-              <div className="mt-4 grid gap-3 sm:grid-cols-3">
+              <div className="mt-4 grid gap-3 sm:grid-cols-[0.85fr_minmax(0,1.45fr)_0.7fr]">
                 <MiniStatus label="Confidence" value={monitoring.confidence} />
                 <MiniStatus label="Latest iteration" value={monitoring.latestIteration} />
                 <MiniStatus label="Reports" value={String(monitoring.collection.reportCount)} />
