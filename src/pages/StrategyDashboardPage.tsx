@@ -520,14 +520,15 @@ export function StrategyDashboardPage({
             </div>
           </section>
 
-          <StrategySetPanel
-            monitoring={monitoring}
-            collections={collections}
-            onOpenStrategySet={(id) => openStrategySets(id)}
-            onCreateStrategySet={() => openStrategySets()}
-          />
         </aside>
       </section>
+
+      <StrategySetPanel
+        monitoring={monitoring}
+        collections={collections}
+        onOpenStrategySet={(id) => openStrategySets(id)}
+        onCreateStrategySet={() => openStrategySets()}
+      />
     </main>
   );
 }
@@ -719,10 +720,10 @@ function StrategySetPanel({
   onCreateStrategySet: () => void;
 }) {
   return (
-    <section className="EdgeTrace-card-soft relative overflow-hidden p-5 shadow-[0_18px_64px_-62px_rgba(120,97,255,0.25)] md:p-5">
+    <section className="EdgeTrace-card-soft relative mt-5 overflow-hidden p-4 shadow-[0_18px_64px_-62px_rgba(120,97,255,0.25)] md:p-5">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_88%_0%,rgba(120,97,255,0.04),transparent_18rem)]" />
-      <div className="relative">
-        <div className="EdgeTrace-dashboard-cell flex items-start justify-between gap-4 p-4">
+      <div className="relative grid gap-4 xl:grid-cols-[minmax(260px,0.78fr)_minmax(0,1.3fr)_minmax(260px,0.72fr)] xl:items-stretch">
+        <div className="EdgeTrace-dashboard-cell flex items-start justify-between gap-4 p-4 md:p-5">
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-[0.13em] text-muted">Strategy monitoring</p>
             <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-ink">Strategy set monitoring</h2>
@@ -734,28 +735,52 @@ function StrategySetPanel({
         </div>
 
         {monitoring.collection ? (
-          <div className="mt-4">
-            <div className="EdgeTrace-dashboard-cell border-violet/20 p-4">
-              <div className="flex flex-wrap items-start justify-between gap-4">
-                <div>
+          <>
+            <div className="EdgeTrace-dashboard-cell border-violet/20 p-4 md:p-5">
+              <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
+                <div className="min-w-0">
                   <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-violet">Top strategy set</p>
-                  <h3 className="mt-3 text-xl font-semibold tracking-[-0.035em] text-ink">{monitoring.collection.name}</h3>
-                  <p className="mt-2 text-sm leading-6 text-muted">{monitoring.summary}</p>
+                  <h3 className="mt-3 truncate text-xl font-semibold tracking-[-0.035em] text-ink">{monitoring.collection.name}</h3>
+                  <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">{monitoring.summary}</p>
                 </div>
-                <TrendBadge trend={monitoring.direction} />
+                <div className="lg:justify-self-end">
+                  <TrendBadge trend={monitoring.direction} />
+                </div>
               </div>
               <div className="mt-4 grid gap-3 sm:grid-cols-[0.85fr_minmax(0,1.45fr)_0.7fr]">
                 <MiniStatus label="Confidence" value={monitoring.confidence} />
                 <MiniStatus label="Latest iteration" value={monitoring.latestIteration} />
                 <MiniStatus label="Reports" value={String(monitoring.collection.reportCount)} />
               </div>
-              <button className="EdgeTrace-command-button mt-4" onClick={() => onOpenStrategySet(monitoring.collection!.id)}>
+            </div>
+
+            <div className="EdgeTrace-dashboard-cell flex flex-col justify-between gap-4 p-4 md:p-5">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">Monitoring actions</p>
+                <p className="mt-2 text-sm leading-6 text-muted">Open the set or jump to another monitored strategy.</p>
+              </div>
+              <button className="EdgeTrace-command-button w-full justify-center" onClick={() => onOpenStrategySet(monitoring.collection!.id)}>
                 Open strategy set <ArrowRight size={16} />
               </button>
+
+              {collections.length > 1 && (
+                <div className="grid gap-2">
+                  {collections.slice(1, 3).map((collection) => (
+                    <button
+                      key={collection.id}
+                      className="EdgeTrace-dashboard-cell flex items-center justify-between gap-3 px-4 py-3 text-left hover:border-violet/30"
+                      onClick={() => onOpenStrategySet(collection.id)}
+                    >
+                      <span className="min-w-0 truncate text-sm font-semibold text-ink">{collection.name}</span>
+                      <span className="shrink-0 text-xs text-muted">{collection.reportCount} reports</span>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
-          </div>
+          </>
         ) : (
-          <div className="EdgeTrace-dashboard-cell mt-4 p-4">
+          <div className="EdgeTrace-dashboard-cell p-4 md:p-5 xl:col-span-2">
             <p className="text-lg font-semibold tracking-[-0.03em] text-ink">Create a Strategy Set to track iterations over time.</p>
             <p className="mt-2 text-sm leading-6 text-muted">
               Once you have related reports, strategy sets show whether changes are improving performance or creating new leakage.
@@ -763,21 +788,6 @@ function StrategySetPanel({
             <button className="EdgeTrace-compact-primary mt-5" onClick={onCreateStrategySet}>
               Create Strategy Set
             </button>
-          </div>
-        )}
-
-        {collections.length > 1 && (
-          <div className="mt-4 grid gap-2">
-            {collections.slice(1, 3).map((collection) => (
-              <button
-                key={collection.id}
-                className="EdgeTrace-dashboard-cell flex items-center justify-between gap-3 px-4 py-3 text-left hover:border-violet/30"
-                onClick={() => onOpenStrategySet(collection.id)}
-              >
-                <span className="min-w-0 truncate text-sm font-semibold text-ink">{collection.name}</span>
-                <span className="text-xs text-muted">{collection.reportCount} reports</span>
-              </button>
-            ))}
           </div>
         )}
       </div>
