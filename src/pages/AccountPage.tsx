@@ -25,6 +25,7 @@ type AccountPageProps = {
 };
 
 type Tone = "cyan" | "purple" | "amber";
+const accountPlanOrder: PlanId[] = ["free", "pro", "advanced"];
 
 export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing }: AccountPageProps) {
   const [localProfile, setLocalProfile] = useState<UserProfile | null>(profile);
@@ -107,25 +108,27 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
   const hasStripeCustomer = Boolean(effectiveProfile?.stripeCustomerId);
 
   return (
-    <main className="EdgeTrace-shell py-8 md:py-12">
-      <section className="border-b border-white/[0.08] pb-7">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <h1 className="text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-6xl">
-              Account & billing
-            </h1>
-            <p className="mt-4 max-w-3xl text-base leading-7 text-muted">
-              Manage your plan, Stripe billing access, and the diagnostic workflow available to this workspace.
-            </p>
+    <main className="EdgeTrace-account-page EdgeTrace-shell py-8 md:py-12">
+      <section className="EdgeTrace-account-hero">
+        <div>
+          <p className="EdgeTrace-account-eyebrow">Account & billing</p>
+          <h1>Simple pricing. Serious edge.</h1>
+          <p>
+            Manage your plan, Stripe billing access, and the diagnostic workflow available to this workspace.
+          </p>
+          <div className="EdgeTrace-account-plan-chip">
+            <span>Current plan</span>
+            <strong className={planToneClass.text}>{plan.displayName}</strong>
+            <span>{plan.monthlyPriceLabel}</span>
           </div>
-          <div className="flex flex-wrap gap-3">
-            <button className="EdgeTrace-secondary-button" disabled={activeAction === "refresh"} onClick={() => void refreshProfile()}>
-              <RefreshCw size={16} /> {activeAction === "refresh" ? "Refreshing..." : "Refresh"}
-            </button>
-            <button className="EdgeTrace-secondary-button" onClick={onPricing}>
-              View pricing
-            </button>
-          </div>
+        </div>
+        <div className="EdgeTrace-account-actions">
+          <button className="EdgeTrace-pricing-secondary" disabled={activeAction === "refresh"} onClick={() => void refreshProfile()}>
+            <RefreshCw size={16} /> {activeAction === "refresh" ? "Refreshing..." : "Refresh"}
+          </button>
+          <button className="EdgeTrace-pricing-primary" onClick={onPricing}>
+            View full pricing
+          </button>
         </div>
       </section>
 
@@ -173,44 +176,33 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
         </aside>
 
         <div className="space-y-5">
-          <section className="relative overflow-hidden border border-white/[0.1] bg-[radial-gradient(circle_at_12%_0%,rgba(124,92,255,0.11),transparent_28rem),rgba(255,255,255,0.03)] p-6 md:p-7">
-            <div className="grid gap-7 lg:grid-cols-[1fr_330px] lg:items-start">
+          <section className="EdgeTrace-account-plan-stage">
+            <div className="EdgeTrace-account-plan-top">
               <div>
                 <div className="flex items-center gap-3">
                   <CreditCard className={isPaid ? "text-violet" : "text-cyan"} size={26} strokeWidth={1.6} />
-                  <h2 className="text-3xl font-semibold tracking-[-0.045em] text-ink">Plan management</h2>
+                  <h2>Choose the workflow depth your strategy needs.</h2>
                 </div>
-                <p className="mt-4 max-w-3xl text-sm leading-6 text-muted">
-                  Pro unlocks the full EdgeTrace workflow: unlimited diagnostic reports, full drilldowns, report
-                  comparisons, strategy sets, reconstruction audit, exports, and strategy health monitoring.
+                <p>
+                  Free gives a real first diagnostic. Pro is the full self-serve workflow at $19/month. Advanced is the
+                  monitoring roadmap.
                 </p>
-
-                <div className="mt-6 grid gap-3 md:grid-cols-3">
-                  <PlanPill title="Free" body="First full diagnostic" accent="cyan" active={currentPlanId === "free"} />
-                  <PlanPill title="Pro" body="$19/month full workflow" accent="purple" active={currentPlanId === "pro"} />
-                  <PlanPill title="Advanced" body="Coming soon" accent="amber" active={currentPlanId === "advanced"} />
-                </div>
               </div>
-
-              <div className="border border-violet/30 bg-violet/[0.055] p-5">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-violet">
-                  {isPaid ? "Subscription" : "Recommended upgrade"}
-                </p>
-                <h3 className="mt-4 text-2xl font-semibold tracking-[-0.04em] text-ink">
-                  {isPaid ? "Manage your subscription" : "Upgrade to Pro"}
-                </h3>
-                <p className="mt-3 text-sm leading-6 text-muted">
+              <div className="EdgeTrace-account-billing-card">
+                <p>{isPaid ? "Subscription" : "Recommended"}</p>
+                <h3>{isPaid ? "Manage billing" : "Upgrade to Pro"}</h3>
+                <span>
                   {isPaid
-                    ? "Open Stripe to update payment method, invoices, or cancellation settings."
-                    : "Start Stripe Checkout to activate Pro access for this account."}
-                </p>
+                    ? "Open Stripe for payment methods, invoices, and cancellation settings."
+                    : "Activate unlimited reports, full drilldowns, comparisons, strategy sets, exports, and monitoring."}
+                </span>
                 {isPaid && !hasStripeCustomer ? (
-                  <button className="EdgeTrace-secondary-button mt-5 w-full justify-center" disabled={activeAction === "refresh"} onClick={() => void refreshProfile()}>
+                  <button className="EdgeTrace-pricing-secondary mt-5 w-full" disabled={activeAction === "refresh"} onClick={() => void refreshProfile()}>
                     <RefreshCw size={16} /> {activeAction === "refresh" ? "Refreshing..." : "Refresh billing status"}
                   </button>
                 ) : (
                   <button
-                    className="EdgeTrace-primary-button mt-5 w-full justify-center"
+                    className="EdgeTrace-pricing-primary mt-5 w-full"
                     disabled={!billingConfigured || activeAction === "pro" || activeAction === "portal"}
                     onClick={() => void (isPaid ? openPortal() : startProCheckout())}
                   >
@@ -225,16 +217,30 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
                   </button>
                 )}
                 {isPaid && !hasStripeCustomer && (
-                  <p className="mt-3 text-xs leading-5 text-warning">
+                  <small>
                     Pro access is active, but no Stripe billing customer is linked yet. Refresh after checkout completes.
-                  </p>
+                  </small>
                 )}
                 {effectiveProfile?.stripeCustomerId && !isPaid && (
-                  <button className="mt-3 w-full border border-white/[0.1] px-4 py-3 text-sm font-semibold text-muted hover:border-white/25 hover:text-ink" onClick={() => void openPortal()}>
+                  <button className="EdgeTrace-pricing-secondary mt-3 w-full" onClick={() => void openPortal()}>
                     Open Billing Portal
                   </button>
                 )}
               </div>
+            </div>
+
+            <div className="EdgeTrace-account-plan-grid">
+              {accountPlanOrder.map((planId) => (
+                <AccountPlanCard
+                  key={planId}
+                  planId={planId}
+                  currentPlanId={currentPlanId}
+                  billingConfigured={billingConfigured}
+                  activeAction={activeAction}
+                  onStartPro={() => void startProCheckout()}
+                  onManage={() => void openPortal()}
+                />
+              ))}
             </div>
           </section>
 
@@ -307,6 +313,104 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
         </div>
       </section>
     </main>
+  );
+}
+
+function AccountPlanCard({
+  planId,
+  currentPlanId,
+  billingConfigured,
+  activeAction,
+  onStartPro,
+  onManage
+}: {
+  planId: PlanId;
+  currentPlanId: PlanId;
+  billingConfigured: boolean;
+  activeAction: string | null;
+  onStartPro: () => void;
+  onManage: () => void;
+}) {
+  const config = getPlanConfig(planId);
+  const tone = planTone(planId);
+  const isCurrent = currentPlanId === planId;
+  const isPro = planId === "pro";
+  const isAdvanced = planId === "advanced";
+  const canManagePaid = currentPlanId !== "free";
+  const isBusy = activeAction === "pro" || activeAction === "portal";
+
+  const button = (() => {
+    if (isAdvanced && !isCurrent) {
+      return (
+        <button className="EdgeTrace-pricing-secondary" disabled>
+          Coming Soon
+        </button>
+      );
+    }
+    if (isCurrent && planId === "free") {
+      return (
+        <button className="EdgeTrace-pricing-secondary" disabled>
+          Current Plan
+        </button>
+      );
+    }
+    if (isCurrent || (canManagePaid && isPro)) {
+      return (
+        <button className="EdgeTrace-pricing-secondary" disabled={isBusy} onClick={onManage}>
+          {activeAction === "portal" ? "Opening..." : isCurrent ? "Manage Billing" : "Included"}
+        </button>
+      );
+    }
+    if (isPro) {
+      return (
+        <button className="EdgeTrace-pricing-primary" disabled={!billingConfigured || isBusy} onClick={onStartPro}>
+          {activeAction === "pro" ? "Opening..." : "Upgrade to Pro"}
+        </button>
+      );
+    }
+    return (
+      <button className="EdgeTrace-pricing-secondary" disabled>
+        Included
+      </button>
+    );
+  })();
+
+  return (
+    <article className={`EdgeTrace-account-plan-card ${isPro ? "featured" : ""} ${planId}`}>
+      {(isPro || isAdvanced) && (
+        <div className={`EdgeTrace-account-plan-ribbon ${planId}`}>
+          {isPro ? "Most Popular" : "Coming Soon"}
+        </div>
+      )}
+      <div className="EdgeTrace-account-plan-card-body">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <h3>{config.displayName}</h3>
+            <p>{config.description}</p>
+          </div>
+          {isCurrent && <span className={tone.text}>Current</span>}
+        </div>
+        <div className="EdgeTrace-account-plan-price">
+          {config.monthlyPriceLabel === "Coming Soon" ? (
+            <strong>Coming Soon</strong>
+          ) : (
+            <>
+              <strong>{config.monthlyPriceLabel.replace("/month", "")}</strong>
+              {config.monthlyPriceLabel.includes("/month") && <em>/mo</em>}
+            </>
+          )}
+        </div>
+        {button}
+        <ul>
+          {config.featureBullets.map((feature) => (
+            <li key={feature}>
+              <Check size={15} aria-hidden="true" />
+              <span>{feature}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </article>
   );
 }
 

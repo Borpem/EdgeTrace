@@ -2971,3 +2971,361 @@ textarea:focus-visible {
     height: 3.5rem;
   }
 }
+
+.EdgeTrace-account-page {
+  color: #f7f7f3;
+}
+
+.EdgeTrace-account-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2rem;
+  align-items: end;
+  border: 1px solid rgba(247, 247, 243, 0.1);
+  background:
+    radial-gradient(circle at 18% 0%, rgba(88, 214, 255, 0.12), transparent 28rem),
+    radial-gradient(circle at 88% 0%, rgba(120, 97, 255, 0.14), transparent 30rem),
+    linear-gradient(180deg, rgba(9, 20, 34, 0.86), rgba(5, 11, 20, 0.7));
+  padding: 2rem;
+  box-shadow:
+    inset 0 1px 0 rgba(247, 247, 243, 0.05),
+    0 24px 70px -58px rgba(88, 214, 255, 0.52);
+}
+
+.EdgeTrace-account-eyebrow {
+  margin: 0 0 0.85rem;
+  color: #58d6ff;
+  font-size: 0.76rem;
+  font-weight: 820;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.EdgeTrace-account-hero h1 {
+  margin: 0;
+  max-width: 760px;
+  color: #f7f7f3;
+  font-size: 3.45rem;
+  font-weight: 790;
+  letter-spacing: 0;
+  line-height: 1.06;
+}
+
+.EdgeTrace-account-hero p:not(.EdgeTrace-account-eyebrow) {
+  max-width: 760px;
+  margin: 1rem 0 0;
+  color: rgba(247, 247, 243, 0.68);
+  line-height: 1.7;
+}
+
+.EdgeTrace-account-plan-chip {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.7rem;
+  margin-top: 1.25rem;
+  border: 1px solid rgba(247, 247, 243, 0.12);
+  background: rgba(3, 8, 16, 0.52);
+  padding: 0.58rem 0.72rem;
+  color: rgba(247, 247, 243, 0.62);
+  font-size: 0.85rem;
+}
+
+.EdgeTrace-account-plan-chip strong {
+  font-size: 0.92rem;
+}
+
+.EdgeTrace-account-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.EdgeTrace-account-page .EdgeTrace-pricing-primary,
+.EdgeTrace-account-page .EdgeTrace-pricing-secondary {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border: 1px solid rgba(88, 214, 255, 0.28);
+  padding: 0.74rem 1.2rem;
+  color: #f7f7f3;
+  font-size: 0.9rem;
+  font-weight: 760;
+  line-height: 1.15;
+  text-align: center;
+}
+
+.EdgeTrace-account-page .EdgeTrace-pricing-primary {
+  border-color: rgba(88, 214, 255, 0.65);
+  background: linear-gradient(135deg, #2798df 0%, #594df7 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(247, 247, 243, 0.2),
+    0 18px 44px -32px rgba(88, 214, 255, 0.8);
+}
+
+.EdgeTrace-account-page .EdgeTrace-pricing-secondary {
+  background: rgba(7, 13, 23, 0.72);
+}
+
+.EdgeTrace-account-page .EdgeTrace-pricing-primary:hover:not(:disabled),
+.EdgeTrace-account-page .EdgeTrace-pricing-secondary:hover:not(:disabled) {
+  border-color: rgba(88, 214, 255, 0.56);
+  transform: translateY(-1px);
+}
+
+.EdgeTrace-account-page .EdgeTrace-pricing-primary:disabled,
+.EdgeTrace-account-page .EdgeTrace-pricing-secondary:disabled {
+  cursor: not-allowed;
+  opacity: 0.68;
+}
+
+.EdgeTrace-account-plan-stage {
+  border: 1px solid rgba(247, 247, 243, 0.11);
+  background:
+    radial-gradient(circle at 14% 0%, rgba(88, 214, 255, 0.1), transparent 24rem),
+    radial-gradient(circle at 90% 8%, rgba(120, 97, 255, 0.13), transparent 27rem),
+    rgba(7, 13, 23, 0.72);
+  padding: 1.35rem;
+}
+
+.EdgeTrace-account-plan-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 19rem;
+  gap: 1.35rem;
+  align-items: start;
+}
+
+.EdgeTrace-account-plan-top h2 {
+  margin: 0;
+  max-width: 760px;
+  color: #f7f7f3;
+  font-size: 1.85rem;
+  font-weight: 770;
+  letter-spacing: 0;
+  line-height: 1.14;
+}
+
+.EdgeTrace-account-plan-top p {
+  max-width: 760px;
+  margin: 0.9rem 0 0;
+  color: rgba(247, 247, 243, 0.68);
+  font-size: 0.92rem;
+  line-height: 1.65;
+}
+
+.EdgeTrace-account-billing-card {
+  border: 1px solid rgba(120, 97, 255, 0.36);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(120, 97, 255, 0.14), transparent 12rem),
+    rgba(16, 14, 32, 0.74);
+  padding: 1.15rem;
+}
+
+.EdgeTrace-account-billing-card p {
+  margin: 0;
+  color: #9d8cff;
+  font-size: 0.68rem;
+  font-weight: 820;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.EdgeTrace-account-billing-card h3 {
+  margin: 1rem 0 0;
+  color: #f7f7f3;
+  font-size: 1.35rem;
+  font-weight: 760;
+  letter-spacing: 0;
+}
+
+.EdgeTrace-account-billing-card span,
+.EdgeTrace-account-billing-card small {
+  display: block;
+  margin-top: 0.7rem;
+  color: rgba(247, 247, 243, 0.66);
+  font-size: 0.86rem;
+  line-height: 1.6;
+}
+
+.EdgeTrace-account-billing-card small {
+  color: #ffcf84;
+}
+
+.EdgeTrace-account-plan-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.85rem;
+  margin-top: 1.25rem;
+}
+
+.EdgeTrace-account-plan-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(247, 247, 243, 0.11);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(88, 214, 255, 0.065), transparent 14rem),
+    linear-gradient(135deg, rgba(247, 247, 243, 0.04), rgba(88, 214, 255, 0.012)),
+    rgba(5, 10, 18, 0.82);
+}
+
+.EdgeTrace-account-plan-card.pro {
+  border-color: rgba(88, 214, 255, 0.72);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(120, 97, 255, 0.14), transparent 15rem),
+    radial-gradient(circle at 0% 100%, rgba(88, 214, 255, 0.08), transparent 15rem),
+    rgba(13, 16, 34, 0.88);
+  box-shadow:
+    inset 0 0 0 1px rgba(120, 97, 255, 0.18),
+    0 22px 60px -52px rgba(88, 214, 255, 0.78);
+}
+
+.EdgeTrace-account-plan-card.advanced {
+  background:
+    radial-gradient(circle at 100% 0%, rgba(255, 184, 77, 0.08), transparent 13rem),
+    rgba(18, 18, 18, 0.86);
+}
+
+.EdgeTrace-account-plan-ribbon {
+  display: flex;
+  min-height: 1.6rem;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid rgba(247, 247, 243, 0.14);
+  color: #f7f7f3;
+  font-size: 0.64rem;
+  font-weight: 850;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.EdgeTrace-account-plan-ribbon.pro {
+  background: linear-gradient(135deg, #2698df 0%, #594df7 100%);
+}
+
+.EdgeTrace-account-plan-ribbon.advanced {
+  border-color: rgba(255, 184, 77, 0.32);
+  background: rgba(255, 184, 77, 0.12);
+  color: #ffcf84;
+}
+
+.EdgeTrace-account-plan-card-body {
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  padding: 1.15rem;
+}
+
+.EdgeTrace-account-plan-card h3 {
+  margin: 0;
+  color: #f7f7f3;
+  font-size: 1.18rem;
+  font-weight: 780;
+  letter-spacing: 0;
+}
+
+.EdgeTrace-account-plan-card h3 + p {
+  margin: 0.5rem 0 0;
+  color: rgba(247, 247, 243, 0.7);
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+.EdgeTrace-account-plan-card-body > div:first-child span {
+  border: 1px solid currentColor;
+  padding: 0.16rem 0.38rem;
+  font-size: 0.62rem;
+  font-weight: 820;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.EdgeTrace-account-plan-price {
+  display: flex;
+  min-height: 3.4rem;
+  align-items: baseline;
+  gap: 0.28rem;
+  margin-top: 1.35rem;
+}
+
+.EdgeTrace-account-plan-price strong {
+  color: #f7f7f3;
+  font-size: 2.05rem;
+  font-style: normal;
+  font-weight: 780;
+  letter-spacing: 0;
+  line-height: 1;
+}
+
+.EdgeTrace-account-plan-price em {
+  color: rgba(247, 247, 243, 0.7);
+  font-style: normal;
+  font-weight: 700;
+}
+
+.EdgeTrace-account-plan-card ul {
+  display: grid;
+  gap: 0.72rem;
+  margin: 1.1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.EdgeTrace-account-plan-card li {
+  display: grid;
+  grid-template-columns: 0.95rem minmax(0, 1fr);
+  gap: 0.55rem;
+  color: rgba(247, 247, 243, 0.82);
+  font-size: 0.8rem;
+  line-height: 1.38;
+}
+
+.EdgeTrace-account-plan-card li svg {
+  color: #58d6ff;
+}
+
+@media (max-width: 1180px) {
+  .EdgeTrace-account-hero,
+  .EdgeTrace-account-plan-top {
+    grid-template-columns: 1fr;
+  }
+
+  .EdgeTrace-account-actions {
+    justify-content: flex-start;
+  }
+
+  .EdgeTrace-account-billing-card {
+    max-width: none;
+  }
+
+  .EdgeTrace-account-plan-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .EdgeTrace-account-hero {
+    padding: 1.25rem;
+  }
+
+  .EdgeTrace-account-hero h1 {
+    font-size: 2.2rem;
+    line-height: 1.12;
+  }
+
+  .EdgeTrace-account-actions,
+  .EdgeTrace-account-actions .EdgeTrace-pricing-primary,
+  .EdgeTrace-account-actions .EdgeTrace-pricing-secondary {
+    width: 100%;
+  }
+
+  .EdgeTrace-account-plan-stage {
+    padding: 1rem;
+  }
+
+  .EdgeTrace-account-plan-top h2 {
+    font-size: 1.45rem;
+  }
+}
