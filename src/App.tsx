@@ -1,6 +1,18 @@
 import { useEffect, useState } from "react";
 import { UserButton } from "@clerk/clerk-react";
-import { LogOut, UserCircle } from "lucide-react";
+import {
+  FileText,
+  FolderOpen,
+  HelpCircle,
+  Home,
+  Layers3,
+  LogOut,
+  Plus,
+  Scale,
+  TrendingUp,
+  Upload,
+  UserCircle
+} from "lucide-react";
 import Papa from "papaparse";
 import { useAuth } from "./context/AuthContext";
 import { useOnboarding } from "./context/OnboardingContext";
@@ -621,10 +633,36 @@ export function App() {
     { target: "features", label: "How It Works" }
   ];
   const useReportDashboardShell = page === "dashboard" && Boolean(result);
+  const useAuthenticatedAppShell = isAuthenticated && !useReportDashboardShell && isAuthenticatedAppPage(page);
 
   return (
-    <div className="EdgeTrace-contours min-h-screen text-ink">
-      {!useReportDashboardShell && (
+    <div className={`EdgeTrace-contours min-h-screen text-ink ${useAuthenticatedAppShell ? "EdgeTrace-auth-framed" : ""}`}>
+      {useAuthenticatedAppShell && (
+        <AuthenticatedSidebar
+          activeNavPage={activeNavPage}
+          userName={user?.name}
+          userEmail={user?.email}
+          profile={userProfile}
+          authMode={authMode}
+          onDashboard={() => void openLatestReportDashboard()}
+          onAnalyze={() => navigate("upload")}
+          onReports={() => navigate("reports")}
+          onCollections={() => navigate("collections")}
+          onCompare={() => {
+            setInitialComparePair(null);
+            navigate("compare");
+          }}
+          onFeatures={() => navigate("features", "/app/how-it-works")}
+          onAccount={() => navigate("account")}
+          onGuide={() => {
+            trackEvent("guide_restarted");
+            restartOnboarding();
+          }}
+          onSignOut={handleSignOut}
+        />
+      )}
+
+      {!useReportDashboardShell && !useAuthenticatedAppShell && (
       <header className="EdgeTrace-topbar sticky top-0 z-40">
         <div className="EdgeTrace-shell relative flex h-auto flex-col items-center gap-4 py-4 lg:h-16 lg:flex-row lg:justify-between lg:py-0">
           <button
@@ -1074,4 +1112,140 @@ export function App() {
       )}
     </div>
   );
+}
+
+function AuthenticatedSidebar({
+  activeNavPage,
+  userName,
+  userEmail,
+  profile,
+  authMode,
+  onDashboard,
+  onAnalyze,
+  onReports,
+  onCollections,
+  onCompare,
+  onFeatures,
+  onAccount,
+  onGuide,
+  onSignOut
+}: {
+  activeNavPage: Page;
+  userName?: string;
+  userEmail?: string;
+  profile?: UserProfile | null;
+  authMode: "clerk" | "mock";
+  onDashboard: () => void;
+  onAnalyze: () => void;
+  onReports: () => void;
+  onCollections: () => void;
+  onCompare: () => void;
+  onFeatures: () => void;
+  onAccount: () => void;
+  onGuide: () => void;
+  onSignOut: () => void;
+}) {
+  const navItems: Array<{ target: Page; label: string; icon: typeof Home; action: () => void }> = [
+    { target: "strategyDashboard", label: "Dashboard", icon: Home, action: onDashboard },
+    { target: "upload", label: "Analyze Trades", icon: TrendingUp, action: onAnalyze },
+    { target: "reports", label: "Reports", icon: FileText, action: onReports },
+    { target: "collections", label: "Strategy Sets", icon: Layers3, action: onCollections },
+    { target: "compare", label: "Compare", icon: Scale, action: onCompare },
+    { target: "features", label: "How It Works", icon: HelpCircle, action: onFeatures }
+  ];
+
+  return (
+    <aside className="EdgeTrace-dashboard-sidebar EdgeTrace-auth-sidebar">
+      <button className="EdgeTrace-sidebar-brand" onClick={onDashboard} aria-label="EdgeTrace dashboard">
+        <img src="/brand/edgetrace_icon_monochrome_white_transparent.png" alt="" aria-hidden="true" />
+        <span>EDGETRACE</span>
+      </button>
+
+      <nav aria-label="Application navigation" className="EdgeTrace-sidebar-nav">
+        {navItems.map(({ target, label, icon: Icon, action }) => (
+          <button key={label} className={activeNavPage === target ? "active" : ""} onClick={action}>
+            <Icon size={18} aria-hidden="true" />
+            <span>{label}</span>
+          </button>
+        ))}
+      </nav>
+
+      <div className="EdgeTrace-sidebar-quick">
+        <p>Quick Actions</p>
+        <button onClick={onAnalyze}>
+          <Plus size={17} aria-hidden="true" />
+          New Report
+        </button>
+        <button onClick={onAnalyze}>
+          <Upload size={17} aria-hidden="true" />
+          Upload Trades
+        </button>
+        <button onClick={onReports}>
+          <FolderOpen size={17} aria-hidden="true" />
+          Open Reports
+        </button>
+      </div>
+
+      <div className="EdgeTrace-auth-sidebar-footer">
+        <button className="EdgeTrace-sidebar-user" onClick={onAccount}>
+          <span className="EdgeTrace-sidebar-avatar">
+            {userName ? initials(userName) : <UserCircle size={18} aria-hidden="true" />}
+          </span>
+          <span className="min-w-0">
+            <span className="EdgeTrace-sidebar-name">
+              {userName ?? "Demo Analyst"}
+              {profile?.planId && <small>{profile.planId.toUpperCase()}</small>}
+            </span>
+            <span className="EdgeTrace-sidebar-email">{userEmail ?? "demo@edgetrace.local"}</span>
+          </span>
+        </button>
+
+        <div className="EdgeTrace-auth-sidebar-tools">
+          <button onClick={onGuide}>Guide</button>
+          {authMode === "clerk" ? (
+            <UserButton
+              afterSignOutUrl="/"
+              appearance={{
+                elements: {
+                  avatarBox: "h-8 w-8 border border-white/15"
+                }
+              }}
+            />
+          ) : (
+            <button onClick={onSignOut}>
+              Sign out <LogOut size={14} aria-hidden="true" />
+            </button>
+          )}
+        </div>
+      </div>
+    </aside>
+  );
+}
+
+function isAuthenticatedAppPage(page: Page) {
+  return [
+    "strategyDashboard",
+    "upload",
+    "reports",
+    "collections",
+    "collectionDetail",
+    "collectionAttribution",
+    "collectionReviewWorkspace",
+    "compare",
+    "features",
+    "account",
+    "dashboard",
+    "drilldown",
+    "compareDrilldown",
+    "reconstructionAudit"
+  ].includes(page);
+}
+
+function initials(value: string) {
+  return value
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join("");
 }
