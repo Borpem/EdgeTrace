@@ -1,17 +1,24 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { ArrowRight, Check, FileX, Lock, ReceiptText, ShieldCheck, type LucideIcon } from "lucide-react";
+import {
+  ArrowRight,
+  Check,
+  ChevronDown,
+  FileX,
+  Lock,
+  ReceiptText,
+  ShieldCheck,
+  type LucideIcon
+} from "lucide-react";
 import { confirmCheckoutSession, createBillingPortalSession, createCheckoutSession, getMe } from "../lib/api";
-import { PageShell } from "../components/ui/Primitives";
 import { trackEvent } from "../lib/analytics";
 import { getPlanConfig } from "../lib/entitlements";
-import { planOrder, type PlanId } from "../lib/plans";
+import { planConfigs, planOrder, type PlanId } from "../lib/plans";
 import type { UserProfile } from "../types";
 
 type PricingPlan = {
   id: PlanId;
-  price: string;
-  title: string;
-  bullets: string[];
+  eyebrow?: string;
+  summary: string;
   accent: "cyan" | "purple" | "amber";
   recommended?: boolean;
 };
@@ -19,60 +26,60 @@ type PricingPlan = {
 const pricingPlans: PricingPlan[] = [
   {
     id: "free",
-    price: "$0",
-    title: "Explore the first diagnostic",
-    bullets: [
-      "1 full diagnostic report",
-      "Supported broker and generic CSV imports",
-      "Preview deeper insights after first report",
-      "Limited report history"
-    ],
+    summary: "For traders validating EdgeTrace with a first full diagnostic.",
     accent: "cyan"
   },
   {
     id: "pro",
-    price: "$19/month",
-    title: "Full strategy workflow",
-    bullets: [
-      "Unlimited full diagnostic reports",
-      "Full attribution and drilldowns",
-      "Compare reports",
-      "Strategy sets",
-      "Reconstruction audit",
-      "Exports",
-      "Strategy health monitoring"
-    ],
+    eyebrow: "Most Popular",
+    summary: "For serious traders who need the complete report-to-inspection workflow.",
     accent: "purple",
     recommended: true
   },
   {
     id: "advanced",
-    price: "Coming Soon",
-    title: "Continuous strategy intelligence",
-    bullets: [
-      "Everything in Pro",
-      "Recurring strategy reviews",
-      "Regression alerts",
-      "Edge Stability Score",
-      "Future team/API support"
-    ],
+    eyebrow: "Coming Soon",
+    summary: "For continuous strategy intelligence, alerts, and recurring reviews.",
     accent: "amber"
   }
 ];
 
 const featureRows: Array<{ label: string; access: Record<PlanId, string> }> = [
   { label: "Full diagnostic reports", access: { free: "1", pro: "Unlimited", advanced: "Unlimited" } },
-  { label: "Preview reports", access: { free: "Included", pro: "Included", advanced: "Included" } },
   { label: "Broker and generic CSV imports", access: { free: "Included", pro: "Included", advanced: "Included" } },
+  { label: "Preview reports", access: { free: "Included", pro: "Included", advanced: "Included" } },
   { label: "Full attribution and drilldowns", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Compare reports", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Strategy sets", access: { free: "-", pro: "Included", advanced: "Included" } },
+  { label: "Strategy sets", access: { free: "Limited", pro: "Included", advanced: "Included" } },
   { label: "Reconstruction audit", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Exports", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Strategy health monitoring", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Recurring strategy reviews", access: { free: "-", pro: "-", advanced: "Coming soon" } },
   { label: "Regression alerts", access: { free: "-", pro: "-", advanced: "Coming soon" } },
   { label: "Edge Stability Score", access: { free: "-", pro: "-", advanced: "Coming soon" } }
+];
+
+const faqs = [
+  {
+    question: "What is included on Free?",
+    answer:
+      "Free includes one full diagnostic report, supported broker and generic CSV imports, and preview access after the first report."
+  },
+  {
+    question: "What does Pro unlock?",
+    answer:
+      "Pro unlocks unlimited full diagnostic reports, full attribution and drilldowns, compare, strategy sets, reconstruction audit, exports, and monitoring."
+  },
+  {
+    question: "Is Advanced available?",
+    answer:
+      "Advanced is shown as the roadmap tier. Recurring reviews, regression alerts, and Edge Stability Score are marked coming soon."
+  },
+  {
+    question: "Is my data secure?",
+    answer:
+      "EdgeTrace is privacy first: raw files are not stored, and production traffic is protected with encrypted transport and managed infrastructure."
+  }
 ];
 
 const trustItems: Array<{ title: string; body: string; icon: LucideIcon; accent: "cyan" | "purple" | "amber" }> = [
@@ -96,7 +103,7 @@ const trustItems: Array<{ title: string; body: string; icon: LucideIcon; accent:
   },
   {
     title: "Manage billing",
-    body: "Subscriptions are managed through the billing portal.",
+    body: "Subscriptions are managed through Stripe billing.",
     icon: Lock,
     accent: "amber"
   }
@@ -120,6 +127,7 @@ export function PricingPage({
   const accountLoading = isAuthenticated && !profile;
   const hasSignedInAccount = isAuthenticated || Boolean(profile);
   const currentPlanId = profile?.planId ?? "free";
+  const highlightedPlanId = profile ? currentPlanId : "pro";
   const billingConfigured = !profile || profile.billingConfigured === true;
 
   useEffect(() => {
@@ -155,8 +163,7 @@ export function PricingPage({
             ? "Checkout completed. Your Pro plan is active."
             : "Checkout completed. Your plan is still updating. Refresh this page in a moment."
         );
-        const cleanUrl = window.location.pathname;
-        window.history.replaceState(null, "", cleanUrl);
+        window.history.replaceState(null, "", window.location.pathname);
       })
       .catch((err) => {
         if (cancelled) return;
@@ -204,10 +211,6 @@ export function PricingPage({
     }
   };
 
-  const scrollToPlan = (planId: PlanId) => {
-    document.getElementById(`pricing-plan-${planId}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
-  };
-
   const handleProCta = () => {
     if (accountLoading) {
       setError("Your account profile is still loading. Try again in a moment.");
@@ -233,7 +236,7 @@ export function PricingPage({
 
     if (planId === "advanced" && !isCurrent) {
       return (
-        <button className="EdgeTrace-secondary-button mt-7 w-full cursor-not-allowed opacity-70" disabled>
+        <button className="EdgeTrace-pricing-secondary mt-7 w-full cursor-not-allowed opacity-70" disabled>
           Coming Soon
         </button>
       );
@@ -241,7 +244,7 @@ export function PricingPage({
 
     if (accountLoading) {
       return (
-        <button className="EdgeTrace-secondary-button mt-7 w-full cursor-wait opacity-70" disabled>
+        <button className="EdgeTrace-pricing-secondary mt-7 w-full cursor-wait opacity-70" disabled>
           Loading Account...
         </button>
       );
@@ -249,7 +252,7 @@ export function PricingPage({
 
     if (!hasSignedInAccount) {
       return (
-        <button className={planId === "pro" ? "EdgeTrace-primary-button mt-7 w-full" : "EdgeTrace-secondary-button mt-7 w-full"} onClick={onStart}>
+        <button className={planId === "pro" ? "EdgeTrace-pricing-primary mt-7 w-full" : "EdgeTrace-pricing-secondary mt-7 w-full"} onClick={onStart}>
           {planId === "free" ? "Start Free" : planId === "pro" ? "Create Account for Pro" : "Join Early Access"}
         </button>
       );
@@ -257,7 +260,7 @@ export function PricingPage({
 
     if (!billingConfigured && planId !== "free") {
       return (
-        <button className="EdgeTrace-secondary-button mt-7 w-full cursor-not-allowed opacity-60" disabled>
+        <button className="EdgeTrace-pricing-secondary mt-7 w-full cursor-not-allowed opacity-60" disabled>
           Billing Not Configured
         </button>
       );
@@ -266,12 +269,12 @@ export function PricingPage({
     if (isCurrent) {
       return (
         <div className="mt-7 grid gap-3">
-          <button className="EdgeTrace-secondary-button w-full cursor-default" disabled>
+          <button className="EdgeTrace-pricing-secondary w-full cursor-default" disabled>
             Current Plan
           </button>
           {planId !== "free" && (
             <button
-              className="border border-white/[0.1] px-4 py-3 text-sm font-semibold text-muted hover:border-white/25 hover:text-ink disabled:opacity-60"
+              className="EdgeTrace-pricing-secondary w-full"
               disabled={activeAction === "portal"}
               onClick={() => void openPortal()}
             >
@@ -284,11 +287,7 @@ export function PricingPage({
 
     if (planId === "free") {
       return (
-        <button
-          className="EdgeTrace-secondary-button mt-7 w-full"
-          disabled={!billingConfigured}
-          onClick={() => void openPortal()}
-        >
+        <button className="EdgeTrace-pricing-secondary mt-7 w-full" disabled={!billingConfigured} onClick={() => void openPortal()}>
           Manage Billing
         </button>
       );
@@ -296,11 +295,7 @@ export function PricingPage({
 
     if (currentPlanId !== "free") {
       return (
-        <button
-          className="EdgeTrace-secondary-button mt-7 w-full"
-          disabled={activeAction === "portal"}
-          onClick={() => void openPortal()}
-        >
+        <button className="EdgeTrace-pricing-secondary mt-7 w-full" disabled={activeAction === "portal"} onClick={() => void openPortal()}>
           {activeAction === "portal" ? "Opening..." : "Manage Billing"}
         </button>
       );
@@ -308,7 +303,7 @@ export function PricingPage({
 
     return (
       <button
-        className={planId === "pro" ? "EdgeTrace-primary-button mt-7 w-full" : "EdgeTrace-secondary-button mt-7 w-full"}
+        className={planId === "pro" ? "EdgeTrace-pricing-primary mt-7 w-full" : "EdgeTrace-pricing-secondary mt-7 w-full"}
         disabled={activeAction === planId}
         onClick={() => void startCheckout(planId as Exclude<PlanId, "free">)}
       >
@@ -318,82 +313,74 @@ export function PricingPage({
   };
 
   return (
-    <PageShell className="pb-16 md:py-16">
-      <section className="relative z-10 overflow-hidden border-b border-white/[0.08] pb-12 md:pb-16">
-        <div className="pointer-events-none absolute left-1/2 top-0 h-80 w-[54rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(34,197,245,0.11),rgba(124,92,255,0.065)_44%,transparent_72%)] blur-[118px]" />
-        <div className="relative grid gap-8 lg:grid-cols-[1fr_340px] lg:items-end">
-          <div>
-            <h1 className="max-w-5xl text-5xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-7xl">
-              Choose the workflow depth your strategy needs.
-            </h1>
-            <p className="mt-6 max-w-3xl text-base leading-7 text-muted md:text-lg md:leading-8">
-              Start with a first diagnostic, unlock the full attribution workflow with Pro, and prepare for continuous
-              strategy intelligence with Advanced.
-            </p>
-            <div className="mt-7 flex flex-wrap gap-3">
-              <button className="EdgeTrace-primary-button" onClick={profile ? () => scrollToPlan("free") : onStart}>
-                Start with Free <ArrowRight size={16} />
-              </button>
-              <button className="EdgeTrace-secondary-button" onClick={() => scrollToPlan("pro")}>
-                View Pro
-              </button>
-            </div>
-          </div>
-          {profile && (
-            <div className={`border p-5 ${toneClasses[planToneFromId(currentPlanId)].border} ${toneClasses[planToneFromId(currentPlanId)].bg}`}>
-              <p className="text-sm text-muted">Current plan</p>
-              <p className={`mt-3 text-4xl font-semibold tracking-[-0.055em] ${toneClasses[planToneFromId(currentPlanId)].text}`}>
-                {getPlanConfig(currentPlanId).displayName}
-              </p>
-              {(profile.stripeSubscriptionStatus || profile.currentPeriodEnd) && (
-                <p className="mt-3 text-sm leading-6 text-muted">
-                  {profile.stripeSubscriptionStatus ? formatSubscriptionStatus(profile.stripeSubscriptionStatus) : ""}
-                  {profile.currentPeriodEnd ? ` · Current period ends ${new Date(profile.currentPeriodEnd).toLocaleDateString()}` : ""}
-                </p>
-              )}
-            </div>
-          )}
+    <main className="EdgeTrace-pricing-page">
+      <PricingNav isAuthenticated={isAuthenticated} onStart={onStart} />
+
+      <section className="EdgeTrace-pricing-hero">
+        <p className="EdgeTrace-pricing-eyebrow">Pricing</p>
+        <h1>Simple pricing. Serious edge.</h1>
+        <p>
+          Choose the plan that fits your trading workflow. Every plan includes EdgeTrace diagnostics and broker/generic
+          CSV import support.
+        </p>
+        <div className="EdgeTrace-pricing-billing">
+          <span>Pay monthly</span>
+          <button type="button" aria-label="Monthly billing selected" />
+          <span className="muted">Annual billing not available yet</span>
         </div>
       </section>
 
       <StatusMessages billingConfigured={billingConfigured} notice={notice} error={error} />
 
-      <section className="relative z-10 py-12 md:py-16">
-        <div className="mb-7 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div>
-            <h2 className="max-w-3xl text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl">
-              Plans built around inspection depth.
-            </h2>
-            <p className="mt-4 max-w-2xl text-base leading-7 text-muted">
-              Free gives a real first report. Pro is the main paid workflow. Advanced is the monitoring roadmap.
-            </p>
-          </div>
-          <button
-            className="border-b border-cyan/60 text-sm font-semibold text-cyan hover:text-ink"
-            onClick={() => {
-              window.history.pushState(null, "", profile ? "/app/how-it-works" : "/how-it-works");
-              window.dispatchEvent(new PopStateEvent("popstate"));
-            }}
-          >
-            See how each feature works
-          </button>
-        </div>
-        <div className="grid gap-4 lg:grid-cols-3">
-          {pricingPlans.map((plan) => (
-            <PlanCard
-              key={plan.id}
-              plan={plan}
-              isCurrent={currentPlanId === plan.id}
-              action={renderPlanAction(plan.id)}
-            />
-          ))}
-        </div>
+      <section className="EdgeTrace-pricing-cards" aria-label="Pricing plans">
+        {pricingPlans.map((plan) => (
+          <PlanCard key={plan.id} plan={plan} isCurrent={Boolean(profile) && currentPlanId === plan.id} action={renderPlanAction(plan.id)} />
+        ))}
       </section>
 
-      <FeatureComparison currentPlanId={currentPlanId} />
+      <div className="EdgeTrace-pricing-footnote">
+        <ShieldCheck size={18} aria-hidden="true" />
+        <span>Free includes one full diagnostic report. Pro is the full self-serve workflow. Advanced is coming soon.</span>
+      </div>
+
+      <FeatureComparison currentPlanId={highlightedPlanId} />
       <TrustSection />
+      <FaqSection />
       <FinalCta onStart={onStart} onPro={handleProCta} activeAction={activeAction} profile={profile} isAuthenticated={isAuthenticated} />
-    </PageShell>
+    </main>
+  );
+}
+
+function PricingNav({ isAuthenticated, onStart }: { isAuthenticated: boolean; onStart: () => void }) {
+  const navigateTo = (path: string) => {
+    window.history.pushState(null, "", path);
+    window.dispatchEvent(new PopStateEvent("popstate"));
+  };
+
+  return (
+    <header className="EdgeTrace-pricing-nav">
+      <button className="EdgeTrace-pricing-brand" onClick={() => navigateTo(isAuthenticated ? "/app/dashboard" : "/")}>
+        <img src="/brand/edgetrace_icon_monochrome_white_transparent.png" alt="" aria-hidden="true" />
+        <img src="/brand/edgetrace_wordmark_monochrome_white.png" alt="EdgeTrace" />
+      </button>
+      <nav aria-label="Pricing navigation">
+        <button onClick={() => navigateTo("/")}>
+          Product <ChevronDown size={14} aria-hidden="true" />
+        </button>
+        <button onClick={() => navigateTo(isAuthenticated ? "/app/how-it-works" : "/how-it-works")}>How It Works</button>
+        <button className="active" onClick={() => navigateTo("/pricing")}>Pricing</button>
+        <button onClick={() => navigateTo("/demo")}>
+          Resources <ChevronDown size={14} aria-hidden="true" />
+        </button>
+        <button onClick={() => navigateTo(isAuthenticated ? "/app/account" : "/signup")}>About</button>
+      </nav>
+      <div className="EdgeTrace-pricing-nav-actions">
+        {!isAuthenticated && <button onClick={() => navigateTo("/login")}>Log in</button>}
+        <button className="EdgeTrace-pricing-primary" onClick={onStart}>
+          {isAuthenticated ? "Analyze Trades" : "Start Free"}
+        </button>
+      </div>
+    </header>
   );
 }
 
@@ -407,15 +394,15 @@ function StatusMessages({
   error: string;
 }) {
   return (
-    <>
+    <section className="EdgeTrace-pricing-status">
       {!billingConfigured && (
-        <div className="mt-6 border border-warn/50 bg-warn/10 p-4 text-sm text-warn">
+        <div className="tone-warning">
           Billing is not configured in this environment. Add Stripe test keys and price IDs to enable checkout.
         </div>
       )}
-      {notice && <div className="mt-6 border border-cyan/50 bg-cyan/10 p-4 text-sm text-cyan">{notice}</div>}
-      {error && <div className="mt-6 border border-loss/60 bg-loss/10 p-4 text-sm text-loss">{error}</div>}
-    </>
+      {notice && <div className="tone-info">{notice}</div>}
+      {error && <div className="tone-error">{error}</div>}
+    </section>
   );
 }
 
@@ -428,70 +415,67 @@ function PlanCard({
   isCurrent: boolean;
   action: ReactNode;
 }) {
+  const config = planConfigs[plan.id];
   const toneClass = toneClasses[plan.accent];
+
   return (
-    <article
-      id={`pricing-plan-${plan.id}`}
-      className={`relative overflow-hidden border bg-[#050a12]/94 p-6 shadow-[0_20px_70px_-58px_rgba(88,214,255,0.55)] ${
-        plan.recommended || isCurrent ? toneClass.border : "border-white/[0.1]"
-      }`}
-    >
-      <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-      <div className="flex min-h-14 items-start justify-between gap-4">
-        <div>
-          <h3 className="text-2xl font-semibold tracking-[-0.04em] text-ink">{getPlanConfig(plan.id).displayName}</h3>
-          <p className={`mt-2 text-sm font-semibold ${toneClass.text}`}>{plan.title}</p>
+    <article id={`pricing-plan-${plan.id}`} className={`EdgeTrace-pricing-plan ${plan.recommended ? "featured" : ""} ${toneClass.card}`}>
+      {plan.eyebrow && <div className={`EdgeTrace-pricing-ribbon ${toneClass.ribbon}`}>{plan.eyebrow}</div>}
+      <div className="EdgeTrace-pricing-plan-inner">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h2>{config.displayName}</h2>
+            <p>{plan.summary}</p>
+          </div>
+          {isCurrent && <span className="EdgeTrace-pricing-current">Current</span>}
         </div>
-        {(plan.recommended || isCurrent || plan.id === "advanced") && (
-          <span className={`border px-2.5 py-1 text-xs font-semibold ${toneClass.border} ${toneClass.text}`}>
-            {isCurrent ? "Current" : plan.recommended ? "Core plan" : "Coming soon"}
-          </span>
-        )}
+        <div className="EdgeTrace-pricing-price">
+          {config.monthlyPriceLabel === "Coming Soon" ? (
+            <strong>Coming Soon</strong>
+          ) : (
+            <>
+              <strong>{config.monthlyPriceLabel.replace("/month", "")}</strong>
+              {config.monthlyPriceLabel.includes("/month") && <span>/mo</span>}
+            </>
+          )}
+        </div>
+        {action}
+        <ul>
+          {config.featureBullets.map((feature) => (
+            <li key={feature}>
+              <Check size={16} aria-hidden="true" />
+              <span>{feature}</span>
+            </li>
+          ))}
+        </ul>
       </div>
-      <p className="mt-6 text-4xl font-semibold tracking-[-0.055em] text-ink">{plan.price}</p>
-      <ul className="mt-7 space-y-3">
-        {plan.bullets.map((feature) => (
-          <li key={feature} className="flex gap-3 text-sm leading-5 text-muted">
-            <Check className={`mt-0.5 shrink-0 ${toneClass.text}`} size={15} />
-            <span>{feature}</span>
-          </li>
-        ))}
-      </ul>
-      {action}
     </article>
   );
 }
 
 function FeatureComparison({ currentPlanId }: { currentPlanId: PlanId }) {
   return (
-    <section className="relative z-10 border-y border-white/[0.08] bg-[radial-gradient(circle_at_82%_0%,rgba(124,92,255,0.035),transparent_30rem),rgba(3,6,12,0.24)] py-12 md:py-16">
-      <div className="mb-6 max-w-3xl">
-        <h2 className="text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl">
-          Compare access by plan.
-        </h2>
-        <p className="mt-4 text-base leading-7 text-muted">
-          The table is a reference layer for the cards above. Advanced items are visible as roadmap capabilities and are
-          not part of self-serve checkout yet.
-        </p>
-      </div>
-      <div className="overflow-x-auto border border-white/[0.1] bg-[#050a12]/94 shadow-[0_18px_60px_-52px_rgba(88,214,255,0.45)]">
-        <table className="min-w-full text-sm">
-          <thead className="border-b border-white/[0.1] bg-white/[0.035] text-left text-muted">
+    <section className="EdgeTrace-pricing-compare">
+      <h2>Compare plans</h2>
+      <div className="EdgeTrace-pricing-table-wrap">
+        <table>
+          <thead>
             <tr>
-              <th className="px-5 py-4 font-semibold text-ink">Feature</th>
+              <th>Feature</th>
               {planOrder.map((planId) => (
-                <th key={planId} className={`px-5 py-4 font-semibold ${currentPlanTableClass(currentPlanId, planId, "head")}`}>
+                <th key={planId} className={currentPlanId === planId ? "active" : ""}>
                   {getPlanConfig(planId).displayName}
+                  {planId === "pro" && <small>Most Popular</small>}
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/[0.06]">
-            {featureRows.map((row, index) => (
-              <tr key={row.label} className={index % 2 === 1 ? "bg-white/[0.016]" : ""}>
-                <td className="px-5 py-4 font-semibold text-ink">{row.label}</td>
+          <tbody>
+            {featureRows.map((row) => (
+              <tr key={row.label}>
+                <td>{row.label}</td>
                 {planOrder.map((planId) => (
-                  <td key={planId} className={`px-5 py-4 ${currentPlanTableClass(currentPlanId, planId, "body")}`}>
+                  <td key={planId} className={currentPlanId === planId ? "active" : ""}>
                     <AccessValue value={row.access[planId]} planId={planId} />
                   </td>
                 ))}
@@ -506,19 +490,35 @@ function FeatureComparison({ currentPlanId }: { currentPlanId: PlanId }) {
 
 function TrustSection() {
   return (
-    <section className="relative z-10 py-12 md:py-14">
-      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-        {trustItems.map((item) => {
-          const Icon = item.icon;
-          const toneClass = toneClasses[item.accent];
-          return (
-            <article key={item.title} className="border border-white/[0.09] bg-white/[0.03] p-5">
-              <Icon className={toneClass.text} size={27} strokeWidth={1.6} />
-              <h3 className="mt-5 font-semibold text-ink">{item.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-muted">{item.body}</p>
-            </article>
-          );
-        })}
+    <section className="EdgeTrace-pricing-trust">
+      {trustItems.map((item) => {
+        const Icon = item.icon;
+        return (
+          <article key={item.title}>
+            <Icon className={toneClasses[item.accent].icon} size={24} strokeWidth={1.7} />
+            <h3>{item.title}</h3>
+            <p>{item.body}</p>
+          </article>
+        );
+      })}
+    </section>
+  );
+}
+
+function FaqSection() {
+  return (
+    <section className="EdgeTrace-pricing-faq">
+      <h2>Frequently asked questions</h2>
+      <div>
+        {faqs.map((faq) => (
+          <article key={faq.question}>
+            <h3>
+              {faq.question}
+              <ArrowRight size={16} aria-hidden="true" />
+            </h3>
+            <p>{faq.answer}</p>
+          </article>
+        ))}
       </div>
     </section>
   );
@@ -538,42 +538,42 @@ function FinalCta({
   isAuthenticated: boolean;
 }) {
   return (
-    <section className="relative z-10">
-      <div className="relative overflow-hidden border border-cyan/25 bg-[radial-gradient(circle_at_18%_0%,rgba(34,197,245,0.12),transparent_34%),radial-gradient(circle_at_88%_92%,rgba(124,92,255,0.1),transparent_36%),rgba(255,255,255,0.03)] p-7 md:p-9">
-        <h2 className="max-w-4xl text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl">
-          Start with a diagnostic. Upgrade when you need deeper inspection.
-        </h2>
-        <div className="mt-7 flex flex-wrap gap-3">
-          <button className="EdgeTrace-secondary-button" onClick={onStart}>
-            {profile ? "Analyze Trades" : "Create Free Account"}
-          </button>
-          <button className="EdgeTrace-primary-button" onClick={onPro}>
-            {activeAction === "pro"
-              ? "Redirecting..."
-              : isAuthenticated
-                ? profile?.planId === "free"
-                  ? "Upgrade to Pro"
-                  : "Manage Billing"
-                : "Create Account for Pro"}{" "}
-            <ArrowRight size={16} />
-          </button>
-        </div>
+    <section className="EdgeTrace-pricing-final">
+      <div className="EdgeTrace-pricing-final-icon">
+        <ArrowRight size={28} aria-hidden="true" />
+      </div>
+      <div>
+        <h2>Ready to gain the edge?</h2>
+        <p>Start with your first diagnostic report, then upgrade to Pro when you need the complete workflow.</p>
+      </div>
+      <div>
+        <button className="EdgeTrace-pricing-primary" onClick={onPro}>
+          {activeAction === "pro"
+            ? "Redirecting..."
+            : isAuthenticated
+              ? profile?.planId === "free"
+                ? "Upgrade to Pro"
+                : "Manage Billing"
+              : "Create Account for Pro"}
+        </button>
+        <button className="EdgeTrace-pricing-secondary" onClick={onStart}>
+          {profile ? "Analyze Trades" : "Start Free"}
+        </button>
       </div>
     </section>
   );
 }
 
 function AccessValue({ value, planId }: { value: string; planId: PlanId }) {
-  const toneClass = toneClasses[planToneFromId(planId)];
   if (value === "-") {
-    return <span className="text-muted">Not included</span>;
+    return <span className="muted">-</span>;
   }
   if (value === "Coming soon") {
-    return <span className={toneClass.text}>Coming soon</span>;
+    return <span className={toneClasses[planToneFromId(planId)].text}>Coming soon</span>;
   }
   return (
-    <span className={`inline-flex items-center gap-2 ${toneClass.text}`}>
-      <Check size={14} /> {value}
+    <span className="included">
+      {value === "Included" ? <Check size={16} aria-hidden="true" /> : value}
     </span>
   );
 }
@@ -582,32 +582,23 @@ function planToneFromId(planId: PlanId): "cyan" | "purple" | "amber" {
   return planId === "advanced" ? "amber" : planId === "pro" ? "purple" : "cyan";
 }
 
-function currentPlanTableClass(currentPlanId: PlanId, columnPlanId: PlanId, area: "head" | "body") {
-  if (currentPlanId !== columnPlanId) return "";
-  if (columnPlanId === "advanced") return area === "head" ? "bg-warning/[0.07] text-warning" : "bg-warning/[0.025]";
-  if (columnPlanId === "pro") return area === "head" ? "bg-violet/[0.07] text-violet" : "bg-violet/[0.025]";
-  return area === "head" ? "bg-cyan/[0.07] text-cyan" : "bg-cyan/[0.025]";
-}
-
 const toneClasses = {
   cyan: {
+    card: "tone-cyan",
+    ribbon: "tone-cyan",
     text: "text-cyan",
-    bg: "bg-cyan/[0.055]",
-    border: "border-cyan/35"
+    icon: "text-cyan"
   },
   purple: {
+    card: "tone-purple",
+    ribbon: "tone-purple",
     text: "text-violet",
-    bg: "bg-violet/[0.055]",
-    border: "border-violet/35"
+    icon: "text-violet"
   },
   amber: {
+    card: "tone-amber",
+    ribbon: "tone-amber",
     text: "text-warning",
-    bg: "bg-warning/[0.055]",
-    border: "border-warning/35"
+    icon: "text-warning"
   }
 } as const;
-
-function formatSubscriptionStatus(status: string) {
-  const normalized = status.replace(/_/g, " ");
-  return `Subscription ${normalized.charAt(0).toUpperCase()}${normalized.slice(1)}`;
-}
