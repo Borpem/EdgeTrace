@@ -14,6 +14,7 @@ import {
   createSavedComparison,
   getMe,
   getReport,
+  listReports,
   runTradeDiagnostics,
   setApiAuth,
   updateReportDetails,
@@ -338,6 +339,33 @@ export function App() {
     navigate("compare", query ? `/app/compare?${query}` : "/app/compare");
   };
 
+  const openLatestReportDashboard = async (replace = false) => {
+    if (result) {
+      navigate("dashboard", `/app/dashboard/report/${result.id}`, replace);
+      return true;
+    }
+
+    try {
+      const reportsResponse = await listReports();
+      const latest = [...(reportsResponse.reports ?? [])].sort(
+        (a, b) => new Date(b.updatedAt || b.createdAt).getTime() - new Date(a.updatedAt || a.createdAt).getTime()
+      )[0];
+      if (latest) {
+        const report = await getReport(latest.id);
+        setResult(report);
+        setCreatedReportId(null);
+        setDemoMode(false);
+        navigate("dashboard", `/app/dashboard/report/${report.id}`, replace);
+        return true;
+      }
+    } catch {
+      setResult(null);
+    }
+
+    navigate("strategyDashboard", "/app/dashboard", replace);
+    return false;
+  };
+
   const routeToPath = async (rawPath: string, replace = false, authOverride = isAuthenticated) => {
     const dimensions: BreakdownDimension[] = ["symbol", "strategy", "timeOfDay"];
     const url = new URL(rawPath, window.location.origin);
@@ -380,7 +408,7 @@ export function App() {
     }
 
     if (authOverride && pathname === "/") {
-      navigate("strategyDashboard", "/app/dashboard", true);
+      await openLatestReportDashboard(true);
       return;
     }
 
@@ -420,7 +448,7 @@ export function App() {
     }
 
     if (pathname === "/app" || pathname === "/app/dashboard") {
-      setPage("strategyDashboard");
+      await openLatestReportDashboard(replace);
       return;
     }
     if (pathname === "/app/upload") {
@@ -592,14 +620,22 @@ export function App() {
     { target: "compare", label: "Compare" },
     { target: "features", label: "How It Works" }
   ];
+  const useReportDashboardShell = page === "dashboard" && Boolean(result);
 
   return (
     <div className="EdgeTrace-contours min-h-screen text-ink">
+      {!useReportDashboardShell && (
       <header className="EdgeTrace-topbar sticky top-0 z-40">
         <div className="EdgeTrace-shell relative flex h-auto flex-col items-center gap-4 py-4 lg:h-16 lg:flex-row lg:justify-between lg:py-0">
           <button
             className="flex shrink-0 items-center justify-center lg:justify-start"
-            onClick={() => navigate(isAuthenticated ? "strategyDashboard" : "home", isAuthenticated ? "/app/dashboard" : "/")}
+            onClick={() => {
+              if (isAuthenticated) {
+                void openLatestReportDashboard();
+              } else {
+                navigate("home", "/");
+              }
+            }}
             aria-label="EdgeTrace home"
           >
             <span className="flex items-center justify-center gap-4">
@@ -625,6 +661,10 @@ export function App() {
                     key={target}
                     className={`EdgeTrace-nav-link ${isActive ? "EdgeTrace-nav-link-active" : ""}`}
                     onClick={() => {
+                      if (target === "strategyDashboard") {
+                        void openLatestReportDashboard();
+                        return;
+                      }
                       if (target === "compare") setInitialComparePair(null);
                       navigate(target);
                     }}
@@ -721,8 +761,9 @@ export function App() {
           ) : null}
         </div>
       </header>
+      )}
 
-      {isAuthenticated && (
+      {isAuthenticated && !useReportDashboardShell && (
         <OnboardingOverlay
           onStart={() => navigate("upload")}
           onLearn={() => {
@@ -978,6 +1019,12 @@ export function App() {
           onCompareReport={(reportId) => openCompare(reportId)}
           onViewReports={() => navigate("reports")}
           onCreateReport={() => navigate("upload")}
+          onOpenDashboard={() => navigate("dashboard", `/app/dashboard/report/${result.id}`)}
+          onOpenCollections={() => navigate("collections")}
+          onOpenFeatures={() => navigate("features")}
+          onOpenAccount={() => navigate("account")}
+          userName={user?.name}
+          userEmail={user?.email}
         />
       )}
       {page === "dashboard" && !result && (

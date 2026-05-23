@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   Bar,
   BarChart,
@@ -10,9 +10,28 @@ import {
   XAxis,
   YAxis
 } from "recharts";
+import {
+  Activity,
+  AlertCircle,
+  ArrowRight,
+  BarChart3,
+  CalendarDays,
+  ChevronDown,
+  FileText,
+  FolderOpen,
+  HelpCircle,
+  Home,
+  Info,
+  Layers3,
+  LineChart as LineChartIcon,
+  Plus,
+  Scale,
+  TrendingDown,
+  TrendingUp,
+  Upload,
+  UserCircle
+} from "lucide-react";
 import { AddToStrategySetDialog } from "../components/AddToStrategySetDialog";
-import { DisclosurePanel } from "../components/DisclosurePanel";
-import { CommandPath } from "../components/onboarding/CommandPath";
 import { PaywallGate } from "../components/PaywallGate";
 import { formatReportType, ReportDetailsEditor } from "../components/ReportDetailsEditor";
 import { TableContainer } from "../components/ui/Primitives";
@@ -45,6 +64,27 @@ type BreakdownSortKey =
   | "costDragPct";
 type DashboardTab = "overview" | "breakdown" | "trades";
 
+type DashboardPageProps = {
+  result: DiagnosticsResult;
+  profile?: UserProfile | null;
+  onDrillDown?: (selection: { dimension: BreakdownDimension; group: string }) => void;
+  onReconstructionAudit?: () => void;
+  onReportUpdated?: (report: ReportSummary) => void;
+  onCompareReport?: (reportId: string) => void;
+  onViewReports?: () => void;
+  onCreateReport?: () => void;
+  onOpenDashboard?: () => void;
+  onOpenCollections?: () => void;
+  onOpenFeatures?: () => void;
+  onOpenAccount?: () => void;
+  userName?: string;
+  userEmail?: string;
+  reportJustCreated?: boolean;
+  onDismissCreatedBanner?: () => void;
+  demoMode?: boolean;
+  onExitDemo?: () => void;
+};
+
 export function DashboardPage({
   result,
   profile,
@@ -54,24 +94,17 @@ export function DashboardPage({
   onCompareReport,
   onViewReports,
   onCreateReport,
+  onOpenDashboard,
+  onOpenCollections,
+  onOpenFeatures,
+  onOpenAccount,
+  userName,
+  userEmail,
   reportJustCreated,
   onDismissCreatedBanner,
   demoMode,
   onExitDemo
-}: {
-  result: DiagnosticsResult;
-  profile?: UserProfile | null;
-  onDrillDown?: (selection: { dimension: BreakdownDimension; group: string }) => void;
-  onReconstructionAudit?: () => void;
-  onReportUpdated?: (report: ReportSummary) => void;
-  onCompareReport?: (reportId: string) => void;
-  onViewReports?: () => void;
-  onCreateReport?: () => void;
-  reportJustCreated?: boolean;
-  onDismissCreatedBanner?: () => void;
-  demoMode?: boolean;
-  onExitDemo?: () => void;
-}) {
+}: DashboardPageProps) {
   const [sortKey, setSortKey] = useState<SortKey>("entryTime");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [breakdownDimension, setBreakdownDimension] = useState<BreakdownDimension>("symbol");
@@ -82,6 +115,7 @@ export function DashboardPage({
   const [isAddingToStrategySet, setIsAddingToStrategySet] = useState(false);
   const [demoStep, setDemoStep] = useState(0);
   const [activation, setActivation] = useState<ActivationSummary | null>(null);
+
   const trades = Array.isArray(result.trades) ? result.trades : [];
   const charts = result.charts ?? { equityCurve: [], pnlBySymbol: [], pnlByHour: [] };
   const metrics = result.metrics ?? {
@@ -133,7 +167,8 @@ export function DashboardPage({
   );
   const canInspectFullDrilldown = reportAccessLevel === "full" && canViewFullDrilldown(plan);
   const fullAttributionAccess =
-    canInspectFullDrilldown && !(result.lockedSections ?? []).some((section) => ["full_breakdowns", "full_drilldowns"].includes(section));
+    canInspectFullDrilldown &&
+    !(result.lockedSections ?? []).some((section) => ["full_breakdowns", "full_drilldowns"].includes(section));
   const fullTradeAccess =
     reportAccessLevel === "full" && !(result.lockedSections ?? []).some((section) => ["full_trades"].includes(section));
   const canViewReconstructionAudit = reportAccessLevel === "full" && canUseFeature(plan, "reconstruction_audit");
@@ -143,14 +178,21 @@ export function DashboardPage({
   );
   const primaryInspection = intelligence.nextBestInspections[0];
   const provenance = result.importProvenance;
-  const costsIncluded = provenance?.costsDetected ?? (trades.some((trade) => getTradeCosts(trade) > 0) || metrics.totalCosts > 0);
+  const costsIncluded =
+    provenance?.costsDetected ?? (trades.some((trade) => getTradeCosts(trade) > 0) || metrics.totalCosts > 0);
   const rValuesAvailable =
-    provenance?.rMultipleDetected ?? (trades.some((trade) => typeof trade.realizedR === "number") || metrics.averageRealizedR !== undefined);
+    provenance?.rMultipleDetected ??
+    (trades.some((trade) => typeof trade.realizedR === "number") || metrics.averageRealizedR !== undefined);
   const reconstructionUsed = provenance?.reconstructionEnabled ?? hasReconstructionAudit;
   const firstReportReady =
     Boolean(reportJustCreated) &&
     (activation ? !activation.firstReportCreatedAt || activation.firstReportCreatedAt === result.createdAt : true);
   const normalizedTradeCount = provenance?.normalizedTradeCount ?? metrics.totalTrades ?? trades.length;
+  const performanceData = charts.equityCurve.length ? charts.equityCurve : buildEquityCurve(trades);
+  const impactBreakdown = buildImpactBreakdown(metrics, largestLeak);
+  const priorityInsights = buildPriorityInsights(result, intelligence, largestLeak, primaryInspection);
+  const actionItems = buildActionItems(intelligence, primaryInspection, largestLeak, metrics);
+  const reportDate = result.createdAt ? new Date(result.createdAt) : undefined;
 
   useEffect(() => {
     let active = true;
@@ -181,42 +223,47 @@ export function DashboardPage({
     onDrillDown?.({ dimension: primaryInspection.dimension, group: primaryInspection.group });
   };
 
+  const handleAudit = () => {
+    if (!canViewReconstructionAudit) {
+      window.history.pushState(null, "", "/pricing");
+      window.dispatchEvent(new PopStateEvent("popstate"));
+      return;
+    }
+    trackEvent("reconstruction_audit_opened", { reportId: result.id });
+    onReconstructionAudit?.();
+  };
+
+  const handleSidebarCompare = () => {
+    if (onCompareReport) onCompareReport(result.id);
+  };
+
   const workflowAction = useMemo(() => {
     if (!activation?.hasClickedDrilldown && primaryInspection) {
       return {
         title: "Inspect the weakest segment",
-        why: "Drilldowns show the exact trades behind the primary leak.",
-        button: "Inspect Weakest Segment",
+        detail: "Drill into the trades behind the primary leak.",
+        label: "Open drilldown",
         action: inspectPrimarySegment
       };
     }
     if (!activation?.hasCreatedComparison && onCompareReport) {
       return {
         title: "Compare this report",
-        why: "Comparisons show whether changes improved or degraded performance.",
-        button: "Compare This Report",
+        detail: "See whether the next iteration improves the weak metric.",
+        label: "Open comparison",
         action: () => onCompareReport(result.id)
       };
     }
     if (!activation?.hasCreatedCollection) {
       return {
         title: "Add to strategy set",
-        why: "Strategy sets track performance across related iterations.",
-        button: "Add to Strategy Set",
+        detail: "Group this result with related strategy iterations.",
+        label: "Add to set",
         action: () => setIsAddingToStrategySet(true)
       };
     }
     return undefined;
   }, [activation, onCompareReport, primaryInspection, result.id]);
-
-  const metricCards: Array<[string, string, MetricStatus]> = [
-    ["Net PnL", currency.format(metrics.netPnl), intelligence.keyMetricStatuses.netPnl],
-    ["Expectancy", currency.format(metrics.expectancy), intelligence.keyMetricStatuses.expectancy],
-    ["Average R", metrics.averageRealizedR?.toFixed(2) ?? "Unavailable", intelligence.keyMetricStatuses.averageR],
-    ["Cost Drag", intelligence.costDragLabel, intelligence.keyMetricStatuses.costDrag],
-    ["Profit Factor", formatNumber(metrics.profitFactor), intelligence.keyMetricStatuses.profitFactor],
-    ["Win Rate", percent.format(metrics.winRate), intelligence.keyMetricStatuses.winRate]
-  ];
 
   const sort = (key: SortKey) => {
     if (sortKey === key) {
@@ -237,560 +284,422 @@ export function DashboardPage({
   };
 
   return (
-    <main className="EdgeTrace-shell py-10">
-      <section className="EdgeTrace-page-header mb-6">
-        <div className="grid gap-8 lg:grid-cols-[1fr_420px] lg:items-center">
-          <div>
-            <h1 className="max-w-5xl text-4xl font-semibold leading-[1.04] tracking-[-0.045em] text-ink md:text-6xl">
-              {result.name ?? "Diagnostic Report"}
-            </h1>
-            <p className="mt-5 max-w-4xl text-base leading-7 text-muted">
-              A report is a single diagnostic analysis generated from one uploaded trade file. This summary-first readout
-              keeps detailed breakdowns one click away.
-            </p>
-            <div className="mt-5 flex flex-wrap items-center gap-3">
-              <span className="border border-white/[0.12] px-2.5 py-1 text-xs text-muted">
-                {formatReportType(result.reportType)}
-              </span>
-              {result.strategyLabel && (
-                <span className="border border-violet/45 px-2.5 py-1 text-xs text-violet">
-                  {result.strategyLabel}
-                </span>
-              )}
-              {(result.tags ?? []).slice(0, 4).map((tag) => (
-                <span key={tag} className="border border-white/[0.12] px-2.5 py-1 text-xs text-muted">
-                  {tag}
-                </span>
-              ))}
-            </div>
-            <div className="mt-6 flex flex-wrap gap-3">
-              {onCompareReport && (
-                <button className="EdgeTrace-compact-primary" onClick={() => onCompareReport(result.id)}>
-                  Compare This Report
-                </button>
-              )}
-              <button className="EdgeTrace-compact-secondary" onClick={() => setIsAddingToStrategySet(true)}>
-                Add to Strategy Set
-              </button>
-              {onViewReports && (
-                <button className="EdgeTrace-compact-secondary" onClick={onViewReports}>
-                  View All Reports
-                </button>
-              )}
-              {onCreateReport && (
-                <button className="border-b border-transparent py-2 text-sm font-semibold text-muted hover:border-white/20 hover:text-ink" onClick={onCreateReport}>
-                  Create New Report
-                </button>
-              )}
-            </div>
-          </div>
-
-          <div className="EdgeTrace-card-soft p-5">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-muted">Current Report</p>
-            <div className="mt-4 border border-white/[0.12] bg-black/30 px-4 py-3">
-              <p className="truncate text-sm font-semibold text-ink">{result.name ?? result.id}</p>
-              <p className="mt-1 text-xs text-muted">
-                {result.createdAt ? new Date(result.createdAt).toLocaleString() : "Date unavailable"}
-              </p>
-            </div>
-            <div className="mt-4 flex flex-wrap gap-2">
-              <button className="EdgeTrace-compact-primary" onClick={() => setIsEditingDetails(true)}>
-                Edit Details
-              </button>
-              {hasReconstructionAudit && (
-                <button
-                  className="EdgeTrace-compact-secondary"
-                  onClick={() => {
-                    if (!canViewReconstructionAudit) {
-                      window.history.pushState(null, "", "/pricing");
-                      window.dispatchEvent(new PopStateEvent("popstate"));
-                      return;
-                    }
-                    trackEvent("reconstruction_audit_opened", { reportId: result.id });
-                    onReconstructionAudit?.();
-                  }}
-                >
-                  Audit
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {reportJustCreated && (
-        <section className="mt-6 border border-cyan/35 bg-cyan/[0.08] p-5">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-cyan">Report Created</p>
-              <h2 className="mt-2 text-2xl font-semibold tracking-[-0.045em] text-ink">
-                Diagnostic report created successfully.
-              </h2>
-              <p className="mt-2 text-sm leading-6 text-muted">
-                Start with the primary diagnosis, then inspect the recommended segment.
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-3">
-              <button
-                className="EdgeTrace-command-button"
-                onClick={() => document.getElementById("primary-diagnosis")?.scrollIntoView({ behavior: "smooth", block: "center" })}
-              >
-                View Primary Diagnosis
-              </button>
-              {onDismissCreatedBanner && (
-                <button className="EdgeTrace-compact-secondary" onClick={onDismissCreatedBanner}>
-                  Dismiss
-                </button>
-              )}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {firstReportReady && (
-        <section className="mt-6 border border-cyan/35 bg-cyan/[0.06] p-5">
-          <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-center">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-cyan">First Report</p>
-              <h2 className="mt-2 text-2xl font-semibold tracking-[-0.045em] text-ink">Your first report is ready.</h2>
-              <ol className="mt-3 grid gap-2 text-sm leading-6 text-muted md:grid-cols-3">
-                <li>1. Review the primary diagnosis.</li>
-                <li>2. Inspect the weakest segment.</li>
-                <li>3. Create another report later to compare progress.</li>
-              </ol>
-            </div>
-            <div className="flex flex-wrap gap-3">
-              <button className="EdgeTrace-command-button" onClick={inspectPrimarySegment} disabled={!primaryInspection}>
-                Inspect Weakest Segment
-              </button>
-              {onCreateReport && (
-                <button className="EdgeTrace-compact-secondary" onClick={onCreateReport}>
-                  Create Another Report
-                </button>
-              )}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {(!costsIncluded || !rValuesAvailable || hasReconstructionAudit) && (
-        <section className="mt-6 grid gap-3 md:grid-cols-3">
-          {!costsIncluded && (
-            <ReportWarning message="Cost data was not detected. Net performance may be overstated." />
-          )}
-          {!rValuesAvailable && (
-            <ReportWarning message="R-multiple analysis is limited because stop/risk data was not available." />
-          )}
-          {reconstructionUsed && (
-            <ReportWarning message="This report uses reconstructed trades from execution records. Review the reconstruction audit if results look unexpected." />
-          )}
-        </section>
-      )}
-
-      <section className="mt-6 grid gap-5 xl:grid-cols-[minmax(0,1fr)_420px] xl:items-start">
-        <div className="min-w-0">
-          <div className="grid gap-5 lg:grid-cols-[1.08fr_0.92fr]">
-        <div
-          className="EdgeTrace-card relative overflow-hidden p-7 md:p-8"
-          data-testid="dashboard-health-card"
-        >
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_86%_28%,rgba(88,214,255,0.075),transparent_17rem)]" />
-          <div className="relative">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-muted md:text-base">Strategy Health</p>
-            <div className="mt-7 flex flex-col gap-7 md:flex-row md:items-end">
-              <div>
-                <p className={`text-8xl font-semibold leading-none tracking-[-0.08em] ${scoreClass(intelligence.strategyHealthScore)}`}>
-                  {intelligence.strategyHealthScore}
-                </p>
-                <p className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-ink">{intelligence.healthBand}</p>
-              </div>
-              <p className="max-w-3xl pb-1 text-sm leading-6 text-muted">{intelligence.primaryExplanation}</p>
-            </div>
-          </div>
-        </div>
-
-        <div id="primary-diagnosis" className="EdgeTrace-card scroll-mt-28 p-7 md:p-8">
-          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-muted md:text-base">Primary Diagnosis</p>
-          <h2 className={`mt-7 text-3xl font-semibold tracking-[-0.055em] ${diagnosisClass(intelligence.primaryDiagnosis)}`}>
-            {intelligence.primaryDiagnosis}
-          </h2>
-          <p className="mt-5 text-sm leading-6 text-muted">{intelligence.primaryLeak.explanation}</p>
-          <div className="EdgeTrace-subpanel mt-8 p-5">
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-muted">Supporting Metric</p>
-            <p className="mt-2 text-xl font-semibold tracking-[-0.035em] text-ink">
-              {intelligence.primaryLeak.supportingMetric}
-            </p>
-          </div>
-          {primaryInspection && (
-            <button
-              className="EdgeTrace-subpanel EdgeTrace-recommended mt-4 w-full p-5 text-left transition hover:border-warning/70"
-              onClick={inspectPrimarySegment}
-            >
-              <span className="EdgeTrace-recommended-signal" aria-hidden="true" />
-              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-muted">Next Inspection</p>
-              <p className="mt-2 text-xl font-semibold tracking-[-0.035em] text-ink">{primaryInspection.title}</p>
-              <p className="mt-1 text-sm text-muted">{primaryInspection.reason}</p>
-              <p className="EdgeTrace-next-action mt-4 inline-flex items-center gap-2 text-sm font-semibold text-cyan">
-                Open drilldown <span aria-hidden="true">-&gt;</span>
-              </p>
-            </button>
-          )}
-          </div>
-          </div>
-
-      <section className="mt-5 grid gap-4 md:grid-cols-2 2xl:grid-cols-4">
-        <DashboardSummaryCard
-          label="Trades analyzed"
-          value={String(normalizedTradeCount)}
-          detail="Completed trades in this report"
-          tone="text-ink"
-        />
-        <DashboardSummaryCard
-          label="After-cost performance"
-          value={currency.format(metrics.netPnl)}
-          detail={`Expectancy ${currency.format(metrics.expectancy)} per trade`}
-          tone={metrics.netPnl >= 0 ? "text-cyan" : "text-loss"}
-        />
-        <DashboardSummaryCard
-          label="Execution friction"
-          value={intelligence.costDragLabel}
-          detail={`Total costs ${currency.format(metrics.totalCosts)}`}
-          tone={metricValueClass(intelligence.keyMetricStatuses.costDrag)}
-        />
-        <DashboardSummaryCard
-          label="Trade quality"
-          value={metrics.averageRealizedR !== undefined ? `${number.format(metrics.averageRealizedR)}R` : "N/A"}
-          detail={`Win rate ${percent.format(metrics.winRate)} · PF ${formatNumber(metrics.profitFactor)}`}
-          tone={metricValueClass(intelligence.keyMetricStatuses.averageR)}
-        />
-      </section>
-      <section className="mt-5 grid gap-4 lg:grid-cols-3">
-        <ChartPanel title="Equity Curve">
-          <ResponsiveContainer width="100%" height={210}>
-            <LineChart data={charts.equityCurve}>
-              <CartesianGrid stroke="#243B64" strokeOpacity={0.45} />
-              <XAxis dataKey="trade" stroke="#9CA8C7" />
-              <YAxis stroke="#9CA8C7" />
-              <Tooltip
-                contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }}
-                formatter={(value) => [formatTooltipCurrency(value), "Equity"]}
-              />
-              <Line type="monotone" dataKey="equity" stroke="#45D5FF" strokeWidth={2} dot={false} />
-            </LineChart>
-          </ResponsiveContainer>
-        </ChartPanel>
-        <ChartPanel title="PnL by Symbol">
-          <ResponsiveContainer width="100%" height={210}>
-            <BarChart data={charts.pnlBySymbol}>
-              <CartesianGrid stroke="#243B64" strokeOpacity={0.45} />
-              <XAxis dataKey="symbol" stroke="#9CA8C7" />
-              <YAxis stroke="#9CA8C7" />
-              <Tooltip
-                contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }}
-                formatter={(value) => [formatTooltipCurrency(value), "PnL"]}
-              />
-              <Bar dataKey="pnl" fill="#3E8BFF" />
-            </BarChart>
-          </ResponsiveContainer>
-        </ChartPanel>
-        <ChartPanel title="PnL by Time of Day">
-          <ResponsiveContainer width="100%" height={210}>
-            <BarChart data={charts.pnlByHour}>
-              <CartesianGrid stroke="#243B64" strokeOpacity={0.45} />
-              <XAxis dataKey="hour" stroke="#9CA8C7" />
-              <YAxis stroke="#9CA8C7" />
-              <Tooltip
-                contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }}
-                formatter={(value) => [formatTooltipCurrency(value), "PnL"]}
-              />
-              <Bar dataKey="pnl" fill="#FFB84D" />
-            </BarChart>
-          </ResponsiveContainer>
-        </ChartPanel>
-      </section>
-        </div>
-
-        <aside className="grid gap-4 xl:sticky xl:top-24">
-          <div className="EdgeTrace-card-soft p-5">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-muted md:text-base">Primary Leak</p>
-            <h2 className="mt-3 text-xl font-semibold tracking-[-0.04em] text-ink">{intelligence.primaryLeak.title}</h2>
-            <p className="mt-3 text-sm leading-6 text-muted">{intelligence.primaryLeak.explanation}</p>
-            <div className="mt-5 grid gap-3 text-sm">
-              <MetricMini label="Supporting Metric" value={intelligence.primaryLeak.supportingMetric} />
-              <MetricMini label="Recommended Next Step" value={intelligence.primaryLeak.recommendedInspection} />
-            </div>
-          </div>
-
-          <div className="EdgeTrace-card-soft p-5">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-warning md:text-base">Recommended next steps</p>
-            {workflowAction && (
-              <div className="EdgeTrace-subpanel EdgeTrace-recommended mt-4 p-4">
-                <p className="text-lg font-semibold tracking-[-0.04em] text-ink">{workflowAction.title}</p>
-                <p className="mt-2 text-sm leading-6 text-muted">{workflowAction.why}</p>
-                <button className="EdgeTrace-command-button mt-4 w-full" onClick={workflowAction.action}>
-                  {workflowAction.button}
-                </button>
-              </div>
-            )}
-            <div className="mt-4 grid gap-3">
-              {primaryInspection && (
-                <button
-                  className="EdgeTrace-subpanel p-4 text-left transition hover:border-warning/60"
-                  onClick={inspectPrimarySegment}
-                >
-                  <p className="font-semibold text-ink">Inspect weakest segment</p>
-                  <p className="mt-1 text-sm text-muted">{primaryInspection.title}</p>
-                  <p className="mt-2 text-sm text-warning">{primaryInspection.metric}</p>
-                </button>
-              )}
-              {onCompareReport && (
-                <button
-                  className="EdgeTrace-subpanel p-4 text-left transition hover:border-violet/60"
-                  onClick={() => onCompareReport(result.id)}
-                >
-                  <p className="font-semibold text-ink">Compare this report</p>
-                  <p className="mt-1 text-sm text-muted">See what improved, degraded, or leaked.</p>
-                  <p className="mt-2 text-sm text-violet">Open comparison</p>
-                </button>
-              )}
-              <button
-                className="EdgeTrace-subpanel p-4 text-left transition hover:border-violet/60"
-                onClick={() => setIsAddingToStrategySet(true)}
-              >
-                <p className="font-semibold text-ink">Add to strategy set</p>
-                <p className="mt-1 text-sm text-muted">Group this report with related iterations.</p>
-                <p className="mt-2 text-sm text-violet">Organize iteration</p>
-              </button>
-              {hasReconstructionAudit && (
-                <button
-                  className="EdgeTrace-subpanel p-4 text-left transition hover:border-violet/60"
-                  onClick={() => {
-                    trackEvent("reconstruction_audit_opened", { reportId: result.id });
-                    onReconstructionAudit?.();
-                  }}
-                >
-                  <p className="font-semibold text-ink">Review reconstruction audit</p>
-                  <p className="mt-1 text-sm text-muted">Confirm which broker executions formed each completed trade.</p>
-                  <p className="mt-2 text-sm text-violet">Audit lineage</p>
-                </button>
-              )}
-              {!primaryInspection && !onCompareReport && (
-                <div className="EdgeTrace-subpanel p-4 text-sm text-muted">
-                  No segment-level workflow action is available for this report yet.
-                </div>
-              )}
-            </div>
-          </div>
-        </aside>
-      </section>
-
-      <DisclosurePanel
-        className="mt-6"
-        compact
-        title="What cost drag and R capture mean"
-        subtitle="Open for metric definitions."
-      >
-        <div className="grid gap-3 text-sm leading-6 text-muted md:grid-cols-2">
-          <p>Cost drag estimates how much execution costs reduce gross performance before it reaches net results.</p>
-          <p>R capture measures realized reward relative to risk when risk data is available or can be inferred.</p>
-        </div>
-      </DisclosurePanel>
-
-      <CommandPath
-        className="mt-6"
-        context="report"
+    <main className="EdgeTrace-report-dashboard">
+      <DashboardSidebar
+        userName={userName}
+        userEmail={userEmail}
+        profile={profile}
+        onDashboard={onOpenDashboard}
         onAnalyze={onCreateReport}
-        onDashboard={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        onInspectLeak={inspectPrimarySegment}
-        onCompare={() => onCompareReport?.(result.id)}
-        onCreateStrategySet={() => setIsAddingToStrategySet(true)}
+        onReports={onViewReports}
+        onCollections={onOpenCollections}
+        onCompare={handleSidebarCompare}
+        onFeatures={onOpenFeatures}
+        onAccount={onOpenAccount}
       />
 
-      <section className="mt-8 flex flex-wrap gap-5 border-b border-white/[0.1]">
-        {(["overview", "breakdown", "trades"] as DashboardTab[]).map((tab) => (
-          <button
-            key={tab}
-            className={`border-b pb-3 text-sm font-semibold capitalize ${
-              activeTab === tab ? "border-ink text-ink" : "border-transparent text-muted hover:border-white/20 hover:text-ink"
-            }`}
-            onClick={() => {
-              setActiveTab(tab);
-              trackEvent("report_tab_opened", { reportId: result.id, tab });
-            }}
-          >
-            {tab}
-          </button>
-        ))}
-      </section>
-
-      {activeTab === "overview" && (
-        <section className="mt-6 EdgeTrace-card-soft p-6">
-          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-muted md:text-base">Overview</p>
-          <p className="mt-3 max-w-3xl text-sm leading-6 text-muted">
-            Primary leak guidance and recommended actions are pinned in the sidebar beside the health readout.
-          </p>
-        </section>
-      )}
-
-      {activeTab === "breakdown" && (
-      <PaywallGate
-        feature="advanced_attribution"
-        accessLevel={fullAttributionAccess ? "full" : "preview"}
-        title="Upgrade to Pro to unlock the full attribution breakdown."
-        description="EdgeTrace detected a performance leak. Pro shows which symbols, strategies, and time windows contributed most."
-      >
-      <section className="mt-8">
-        <div className="mb-4 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+      <section className="EdgeTrace-dashboard-main">
+        <header className="EdgeTrace-dashboard-header">
           <div>
-            <p className="text-sm uppercase tracking-[0.22em] text-muted">Strategy Health</p>
-            <h2 className="mt-2 text-2xl font-semibold">Breakdown analytics</h2>
+            <h1>Dashboard</h1>
+            <p>Post-report intelligence at a glance.</p>
           </div>
-          <div className="flex flex-wrap gap-2">
-            {(["symbol", "strategy", "timeOfDay"] as BreakdownDimension[]).map((dimension) => (
+          <div className="EdgeTrace-dashboard-report-meta">
+            <button className="EdgeTrace-report-selector" onClick={() => setIsEditingDetails(true)}>
+              <span>Report: {result.name ?? "Diagnostic Report"}</span>
+              <ChevronDown size={14} aria-hidden="true" />
+            </button>
+            <div className="EdgeTrace-report-generated">
+              <span>
+                Generated{" "}
+                {reportDate
+                  ? reportDate.toLocaleString(undefined, {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                      hour: "numeric",
+                      minute: "2-digit"
+                    })
+                  : "date unavailable"}
+              </span>
+              <CalendarDays size={13} aria-hidden="true" />
+            </div>
+          </div>
+          <div className="EdgeTrace-dashboard-actions">
+            <button className="EdgeTrace-dashboard-primary" onClick={inspectPrimarySegment} disabled={!primaryInspection}>
+              <LineChartIcon size={17} aria-hidden="true" />
+              Analyze Trades
+            </button>
+            <button
+              className="EdgeTrace-dashboard-secondary"
+              onClick={() => {
+                setActiveTab("breakdown");
+                document.querySelector(".EdgeTrace-detail-dock")?.scrollIntoView({ behavior: "smooth", block: "start" });
+              }}
+            >
+              <FileText size={17} aria-hidden="true" />
+              View Full Report
+            </button>
+          </div>
+        </header>
+
+        {(reportJustCreated || firstReportReady || !costsIncluded || !rValuesAvailable || reconstructionUsed) && (
+          <section className="EdgeTrace-dashboard-alerts" aria-label="Report notices">
+            {reportJustCreated && (
+              <Notice
+                tone="blue"
+                title="Report created"
+                message="Start with the primary diagnosis, then inspect the recommended segment."
+                action={onDismissCreatedBanner}
+                actionLabel="Dismiss"
+              />
+            )}
+            {firstReportReady && (
+              <Notice
+                tone="blue"
+                title="First report ready"
+                message="Review the diagnosis, inspect the weakest segment, then compare the next iteration."
+              />
+            )}
+            {!costsIncluded && (
+              <Notice
+                tone="yellow"
+                title="Cost data missing"
+                message="Net performance may be overstated because cost data was not detected."
+              />
+            )}
+            {!rValuesAvailable && (
+              <Notice
+                tone="yellow"
+                title="R-multiple limited"
+                message="R analysis is limited because stop or risk data was not available."
+              />
+            )}
+            {reconstructionUsed && (
+              <Notice
+                tone="gray"
+                title="Reconstructed trades"
+                message="This report uses reconstructed execution records. Audit lineage if results look unexpected."
+                action={hasReconstructionAudit ? handleAudit : undefined}
+                actionLabel="Audit"
+              />
+            )}
+          </section>
+        )}
+
+        <section className="EdgeTrace-kpi-grid" aria-label="Dashboard overview metrics">
+          <DashboardMetricCard
+            title="Overview"
+            value={overviewStatus(intelligence.strategyHealthScore, intelligence.primaryDiagnosis)}
+            detail="Primary issues are dragging performance."
+            tone={intelligence.strategyHealthScore >= 60 ? "green" : "red"}
+            icon={<AlertCircle size={52} />}
+            dataTestId="dashboard-health-card"
+          />
+          <DashboardMetricCard
+            title="Strategy Health"
+            value={`${intelligence.strategyHealthScore}`}
+            suffix="/100"
+            detail={`${intelligence.healthBand}. ${healthDeltaCopy(intelligence.strategyHealthScore)}`}
+            tone={statusTone(intelligence.keyMetricStatuses.profitFactor)}
+            sparkline={performanceData}
+          />
+          <DashboardMetricCard
+            title="Expectancy"
+            value={currency.format(metrics.expectancy)}
+            suffix="Per Trade"
+            detail={`After-cost average. Gross ${currency.format(metrics.grossExpectancy)}.`}
+            tone={metrics.expectancy >= 0 ? "green" : "red"}
+          />
+          <DashboardMetricCard
+            title="Net PnL"
+            value={currency.format(metrics.netPnl)}
+            detail={`${number.format(normalizedTradeCount)} trades`}
+            subdetail="After-cost performance"
+            tone={metrics.netPnl >= 0 ? "green" : "red"}
+          />
+          <DashboardMetricCard
+            title="Win Rate"
+            value={percent.format(metrics.winRate)}
+            detail={winRateCopy(metrics.winRate)}
+            tone={statusTone(intelligence.keyMetricStatuses.winRate)}
+            progress={metrics.winRate}
+          />
+          <DashboardMetricCard
+            title="R-Multiple"
+            value={metrics.averageRealizedR !== undefined ? `${number.format(metrics.averageRealizedR)}R` : "N/A"}
+            detail={rMultipleCopy(metrics.averageRealizedR)}
+            subdetail="Avg R"
+            tone={statusTone(intelligence.keyMetricStatuses.averageR)}
+          />
+        </section>
+
+        <section className="EdgeTrace-dashboard-middle">
+          <DiagnosisPanel
+            intelligence={intelligence}
+            metrics={metrics}
+            impactBreakdown={impactBreakdown}
+            onBreakdown={() => setActiveTab("breakdown")}
+          />
+
+          <div className="EdgeTrace-dashboard-panel EdgeTrace-trend-panel">
+            <PanelHeader title="Key Performance Trend" info />
+            <div className="EdgeTrace-trend-select">Net PnL</div>
+            <ResponsiveContainer width="100%" height={260}>
+              <LineChart data={performanceData} margin={{ top: 14, right: 10, left: 2, bottom: 0 }}>
+                <CartesianGrid stroke="#1d3042" strokeOpacity={0.58} vertical={false} />
+                <XAxis
+                  dataKey="trade"
+                  stroke="#8796a8"
+                  tickLine={false}
+                  axisLine={false}
+                  tick={{ fontSize: 11 }}
+                />
+                <YAxis
+                  stroke="#8796a8"
+                  tickLine={false}
+                  axisLine={false}
+                  width={44}
+                  tick={{ fontSize: 11 }}
+                  tickFormatter={formatAxisCurrency}
+                />
+                <Tooltip
+                  cursor={{ stroke: "#2f8bc9", strokeOpacity: 0.32 }}
+                  contentStyle={{ background: "#07111d", border: "1px solid rgba(88, 214, 255, 0.18)" }}
+                  formatter={(value) => [formatTooltipCurrency(value), "Net PnL"]}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="equity"
+                  stroke={metrics.netPnl >= 0 ? "#68c27b" : "#ff4b55"}
+                  strokeWidth={2.2}
+                  dot={false}
+                  activeDot={{ r: 4, fill: metrics.netPnl >= 0 ? "#68c27b" : "#ff4b55" }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+            <button className="EdgeTrace-dashboard-link" onClick={() => setActiveTab("breakdown")}>
+              View advanced charts <ArrowRight size={14} aria-hidden="true" />
+            </button>
+          </div>
+
+          <PriorityInsights insights={priorityInsights} onOpenInsight={inspectPrimarySegment} />
+        </section>
+
+        <section className="EdgeTrace-dashboard-bottom">
+          <SnapshotStats metrics={metrics} averageR={metrics.averageRealizedR} normalizedTradeCount={normalizedTradeCount} />
+          <TopActions
+            actionItems={actionItems}
+            workflowAction={workflowAction}
+            onInspect={inspectPrimarySegment}
+            onAddToStrategySet={() => setIsAddingToStrategySet(true)}
+          />
+          <ContextGlance
+            result={result}
+            metrics={metrics}
+            normalizedTradeCount={normalizedTradeCount}
+            hasReconstructionAudit={hasReconstructionAudit}
+            onAudit={handleAudit}
+          />
+        </section>
+
+        <DashboardLegend />
+
+        <section className="EdgeTrace-detail-dock" aria-label="Detailed report data">
+          <div className="EdgeTrace-detail-tabs">
+            {(["overview", "breakdown", "trades"] as DashboardTab[]).map((tab) => (
               <button
-                key={dimension}
-                className={`rounded-md border px-4 py-2 text-sm ${
-                  breakdownDimension === dimension
-                    ? "border-violet text-violet"
-                    : "border-line text-ink hover:border-violet"
-                }`}
+                key={tab}
+                className={activeTab === tab ? "active" : ""}
                 onClick={() => {
-                  setBreakdownDimension(dimension);
-                  setBreakdownSortKey("netPnl");
-                  setBreakdownSortDirection("desc");
+                  setActiveTab(tab);
+                  trackEvent("report_tab_opened", { reportId: result.id, tab });
                 }}
               >
-                {breakdownLabels[dimension]}
+                {tab}
               </button>
             ))}
           </div>
-        </div>
 
-        <div className="mb-4 grid gap-4 md:grid-cols-2">
-          <SegmentCard
-            title="Largest Leak"
-            row={largestLeak}
-            tone="loss"
-            onSelect={(row) => {
-              trackEvent("drilldown_opened", { reportId: result.id, dimension: breakdownDimension, group: row.group });
-              onDrillDown?.({ dimension: breakdownDimension, group: row.group });
-            }}
-          />
-          <SegmentCard
-            title="Strongest Segment"
-            row={strongestSegment}
-            tone="accent"
-            onSelect={(row) => {
-              trackEvent("drilldown_opened", { reportId: result.id, dimension: breakdownDimension, group: row.group });
-              onDrillDown?.({ dimension: breakdownDimension, group: row.group });
-            }}
-          />
-        </div>
-
-        <TableContainer>
-          <table className="min-w-full divide-y divide-line text-sm">
-            <thead className="bg-panel text-left text-muted">
-              <tr>
-                <th className="px-4 py-3 font-medium">{breakdownLabels[breakdownDimension]}</th>
-                {[
-                  ["totalTrades", "Trades"],
-                  ["winRate", "Win Rate"],
-                  ["netPnl", "Net PnL"],
-                  ["expectancy", "Expectancy"],
-                  ["averageRealizedR", "Avg R"],
-                  ["costDragPct", "Cost Drag"]
-                ].map(([key, label]) => (
-                  <th key={key} className="px-4 py-3 font-medium">
-                    <button onClick={() => sortBreakdown(key as BreakdownSortKey)}>{label}</button>
-                  </th>
+          {activeTab === "overview" && (
+            <div className="EdgeTrace-dashboard-panel EdgeTrace-overview-panel">
+              <div>
+                <PanelHeader title="Report Snapshot" info />
+                <p className="mt-3 max-w-3xl text-sm leading-6 text-muted">
+                  {intelligence.primaryExplanation}
+                </p>
+              </div>
+              <div className="EdgeTrace-overview-tags">
+                <span>{formatReportType(result.reportType)}</span>
+                {result.strategyLabel && <span>{result.strategyLabel}</span>}
+                {(result.tags ?? []).slice(0, 4).map((tag) => (
+                  <span key={tag}>{tag}</span>
                 ))}
-                <th className="px-4 py-3 font-medium">Gross PnL</th>
-                <th className="px-4 py-3 font-medium">Costs</th>
-                <th className="px-4 py-3 font-medium">Avg Win</th>
-                <th className="px-4 py-3 font-medium">Avg Loss</th>
-                <th className="px-4 py-3 font-medium">Profit Factor</th>
-                <th className="px-4 py-3 font-medium">Net/Gross</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-line">
-              {breakdownRows.map((row) => (
-                <tr
-                  key={row.group}
-                  className="cursor-pointer hover:bg-line/30"
-                  onClick={() => {
-                    trackEvent("drilldown_opened", { reportId: result.id, dimension: breakdownDimension, group: row.group });
-                    onDrillDown?.({ dimension: breakdownDimension, group: row.group });
-                  }}
-                >
-                  <td className="px-4 py-3 font-medium">{row.group}</td>
-                  <td className="px-4 py-3 text-muted">{row.totalTrades}</td>
-                  <td className="px-4 py-3">{percent.format(row.winRate)}</td>
-                  <td className={`px-4 py-3 ${numericValueClass(row.netPnl)}`}>
-                    {currency.format(row.netPnl)}
-                  </td>
-                  <td className={`px-4 py-3 ${numericValueClass(row.expectancy)}`}>{currency.format(row.expectancy)}</td>
-                  <td className="px-4 py-3 text-muted">{formatNumber(row.averageRealizedR)}</td>
-                  <td className={`px-4 py-3 ${costDragValueClass(row.costDragPct)}`}>{row.costDrag.label}</td>
-                  <td className="px-4 py-3">{currency.format(row.grossPnl)}</td>
-                  <td className={row.totalCosts > 0 ? "px-4 py-3 text-warning" : "px-4 py-3 text-muted"}>
-                    {currency.format(row.totalCosts)}
-                  </td>
-                  <td className="px-4 py-3 text-cyan">{currency.format(row.averageWin)}</td>
-                  <td className="px-4 py-3 text-loss">{currency.format(row.averageLoss)}</td>
-                  <td className="px-4 py-3 text-muted">{formatNumber(row.profitFactor)}</td>
-                  <td className="px-4 py-3 text-muted">{formatPercent(row.netToGrossPct)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </TableContainer>
-      </section>
-      </PaywallGate>
-      )}
+              </div>
+            </div>
+          )}
 
-      {activeTab === "trades" && (
-      <PaywallGate
-        feature="full_report_access"
-        accessLevel={fullTradeAccess ? "full" : "preview"}
-        title="Upgrade to Pro to unlock the full trade-level report."
-        description="Preview reports show top-level diagnostics. Pro unlocks every normalized trade behind the attribution."
-      >
-      <TableContainer className="mt-8">
-        <table className="min-w-full divide-y divide-line text-sm">
-          <thead className="bg-panel text-left text-muted">
-            <tr>
-              {[
-                ["symbol", "Symbol"],
-                ["side", "Side"],
-                ["entryTime", "Entry Time"],
-                ["grossPnl", "Gross PnL"],
-                ["netPnl", "Net PnL"],
-                ["realizedR", "R"]
-              ].map(([key, label]) => (
-                <th key={key} className="px-4 py-3 font-medium">
-                  <button onClick={() => sort(key as SortKey)}>{label}</button>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-line">
-            {sortedTrades.map((trade) => (
-              <tr key={trade.id}>
-                <td className="px-4 py-3 font-medium">{trade.symbol}</td>
-                <td className="px-4 py-3 text-muted">{trade.side}</td>
-                <td className="px-4 py-3 text-muted">{trade.entryTime}</td>
-                <td className="px-4 py-3">{currency.format(trade.grossPnl)}</td>
-                <td className={`px-4 py-3 ${numericValueClass(trade.netPnl)}`}>
-                  {currency.format(trade.netPnl)}
-                </td>
-                <td className="px-4 py-3 text-muted">{trade.realizedR?.toFixed(2) ?? "N/A"}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </TableContainer>
-      </PaywallGate>
-      )}
+          {activeTab === "breakdown" && (
+            <PaywallGate
+              feature="advanced_attribution"
+              accessLevel={fullAttributionAccess ? "full" : "preview"}
+              title="Upgrade to Pro to unlock the full attribution breakdown."
+              description="EdgeTrace detected a performance leak. Pro shows which symbols, strategies, and time windows contributed most."
+            >
+              <section className="mt-5">
+                <div className="mb-4 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.18em] text-muted">Attribution</p>
+                    <h2 className="mt-2 text-2xl font-semibold">Breakdown analytics</h2>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {(["symbol", "strategy", "timeOfDay"] as BreakdownDimension[]).map((dimension) => (
+                      <button
+                        key={dimension}
+                        className={`EdgeTrace-dimension-toggle ${breakdownDimension === dimension ? "active" : ""}`}
+                        onClick={() => {
+                          setBreakdownDimension(dimension);
+                          setBreakdownSortKey("netPnl");
+                          setBreakdownSortDirection("desc");
+                        }}
+                      >
+                        {breakdownLabels[dimension]}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="mb-4 grid gap-4 md:grid-cols-2">
+                  <SegmentCard
+                    title="Largest Leak"
+                    row={largestLeak}
+                    tone="loss"
+                    onSelect={(row) => {
+                      trackEvent("drilldown_opened", { reportId: result.id, dimension: breakdownDimension, group: row.group });
+                      onDrillDown?.({ dimension: breakdownDimension, group: row.group });
+                    }}
+                  />
+                  <SegmentCard
+                    title="Strongest Segment"
+                    row={strongestSegment}
+                    tone="accent"
+                    onSelect={(row) => {
+                      trackEvent("drilldown_opened", { reportId: result.id, dimension: breakdownDimension, group: row.group });
+                      onDrillDown?.({ dimension: breakdownDimension, group: row.group });
+                    }}
+                  />
+                </div>
+
+                <TableContainer>
+                  <table className="min-w-full divide-y divide-line text-sm">
+                    <thead className="bg-panel text-left text-muted">
+                      <tr>
+                        <th className="px-4 py-3 font-medium">{breakdownLabels[breakdownDimension]}</th>
+                        {[
+                          ["totalTrades", "Trades"],
+                          ["winRate", "Win Rate"],
+                          ["netPnl", "Net PnL"],
+                          ["expectancy", "Expectancy"],
+                          ["averageRealizedR", "Avg R"],
+                          ["costDragPct", "Cost Drag"]
+                        ].map(([key, label]) => (
+                          <th key={key} className="px-4 py-3 font-medium">
+                            <button onClick={() => sortBreakdown(key as BreakdownSortKey)}>{label}</button>
+                          </th>
+                        ))}
+                        <th className="px-4 py-3 font-medium">Gross PnL</th>
+                        <th className="px-4 py-3 font-medium">Costs</th>
+                        <th className="px-4 py-3 font-medium">Avg Win</th>
+                        <th className="px-4 py-3 font-medium">Avg Loss</th>
+                        <th className="px-4 py-3 font-medium">Profit Factor</th>
+                        <th className="px-4 py-3 font-medium">Net/Gross</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-line">
+                      {breakdownRows.map((row) => (
+                        <tr
+                          key={row.group}
+                          className="cursor-pointer hover:bg-line/30"
+                          onClick={() => {
+                            trackEvent("drilldown_opened", {
+                              reportId: result.id,
+                              dimension: breakdownDimension,
+                              group: row.group
+                            });
+                            onDrillDown?.({ dimension: breakdownDimension, group: row.group });
+                          }}
+                        >
+                          <td className="px-4 py-3 font-medium">{row.group}</td>
+                          <td className="px-4 py-3 text-muted">{row.totalTrades}</td>
+                          <td className="px-4 py-3">{percent.format(row.winRate)}</td>
+                          <td className={`px-4 py-3 ${numericValueClass(row.netPnl)}`}>{currency.format(row.netPnl)}</td>
+                          <td className={`px-4 py-3 ${numericValueClass(row.expectancy)}`}>
+                            {currency.format(row.expectancy)}
+                          </td>
+                          <td className="px-4 py-3 text-muted">{formatNumber(row.averageRealizedR)}</td>
+                          <td className={`px-4 py-3 ${costDragValueClass(row.costDragPct)}`}>{row.costDrag.label}</td>
+                          <td className="px-4 py-3">{currency.format(row.grossPnl)}</td>
+                          <td className={row.totalCosts > 0 ? "px-4 py-3 text-warning" : "px-4 py-3 text-muted"}>
+                            {currency.format(row.totalCosts)}
+                          </td>
+                          <td className="px-4 py-3 text-cyan">{currency.format(row.averageWin)}</td>
+                          <td className="px-4 py-3 text-loss">{currency.format(row.averageLoss)}</td>
+                          <td className="px-4 py-3 text-muted">{formatNumber(row.profitFactor)}</td>
+                          <td className="px-4 py-3 text-muted">{formatPercent(row.netToGrossPct)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </TableContainer>
+              </section>
+            </PaywallGate>
+          )}
+
+          {activeTab === "trades" && (
+            <PaywallGate
+              feature="full_report_access"
+              accessLevel={fullTradeAccess ? "full" : "preview"}
+              title="Upgrade to Pro to unlock the full trade-level report."
+              description="Preview reports show top-level diagnostics. Pro unlocks every normalized trade behind the attribution."
+            >
+              <TableContainer className="mt-5">
+                <table className="min-w-full divide-y divide-line text-sm">
+                  <thead className="bg-panel text-left text-muted">
+                    <tr>
+                      {[
+                        ["symbol", "Symbol"],
+                        ["side", "Side"],
+                        ["entryTime", "Entry Time"],
+                        ["grossPnl", "Gross PnL"],
+                        ["netPnl", "Net PnL"],
+                        ["realizedR", "R"]
+                      ].map(([key, label]) => (
+                        <th key={key} className="px-4 py-3 font-medium">
+                          <button onClick={() => sort(key as SortKey)}>{label}</button>
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-line">
+                    {sortedTrades.map((trade) => (
+                      <tr key={trade.id}>
+                        <td className="px-4 py-3 font-medium">{trade.symbol}</td>
+                        <td className="px-4 py-3 text-muted">{trade.side}</td>
+                        <td className="px-4 py-3 text-muted">{trade.entryTime}</td>
+                        <td className="px-4 py-3">{currency.format(trade.grossPnl)}</td>
+                        <td className={`px-4 py-3 ${numericValueClass(trade.netPnl)}`}>
+                          {currency.format(trade.netPnl)}
+                        </td>
+                        <td className="px-4 py-3 text-muted">{trade.realizedR?.toFixed(2) ?? "N/A"}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </TableContainer>
+            </PaywallGate>
+          )}
+        </section>
+      </section>
 
       {isEditingDetails && (
         <ReportDetailsEditor
@@ -818,6 +727,408 @@ export function DashboardPage({
         />
       )}
     </main>
+  );
+}
+
+function DashboardSidebar({
+  userName,
+  userEmail,
+  profile,
+  onDashboard,
+  onAnalyze,
+  onReports,
+  onCollections,
+  onCompare,
+  onFeatures,
+  onAccount
+}: {
+  userName?: string;
+  userEmail?: string;
+  profile?: UserProfile | null;
+  onDashboard?: () => void;
+  onAnalyze?: () => void;
+  onReports?: () => void;
+  onCollections?: () => void;
+  onCompare?: () => void;
+  onFeatures?: () => void;
+  onAccount?: () => void;
+}) {
+  const navItems = [
+    { label: "Dashboard", icon: Home, action: onDashboard, active: true },
+    { label: "Analyze Trades", icon: TrendingUp, action: onAnalyze },
+    { label: "Reports", icon: FileText, action: onReports },
+    { label: "Strategy Sets", icon: Layers3, action: onCollections },
+    { label: "Compare", icon: Scale, action: onCompare },
+    { label: "How It Works", icon: HelpCircle, action: onFeatures }
+  ];
+
+  return (
+    <aside className="EdgeTrace-dashboard-sidebar">
+      <button className="EdgeTrace-sidebar-brand" onClick={onDashboard} aria-label="EdgeTrace dashboard">
+        <img src="/brand/edgetrace_icon_monochrome_white_transparent.png" alt="" aria-hidden="true" />
+        <span>EDGETRACE</span>
+      </button>
+
+      <nav aria-label="Dashboard navigation" className="EdgeTrace-sidebar-nav">
+        {navItems.map(({ label, icon: Icon, action, active }) => (
+          <button key={label} className={active ? "active" : ""} onClick={action}>
+            <Icon size={18} aria-hidden="true" />
+            <span>{label}</span>
+          </button>
+        ))}
+      </nav>
+
+      <div className="EdgeTrace-sidebar-quick">
+        <p>Quick Actions</p>
+        <button onClick={onAnalyze}>
+          <Plus size={17} aria-hidden="true" />
+          New Report
+        </button>
+        <button onClick={onAnalyze}>
+          <Upload size={17} aria-hidden="true" />
+          Upload Trades
+        </button>
+        <button onClick={onReports}>
+          <FolderOpen size={17} aria-hidden="true" />
+          Open Reports
+        </button>
+      </div>
+
+      <button className="EdgeTrace-sidebar-user" onClick={onAccount}>
+        <span className="EdgeTrace-sidebar-avatar">
+          {userName ? initials(userName) : <UserCircle size={18} aria-hidden="true" />}
+        </span>
+        <span className="min-w-0">
+          <span className="EdgeTrace-sidebar-name">
+            {userName ?? "Demo Analyst"}
+            {profile?.planId && <small>{profile.planId.toUpperCase()}</small>}
+          </span>
+          <span className="EdgeTrace-sidebar-email">{userEmail ?? "demo@edgetrace.local"}</span>
+        </span>
+      </button>
+    </aside>
+  );
+}
+
+function DashboardMetricCard({
+  title,
+  value,
+  suffix,
+  detail,
+  subdetail,
+  tone,
+  icon,
+  sparkline,
+  progress,
+  dataTestId
+}: {
+  title: string;
+  value: string;
+  suffix?: string;
+  detail: string;
+  subdetail?: string;
+  tone: "red" | "yellow" | "green" | "blue" | "gray";
+  icon?: ReactNode;
+  sparkline?: Array<{ trade: number; equity: number }>;
+  progress?: number;
+  dataTestId?: string;
+}) {
+  return (
+    <article className={`EdgeTrace-dashboard-panel EdgeTrace-kpi-card tone-${tone} ${icon ? "has-icon" : ""}`} data-testid={dataTestId}>
+      <PanelHeader title={title} info />
+      <div className="EdgeTrace-kpi-body">
+        <div>
+          <p className="EdgeTrace-kpi-value">
+            {value}
+            {suffix && <span>{suffix}</span>}
+          </p>
+          {subdetail && <p className="EdgeTrace-kpi-subdetail">{subdetail}</p>}
+          <p className="EdgeTrace-kpi-detail">{detail}</p>
+        </div>
+        {icon && <div className="EdgeTrace-kpi-icon" aria-hidden="true">{icon}</div>}
+      </div>
+      {sparkline && sparkline.length > 1 && (
+        <div className="EdgeTrace-kpi-sparkline" aria-hidden="true">
+          <ResponsiveContainer width="100%" height={44}>
+            <LineChart data={sparkline}>
+              <Line type="monotone" dataKey="equity" stroke="currentColor" strokeWidth={2} dot={false} />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      )}
+      {typeof progress === "number" && (
+        <div className="EdgeTrace-kpi-progress" aria-hidden="true">
+          <span style={{ width: `${Math.max(0, Math.min(1, progress)) * 100}%` }} />
+          <div>
+            <small>0%</small>
+            <small>100%</small>
+          </div>
+        </div>
+      )}
+    </article>
+  );
+}
+
+function DiagnosisPanel({
+  intelligence,
+  metrics,
+  impactBreakdown,
+  onBreakdown
+}: {
+  intelligence: ReturnType<typeof buildReportIntelligence>;
+  metrics: DiagnosticsResult["metrics"];
+  impactBreakdown: ReturnType<typeof buildImpactBreakdown>;
+  onBreakdown: () => void;
+}) {
+  const totalImpact = impactBreakdown.reduce((total, item) => total + item.value, 0);
+  let running = 0;
+  const stops = impactBreakdown
+    .map((item) => {
+      const start = running;
+      running += item.percent;
+      return `${item.color} ${start}% ${running}%`;
+    })
+    .join(", ");
+
+  return (
+    <div id="primary-diagnosis" className="EdgeTrace-dashboard-panel EdgeTrace-diagnosis-panel">
+      <PanelHeader title="Primary Diagnosis" info />
+      <div className="EdgeTrace-diagnosis-layout">
+        <div>
+          <h2 className={diagnosisToneClass(intelligence.primaryDiagnosis)}>{humanDiagnosis(intelligence.primaryDiagnosis)}</h2>
+          <p>{intelligence.primaryLeak.explanation}</p>
+          <div className="EdgeTrace-diagnosis-foot">
+            <MetricMini label="Est. Impact" value={currency.format(-Math.abs(totalImpact || metrics.totalCosts))} tone="red" />
+            <MetricMini label="Confidence" value={diagnosisConfidence(intelligence.strategyHealthScore)} tone="white" />
+          </div>
+        </div>
+
+        <div className="EdgeTrace-impact-donut-wrap">
+          <div className="EdgeTrace-impact-donut" style={{ background: `conic-gradient(${stops})` }}>
+            <span>Total Impact</span>
+            <strong>{currency.format(-Math.abs(totalImpact || metrics.totalCosts))}</strong>
+          </div>
+        </div>
+
+        <div className="EdgeTrace-impact-list">
+          {impactBreakdown.map((item) => (
+            <div key={item.label}>
+              <span style={{ backgroundColor: item.color }} />
+              <p>
+                <strong>{item.label}</strong>
+                <small>{currency.format(-Math.abs(item.value))}</small>
+              </p>
+              <em>{Math.round(item.percent)}%</em>
+            </div>
+          ))}
+          <button className="EdgeTrace-dashboard-link" onClick={onBreakdown}>
+            View full breakdown <ArrowRight size={14} aria-hidden="true" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PriorityInsights({
+  insights,
+  onOpenInsight
+}: {
+  insights: Array<{ label: string; title: string; detail: string; tone: "red" | "yellow" | "gray" | "green" }>;
+  onOpenInsight: () => void;
+}) {
+  return (
+    <div className="EdgeTrace-dashboard-panel EdgeTrace-insights-panel">
+      <PanelHeader title="Priority Insights" info />
+      <div className="EdgeTrace-priority-list">
+        {insights.map((insight) => (
+          <button key={`${insight.label}-${insight.title}`} onClick={onOpenInsight}>
+            <span className={`tone-${insight.tone}`}>{insight.label}</span>
+            <p>
+              <strong>{insight.title}</strong>
+              <small>{insight.detail}</small>
+            </p>
+            <ArrowRight size={16} aria-hidden="true" />
+          </button>
+        ))}
+      </div>
+      <button className="EdgeTrace-dashboard-link" onClick={onOpenInsight}>
+        View all insights <ArrowRight size={14} aria-hidden="true" />
+      </button>
+    </div>
+  );
+}
+
+function SnapshotStats({
+  metrics,
+  averageR,
+  normalizedTradeCount
+}: {
+  metrics: DiagnosticsResult["metrics"];
+  averageR?: number;
+  normalizedTradeCount: number;
+}) {
+  const items = [
+    { label: "Net PnL", value: currency.format(metrics.netPnl), delta: `${normalizedTradeCount} trades`, tone: metrics.netPnl >= 0 ? "green" : "red" },
+    { label: "Expectancy", value: currency.format(metrics.expectancy), delta: "After costs", tone: metrics.expectancy >= 0 ? "green" : "red" },
+    { label: "Win Rate", value: percent.format(metrics.winRate), delta: winRateCopy(metrics.winRate), tone: metrics.winRate >= 0.5 ? "green" : "red" },
+    { label: "Profit Factor", value: formatNumber(metrics.profitFactor), delta: profitFactorCopy(metrics.profitFactor), tone: metrics.profitFactor >= 1 ? "green" : "red" },
+    { label: "R-Multiple", value: averageR !== undefined ? `${number.format(averageR)}R` : "N/A", delta: rMultipleCopy(averageR), tone: (averageR ?? 0) >= 0.5 ? "green" : "yellow" }
+  ];
+
+  return (
+    <div className="EdgeTrace-dashboard-panel EdgeTrace-snapshot-panel">
+      <PanelHeader title="What Changed vs Prior Report" info />
+      <div className="EdgeTrace-snapshot-grid">
+        {items.map((item) => (
+          <div key={item.label} className={`tone-${item.tone}`}>
+            <span>{item.label}</span>
+            <strong>{item.value}</strong>
+            <small>{item.delta}</small>
+          </div>
+        ))}
+      </div>
+      <button className="EdgeTrace-dashboard-link">
+        See full comparison <ArrowRight size={14} aria-hidden="true" />
+      </button>
+    </div>
+  );
+}
+
+function TopActions({
+  actionItems,
+  workflowAction,
+  onInspect,
+  onAddToStrategySet
+}: {
+  actionItems: Array<{ title: string; impact: string; tone: "red" | "yellow" | "green" | "gray" }>;
+  workflowAction?: { title: string; detail: string; label: string; action: () => void };
+  onInspect: () => void;
+  onAddToStrategySet: () => void;
+}) {
+  return (
+    <div className="EdgeTrace-dashboard-panel EdgeTrace-actions-panel">
+      <PanelHeader title="Top Actions (Next Steps)" info />
+      <div className="EdgeTrace-next-actions">
+        {actionItems.map((action, index) => (
+          <button key={action.title} onClick={index === actionItems.length - 1 ? onAddToStrategySet : onInspect}>
+            <span>{index + 1}</span>
+            <strong>{action.title}</strong>
+            <em className={`tone-${action.tone}`}>{action.impact}</em>
+          </button>
+        ))}
+      </div>
+      {workflowAction && (
+        <button className="EdgeTrace-dashboard-link" onClick={workflowAction.action}>
+          {workflowAction.label} <ArrowRight size={14} aria-hidden="true" />
+        </button>
+      )}
+    </div>
+  );
+}
+
+function ContextGlance({
+  result,
+  metrics,
+  normalizedTradeCount,
+  hasReconstructionAudit,
+  onAudit
+}: {
+  result: DiagnosticsResult;
+  metrics: DiagnosticsResult["metrics"];
+  normalizedTradeCount: number;
+  hasReconstructionAudit: boolean;
+  onAudit: () => void;
+}) {
+  const tradeFrequency = estimateTradeFrequency(result.trades);
+  const dataQuality = result.importProvenance?.confidenceLabel ?? (result.importProvenance?.warningCount ? "Review Recommended" : "High");
+  const rows = [
+    ["Market Regime", inferRegime(metrics)],
+    ["Execution friction", currency.format(metrics.totalCosts)],
+    ["Volatility (ATR)", "Data unavailable"],
+    ["Trade Frequency", tradeFrequency ? `${tradeFrequency} trades/day` : "Not enough dates"],
+    ["Data Quality", dataQuality],
+    ["Reconstruction", hasReconstructionAudit ? `${normalizedTradeCount} / ${metrics.totalTrades} trades` : `${normalizedTradeCount} trades`]
+  ];
+
+  return (
+    <div className="EdgeTrace-dashboard-panel EdgeTrace-context-panel">
+      <PanelHeader title="Context at a Glance" info />
+      <div className="EdgeTrace-context-list">
+        {rows.map(([label, value]) => (
+          <div key={label}>
+            <span>{label}</span>
+            <strong>{value}</strong>
+          </div>
+        ))}
+      </div>
+      <button className="EdgeTrace-dashboard-link" onClick={onAudit}>
+        View report details <ArrowRight size={14} aria-hidden="true" />
+      </button>
+    </div>
+  );
+}
+
+function DashboardLegend() {
+  const items = [
+    ["Red", "Negative / Degraded", "Needs immediate attention", "#ff485c"],
+    ["Yellow", "Caution / Watchlist", "Monitor and investigate", "#ffb82e"],
+    ["Green", "Positive / Strength", "Healthy and working", "#74c476"],
+    ["Blue", "Action / Primary", "Recommended next steps", "#45b7f4"],
+    ["Gray", "Neutral / Info", "Supporting information", "#9aa7b5"]
+  ];
+
+  return (
+    <section className="EdgeTrace-dashboard-legend">
+      <p>How to read this dashboard</p>
+      {items.map(([label, title, detail, color]) => (
+        <div key={label}>
+          <span style={{ backgroundColor: color }} />
+          <strong>
+            {label} <small>- {title}</small>
+          </strong>
+          <em>{detail}</em>
+        </div>
+      ))}
+    </section>
+  );
+}
+
+function Notice({
+  tone,
+  title,
+  message,
+  action,
+  actionLabel
+}: {
+  tone: "blue" | "yellow" | "gray";
+  title: string;
+  message: string;
+  action?: () => void;
+  actionLabel?: string;
+}) {
+  return (
+    <div className={`EdgeTrace-dashboard-notice tone-${tone}`}>
+      <Info size={15} aria-hidden="true" />
+      <p>
+        <strong>{title}</strong>
+        <span>{message}</span>
+      </p>
+      {action && (
+        <button onClick={action}>
+          {actionLabel ?? "Open"}
+        </button>
+      )}
+    </div>
+  );
+}
+
+function PanelHeader({ title, info }: { title: string; info?: boolean }) {
+  return (
+    <div className="EdgeTrace-panel-header">
+      <span>{title}</span>
+      {info && <Info size={13} aria-hidden="true" />}
+    </div>
   );
 }
 
@@ -924,9 +1235,9 @@ function SegmentCard({
         <>
           <p className="mt-3 text-xl font-semibold">{row.group}</p>
           <div className="mt-4 grid grid-cols-3 gap-3 text-sm">
-            <MetricMini label="Net PnL" value={currency.format(row.netPnl)} />
-            <MetricMini label="Expectancy" value={currency.format(row.expectancy)} />
-            <MetricMini label="Cost Drag" value={row.costDrag.label} />
+            <MetricMini label="Net PnL" value={currency.format(row.netPnl)} tone={row.netPnl >= 0 ? "green" : "red"} />
+            <MetricMini label="Expectancy" value={currency.format(row.expectancy)} tone={row.expectancy >= 0 ? "green" : "red"} />
+            <MetricMini label="Cost Drag" value={row.costDrag.label} tone="white" />
           </div>
         </>
       ) : (
@@ -936,33 +1247,200 @@ function SegmentCard({
   );
 }
 
-function MetricMini({ label, value }: { label: string; value: string }) {
+function MetricMini({ label, value, tone = "white" }: { label: string; value: string; tone?: "red" | "green" | "yellow" | "white" }) {
   return (
-    <div>
-      <p className="text-xs text-muted">{label}</p>
-      <p className="mt-1 font-semibold">{value}</p>
+    <div className={`EdgeTrace-metric-mini tone-${tone}`}>
+      <p>{label}</p>
+      <strong>{value}</strong>
     </div>
   );
 }
 
-function DashboardSummaryCard({
-  label,
-  value,
-  detail,
-  tone
-}: {
-  label: string;
-  value: string;
-  detail: string;
-  tone: string;
-}) {
-  return (
-    <div className="EdgeTrace-card-soft p-5">
-      <p className="text-sm font-semibold uppercase tracking-[0.18em] text-muted">{label}</p>
-      <p className={`mt-6 text-4xl font-semibold tracking-[-0.06em] ${tone}`}>{value}</p>
-      <p className="mt-4 text-sm text-muted">{detail}</p>
-    </div>
-  );
+function buildEquityCurve(trades: NormalizedTrade[]) {
+  let equity = 0;
+  return trades.map((trade, index) => {
+    equity += trade.netPnl;
+    return { trade: index + 1, equity };
+  });
+}
+
+function buildImpactBreakdown(metrics: DiagnosticsResult["metrics"], largestLeak: BreakdownRow | undefined) {
+  const transactionCosts = Math.max(0, Math.abs(metrics.totalCosts));
+  const tradeQuality = Math.max(0, Math.abs(Math.min(metrics.expectancy, 0) * Math.max(1, metrics.totalTrades)));
+  const segmentLoss = Math.max(0, Math.abs(Math.min(largestLeak?.netPnl ?? 0, 0)) * 0.25);
+  const baseline = transactionCosts + tradeQuality + segmentLoss || 1;
+  const items = [
+    { label: "Transaction Costs", value: transactionCosts || baseline * 0.55, color: "#ff485c" },
+    { label: "R:R / Trade Quality", value: tradeQuality || baseline * 0.32, color: "#ffbd45" },
+    { label: "Other Factors", value: segmentLoss || baseline * 0.13, color: "#9aa7b5" }
+  ];
+  const total = items.reduce((sum, item) => sum + item.value, 0) || 1;
+  return items.map((item) => ({ ...item, percent: (item.value / total) * 100 }));
+}
+
+function buildPriorityInsights(
+  result: DiagnosticsResult,
+  intelligence: ReturnType<typeof buildReportIntelligence>,
+  largestLeak: BreakdownRow | undefined,
+  primaryInspection: ReturnType<typeof buildReportIntelligence>["nextBestInspections"][number] | undefined
+): Array<{ label: string; title: string; detail: string; tone: "red" | "yellow" | "gray" | "green" }> {
+  const base = [
+    {
+      label: "1",
+      title: "Transaction Costs",
+      detail: intelligence.primaryLeak.supportingMetric,
+      tone: intelligence.keyMetricStatuses.costDrag === "weak" ? "red" : "yellow"
+    },
+    {
+      label: "2",
+      title: "Weak R:R Profile",
+      detail: result.metrics.averageRealizedR !== undefined ? `Average R is ${number.format(result.metrics.averageRealizedR)}R` : "R-multiple data unavailable",
+      tone: intelligence.keyMetricStatuses.averageR === "healthy" ? "green" : "yellow"
+    },
+    {
+      label: "3",
+      title: result.metrics.winRate < 0.5 ? "Low Win Rate" : "Win Rate Quality",
+      detail: `Win rate is ${percent.format(result.metrics.winRate)}`,
+      tone: intelligence.keyMetricStatuses.winRate === "healthy" ? "green" : "yellow"
+    },
+    {
+      label: "4",
+      title: largestLeak ? `${largestLeak.group} Setup Quality` : "Setup Quality",
+      detail: primaryInspection?.reason ?? "Review segment consistency across losing trades",
+      tone: "gray"
+    }
+  ] satisfies Array<{ label: string; title: string; detail: string; tone: "red" | "yellow" | "gray" | "green" }>;
+
+  const reportInsights: Array<{ label: string; title: string; detail: string; tone: "red" | "yellow" | "gray" }> =
+    (result.insights ?? []).slice(0, 2).map((insight, index) => ({
+    label: String(index + 1),
+    title: insight.title,
+    detail: insight.message,
+    tone: insight.severity === "critical" ? "red" : insight.severity === "warning" ? "yellow" : "gray"
+  }));
+
+  return [...reportInsights, ...base].slice(0, 4);
+}
+
+function buildActionItems(
+  intelligence: ReturnType<typeof buildReportIntelligence>,
+  primaryInspection: ReturnType<typeof buildReportIntelligence>["nextBestInspections"][number] | undefined,
+  largestLeak: BreakdownRow | undefined,
+  metrics: DiagnosticsResult["metrics"]
+) {
+  return [
+    {
+      title: intelligence.primaryDiagnosis === "Cost Drag Problem" ? "Reduce Cost Drag" : "Review Primary Leak",
+      impact: "High Impact",
+      tone: intelligence.strategyHealthScore >= 60 ? "yellow" : "red"
+    },
+    {
+      title: metrics.averageRealizedR !== undefined && metrics.averageRealizedR < 0.5 ? "Improve R:R" : "Improve Expectancy",
+      impact: "High Impact",
+      tone: "red"
+    },
+    {
+      title: primaryInspection ? primaryInspection.title.replace("Inspect ", "Filter ") : "Filter Weak Setups",
+      impact: "Medium Impact",
+      tone: "yellow"
+    },
+    {
+      title: largestLeak ? `Review ${largestLeak.group}` : "Review Losses",
+      impact: "Medium Impact",
+      tone: "yellow"
+    },
+    {
+      title: "Build Consistency",
+      impact: "Long Term",
+      tone: "green"
+    }
+  ] satisfies Array<{ title: string; impact: string; tone: "red" | "yellow" | "green" | "gray" }>;
+}
+
+function overviewStatus(score: number, diagnosis: ReturnType<typeof buildReportIntelligence>["primaryDiagnosis"]) {
+  if (diagnosis === "Healthy" && score >= 80) return "On Track";
+  if (diagnosis === "Insufficient Data") return "Needs Data";
+  if (score >= 60) return "Watchlist";
+  return "Needs Attention";
+}
+
+function healthDeltaCopy(score: number) {
+  if (score >= 80) return "Healthy";
+  if (score >= 60) return "Monitor";
+  return "Down vs target";
+}
+
+function winRateCopy(winRate: number) {
+  if (winRate >= 0.55) return "Above quality threshold";
+  if (winRate >= 0.45) return "Near break-even threshold";
+  return "Below break-even threshold";
+}
+
+function rMultipleCopy(value: number | undefined) {
+  if (value === undefined || !Number.isFinite(value)) return "R data unavailable";
+  if (value >= 1) return "Strong quality distribution";
+  if (value >= 0.5) return "Acceptable quality distribution";
+  return "Low quality distribution";
+}
+
+function profitFactorCopy(value: number | undefined) {
+  if (value === undefined || !Number.isFinite(value)) return "Unavailable";
+  if (value >= 1.5) return "Strong";
+  if (value >= 1) return "Watch";
+  return "Weak";
+}
+
+function statusTone(status: MetricStatus): "red" | "yellow" | "green" | "blue" | "gray" {
+  if (status === "healthy") return "green";
+  if (status === "warning") return "yellow";
+  if (status === "weak") return "red";
+  return "gray";
+}
+
+function humanDiagnosis(diagnosis: ReturnType<typeof buildReportIntelligence>["primaryDiagnosis"]) {
+  if (diagnosis === "Cost Drag Problem") return "High Cost Drag";
+  if (diagnosis === "Negative Expectancy") return "Negative Expectancy";
+  if (diagnosis === "Poor R Capture") return "Poor R Capture";
+  if (diagnosis === "Large Loss Problem") return "Large Loss Problem";
+  if (diagnosis === "Insufficient Data") return "Insufficient Data";
+  return diagnosis;
+}
+
+function diagnosisToneClass(diagnosis: ReturnType<typeof buildReportIntelligence>["primaryDiagnosis"]) {
+  if (diagnosis === "Healthy") return "text-green-300";
+  if (diagnosis === "Watchlist" || diagnosis === "Insufficient Data") return "text-warning";
+  return "text-loss";
+}
+
+function diagnosisConfidence(score: number) {
+  if (score < 40) return "High";
+  if (score < 70) return "Medium";
+  return "Stable";
+}
+
+function inferRegime(metrics: DiagnosticsResult["metrics"]) {
+  if (metrics.profitFactor >= 1.5 && metrics.winRate >= 0.5) return "Favorable";
+  if (metrics.profitFactor < 1 || metrics.expectancy < 0) return "Choppy / Range";
+  return "Mixed";
+}
+
+function estimateTradeFrequency(trades: NormalizedTrade[]) {
+  const dates = trades
+    .map((trade) => Date.parse(trade.entryTime))
+    .filter((value) => Number.isFinite(value))
+    .sort((a, b) => a - b);
+  if (dates.length < 2) return undefined;
+  const days = Math.max(1, Math.ceil((dates[dates.length - 1] - dates[0]) / 86_400_000));
+  return number.format(trades.length / days);
+}
+
+function initials(value: string) {
+  return value
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join("");
 }
 
 function scoreClass(score: number) {
@@ -985,12 +1463,6 @@ function metricValueClass(status: MetricStatus) {
   return "text-muted";
 }
 
-function diagnosisClass(diagnosis: string) {
-  if (diagnosis === "Healthy") return "text-cyan";
-  if (diagnosis === "Watchlist" || diagnosis === "Insufficient Data") return "text-warning";
-  return "text-loss";
-}
-
 function numericValueClass(value: number | undefined) {
   if (value === undefined || !Number.isFinite(value)) return "text-muted";
   return value >= 0 ? "text-cyan" : "text-loss";
@@ -1003,15 +1475,6 @@ function costDragValueClass(value: number | undefined) {
   return "text-cyan";
 }
 
-function ChartPanel({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div className="EdgeTrace-card p-5">
-      <h2 className="mb-5 text-base font-semibold uppercase tracking-[0.16em] text-muted">{title}</h2>
-      {children}
-    </div>
-  );
-}
-
 function formatNumber(value: number | undefined) {
   if (value === undefined || !Number.isFinite(value)) return "N/A";
   return number.format(value);
@@ -1020,6 +1483,13 @@ function formatNumber(value: number | undefined) {
 function formatPercent(value: number | undefined) {
   if (value === undefined || !Number.isFinite(value)) return "N/A";
   return percent.format(value);
+}
+
+function formatAxisCurrency(value: unknown) {
+  const numericValue = typeof value === "number" ? value : Number(value);
+  if (!Number.isFinite(numericValue)) return "";
+  if (Math.abs(numericValue) >= 1000) return `$${number.format(numericValue / 1000)}K`;
+  return currency.format(numericValue);
 }
 
 function formatTooltipCurrency(value: unknown) {
