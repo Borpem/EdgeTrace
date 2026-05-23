@@ -140,111 +140,100 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
         </div>
       )}
 
-      <section className="mt-7 grid gap-5 xl:grid-cols-[320px_minmax(0,1fr)]">
-        <aside className="space-y-5">
-          <article className="EdgeTrace-card-soft p-6">
-            <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center border border-cyan/35 bg-cyan/[0.08] text-xl font-semibold text-cyan">
-                {initials(displayName, displayEmail)}
-              </div>
-              <div className="min-w-0">
-                <p className="truncate text-lg font-semibold tracking-[-0.03em] text-ink">{displayName}</p>
-                <p className="mt-1 truncate text-sm text-muted">{displayEmail}</p>
-              </div>
-            </div>
-            <div className="mt-6 space-y-3 border-t border-white/[0.08] pt-5">
-              <AccountMeta label="Workspace ID" value={shortId(effectiveProfile?.userId || user?.id || "")} />
-              <AccountMeta label="Account created" value={formatDate(user?.createdAt || effectiveProfile?.createdAt)} />
-            </div>
-          </article>
+      <section className="EdgeTrace-account-summary-grid">
+        <AccountSummaryCard
+          icon={UserCircle}
+          accent="cyan"
+          label="Workspace"
+          value={displayName}
+          detail={displayEmail}
+        />
+        <AccountSummaryCard
+          icon={CreditCard}
+          accent={currentPlanId === "advanced" ? "amber" : currentPlanId === "pro" ? "purple" : "cyan"}
+          label="Current access"
+          value={plan.displayName}
+          detail={`${plan.monthlyPriceLabel} · ${plan.description}`}
+          badge={isPaid ? "Active" : "Free"}
+        />
+        <AccountSummaryCard
+          icon={Lock}
+          accent={hasStripeCustomer ? "cyan" : "amber"}
+          label="Billing"
+          value={hasStripeCustomer ? "Stripe connected" : isPaid ? "Refresh needed" : "No paid subscription"}
+          detail={hasStripeCustomer ? "Manage payment method and invoices through Stripe." : "Upgrade to Pro to create a Stripe billing profile."}
+        />
+      </section>
 
-          <article className={`border p-5 ${planToneClass.border} ${planToneClass.bg}`}>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">Current access</p>
-            <div className="mt-4 flex items-end justify-between gap-4">
-              <div>
-                <p className={`text-4xl font-semibold tracking-[-0.055em] ${planToneClass.text}`}>
-                  {plan.displayName}
-                </p>
-                <p className="mt-2 text-sm text-muted">{plan.monthlyPriceLabel}</p>
-              </div>
-              <span className={`border px-2.5 py-1 text-xs font-semibold ${planToneClass.border} ${planToneClass.text}`}>
-                {isPaid ? "Active" : "Free"}
-              </span>
+      <section className="EdgeTrace-account-plan-stage">
+        <div className="EdgeTrace-account-plan-top">
+          <div>
+            <div className="flex items-center gap-3">
+              <CreditCard className={isPaid ? "text-violet" : "text-cyan"} size={26} strokeWidth={1.6} />
+              <h2>Choose the workflow depth your strategy needs.</h2>
             </div>
-            <p className="mt-4 text-sm leading-6 text-muted">{plan.description}</p>
-          </article>
-        </aside>
+            <p>
+              Free gives a real first diagnostic. Pro is the full self-serve workflow at $19/month. Advanced is the
+              monitoring roadmap.
+            </p>
+          </div>
+          <div className="EdgeTrace-account-billing-card">
+            <p>{isPaid ? "Subscription" : "Recommended"}</p>
+            <h3>{isPaid ? "Manage billing" : "Upgrade to Pro"}</h3>
+            <span>
+              {isPaid
+                ? "Open Stripe for payment methods, invoices, and cancellation settings."
+                : "Activate unlimited reports, full drilldowns, comparisons, strategy sets, exports, and monitoring."}
+            </span>
+            {isPaid && !hasStripeCustomer ? (
+              <button className="EdgeTrace-pricing-secondary mt-5 w-full" disabled={activeAction === "refresh"} onClick={() => void refreshProfile()}>
+                <RefreshCw size={16} /> {activeAction === "refresh" ? "Refreshing..." : "Refresh billing status"}
+              </button>
+            ) : (
+              <button
+                className="EdgeTrace-pricing-primary mt-5 w-full"
+                disabled={!billingConfigured || activeAction === "pro" || activeAction === "portal"}
+                onClick={() => void (isPaid ? openPortal() : startProCheckout())}
+              >
+                {activeAction === "pro"
+                  ? "Opening Checkout..."
+                  : activeAction === "portal"
+                    ? "Opening Portal..."
+                    : isPaid
+                      ? "Manage Billing"
+                      : "Upgrade to Pro"}{" "}
+                <ArrowRight size={16} />
+              </button>
+            )}
+            {isPaid && !hasStripeCustomer && (
+              <small>
+                Pro access is active, but no Stripe billing customer is linked yet. Refresh after checkout completes.
+              </small>
+            )}
+            {effectiveProfile?.stripeCustomerId && !isPaid && (
+              <button className="EdgeTrace-pricing-secondary mt-3 w-full" onClick={() => void openPortal()}>
+                Open Billing Portal
+              </button>
+            )}
+          </div>
+        </div>
 
-        <div className="space-y-5">
-          <section className="EdgeTrace-account-plan-stage">
-            <div className="EdgeTrace-account-plan-top">
-              <div>
-                <div className="flex items-center gap-3">
-                  <CreditCard className={isPaid ? "text-violet" : "text-cyan"} size={26} strokeWidth={1.6} />
-                  <h2>Choose the workflow depth your strategy needs.</h2>
-                </div>
-                <p>
-                  Free gives a real first diagnostic. Pro is the full self-serve workflow at $19/month. Advanced is the
-                  monitoring roadmap.
-                </p>
-              </div>
-              <div className="EdgeTrace-account-billing-card">
-                <p>{isPaid ? "Subscription" : "Recommended"}</p>
-                <h3>{isPaid ? "Manage billing" : "Upgrade to Pro"}</h3>
-                <span>
-                  {isPaid
-                    ? "Open Stripe for payment methods, invoices, and cancellation settings."
-                    : "Activate unlimited reports, full drilldowns, comparisons, strategy sets, exports, and monitoring."}
-                </span>
-                {isPaid && !hasStripeCustomer ? (
-                  <button className="EdgeTrace-pricing-secondary mt-5 w-full" disabled={activeAction === "refresh"} onClick={() => void refreshProfile()}>
-                    <RefreshCw size={16} /> {activeAction === "refresh" ? "Refreshing..." : "Refresh billing status"}
-                  </button>
-                ) : (
-                  <button
-                    className="EdgeTrace-pricing-primary mt-5 w-full"
-                    disabled={!billingConfigured || activeAction === "pro" || activeAction === "portal"}
-                    onClick={() => void (isPaid ? openPortal() : startProCheckout())}
-                  >
-                    {activeAction === "pro"
-                      ? "Opening Checkout..."
-                      : activeAction === "portal"
-                        ? "Opening Portal..."
-                        : isPaid
-                          ? "Manage Billing"
-                          : "Upgrade to Pro"}{" "}
-                    <ArrowRight size={16} />
-                  </button>
-                )}
-                {isPaid && !hasStripeCustomer && (
-                  <small>
-                    Pro access is active, but no Stripe billing customer is linked yet. Refresh after checkout completes.
-                  </small>
-                )}
-                {effectiveProfile?.stripeCustomerId && !isPaid && (
-                  <button className="EdgeTrace-pricing-secondary mt-3 w-full" onClick={() => void openPortal()}>
-                    Open Billing Portal
-                  </button>
-                )}
-              </div>
-            </div>
+        <div className="EdgeTrace-account-plan-grid">
+          {accountPlanOrder.map((planId) => (
+            <AccountPlanCard
+              key={planId}
+              planId={planId}
+              currentPlanId={currentPlanId}
+              billingConfigured={billingConfigured}
+              activeAction={activeAction}
+              onStartPro={() => void startProCheckout()}
+              onManage={() => void openPortal()}
+            />
+          ))}
+        </div>
+      </section>
 
-            <div className="EdgeTrace-account-plan-grid">
-              {accountPlanOrder.map((planId) => (
-                <AccountPlanCard
-                  key={planId}
-                  planId={planId}
-                  currentPlanId={currentPlanId}
-                  billingConfigured={billingConfigured}
-                  activeAction={activeAction}
-                  onStartPro={() => void startProCheckout()}
-                  onManage={() => void openPortal()}
-                />
-              ))}
-            </div>
-          </section>
-
-          <section className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
+      <section className="EdgeTrace-account-detail-grid">
             <article className="EdgeTrace-card p-6">
               <div className="flex items-center gap-3">
                 <UserCircle className="text-cyan" size={25} strokeWidth={1.6} />
@@ -288,31 +277,58 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
                 ))}
               </div>
             </article>
-          </section>
+      </section>
 
-          <section className="grid gap-4 md:grid-cols-3">
-            <InfoTile
-              icon={Lock}
-              title="Stripe-hosted billing"
-              body="Checkout and portal management stay inside Stripe-hosted flows."
-              accent="cyan"
-            />
-            <InfoTile
-              icon={FileText}
-              title="Report access"
-              body="Free includes one full report. Pro unlocks the full workflow across reports."
-              accent="purple"
-            />
-            <InfoTile
-              icon={Sparkles}
-              title="Advanced roadmap"
-              body="Recurring reviews, regression alerts, and Edge Stability Score remain coming soon."
-              accent="amber"
-            />
-          </section>
-        </div>
+      <section className="EdgeTrace-account-support-grid">
+        <InfoTile
+          icon={Lock}
+          title="Stripe-hosted billing"
+          body="Checkout and portal management stay inside Stripe-hosted flows."
+          accent="cyan"
+        />
+        <InfoTile
+          icon={FileText}
+          title="Report access"
+          body="Free includes one full report. Pro unlocks the full workflow across reports."
+          accent="purple"
+        />
+        <InfoTile
+          icon={Sparkles}
+          title="Advanced roadmap"
+          body="Recurring reviews, regression alerts, and Edge Stability Score remain coming soon."
+          accent="amber"
+        />
       </section>
     </main>
+  );
+}
+
+function AccountSummaryCard({
+  icon: Icon,
+  accent,
+  label,
+  value,
+  detail,
+  badge
+}: {
+  icon: LucideIcon;
+  accent: Tone;
+  label: string;
+  value: string;
+  detail: string;
+  badge?: string;
+}) {
+  const tone = toneClasses[accent];
+  return (
+    <article className="EdgeTrace-account-summary-card">
+      <div className="flex items-start justify-between gap-4">
+        <Icon className={tone.text} size={24} strokeWidth={1.6} />
+        {badge && <span className={tone.text}>{badge}</span>}
+      </div>
+      <p>{label}</p>
+      <h2 className={tone.text}>{value}</h2>
+      <small>{detail}</small>
+    </article>
   );
 }
 
@@ -414,43 +430,11 @@ function AccountPlanCard({
   );
 }
 
-function AccountMeta({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-center justify-between gap-4 text-sm">
-      <span className="text-muted">{label}</span>
-      <span className="truncate font-semibold text-ink">{value}</span>
-    </div>
-  );
-}
-
 function DetailRow({ label, value, valueClass = "text-ink" }: { label: string; value: string; valueClass?: string }) {
   return (
     <div className="grid gap-2 py-4 sm:grid-cols-[150px_1fr]">
       <dt className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">{label}</dt>
       <dd className={`break-words text-sm font-semibold ${valueClass}`}>{value}</dd>
-    </div>
-  );
-}
-
-function PlanPill({
-  title,
-  body,
-  accent,
-  active
-}: {
-  title: string;
-  body: string;
-  accent: Tone;
-  active: boolean;
-}) {
-  const tone = toneClasses[accent];
-  return (
-    <div className={`border p-4 ${active ? `${tone.border} ${tone.bg}` : "border-white/[0.08] bg-white/[0.02]"}`}>
-      <div className="flex items-center justify-between gap-3">
-        <p className={`font-semibold ${active ? tone.text : "text-ink"}`}>{title}</p>
-        {active && <span className={`h-2 w-2 ${tone.dot}`} />}
-      </div>
-      <p className="mt-2 text-xs leading-5 text-muted">{body}</p>
     </div>
   );
 }
@@ -504,23 +488,6 @@ function accessItems(planId: PlanId) {
 
 function planTone(planId: PlanId) {
   return planId === "advanced" ? toneClasses.amber : planId === "pro" ? toneClasses.purple : toneClasses.cyan;
-}
-
-function initials(name: string, email: string) {
-  const source = name !== "EdgeTrace user" ? name : email;
-  const letters = source
-    .split(/[\s@._-]+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase())
-    .join("");
-  return letters || "ET";
-}
-
-function shortId(value: string) {
-  if (!value) return "Unavailable";
-  if (value.length <= 14) return value;
-  return `${value.slice(0, 8)}...${value.slice(-4)}`;
 }
 
 function formatDate(value: string | undefined) {
