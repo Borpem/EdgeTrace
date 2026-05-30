@@ -10,7 +10,6 @@ import {
   Plus,
   Scale,
   TrendingUp,
-  Upload,
   UserCircle
 } from "lucide-react";
 import Papa from "papaparse";
@@ -1176,10 +1175,6 @@ function AuthenticatedSidebar({
         <button onClick={onAnalyze}>
           <Plus size={17} aria-hidden="true" />
           New Report
-        </button>
-        <button onClick={onAnalyze}>
-          <Upload size={17} aria-hidden="true" />
-          Upload Trades
         </button>
         <button onClick={onReports}>
           <FolderOpen size={17} aria-hidden="true" />

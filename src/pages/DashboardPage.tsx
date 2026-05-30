@@ -28,7 +28,6 @@ import {
   Scale,
   TrendingDown,
   TrendingUp,
-  Upload,
   UserCircle
 } from "lucide-react";
 import { AddToStrategySetDialog } from "../components/AddToStrategySetDialog";
@@ -783,10 +782,6 @@ function DashboardSidebar({
         <button onClick={onAnalyze}>
           <Plus size={17} aria-hidden="true" />
           New Report
-        </button>
-        <button onClick={onAnalyze}>
-          <Upload size={17} aria-hidden="true" />
-          Upload Trades
         </button>
         <button onClick={onReports}>
           <FolderOpen size={17} aria-hidden="true" />

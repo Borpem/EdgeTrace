@@ -380,6 +380,10 @@
     color: #45b7f4;
   }
 
+  .EdgeTrace-sidebar-quick button:nth-of-type(2):has(+ button) {
+    display: none;
+  }
+
   .EdgeTrace-sidebar-user {
     margin-top: auto;
     border-top: 1px solid rgba(130, 161, 190, 0.14);
