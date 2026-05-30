@@ -106,7 +106,7 @@ export function FeatureEducationPage({
   }, []);
 
   return (
-    <PageShell className="relative z-10 pb-16">
+    <PageShell className={`${isAuthenticated ? "EdgeTrace-auth-education" : ""} relative z-10 pb-16`}>
       <HeroSection accountAction={accountAction} accountLabel={accountLabel} onDemo={onDemo ?? onAnalyze} onPricing={onPricing} />
       <WorkflowWalkthrough />
       <DiagnosticInsight />

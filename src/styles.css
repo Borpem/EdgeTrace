@@ -233,7 +233,8 @@
     min-height: 100vh;
     display: grid;
     grid-template-columns: 15rem minmax(0, 1fr);
-    align-items: start;
+    align-items: stretch;
+    color: #f6f8fb;
     background:
       radial-gradient(circle at 52% -12%, rgba(64, 167, 230, 0.11), transparent 30rem),
       radial-gradient(circle at 100% 28%, rgba(46, 121, 210, 0.08), transparent 34rem),
@@ -248,14 +249,31 @@
     width: 100%;
   }
 
-  .EdgeTrace-auth-framed > main.EdgeTrace-shell,
-  .EdgeTrace-auth-framed .EdgeTrace-shell {
-    width: min(100%, 1500px);
+  .EdgeTrace-auth-framed > main.EdgeTrace-shell {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding-top: 1.65rem;
     padding-left: 1.7rem;
     padding-right: 1.7rem;
+    padding-bottom: 1.8rem;
   }
 
-  .EdgeTrace-auth-framed .EdgeTrace-page-header,
+  .EdgeTrace-auth-framed .EdgeTrace-page-header {
+    margin-top: 0;
+    padding: 0 0 1.25rem;
+    border: 0;
+    border-bottom: 1px solid rgba(130, 161, 190, 0.14);
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .EdgeTrace-auth-framed .EdgeTrace-page-header::before,
+  .EdgeTrace-auth-framed .EdgeTrace-page-header::after {
+    content: none;
+  }
+
   .EdgeTrace-auth-framed .EdgeTrace-card,
   .EdgeTrace-auth-framed .EdgeTrace-card-soft,
   .EdgeTrace-auth-framed .EdgeTrace-info-card,
@@ -271,14 +289,122 @@
       0 20px 50px -46px rgba(69, 183, 244, 0.5);
   }
 
-  .EdgeTrace-auth-framed .EdgeTrace-page-header {
-    margin-top: 1.5rem;
-    padding: 1.55rem;
+  .EdgeTrace-auth-framed .EdgeTrace-title,
+  .EdgeTrace-auth-framed .EdgeTrace-page-header h1 {
+    margin: 0;
+    color: #ffffff;
+    font-size: 1.48rem;
+    font-weight: 680;
+    line-height: 1.2;
+    letter-spacing: 0;
   }
 
-  .EdgeTrace-auth-framed .EdgeTrace-title,
-  .EdgeTrace-auth-framed h1 {
+  .EdgeTrace-auth-framed .EdgeTrace-copy,
+  .EdgeTrace-auth-framed .EdgeTrace-page-header p {
+    margin-top: 0.5rem;
+    max-width: 52rem;
+    color: rgba(214, 224, 235, 0.66);
+    font-size: 0.84rem;
+    line-height: 1.55;
+  }
+
+  .EdgeTrace-auth-framed .EdgeTrace-page-header .EdgeTrace-card-soft {
+    align-self: stretch;
+  }
+
+  .EdgeTrace-auth-framed .EdgeTrace-account-hero,
+  .EdgeTrace-auth-framed .EdgeTrace-account-plan-stage,
+  .EdgeTrace-auth-framed .EdgeTrace-account-plan-card,
+  .EdgeTrace-auth-framed .EdgeTrace-account-billing-card,
+  .EdgeTrace-auth-framed .EdgeTrace-account-summary-card {
+    border-color: rgba(130, 161, 190, 0.15);
+    border-radius: 6px;
+    background:
+      radial-gradient(circle at 100% 0%, rgba(69, 183, 244, 0.055), transparent 14rem),
+      linear-gradient(180deg, rgba(11, 26, 42, 0.92), rgba(8, 20, 32, 0.92));
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.035),
+      0 20px 50px -46px rgba(69, 183, 244, 0.5);
+  }
+
+  .EdgeTrace-auth-framed .EdgeTrace-account-hero {
+    padding: 1.25rem;
+  }
+
+  .EdgeTrace-auth-framed .EdgeTrace-account-eyebrow {
+    margin-bottom: 0.55rem;
+    color: rgba(214, 224, 235, 0.68);
+    font-size: 0.72rem;
+  }
+
+  .EdgeTrace-auth-framed .EdgeTrace-account-hero h1 {
+    color: #ffffff;
+    font-size: 1.48rem;
+    font-weight: 680;
     letter-spacing: 0;
+    line-height: 1.2;
+  }
+
+  .EdgeTrace-auth-framed .EdgeTrace-account-hero p:not(.EdgeTrace-account-eyebrow) {
+    margin-top: 0.5rem;
+    color: rgba(214, 224, 235, 0.66);
+    font-size: 0.84rem;
+    line-height: 1.55;
+  }
+
+  .EdgeTrace-auth-framed .EdgeTrace-auth-education {
+    overflow-x: clip;
+    padding-bottom: 1.8rem;
+  }
+
+  .EdgeTrace-auth-framed .EdgeTrace-auth-education > section {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-color: rgba(130, 161, 190, 0.14);
+    background: transparent;
+  }
+
+  .EdgeTrace-auth-framed .EdgeTrace-auth-education > section:first-child {
+    padding-top: 0;
+  }
+
+  .EdgeTrace-auth-framed .EdgeTrace-auth-education > section:first-child > div[aria-hidden="true"],
+  .EdgeTrace-auth-framed .EdgeTrace-auth-education > section:first-child > .pointer-events-none.absolute {
+    display: none;
+  }
+
+  .EdgeTrace-auth-framed .EdgeTrace-auth-education h1,
+  .EdgeTrace-auth-framed .EdgeTrace-auth-education h2 {
+    color: #ffffff;
+    letter-spacing: 0;
+    text-wrap: balance;
+  }
+
+  .EdgeTrace-auth-framed .EdgeTrace-auth-education h1 {
+    max-width: 44rem;
+    font-size: clamp(2rem, 4vw, 3.4rem);
+    line-height: 1.08;
+  }
+
+  .EdgeTrace-auth-framed .EdgeTrace-auth-education h2 {
+    font-size: clamp(1.45rem, 2vw, 2rem);
+    line-height: 1.16;
+  }
+
+  .EdgeTrace-auth-framed .EdgeTrace-auth-education p {
+    color: rgba(214, 224, 235, 0.68);
+  }
+
+  @media (max-width: 560px) {
+    .EdgeTrace-auth-framed .EdgeTrace-auth-education table {
+      min-width: 100%;
+      font-size: 0.68rem;
+    }
+
+    .EdgeTrace-auth-framed .EdgeTrace-auth-education th,
+    .EdgeTrace-auth-framed .EdgeTrace-auth-education td {
+      padding: 0.65rem 0.45rem;
+    }
   }
 
   .EdgeTrace-dashboard-sidebar {
@@ -1385,8 +1511,7 @@
 
   @media (max-width: 900px) {
     .EdgeTrace-dashboard-main,
-    .EdgeTrace-auth-framed > main.EdgeTrace-shell,
-    .EdgeTrace-auth-framed .EdgeTrace-shell {
+    .EdgeTrace-auth-framed > main.EdgeTrace-shell {
       padding: 1rem;
     }
 
