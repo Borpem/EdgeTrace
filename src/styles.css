@@ -230,6 +230,16 @@
   }
 
   .EdgeTrace-auth-framed {
+    --EdgeTrace-auth-border: rgba(130, 161, 190, 0.15);
+    --EdgeTrace-auth-border-strong: rgba(69, 183, 244, 0.55);
+    --EdgeTrace-auth-primary: #45b7f4;
+    --EdgeTrace-auth-primary-bright: #62c8ff;
+    --EdgeTrace-auth-warning: #ffb82e;
+    --EdgeTrace-auth-danger: #ff485c;
+    --EdgeTrace-auth-success: #74c476;
+    --EdgeTrace-auth-muted: rgba(214, 224, 235, 0.68);
+    --EdgeTrace-auth-surface: rgba(11, 26, 42, 0.92);
+    --EdgeTrace-auth-surface-deep: rgba(8, 20, 32, 0.92);
     min-height: 100vh;
     display: grid;
     grid-template-columns: 15rem minmax(0, 1fr);
@@ -444,16 +454,18 @@
   .EdgeTrace-auth-framed .EdgeTrace-account-hero,
   .EdgeTrace-auth-framed .EdgeTrace-account-plan-stage,
   .EdgeTrace-auth-framed .EdgeTrace-account-plan-card,
+  .EdgeTrace-auth-framed .EdgeTrace-account-plan-card.pro,
+  .EdgeTrace-auth-framed .EdgeTrace-account-plan-card.advanced,
   .EdgeTrace-auth-framed .EdgeTrace-account-billing-card,
   .EdgeTrace-auth-framed .EdgeTrace-account-summary-card {
-    border-color: rgba(130, 161, 190, 0.15);
+    border-color: rgba(130, 161, 190, 0.15) !important;
     border-radius: 6px;
     background:
       radial-gradient(circle at 100% 0%, rgba(69, 183, 244, 0.055), transparent 14rem),
-      linear-gradient(180deg, rgba(11, 26, 42, 0.92), rgba(8, 20, 32, 0.92));
+      linear-gradient(180deg, rgba(11, 26, 42, 0.92), rgba(8, 20, 32, 0.92)) !important;
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.035),
-      0 20px 50px -46px rgba(69, 183, 244, 0.5);
+      0 20px 50px -46px rgba(69, 183, 244, 0.5) !important;
   }
 
   .EdgeTrace-auth-framed .EdgeTrace-account-hero {
@@ -568,6 +580,112 @@
 
   .EdgeTrace-auth-framed .EdgeTrace-auth-education p {
     color: rgba(214, 224, 235, 0.68);
+  }
+
+  .EdgeTrace-auth-framed :is(.text-cyan, [class*="text-cyan"], .text-accent, [class*="text-accent"], .text-violet, [class*="text-violet"]) {
+    color: var(--EdgeTrace-auth-primary-bright) !important;
+  }
+
+  .EdgeTrace-auth-framed :is(.text-warning, [class*="text-warning"]) {
+    color: var(--EdgeTrace-auth-warning) !important;
+  }
+
+  .EdgeTrace-auth-framed :is(.text-loss, [class*="text-loss"]) {
+    color: var(--EdgeTrace-auth-danger) !important;
+  }
+
+  .EdgeTrace-auth-framed :is(.text-profit, [class*="text-profit"]) {
+    color: var(--EdgeTrace-auth-success) !important;
+  }
+
+  .EdgeTrace-auth-framed :is(.border-cyan, [class*="border-cyan"], .border-accent, [class*="border-accent"], .border-violet, [class*="border-violet"]) {
+    border-color: rgba(69, 183, 244, 0.36) !important;
+  }
+
+  .EdgeTrace-auth-framed :is(.border-warning, [class*="border-warning"]) {
+    border-color: rgba(255, 184, 46, 0.34) !important;
+  }
+
+  .EdgeTrace-auth-framed :is(.border-loss, [class*="border-loss"]) {
+    border-color: rgba(255, 72, 92, 0.42) !important;
+  }
+
+  .EdgeTrace-auth-framed :is(.border-profit, [class*="border-profit"]) {
+    border-color: rgba(116, 196, 118, 0.34) !important;
+  }
+
+  .EdgeTrace-auth-framed :is(.bg-cyan, [class*="bg-cyan"], .bg-accent, [class*="bg-accent"], .bg-violet, [class*="bg-violet"]) {
+    background-color: rgba(69, 183, 244, 0.1) !important;
+  }
+
+  .EdgeTrace-auth-framed :is(.bg-warning, [class*="bg-warning"]) {
+    background-color: rgba(255, 184, 46, 0.1) !important;
+  }
+
+  .EdgeTrace-auth-framed :is(.bg-loss, [class*="bg-loss"]) {
+    background-color: rgba(255, 72, 92, 0.1) !important;
+  }
+
+  .EdgeTrace-auth-framed :is(.bg-profit, [class*="bg-profit"]) {
+    background-color: rgba(116, 196, 118, 0.1) !important;
+  }
+
+  .EdgeTrace-auth-framed :is([class*="from-violet"], [class*="via-violet"], [class*="to-violet"], [class*="to-[#7861FF]"]) {
+    --tw-gradient-from: rgba(69, 183, 244, 0.34) var(--tw-gradient-from-position) !important;
+    --tw-gradient-to: rgba(69, 183, 244, 0.1) var(--tw-gradient-to-position) !important;
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+  }
+
+  .EdgeTrace-auth-framed :is([class*="120,97,255"], [class*="124,92,255"]) {
+    background-image: radial-gradient(circle at 100% 0%, rgba(69, 183, 244, 0.07), transparent 16rem) !important;
+  }
+
+  .EdgeTrace-auth-framed .EdgeTrace-summary-panel > .pointer-events-none,
+  .EdgeTrace-auth-framed .EdgeTrace-card > .pointer-events-none,
+  .EdgeTrace-auth-framed .EdgeTrace-card-soft > .pointer-events-none,
+  .EdgeTrace-auth-framed .EdgeTrace-info-card > .pointer-events-none {
+    opacity: 0.45;
+  }
+
+  .EdgeTrace-auth-framed .EdgeTrace-account-plan-card.featured {
+    border-color: rgba(69, 183, 244, 0.48) !important;
+    background:
+      radial-gradient(circle at 100% 0%, rgba(69, 183, 244, 0.07), transparent 14rem),
+      linear-gradient(180deg, rgba(11, 26, 42, 0.94), rgba(8, 20, 32, 0.94)) !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.04),
+      0 22px 54px -48px rgba(69, 183, 244, 0.72) !important;
+    transform: none !important;
+  }
+
+  .EdgeTrace-auth-framed .EdgeTrace-account-plan-ribbon.pro {
+    border-bottom-color: rgba(69, 183, 244, 0.28) !important;
+    background: rgba(69, 183, 244, 0.12) !important;
+    color: var(--EdgeTrace-auth-primary-bright) !important;
+  }
+
+  .EdgeTrace-auth-framed .EdgeTrace-account-plan-ribbon.advanced {
+    border-bottom-color: rgba(255, 184, 46, 0.26) !important;
+    background: rgba(255, 184, 46, 0.1) !important;
+    color: var(--EdgeTrace-auth-warning) !important;
+  }
+
+  .EdgeTrace-auth-framed .EdgeTrace-account-plan-chip,
+  .EdgeTrace-auth-framed .EdgeTrace-auth-education :is(th, td, .border) {
+    border-color: var(--EdgeTrace-auth-border);
+  }
+
+  .EdgeTrace-auth-framed .EdgeTrace-auth-education :is(article, section, div):not(.fixed):not(.absolute):not(.pointer-events-none)[class*="border"][class*="bg-black"],
+  .EdgeTrace-auth-framed .EdgeTrace-auth-education :is(article, section, div):not(.fixed):not(.absolute):not(.pointer-events-none)[class*="border"][class*="bg-white"],
+  .EdgeTrace-auth-framed .EdgeTrace-auth-education :is(article, section, div):not(.fixed):not(.absolute):not(.pointer-events-none)[class*="border"][class*="bg-[linear-gradient"] {
+    border-color: var(--EdgeTrace-auth-border);
+    border-radius: 6px;
+    background:
+      radial-gradient(circle at 100% 0%, rgba(69, 183, 244, 0.055), transparent 14rem),
+      linear-gradient(180deg, var(--EdgeTrace-auth-surface), var(--EdgeTrace-auth-surface-deep)) !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.035),
+      0 20px 50px -46px rgba(69, 183, 244, 0.5);
   }
 
   @media (max-width: 560px) {
