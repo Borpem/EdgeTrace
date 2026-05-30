@@ -380,7 +380,7 @@
     color: #45b7f4;
   }
 
-  .EdgeTrace-sidebar-quick button:nth-of-type(2):has(+ button) {
+  .EdgeTrace-sidebar-quick button:nth-of-type(2):not(.EdgeTrace-sidebar-open-reports) {
     display: none;
   }
 

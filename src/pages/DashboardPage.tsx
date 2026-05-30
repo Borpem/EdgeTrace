@@ -783,7 +783,7 @@ function DashboardSidebar({
           <Plus size={17} aria-hidden="true" />
           New Report
         </button>
-        <button onClick={onReports}>
+        <button className="EdgeTrace-sidebar-open-reports" onClick={onReports}>
           <FolderOpen size={17} aria-hidden="true" />
           Open Reports
         </button>
