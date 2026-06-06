@@ -45,7 +45,7 @@ export function PaywallGate({
         <p className="mt-3 max-w-2xl text-sm leading-6 text-muted">{description}</p>
         <div className="mt-5 flex flex-wrap gap-3">
           <button className="EdgeTrace-primary-button" type="button" onClick={goToPricing}>
-            {planLabel === "advanced" ? "Advanced Coming Soon" : "Upgrade to Pro"}
+            Upgrade to Pro
           </button>
           <button className="EdgeTrace-secondary-button" type="button" onClick={learnMore}>
             Learn what this unlocks
@@ -67,7 +67,7 @@ export function PaywallGate({
         <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">{description}</p>
         <div className="mt-4 flex flex-wrap gap-3">
           <button className="EdgeTrace-primary-button" type="button" onClick={goToPricing}>
-            {planLabel === "advanced" ? "Advanced Coming Soon" : "Upgrade to Pro"}
+            Upgrade to Pro
           </button>
           <button className="EdgeTrace-secondary-button" type="button" onClick={learnMore}>
             Learn what this unlocks
@@ -82,8 +82,8 @@ function featureLabel(feature: FeatureKey | string) {
   return feature.replace(/_/g, " ");
 }
 
-function requiredPlanForFeature(feature: FeatureKey | string): "pro" | "advanced" {
-  return ["recurring_reviews", "regression_alerts", "edge_stability_score"].includes(String(feature)) ? "advanced" : "pro";
+function requiredPlanForFeature(_feature: FeatureKey | string): "pro" | "advanced" {
+  return "pro";
 }
 
 function featureParam(feature: FeatureKey | string) {
@@ -102,6 +102,8 @@ function featureParam(feature: FeatureKey | string) {
     edge_stability_score: "strategy-monitoring",
     recurring_reviews: "strategy-monitoring",
     regression_alerts: "strategy-monitoring",
+    ask_edge_trace: "ask-edge-trace",
+    what_if_simulator: "what-if-simulator",
     broker_imports: "broker-imports"
   };
   return aliases[value] ?? value.replace(/_/g, "-");

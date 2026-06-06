@@ -23,13 +23,13 @@ export function SignupPage({
               Create a strategy diagnostics workspace.
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-7 text-muted md:text-lg md:leading-8">
-              Upload completed trades, create your first diagnostic report, and start tracking strategy changes over time.
+              Upload completed trades, create unlimited diagnostic reports, and start tracking strategy changes over time.
             </p>
             <div className="mt-8 grid max-w-xl gap-3">
               {[
-                "One full diagnostic report on Free",
-                "Preview deeper attribution before upgrading",
-                "Upgrade to Pro when you need the full workflow"
+                "Full reporting workflow on Free",
+                "Unlimited reports, imports, drilldowns, compare, and strategy sets",
+                "Upgrade to Pro for weekly reviews, alerts, Ask EdgeTrace, What-If, and Edge Score"
               ].map((item) => (
                 <div key={item} className="flex items-center gap-3 text-sm text-muted">
                   <Check className="text-cyan" size={16} strokeWidth={1.7} />
@@ -47,7 +47,7 @@ export function SignupPage({
               <div className="relative">
                 <div className="mb-5 border-b border-white/[0.08] pb-4">
                   <p className="text-sm font-semibold text-ink">Create account</p>
-                  <p className="mt-1 text-xs text-muted">Start with your first diagnostic workspace.</p>
+                  <p className="mt-1 text-xs text-muted">Start with a free diagnostics workspace.</p>
                 </div>
                 {authMode === "clerk" ? (
                   <div className="flex justify-center">

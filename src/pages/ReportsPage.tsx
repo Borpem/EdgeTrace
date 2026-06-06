@@ -144,7 +144,7 @@ export function ReportsPage({
   const fullReportLimit = plan.limits.maxFullReports;
   const fullReportUsage =
     fullReportLimit === "unlimited" ? billableReportCount : Math.min(billableReportCount, fullReportLimit);
-  const hasPreviewReports = plan.id === "free" && billableReportCount > Number(plan.limits.maxFullReports);
+  const hasPreviewReports = plan.id === "free" && fullReportLimit !== "unlimited" && billableReportCount > fullReportLimit;
 
   const filteredReports = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -243,10 +243,12 @@ export function ReportsPage({
           <p className="mt-3 text-3xl font-semibold text-ink">{reports.length}</p>
           <p className="mt-1 text-sm text-muted">saved diagnostic reports</p>
           <p className="mt-3 text-xs text-muted">
-            Full report access: {fullReportUsage} of {formatLimit(fullReportLimit)}
+            {fullReportLimit === "unlimited"
+              ? "Full report access: Unlimited"
+              : `Full report access: ${fullReportUsage} of ${formatLimit(fullReportLimit)}`}
           </p>
           {hasPreviewReports && (
-            <p className="mt-2 text-xs text-warning">Additional Free reports open as previews. Upgrade to Pro to unlock the full strategy workflow.</p>
+            <p className="mt-2 text-xs text-warning">Additional reports open as previews on this plan.</p>
           )}
           <button className="EdgeTrace-primary-button mt-5 w-full" onClick={onAnalyze}>
             Analyze Trades

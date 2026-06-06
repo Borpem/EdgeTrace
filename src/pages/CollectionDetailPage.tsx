@@ -267,7 +267,6 @@ export function CollectionDetailPage({
               reviewAccess={canUseFeature(plan, "recurring_reviews") ? "full" : plan.id === "pro" ? "preview" : "locked"}
               regressionAccess={canUseFeature(plan, "regression_alerts") ? "full" : plan.id === "pro" ? "full" : "locked"}
               stabilityAccess={canUseFeature(plan, "edge_stability_score") ? "full" : "locked"}
-              planName={plan.displayName}
             />
           )}
 
@@ -472,8 +471,7 @@ function StrategyMonitoringSection({
   strategyMonitoringAccess,
   reviewAccess,
   regressionAccess,
-  stabilityAccess,
-  planName
+  stabilityAccess
 }: {
   monitoring: StrategyMonitoringOutput;
   digest: StrategyReviewDigest;
@@ -481,7 +479,6 @@ function StrategyMonitoringSection({
   reviewAccess: "full" | "preview" | "locked";
   regressionAccess: "full" | "preview" | "locked";
   stabilityAccess: "full" | "preview" | "locked";
-  planName: string;
 }) {
   return (
     <section className="mb-6 grid gap-5 xl:grid-cols-[1.25fr_0.75fr]">
@@ -521,11 +518,11 @@ function StrategyMonitoringSection({
       <PaywallGate
         feature="edge_stability_score"
         accessLevel={stabilityAccess}
-        title="Edge Stability Score is coming soon."
-        description="Advanced monitoring will evaluate consistency across expectancy, cost drag, R capture, loss concentration, and report history."
+        title="Upgrade to Pro to unlock Edge Score."
+        description="Pro evaluates consistency across expectancy, cost drag, R capture, loss concentration, and report history."
       >
         <div className="border border-white/[0.1] bg-white/[0.025] p-6">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted">Edge Stability Score</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted">Edge Score</p>
           <p className="mt-3 text-4xl font-semibold tracking-[-0.055em] text-ink">
             {monitoring.edgeStabilityScore ?? "Insufficient"}
           </p>
@@ -536,13 +533,11 @@ function StrategyMonitoringSection({
       <PaywallGate
         feature="regression_alerts"
         accessLevel={regressionAccess}
-        title="Advanced monitoring features are coming soon."
-        description="Advanced will add regression alerts for expectancy deterioration, rising cost drag, weakening R capture, and large-loss concentration."
+        title="Upgrade to Pro to unlock regression alerts."
+        description="Pro flags expectancy deterioration, rising cost drag, weakening R capture, and large-loss concentration."
       >
         <div className="border border-white/[0.1] bg-white/[0.025] p-6">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-warning">
-            {planName === "Advanced" ? "Regression Alerts" : "Strategy Watchlist"}
-          </p>
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-warning">Regression Alerts</p>
           <div className="mt-4 grid gap-3">
             {monitoring.regressionFlags.length ? (
               monitoring.regressionFlags.map((flag) => (
@@ -561,8 +556,8 @@ function StrategyMonitoringSection({
       <PaywallGate
         feature="recurring_reviews"
         accessLevel={reviewAccess}
-        title="Recurring strategy reviews are coming soon."
-        description="Advanced monitoring will summarize what changed, what improved, what deteriorated, and what deserves the next inspection."
+        title="Upgrade to Pro to unlock weekly strategy reviews."
+        description="Pro summarizes what changed, what improved, what deteriorated, and what deserves the next inspection."
       >
         <div className="border border-white/[0.1] bg-white/[0.025] p-6">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan">{digest.periodLabel}</p>

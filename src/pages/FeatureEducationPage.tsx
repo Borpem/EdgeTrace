@@ -66,18 +66,19 @@ const insightGroups: Array<{
 ];
 
 const featureRows: Array<{ label: string; feature?: FeatureKey; access: Record<PlanId, string> }> = [
-  { label: "1 full diagnostic report", access: { free: "Included", pro: "Unlimited", advanced: "Unlimited" } },
-  { label: "Preview reports", feature: "preview_reports", access: { free: "Included", pro: "Included", advanced: "Included" } },
+  { label: "Unlimited full diagnostic reports", access: { free: "Included", pro: "Included", advanced: "Included" } },
   { label: "Broker and generic CSV imports", feature: "broker_imports", access: { free: "Included", pro: "Included", advanced: "Included" } },
-  { label: "Full drilldowns", feature: "full_drilldowns", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Full compare", feature: "full_compare", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Strategy sets", feature: "strategy_sets", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Reconstruction audit", feature: "reconstruction_audit", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Exports", feature: "audit_exports", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Strategy monitoring", feature: "strategy_health_monitoring", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Recurring strategy reviews", feature: "recurring_reviews", access: { free: "-", pro: "-", advanced: "Coming soon" } },
-  { label: "Regression alerts", feature: "regression_alerts", access: { free: "-", pro: "-", advanced: "Coming soon" } },
-  { label: "Edge Stability Score", feature: "edge_stability_score", access: { free: "-", pro: "-", advanced: "Coming soon" } }
+  { label: "Full drilldowns", feature: "full_drilldowns", access: { free: "Included", pro: "Included", advanced: "Included" } },
+  { label: "Full compare", feature: "full_compare", access: { free: "Included", pro: "Included", advanced: "Included" } },
+  { label: "Strategy sets", feature: "strategy_sets", access: { free: "Included", pro: "Included", advanced: "Included" } },
+  { label: "Reconstruction audit", feature: "reconstruction_audit", access: { free: "Included", pro: "Included", advanced: "Included" } },
+  { label: "Exports", feature: "audit_exports", access: { free: "Included", pro: "Included", advanced: "Included" } },
+  { label: "Strategy monitoring", feature: "strategy_health_monitoring", access: { free: "Included", pro: "Included", advanced: "Included" } },
+  { label: "Weekly strategy reviews", feature: "recurring_reviews", access: { free: "-", pro: "Included", advanced: "Included" } },
+  { label: "Regression alerts", feature: "regression_alerts", access: { free: "-", pro: "Included", advanced: "Included" } },
+  { label: "Ask EdgeTrace", feature: "ask_edge_trace", access: { free: "-", pro: "Included", advanced: "Included" } },
+  { label: "What-If Simulator", feature: "what_if_simulator", access: { free: "-", pro: "Included", advanced: "Included" } },
+  { label: "Edge Score", feature: "edge_stability_score", access: { free: "-", pro: "Included", advanced: "Included" } }
 ];
 
 export function FeatureEducationPage({
@@ -597,11 +598,11 @@ function PlansSection({
       <div className="mb-7 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
           <h2 className="max-w-3xl text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl">
-            Choose how deep you want to inspect performance.
+            Core analytics are free. Pro adds coaching.
           </h2>
           <p className="mt-4 max-w-2xl text-base leading-7 text-muted">
-            EdgeTrace scales from a first diagnostic report to full attribution, comparison, monitoring, and future
-            strategy intelligence workflows.
+            EdgeTrace gives every trader the complete reporting workflow. The paid tier is reserved for weekly reviews,
+            regression alerts, Ask EdgeTrace, What-If Simulator, and Edge Score.
           </p>
         </div>
         {isAuthenticated && (
@@ -611,7 +612,7 @@ function PlansSection({
         )}
       </div>
 
-      <div className="mb-4 grid gap-3 md:grid-cols-3">
+      <div className="mb-4 grid gap-3 md:grid-cols-2">
         {planOrder.map((planId) => {
           const toneClass = toneClasses[planToneFromId(planId)];
           return (
@@ -621,10 +622,10 @@ function PlansSection({
               </p>
               <p className="mt-2 text-sm text-muted">
                 {planId === "free"
-                  ? "First diagnostic and previews"
+                  ? "Complete core workflow"
                   : planId === "pro"
-                    ? "Full workflow access"
-                    : "Coming soon monitoring"}
+                    ? "$9.99/month coaching"
+                    : "Legacy automation"}
               </p>
             </div>
           );

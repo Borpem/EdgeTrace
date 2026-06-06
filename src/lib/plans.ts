@@ -18,7 +18,9 @@ export type FeatureKey =
   | "strategy_health_monitoring"
   | "recurring_reviews"
   | "regression_alerts"
-  | "edge_stability_score";
+  | "edge_stability_score"
+  | "ask_edge_trace"
+  | "what_if_simulator";
 
 export type PlanLimits = {
   maxReports: number | "unlimited";
@@ -43,46 +45,7 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
     id: "free",
     displayName: "Free",
     monthlyPriceLabel: "$0",
-    description: "Explore the first diagnostic.",
-    limits: {
-      maxReports: "unlimited",
-      maxFullReports: 1,
-      maxCollections: 1,
-      maxSavedComparisons: 1,
-      brokerAdapters: "all"
-    },
-    features: {
-      broker_imports: true,
-      reconstruction_audit: false,
-      export_audit: false,
-      collection_attribution: false,
-      review_workspace: false,
-      saved_comparisons: false,
-      collections: "limited",
-      full_report_access: "limited",
-      preview_reports: true,
-      advanced_attribution: false,
-      full_drilldowns: false,
-      full_compare: false,
-      strategy_sets: false,
-      audit_exports: false,
-      strategy_health_monitoring: false,
-      recurring_reviews: false,
-      regression_alerts: false,
-      edge_stability_score: false
-    },
-    featureBullets: [
-      "1 full diagnostic report",
-      "Supported broker and generic CSV imports",
-      "Preview deeper insights after first report",
-      "Limited report history"
-    ]
-  },
-  pro: {
-    id: "pro",
-    displayName: "Pro",
-    monthlyPriceLabel: "$19/month",
-    description: "Full strategy workflow.",
+    description: "Core reporting and analysis.",
     limits: {
       maxReports: "unlimited",
       maxFullReports: "unlimited",
@@ -108,23 +71,23 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
       strategy_health_monitoring: true,
       recurring_reviews: false,
       regression_alerts: false,
-      edge_stability_score: false
+      edge_stability_score: false,
+      ask_edge_trace: false,
+      what_if_simulator: false
     },
     featureBullets: [
       "Unlimited full diagnostic reports",
-      "Full attribution and drilldowns",
-      "Compare reports",
-      "Strategy sets",
-      "Reconstruction audit",
-      "Exports",
+      "Broker and generic CSV imports",
+      "Full attribution, drilldowns, and compare",
+      "Strategy sets, reconstruction audit, and exports",
       "Strategy health monitoring"
     ]
   },
-  advanced: {
-    id: "advanced",
-    displayName: "Advanced",
-    monthlyPriceLabel: "Coming Soon",
-    description: "Continuous strategy intelligence.",
+  pro: {
+    id: "pro",
+    displayName: "Pro",
+    monthlyPriceLabel: "$9.99/month",
+    description: "Local coaching and automation.",
     limits: {
       maxReports: "unlimited",
       maxFullReports: "unlimited",
@@ -150,19 +113,65 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
       strategy_health_monitoring: true,
       recurring_reviews: true,
       regression_alerts: true,
-      edge_stability_score: true
+      edge_stability_score: true,
+      ask_edge_trace: true,
+      what_if_simulator: true
     },
     featureBullets: [
-      "Everything in Pro",
-      "Recurring strategy reviews",
+      "Everything in Free",
+      "Weekly strategy reviews",
       "Regression alerts",
-      "Edge stability score",
-      "Future team/API/priority import support"
+      "Ask EdgeTrace",
+      "What-If Simulator",
+      "Edge Score"
+    ]
+  },
+  advanced: {
+    id: "advanced",
+    displayName: "Advanced",
+    monthlyPriceLabel: "Legacy",
+    description: "Legacy access with every paid automation feature.",
+    limits: {
+      maxReports: "unlimited",
+      maxFullReports: "unlimited",
+      maxCollections: "unlimited",
+      maxSavedComparisons: "unlimited",
+      brokerAdapters: "all"
+    },
+    features: {
+      broker_imports: true,
+      reconstruction_audit: true,
+      export_audit: true,
+      collection_attribution: true,
+      review_workspace: true,
+      saved_comparisons: true,
+      collections: true,
+      full_report_access: true,
+      preview_reports: true,
+      advanced_attribution: true,
+      full_drilldowns: true,
+      full_compare: true,
+      strategy_sets: true,
+      audit_exports: true,
+      strategy_health_monitoring: true,
+      recurring_reviews: true,
+      regression_alerts: true,
+      edge_stability_score: true,
+      ask_edge_trace: true,
+      what_if_simulator: true
+    },
+    featureBullets: [
+      "Everything in Free",
+      "Weekly strategy reviews",
+      "Regression alerts",
+      "Ask EdgeTrace",
+      "What-If Simulator",
+      "Edge Score"
     ]
   }
 };
 
-export const planOrder: PlanId[] = ["free", "pro", "advanced"];
+export const planOrder: PlanId[] = ["free", "pro"];
 
 export function normalizePlanId(planId: string | null | undefined): PlanId {
   return planId === "pro" || planId === "advanced" ? planId : "free";

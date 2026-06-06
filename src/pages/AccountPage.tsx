@@ -25,7 +25,7 @@ type AccountPageProps = {
 };
 
 type Tone = "cyan" | "purple" | "amber";
-const accountPlanOrder: PlanId[] = ["free", "pro", "advanced"];
+const accountPlanOrder: PlanId[] = ["free", "pro"];
 
 export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing }: AccountPageProps) {
   const [localProfile, setLocalProfile] = useState<UserProfile | null>(profile);
@@ -153,7 +153,7 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
           accent={currentPlanId === "advanced" ? "amber" : currentPlanId === "pro" ? "purple" : "cyan"}
           label="Current access"
           value={plan.displayName}
-          detail={`${plan.monthlyPriceLabel} · ${plan.description}`}
+          detail={`${plan.monthlyPriceLabel} - ${plan.description}`}
           badge={isPaid ? "Active" : "Free"}
         />
         <AccountSummaryCard
@@ -173,8 +173,8 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
               <h2>Choose the workflow depth your strategy needs.</h2>
             </div>
             <p>
-              Free gives a real first diagnostic. Pro is the full self-serve workflow at $19/month. Advanced is the
-              monitoring roadmap.
+              Free includes the full core workflow. Pro adds local coaching, alerts, simulations, and Edge Score for
+              $9.99/month.
             </p>
           </div>
           <div className="EdgeTrace-account-billing-card">
@@ -183,7 +183,7 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
             <span>
               {isPaid
                 ? "Open Stripe for payment methods, invoices, and cancellation settings."
-                : "Activate unlimited reports, full drilldowns, comparisons, strategy sets, exports, and monitoring."}
+                : "Activate weekly reviews, regression alerts, Ask EdgeTrace, What-If Simulator, and Edge Score."}
             </span>
             {isPaid && !hasStripeCustomer ? (
               <button className="EdgeTrace-pricing-secondary mt-5 w-full" disabled={activeAction === "refresh"} onClick={() => void refreshProfile()}>
@@ -288,15 +288,15 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
         />
         <InfoTile
           icon={FileText}
-          title="Report access"
-          body="Free includes one full report. Pro unlocks the full workflow across reports."
-          accent="purple"
+          title="Core analytics"
+          body="Free includes unlimited reports, attribution, drilldowns, compare, strategy sets, audits, exports, and monitoring."
+          accent="cyan"
         />
         <InfoTile
           icon={Sparkles}
-          title="Advanced roadmap"
-          body="Recurring reviews, regression alerts, and Edge Stability Score remain coming soon."
-          accent="amber"
+          title="Pro automation"
+          body="Pro adds weekly strategy reviews, regression alerts, Ask EdgeTrace, What-If Simulator, and Edge Score."
+          accent="purple"
         />
       </section>
     </main>
@@ -465,7 +465,7 @@ function accessItems(planId: PlanId) {
   return [
     {
       title: "Diagnostic reports",
-      body: planId === "free" ? "One full report, then preview access." : "Unlimited full reports.",
+      body: "Unlimited full reports.",
       enabled: true
     },
     {
@@ -475,12 +475,22 @@ function accessItems(planId: PlanId) {
     },
     {
       title: "Full drilldowns",
-      body: pro ? "Unlocked across report attribution." : "Upgrade to inspect full attribution.",
-      enabled: pro
+      body: "Unlocked across report attribution.",
+      enabled: true
     },
     {
       title: "Compare and strategy sets",
-      body: pro ? "Unlocked for iteration tracking." : "Preview only on Free.",
+      body: "Unlocked for iteration tracking.",
+      enabled: true
+    },
+    {
+      title: "Weekly reviews and alerts",
+      body: pro ? "Pro automation is active." : "Upgrade for recurring reviews and regression alerts.",
+      enabled: pro
+    },
+    {
+      title: "Ask, simulate, and score",
+      body: pro ? "Ask EdgeTrace, What-If Simulator, and Edge Score are active." : "Upgrade for local coaching, simulations, and Edge Score.",
       enabled: pro
     }
   ];

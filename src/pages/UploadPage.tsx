@@ -90,7 +90,7 @@ export function UploadPage({
     : brokerBlocked
       ? "This import source is not available on your current plan."
       : reportLimitReached
-        ? `You've reached the Free full-report limit. Upgrade to Pro to unlock the full strategy workflow.`
+        ? `This workspace has reached its report limit.`
         : hasParsedFile && normalizedTrades.length === 0
           ? "No normalized trades are ready yet."
           : "";
@@ -116,7 +116,9 @@ export function UploadPage({
         : "Off"
       : "Not applicable";
   const reportLimitSummary =
-    profile?.planId === "free"
+    plan.limits.maxFullReports === "unlimited"
+      ? `${plan.displayName} plan: unlimited full reports.`
+      : profile?.planId === "free"
       ? `Free plan: ${Math.min(billableReportCount, Number(plan.limits.maxFullReports))} of ${formatLimit(plan.limits.maxFullReports)} full reports used. Additional reports open as previews.`
       : `${plan.displayName} plan: ${formatLimit(plan.limits.maxFullReports)} full reports.`;
 
@@ -294,16 +296,15 @@ export function UploadPage({
         throw new Error("This import source is not available on your current plan.");
       }
       if (reportLimitReached) {
-        throw new Error("You've reached the Free full-report limit. Upgrade to Pro to unlock the full strategy workflow.");
+        throw new Error("This workspace has reached its report limit.");
       }
       trackEvent("diagnostics_started", {
         brokerId: activeBrokerId,
         tradeCount: normalizedTrades.length
       });
-      const diagnosticsBrokerId = profile?.planId === "free" ? "generic_csv" : activeBrokerId;
       onComplete(
         await runTradeDiagnostics(normalizedTrades, reportName, {
-          brokerId: diagnosticsBrokerId,
+          brokerId: activeBrokerId,
           importProvenance: buildImportProvenance({
             uploadedFilename,
             detectedSourceLabel,
@@ -760,7 +761,7 @@ export function UploadPage({
               />
               {reportLimitReached && (
                 <div className="mt-3 border border-warning/50 bg-warning/10 p-3 text-sm text-warning">
-                  You've reached the Free full-report limit. Upgrade to Pro to unlock the full strategy workflow.
+                  This workspace has reached its report limit.
                   {onViewPricing && (
                     <button className="ml-3 border-b border-warning/60 font-semibold text-warning" onClick={onViewPricing} type="button">
                       View Pricing
@@ -1346,7 +1347,7 @@ function buildImportProvenance({
 function formatUploadError(error: unknown, context: "csv_parse" | "html_parse" | "normalize" | "diagnostics") {
   const message = error instanceof Error ? error.message : "";
   if (/PLAN_LIMIT_REACHED|free report limit|reached the Free report limit/i.test(message)) {
-    return "You've reached the Free full-report limit. Upgrade to Pro to unlock the full strategy workflow, or delete an older non-demo report.";
+    return "This workspace has reached its report limit. Delete an older non-demo report or contact support.";
   }
   if (/broker-specific|import source is not available/i.test(message)) {
     return "This import source could not be used. Try auto-detect, choose Generic CSV, or review the uploaded file format.";

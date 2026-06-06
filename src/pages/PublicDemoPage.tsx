@@ -115,8 +115,8 @@ const guidedSteps: StepConfig[] = [
     number: "05",
     title: "Ready to analyze your own trades?",
     shortTitle: "Start",
-    body: "You have seen the Pro workflow on sample data. Create a free account to generate your first full diagnostic report.",
-    why: "Free gives one full diagnostic report. Pro unlocks the complete workflow.",
+    body: "You have seen the EdgeTrace workflow on sample data. Create a free account to analyze your own trade history.",
+    why: "Free includes the complete workflow. Pro adds coaching, alerts, simulations, and Edge Score.",
     cta: "Create Free Account"
   }
 ];
@@ -418,7 +418,7 @@ function DiagnoseStep({
           </p>
         </div>
         <span className="border border-cyan/35 bg-cyan/[0.06] px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-cyan">
-          Pro workflow preview
+          Workflow preview
         </span>
       </div>
 
@@ -607,7 +607,7 @@ function CompareStep({
           </p>
         </div>
         <span className="border border-cyan/35 bg-cyan/[0.06] px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-cyan">
-          Pro workflow preview
+          Workflow preview
         </span>
       </div>
 
@@ -658,7 +658,7 @@ function MonitorStep({
           </p>
         </div>
         <span className="border border-cyan/35 bg-cyan/[0.06] px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-cyan">
-          Pro workflow preview
+          Workflow preview
         </span>
       </div>
 
@@ -735,8 +735,7 @@ function StartStep({
         Ready to analyze your own trades?
       </h2>
       <p className="mt-5 max-w-3xl text-base leading-7 text-muted">
-        You have seen the Pro workflow on sample data. Create a free account to generate your first full diagnostic
-        report.
+        You have seen the EdgeTrace workflow on sample data. Create a free account to analyze your own trade history.
       </p>
       <div className="mt-7 flex flex-wrap gap-3">
         {!isAuthenticated && (

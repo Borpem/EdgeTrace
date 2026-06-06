@@ -53,7 +53,7 @@ export async function sanitizeReportForUser(userId: string, report: DiagnosticsR
       ...sanitized,
       trades: [],
       lockedSections: [...new Set([...(sanitized.lockedSections ?? []), ...previewLockedSections()])],
-      upgradeMessage: "Upgrade to Pro to unlock the full strategy workflow."
+      upgradeMessage: "Upgrade to Pro to unlock EdgeTrace automation features."
     };
   }
   return sanitized;
@@ -96,7 +96,7 @@ export function sanitizeReportForAccess(report: DiagnosticsResult, accessLevel: 
       charts: emptyCharts(),
       accessLevel,
       lockedSections,
-      upgradeMessage: "Upgrade to Pro to unlock the full strategy workflow."
+      upgradeMessage: "Upgrade to Pro to unlock EdgeTrace automation features."
     };
   }
 
@@ -111,7 +111,7 @@ export function sanitizeReportForAccess(report: DiagnosticsResult, accessLevel: 
     },
     accessLevel,
     lockedSections,
-    upgradeMessage: "Preview unlocked. Upgrade to Pro to unlock the full strategy workflow."
+    upgradeMessage: "Preview unlocked. Upgrade to Pro to unlock EdgeTrace automation features."
   };
 }
 
@@ -124,18 +124,20 @@ export function planUpgradeResponse(feature: EntitlementFeature, requiredPlan: P
   };
 }
 
-export function upgradeMessageForFeature(feature: EntitlementFeature, requiredPlan: PlanId = "pro") {
+export function upgradeMessageForFeature(feature: EntitlementFeature, _requiredPlan: PlanId = "pro") {
   const messages: Partial<Record<EntitlementFeature, string>> = {
-    full_drilldowns: "Upgrade to Pro to unlock the full strategy workflow.",
-    reconstruction_audit: "Upgrade to Pro to review execution-to-trade reconstruction lineage.",
-    audit_exports: "Upgrade to Pro to export audit and report details.",
-    full_compare: "Upgrade to Pro to unlock the full strategy workflow.",
-    strategy_health_monitoring: "Upgrade to Pro to monitor whether this strategy is improving or degrading over time.",
-    recurring_reviews: "Advanced monitoring features are coming soon.",
-    regression_alerts: "Advanced monitoring features are coming soon.",
-    edge_stability_score: "Advanced monitoring features are coming soon."
+    full_drilldowns: "Full drilldowns are included on Free.",
+    reconstruction_audit: "Reconstruction audit is included on Free.",
+    audit_exports: "Audit exports are included on Free.",
+    full_compare: "Report compare is included on Free.",
+    strategy_health_monitoring: "Strategy health monitoring is included on Free.",
+    recurring_reviews: "Upgrade to Pro to unlock weekly strategy reviews.",
+    regression_alerts: "Upgrade to Pro to unlock regression alerts.",
+    edge_stability_score: "Upgrade to Pro to unlock Edge Score.",
+    ask_edge_trace: "Upgrade to Pro to unlock Ask EdgeTrace.",
+    what_if_simulator: "Upgrade to Pro to unlock the What-If Simulator."
   };
-  return messages[feature] ?? (requiredPlan === "advanced" ? "Advanced monitoring features are coming soon." : "Upgrade to Pro to unlock this feature.");
+  return messages[feature] ?? "Upgrade to Pro to unlock this feature.";
 }
 
 function previewLockedSections() {

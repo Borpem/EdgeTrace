@@ -1,14 +1,13 @@
 export function PlanAccessGraphic({ className = "" }: { className?: string }) {
   const plans = [
-    ["Free", "First diagnostic", "Preview"],
-    ["Pro", "Full workflow", "Core"],
-    ["Advanced", "Monitoring", "Soon"]
+    ["Free", "Complete analytics", "Core"],
+    ["Pro", "Automation", "$9.99"]
   ];
 
   return (
     <div className={`border border-white/[0.1] bg-white/[0.025] p-4 ${className}`}>
       <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted">Access path</p>
-      <div className="mt-4 grid gap-3 md:grid-cols-3">
+      <div className="mt-4 grid gap-3 md:grid-cols-2">
         {plans.map(([name, detail, badge], index) => (
           <div
             key={name}
@@ -24,7 +23,7 @@ export function PlanAccessGraphic({ className = "" }: { className?: string }) {
               </span>
             </div>
             <div className="mt-4 h-1 bg-white/[0.08]">
-              <div className="h-1 bg-cyan" style={{ width: `${(index + 1) * 33}%` }} />
+              <div className="h-1 bg-cyan" style={{ width: `${(index + 1) * 50}%` }} />
             </div>
           </div>
         ))}

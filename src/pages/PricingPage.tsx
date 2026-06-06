@@ -26,54 +26,54 @@ type PricingPlan = {
 const pricingPlans: PricingPlan[] = [
   {
     id: "free",
-    summary: "For traders validating EdgeTrace with a first full diagnostic.",
+    summary: "For traders who want the complete reporting and analysis workflow.",
     accent: "cyan"
   },
   {
     id: "pro",
     eyebrow: "Most Popular",
-    summary: "For serious traders who need the complete report-to-inspection workflow.",
+    summary: "For traders who want local coaching, alerts, simulations, and Edge Score.",
     accent: "purple",
     recommended: true
-  },
-  {
-    id: "advanced",
-    eyebrow: "Coming Soon",
-    summary: "For continuous strategy intelligence, alerts, and recurring reviews.",
-    accent: "amber"
   }
 ];
 
 const featureRows: Array<{ label: string; access: Record<PlanId, string> }> = [
-  { label: "Full diagnostic reports", access: { free: "1", pro: "Unlimited", advanced: "Unlimited" } },
+  { label: "Full diagnostic reports", access: { free: "Unlimited", pro: "Unlimited", advanced: "Unlimited" } },
   { label: "Broker and generic CSV imports", access: { free: "Included", pro: "Included", advanced: "Included" } },
-  { label: "Preview reports", access: { free: "Included", pro: "Included", advanced: "Included" } },
-  { label: "Full attribution and drilldowns", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Compare reports", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Strategy sets", access: { free: "Limited", pro: "Included", advanced: "Included" } },
-  { label: "Reconstruction audit", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Exports", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Strategy health monitoring", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Recurring strategy reviews", access: { free: "-", pro: "-", advanced: "Coming soon" } },
-  { label: "Regression alerts", access: { free: "-", pro: "-", advanced: "Coming soon" } },
-  { label: "Edge Stability Score", access: { free: "-", pro: "-", advanced: "Coming soon" } }
+  { label: "Full attribution and drilldowns", access: { free: "Included", pro: "Included", advanced: "Included" } },
+  { label: "Compare reports", access: { free: "Included", pro: "Included", advanced: "Included" } },
+  { label: "Strategy sets", access: { free: "Included", pro: "Included", advanced: "Included" } },
+  { label: "Reconstruction audit", access: { free: "Included", pro: "Included", advanced: "Included" } },
+  { label: "Exports", access: { free: "Included", pro: "Included", advanced: "Included" } },
+  { label: "Strategy health monitoring", access: { free: "Included", pro: "Included", advanced: "Included" } },
+  { label: "Weekly strategy reviews", access: { free: "-", pro: "Included", advanced: "Included" } },
+  { label: "Regression alerts", access: { free: "-", pro: "Included", advanced: "Included" } },
+  { label: "Ask EdgeTrace", access: { free: "-", pro: "Included", advanced: "Included" } },
+  { label: "What-If Simulator", access: { free: "-", pro: "Included", advanced: "Included" } },
+  { label: "Edge Score", access: { free: "-", pro: "Included", advanced: "Included" } }
 ];
 
 const faqs = [
   {
     question: "What is included on Free?",
     answer:
-      "Free includes one full diagnostic report, supported broker and generic CSV imports, and preview access after the first report."
+      "Free includes the complete current EdgeTrace workflow: unlimited reports, broker and CSV imports, attribution, drilldowns, compare, strategy sets, audits, exports, and monitoring."
   },
   {
     question: "What does Pro unlock?",
     answer:
-      "Pro unlocks unlimited full diagnostic reports, full attribution and drilldowns, compare, strategy sets, reconstruction audit, exports, and monitoring."
+      "Pro is the $9.99/month automation layer: weekly strategy reviews, regression alerts, Ask EdgeTrace, What-If Simulator, and Edge Score."
   },
   {
-    question: "Is Advanced available?",
+    question: "Does Ask EdgeTrace require ChatGPT?",
     answer:
-      "Advanced is shown as the roadmap tier. Recurring reviews, regression alerts, and Edge Stability Score are marked coming soon."
+      "The paid Ask EdgeTrace experience is designed around local report data and deterministic answers first, so it does not require expensive ChatGPT calls."
+  },
+  {
+    question: "Can I use Free long term?",
+    answer:
+      "Yes. The core product stays free. Pro is for traders who want the app to actively coach, alert, and simulate strategy changes."
   },
   {
     question: "Is my data secure?",
@@ -320,8 +320,8 @@ export function PricingPage({
         <p className="EdgeTrace-pricing-eyebrow">Pricing</p>
         <h1>Simple pricing. Serious edge.</h1>
         <p>
-          Choose the plan that fits your trading workflow. Every plan includes EdgeTrace diagnostics and broker/generic
-          CSV import support.
+          Use the full EdgeTrace reporting workflow for free. Upgrade to Pro when you want the app to coach, alert, and
+          simulate around your trading data.
         </p>
         <div className="EdgeTrace-pricing-billing">
           <span>Pay monthly</span>
@@ -340,7 +340,7 @@ export function PricingPage({
 
       <div className="EdgeTrace-pricing-footnote">
         <ShieldCheck size={18} aria-hidden="true" />
-        <span>Free includes one full diagnostic report. Pro is the full self-serve workflow. Advanced is coming soon.</span>
+        <span>Core analytics are free. Pro adds local coaching and automation for $9.99/month.</span>
       </div>
 
       <FeatureComparison currentPlanId={highlightedPlanId} />
@@ -544,7 +544,7 @@ function FinalCta({
       </div>
       <div>
         <h2>Ready to gain the edge?</h2>
-        <p>Start with your first diagnostic report, then upgrade to Pro when you need the complete workflow.</p>
+        <p>Start with the free workflow, then upgrade to Pro when you want coaching, alerts, simulations, and Edge Score.</p>
       </div>
       <div>
         <button className="EdgeTrace-pricing-primary" onClick={onPro}>

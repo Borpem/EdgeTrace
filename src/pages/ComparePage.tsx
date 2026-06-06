@@ -345,7 +345,7 @@ export function ComparePage({
             </button>
             {!canSaveMoreComparisons && (
               <p className="self-center text-sm text-warning">
-                Free plan allows 1 saved comparison. Existing comparisons remain available.
+                This workspace has reached its saved comparison limit. Existing comparisons remain available.
               </p>
             )}
           </section>

@@ -438,7 +438,7 @@ app.post("/api/billing/create-checkout-session", async (req, res) => {
       res.status(400).json({
         error: "INVALID_PLAN",
         stage,
-        message: "Checkout is currently available for Pro. Advanced monitoring features are coming soon."
+        message: "Checkout is currently available for the Pro automation plan."
       });
       return;
     }
@@ -548,7 +548,7 @@ app.post("/api/diagnostics/run", async (req, res) => {
   if (!isDemo && !canCreateReport(plan, existingBillableReportCount)) {
     res.status(403).json({
       error: "PLAN_LIMIT_REACHED",
-      message: "Free plan includes 1 full diagnostic report. Upgrade to Pro to unlock the full strategy workflow."
+      message: "This workspace has reached its report limit."
     });
     return;
   }
@@ -775,7 +775,7 @@ app.post("/api/collections", async (req, res) => {
   if (!isDemo && !canCreateCollection(plan, await countCollections(userId))) {
     res.status(403).json({
       error: "PLAN_LIMIT_REACHED",
-      message: "Free plan allows 1 strategy set. Upgrade to Pro to unlock the full strategy workflow."
+      message: "This workspace has reached its strategy set limit."
     });
     return;
   }
@@ -903,7 +903,7 @@ app.post("/api/saved-comparisons", async (req, res) => {
   if (!isDemo && !canCreateSavedComparison(plan, await countSavedComparisons(userId))) {
     res.status(403).json({
       error: "PLAN_LIMIT_REACHED",
-      message: "Free plan allows 1 saved comparison. Upgrade to Pro to unlock the full strategy workflow."
+      message: "This workspace has reached its saved comparison limit."
     });
     return;
   }
