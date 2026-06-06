@@ -25,7 +25,6 @@ import {
   Home,
   Info,
   Layers3,
-  LineChart as LineChartIcon,
   Scale,
   TrendingDown,
   TrendingUp,
@@ -203,6 +202,9 @@ export function DashboardPage({
   const firstReportReady =
     Boolean(reportJustCreated) &&
     (activation ? !activation.firstReportCreatedAt || activation.firstReportCreatedAt === result.createdAt : true);
+  const hasDashboardNotices = Boolean(
+    reportJustCreated || firstReportReady || !costsIncluded || !rValuesAvailable || reconstructionUsed
+  );
   const normalizedTradeCount = provenance?.normalizedTradeCount ?? metrics.totalTrades ?? trades.length;
   const performanceData = charts.equityCurve.length ? charts.equityCurve : buildEquityCurve(trades);
   const impactBreakdown = buildImpactBreakdown(metrics, largestLeak);
@@ -439,75 +441,61 @@ export function DashboardPage({
             </div>
           </div>
           <div className="EdgeTrace-dashboard-actions">
-            <button className="EdgeTrace-dashboard-primary" onClick={inspectPrimarySegment} disabled={!primaryInspection}>
-              <LineChartIcon size={17} aria-hidden="true" />
-              Inspect Trades
-            </button>
-            <button className="EdgeTrace-dashboard-secondary" onClick={openWalkthrough}>
-              <BookOpen size={17} aria-hidden="true" />
-              Guide Me
-            </button>
-            <button
-              className="EdgeTrace-dashboard-secondary"
-              onClick={() => {
-                setActiveTab("breakdown");
-                document.querySelector(".EdgeTrace-detail-dock")?.scrollIntoView({ behavior: "smooth", block: "start" });
-              }}
-            >
-              <FileText size={17} aria-hidden="true" />
-              View Full Report
+            <button className="EdgeTrace-results-walkthrough-button" onClick={openWalkthrough}>
+              <span className="EdgeTrace-results-walkthrough-icon" aria-hidden="true">
+                <BookOpen size={24} />
+              </span>
+              <span>
+                <strong>Results Walkthrough</strong>
+                <small>Step-by-step report explanation</small>
+              </span>
             </button>
           </div>
         </header>
 
-        <section className="EdgeTrace-dashboard-alerts" aria-label="Report notices">
-          <Notice
-            tone="blue"
-            title="Guided walkthrough"
-            message="Start here if you want EdgeTrace to explain this report one step at a time."
-            action={openWalkthrough}
-            actionLabel="Start"
-          />
-          {reportJustCreated && (
-            <Notice
-              tone="blue"
-              title="Report created"
-              message="Start with the primary diagnosis, then inspect the recommended segment."
-              action={onDismissCreatedBanner}
-              actionLabel="Dismiss"
-            />
-          )}
-          {firstReportReady && (
-            <Notice
-              tone="blue"
-              title="First report ready"
-              message="Review the diagnosis, inspect the weakest segment, then compare the next iteration."
-            />
-          )}
-          {!costsIncluded && (
-            <Notice
-              tone="yellow"
-              title="Cost data missing"
-              message="Net performance may be overstated because cost data was not detected."
-            />
-          )}
-          {!rValuesAvailable && (
-            <Notice
-              tone="yellow"
-              title="R-multiple limited"
-              message="R analysis is limited because stop or risk data was not available."
-            />
-          )}
-          {reconstructionUsed && (
-            <Notice
-              tone="gray"
-              title="Reconstructed trades"
-              message="This report uses reconstructed execution records. Audit lineage if results look unexpected."
-              action={hasReconstructionAudit ? handleAudit : undefined}
-              actionLabel="Audit"
-            />
-          )}
-        </section>
+        {hasDashboardNotices && (
+          <section className="EdgeTrace-dashboard-alerts" aria-label="Report notices">
+            {reportJustCreated && (
+              <Notice
+                tone="blue"
+                title="Report created"
+                message="Start with the primary diagnosis, then inspect the recommended segment."
+                action={onDismissCreatedBanner}
+                actionLabel="Dismiss"
+              />
+            )}
+            {firstReportReady && (
+              <Notice
+                tone="blue"
+                title="First report ready"
+                message="Review the diagnosis, inspect the weakest segment, then compare the next iteration."
+              />
+            )}
+            {!costsIncluded && (
+              <Notice
+                tone="yellow"
+                title="Cost data missing"
+                message="Net performance may be overstated because cost data was not detected."
+              />
+            )}
+            {!rValuesAvailable && (
+              <Notice
+                tone="yellow"
+                title="R-multiple limited"
+                message="R analysis is limited because stop or risk data was not available."
+              />
+            )}
+            {reconstructionUsed && (
+              <Notice
+                tone="gray"
+                title="Reconstructed trades"
+                message="This report uses reconstructed execution records. Audit lineage if results look unexpected."
+                action={hasReconstructionAudit ? handleAudit : undefined}
+                actionLabel="Audit"
+              />
+            )}
+          </section>
+        )}
 
         <section className="EdgeTrace-kpi-grid" aria-label="Dashboard overview metrics">
           <DashboardMetricCard
@@ -1472,7 +1460,7 @@ function buildGuidedReportSteps({
       details: compactDetails([
         largestLeak ? `Largest leak in the visible breakdown: ${largestLeak.group} at ${currency.format(largestLeak.netPnl)} net PnL.` : undefined,
         strongestSegment ? `Strongest segment: ${strongestSegment.group} at ${currency.format(strongestSegment.netPnl)} net PnL.` : undefined,
-        "Use the Breakdown tab or Inspect Trades when you want the exact rows behind this signal."
+        "Use the Breakdown tab when you want the exact rows behind this signal."
       ])
     },
     {
