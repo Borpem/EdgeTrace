@@ -744,7 +744,7 @@ function StartStep({
           </button>
         )}
         <button className="EdgeTrace-secondary-button" onClick={onAnalyze}>
-          {isAuthenticated ? "Create Your Own Report" : "Analyze My Trades"}
+          {isAuthenticated ? "Create Your Own Report" : "Import My Trades"}
         </button>
         <button className="EdgeTrace-secondary-button" onClick={onPricing}>
           View Pricing

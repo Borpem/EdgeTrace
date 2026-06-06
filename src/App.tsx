@@ -2,12 +2,10 @@ import { useEffect, useState } from "react";
 import { UserButton } from "@clerk/clerk-react";
 import {
   FileText,
-  FolderOpen,
   HelpCircle,
   Home,
   Layers3,
   LogOut,
-  Plus,
   Scale,
   TrendingUp,
   UserCircle
@@ -625,7 +623,7 @@ export function App() {
 
   const appNavItems: Array<{ target: Page; label: string }> = [
     { target: "strategyDashboard", label: "Dashboard" },
-    { target: "upload", label: "Analyze Trades" },
+    { target: "upload", label: "Import Trades" },
     { target: "reports", label: "Reports" },
     { target: "collections", label: "Strategy Sets" },
     { target: "compare", label: "Compare" },
@@ -749,7 +747,7 @@ export function App() {
           {isAuthenticated ? (
             <div className="flex flex-wrap items-center justify-center gap-3 xl:ml-auto">
               <button className="EdgeTrace-compact-primary" onClick={() => navigate("upload")}>
-                + New Report
+                Import Trades
               </button>
               {userProfile?.planId === "free" && (
                 <button className="EdgeTrace-secondary-button px-3 py-2 text-sm" onClick={() => navigate("account")}>
@@ -1078,7 +1076,7 @@ export function App() {
                 Open Reports
               </button>
               <button className="rounded-md border border-line px-5 py-2.5 font-semibold text-ink hover:border-accent" onClick={() => navigate("upload")}>
-                Analyze Trades
+                Import Trades
               </button>
             </div>
           </section>
@@ -1147,7 +1145,7 @@ function AuthenticatedSidebar({
 }) {
   const navItems: Array<{ target: Page; label: string; icon: typeof Home; action: () => void }> = [
     { target: "strategyDashboard", label: "Dashboard", icon: Home, action: onDashboard },
-    { target: "upload", label: "Analyze Trades", icon: TrendingUp, action: onAnalyze },
+    { target: "upload", label: "Import Trades", icon: TrendingUp, action: onAnalyze },
     { target: "reports", label: "Reports", icon: FileText, action: onReports },
     { target: "collections", label: "Strategy Sets", icon: Layers3, action: onCollections },
     { target: "compare", label: "Compare", icon: Scale, action: onCompare },
@@ -1169,18 +1167,6 @@ function AuthenticatedSidebar({
           </button>
         ))}
       </nav>
-
-      <div className="EdgeTrace-sidebar-quick">
-        <p>Quick Actions</p>
-        <button onClick={onAnalyze}>
-          <Plus size={17} aria-hidden="true" />
-          New Report
-        </button>
-        <button className="EdgeTrace-sidebar-open-reports" onClick={onReports}>
-          <FolderOpen size={17} aria-hidden="true" />
-          Open Reports
-        </button>
-      </div>
 
       <div className="EdgeTrace-auth-sidebar-footer">
         <button className="EdgeTrace-sidebar-user" onClick={onAccount}>

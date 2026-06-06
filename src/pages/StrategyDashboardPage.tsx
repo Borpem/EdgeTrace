@@ -252,7 +252,7 @@ export function StrategyDashboardPage({
               {error && <p className="mt-4 text-sm text-loss">{error}</p>}
               <div className="mt-7 flex flex-wrap gap-3">
                 <button className="EdgeTrace-primary-button" onClick={onUpload}>
-                  Analyze Trades
+                  Import Trades
                 </button>
                 <button className="EdgeTrace-secondary-button" onClick={onReports}>
                   View Reports
@@ -326,7 +326,7 @@ export function StrategyDashboardPage({
             </label>
             <div className="flex flex-wrap gap-2 md:justify-end">
               <button className="EdgeTrace-command-button" onClick={onUpload}>
-                Analyze Trades
+                Import Trades
               </button>
               <button className="EdgeTrace-compact-secondary" onClick={onReports}>
                 View Reports

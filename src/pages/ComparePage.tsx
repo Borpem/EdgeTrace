@@ -221,7 +221,7 @@ export function ComparePage({
             Saved comparisons: {savedComparisons.length} of {formatLimit(plan.limits.maxSavedComparisons)}
           </p>
           <button className="EdgeTrace-primary-button mt-5 w-full" onClick={onAnalyze}>
-            Analyze Trades
+            Import Trades
           </button>
         </div>
       </div>
@@ -305,7 +305,7 @@ export function ComparePage({
           )}
           <div className="mt-6 flex flex-wrap gap-3">
             <button className="EdgeTrace-primary-button" onClick={onAnalyze}>
-              {reports.length === 1 ? "Create Another Report" : "Analyze Trades"}
+              {reports.length === 1 ? "Create Another Report" : "Import Trades"}
             </button>
             {onReports && (
               <button className="EdgeTrace-secondary-button" onClick={onReports}>

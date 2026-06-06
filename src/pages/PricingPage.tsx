@@ -377,7 +377,7 @@ function PricingNav({ isAuthenticated, onStart }: { isAuthenticated: boolean; on
       <div className="EdgeTrace-pricing-nav-actions">
         {!isAuthenticated && <button onClick={() => navigateTo("/login")}>Log in</button>}
         <button className="EdgeTrace-pricing-primary" onClick={onStart}>
-          {isAuthenticated ? "Analyze Trades" : "Start Free"}
+          {isAuthenticated ? "Import Trades" : "Start Free"}
         </button>
       </div>
     </header>
@@ -557,7 +557,7 @@ function FinalCta({
               : "Create Account for Pro"}
         </button>
         <button className="EdgeTrace-pricing-secondary" onClick={onStart}>
-          {profile ? "Analyze Trades" : "Start Free"}
+          {profile ? "Import Trades" : "Start Free"}
         </button>
       </div>
     </section>

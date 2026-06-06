@@ -21,13 +21,11 @@ import {
   ChevronDown,
   ChevronLeft,
   FileText,
-  FolderOpen,
   HelpCircle,
   Home,
   Info,
   Layers3,
   LineChart as LineChartIcon,
-  Plus,
   Scale,
   TrendingDown,
   TrendingUp,
@@ -443,7 +441,7 @@ export function DashboardPage({
           <div className="EdgeTrace-dashboard-actions">
             <button className="EdgeTrace-dashboard-primary" onClick={inspectPrimarySegment} disabled={!primaryInspection}>
               <LineChartIcon size={17} aria-hidden="true" />
-              Analyze Trades
+              Inspect Trades
             </button>
             <button className="EdgeTrace-dashboard-secondary" onClick={openWalkthrough}>
               <BookOpen size={17} aria-hidden="true" />
@@ -883,7 +881,7 @@ function DashboardSidebar({
 }) {
   const navItems = [
     { label: "Dashboard", icon: Home, action: onDashboard, active: true },
-    { label: "Analyze Trades", icon: TrendingUp, action: onAnalyze },
+    { label: "Import Trades", icon: TrendingUp, action: onAnalyze },
     { label: "Reports", icon: FileText, action: onReports },
     { label: "Strategy Sets", icon: Layers3, action: onCollections },
     { label: "Compare", icon: Scale, action: onCompare },
@@ -905,18 +903,6 @@ function DashboardSidebar({
           </button>
         ))}
       </nav>
-
-      <div className="EdgeTrace-sidebar-quick">
-        <p>Quick Actions</p>
-        <button onClick={onAnalyze}>
-          <Plus size={17} aria-hidden="true" />
-          New Report
-        </button>
-        <button className="EdgeTrace-sidebar-open-reports" onClick={onReports}>
-          <FolderOpen size={17} aria-hidden="true" />
-          Open Reports
-        </button>
-      </div>
 
       <button className="EdgeTrace-sidebar-user" onClick={onAccount}>
         <span className="EdgeTrace-sidebar-avatar">
@@ -1486,7 +1472,7 @@ function buildGuidedReportSteps({
       details: compactDetails([
         largestLeak ? `Largest leak in the visible breakdown: ${largestLeak.group} at ${currency.format(largestLeak.netPnl)} net PnL.` : undefined,
         strongestSegment ? `Strongest segment: ${strongestSegment.group} at ${currency.format(strongestSegment.netPnl)} net PnL.` : undefined,
-        "Use the Breakdown tab or Analyze Trades when you want the exact rows behind this signal."
+        "Use the Breakdown tab or Inspect Trades when you want the exact rows behind this signal."
       ])
     },
     {

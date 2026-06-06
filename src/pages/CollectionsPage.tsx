@@ -105,7 +105,7 @@ export function CollectionsPage({
             </button>
             {onAnalyze && (
               <button className="EdgeTrace-secondary-button" onClick={onAnalyze}>
-                Analyze Trades
+                Import Trades
               </button>
             )}
             <button className="EdgeTrace-secondary-button" onClick={openFeatureGuide}>

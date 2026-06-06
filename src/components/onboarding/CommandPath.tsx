@@ -32,7 +32,7 @@ const commandSteps: Array<{
     number: "01",
     title: "Create Report",
     description: "Upload completed trades and generate your first diagnostic report.",
-    cta: "Analyze Trades"
+    cta: "Import Trades"
   },
   {
     id: "review_diagnosis",

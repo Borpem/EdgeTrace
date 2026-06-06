@@ -251,7 +251,7 @@ export function ReportsPage({
             <p className="mt-2 text-xs text-warning">Additional reports open as previews on this plan.</p>
           )}
           <button className="EdgeTrace-primary-button mt-5 w-full" onClick={onAnalyze}>
-            Analyze Trades
+            Import Trades
           </button>
         </div>
       </div>
@@ -324,7 +324,7 @@ export function ReportsPage({
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <button className="EdgeTrace-primary-button" onClick={onAnalyze}>
-              Analyze Trades
+              Import Trades
             </button>
             {onExploreDemo && (
               <button className="EdgeTrace-secondary-button" onClick={onExploreDemo}>

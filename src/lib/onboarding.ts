@@ -34,14 +34,14 @@ export const onboardingSteps: OnboardingStep[] = [
     id: "create_report",
     title: "Welcome to EdgeTrace",
     message: "EdgeTrace analyzes completed trade history to identify what changed, what leaked, and where to inspect next.",
-    ctaLabel: "Analyze Trades",
+    ctaLabel: "Import Trades",
     targetPage: "upload"
   },
   {
     id: "upload_trade_history",
     title: "Upload trade history",
     message: "Start with a broker export or generic CSV. EdgeTrace detects the source and reviews field mappings before analysis.",
-    ctaLabel: "Open Analyze Trades",
+    ctaLabel: "Open Import Trades",
     targetPage: "upload"
   },
   {
