@@ -447,7 +447,7 @@ export function DashboardPage({
             </button>
             <button className="EdgeTrace-dashboard-secondary" onClick={openWalkthrough}>
               <BookOpen size={17} aria-hidden="true" />
-              Walkthrough
+              Guide Me
             </button>
             <button
               className="EdgeTrace-dashboard-secondary"
@@ -462,49 +462,54 @@ export function DashboardPage({
           </div>
         </header>
 
-        {(reportJustCreated || firstReportReady || !costsIncluded || !rValuesAvailable || reconstructionUsed) && (
-          <section className="EdgeTrace-dashboard-alerts" aria-label="Report notices">
-            {reportJustCreated && (
-              <Notice
-                tone="blue"
-                title="Report created"
-                message="Start with the primary diagnosis, then inspect the recommended segment."
-                action={onDismissCreatedBanner}
-                actionLabel="Dismiss"
-              />
-            )}
-            {firstReportReady && (
-              <Notice
-                tone="blue"
-                title="First report ready"
-                message="Review the diagnosis, inspect the weakest segment, then compare the next iteration."
-              />
-            )}
-            {!costsIncluded && (
-              <Notice
-                tone="yellow"
-                title="Cost data missing"
-                message="Net performance may be overstated because cost data was not detected."
-              />
-            )}
-            {!rValuesAvailable && (
-              <Notice
-                tone="yellow"
-                title="R-multiple limited"
-                message="R analysis is limited because stop or risk data was not available."
-              />
-            )}
-            {reconstructionUsed && (
-              <Notice
-                tone="gray"
-                title="Reconstructed trades"
-                message="This report uses reconstructed execution records. Audit lineage if results look unexpected."
-                action={hasReconstructionAudit ? handleAudit : undefined}
-                actionLabel="Audit"
-              />
-            )}
-          </section>
-        )}
+        <section className="EdgeTrace-dashboard-alerts" aria-label="Report notices">
+          <Notice
+            tone="blue"
+            title="Guided walkthrough"
+            message="Start here if you want EdgeTrace to explain this report one step at a time."
+            action={openWalkthrough}
+            actionLabel="Start"
+          />
+          {reportJustCreated && (
+            <Notice
+              tone="blue"
+              title="Report created"
+              message="Start with the primary diagnosis, then inspect the recommended segment."
+              action={onDismissCreatedBanner}
+              actionLabel="Dismiss"
+            />
+          )}
+          {firstReportReady && (
+            <Notice
+              tone="blue"
+              title="First report ready"
+              message="Review the diagnosis, inspect the weakest segment, then compare the next iteration."
+            />
+          )}
+          {!costsIncluded && (
+            <Notice
+              tone="yellow"
+              title="Cost data missing"
+              message="Net performance may be overstated because cost data was not detected."
+            />
+          )}
+          {!rValuesAvailable && (
+            <Notice
+              tone="yellow"
+              title="R-multiple limited"
+              message="R analysis is limited because stop or risk data was not available."
+            />
+          )}
+          {reconstructionUsed && (
+            <Notice
+              tone="gray"
+              title="Reconstructed trades"
+              message="This report uses reconstructed execution records. Audit lineage if results look unexpected."
+              action={hasReconstructionAudit ? handleAudit : undefined}
+              actionLabel="Audit"
+            />
+          )}
+        </section>
 
         <section className="EdgeTrace-kpi-grid" aria-label="Dashboard overview metrics">
           <DashboardMetricCard
