@@ -892,9 +892,9 @@
 
   .EdgeTrace-dashboard-header {
     display: grid;
-    grid-template-columns: minmax(13rem, 1fr) minmax(16rem, 26rem) auto;
+    grid-template-columns: minmax(13rem, 1fr) minmax(22rem, auto) minmax(13rem, 1fr);
     gap: 1.2rem;
-    align-items: start;
+    align-items: center;
     padding-bottom: 1.25rem;
     border-bottom: 1px solid rgba(130, 161, 190, 0.14);
   }
@@ -915,8 +915,12 @@
 
   .EdgeTrace-dashboard-report-meta {
     display: grid;
+    grid-column: 3;
+    grid-row: 1;
     gap: 0.45rem;
-    justify-content: start;
+    justify-content: end;
+    justify-self: end;
+    text-align: right;
   }
 
   .EdgeTrace-report-selector {
@@ -945,8 +949,11 @@
 
   .EdgeTrace-dashboard-actions {
     display: flex;
+    grid-column: 2;
+    grid-row: 1;
     flex-wrap: wrap;
-    justify-content: flex-end;
+    justify-content: center;
+    justify-self: center;
     gap: 0.75rem;
   }
 
@@ -2155,9 +2162,22 @@
       grid-template-columns: 1fr;
     }
 
+    .EdgeTrace-dashboard-header > :first-child,
     .EdgeTrace-dashboard-report-meta,
     .EdgeTrace-dashboard-actions {
+      grid-column: 1;
+      grid-row: auto;
+    }
+
+    .EdgeTrace-dashboard-report-meta {
       justify-content: start;
+      justify-self: start;
+      text-align: left;
+    }
+
+    .EdgeTrace-dashboard-actions {
+      justify-content: center;
+      justify-self: stretch;
     }
 
     .EdgeTrace-auth-framed > main,
