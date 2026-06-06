@@ -990,6 +990,256 @@
     background: rgba(255, 255, 255, 0.05);
   }
 
+  .EdgeTrace-report-dashboard.has-walkthrough-open > .EdgeTrace-dashboard-sidebar,
+  .EdgeTrace-report-dashboard.has-walkthrough-open > .EdgeTrace-dashboard-main {
+    pointer-events: none;
+    user-select: none;
+    filter: blur(4px);
+    transform: scale(0.997);
+    transition:
+      filter 160ms ease,
+      transform 160ms ease;
+  }
+
+  .EdgeTrace-walkthrough-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+    background: rgba(2, 7, 13, 0.54);
+  }
+
+  .EdgeTrace-walkthrough-dialog {
+    position: relative;
+    width: min(100%, 44rem);
+    max-height: min(90vh, 46rem);
+    overflow-y: auto;
+    border: 1px solid rgba(130, 161, 190, 0.2);
+    border-radius: 8px;
+    background:
+      linear-gradient(180deg, rgba(11, 27, 43, 0.98), rgba(6, 16, 27, 0.98)),
+      #07111d;
+    padding: 1.35rem;
+    color: #f6f8fb;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.05),
+      0 28px 80px -36px rgba(0, 0, 0, 0.82),
+      0 20px 70px -54px rgba(69, 183, 244, 0.62);
+  }
+
+  .EdgeTrace-walkthrough-close {
+    position: absolute;
+    top: 0.85rem;
+    right: 0.85rem;
+    display: grid;
+    width: 2.2rem;
+    height: 2.2rem;
+    place-items: center;
+    border: 1px solid rgba(130, 161, 190, 0.2);
+    border-radius: 6px;
+    color: rgba(246, 248, 251, 0.78);
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .EdgeTrace-walkthrough-close:hover {
+    border-color: rgba(130, 161, 190, 0.44);
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .EdgeTrace-walkthrough-top {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.85rem;
+    align-items: start;
+    padding-right: 2.8rem;
+  }
+
+  .EdgeTrace-walkthrough-icon {
+    display: grid;
+    width: 2.65rem;
+    height: 2.65rem;
+    place-items: center;
+    border: 1px solid rgba(69, 183, 244, 0.4);
+    border-radius: 8px;
+    background: rgba(69, 183, 244, 0.1);
+    color: #62c8ff;
+  }
+
+  .EdgeTrace-walkthrough-top p {
+    margin: 0;
+    color: rgba(98, 200, 255, 0.92);
+    font-size: 0.72rem;
+    font-weight: 760;
+    letter-spacing: 0.14em;
+    line-height: 1.35;
+    text-transform: uppercase;
+  }
+
+  .EdgeTrace-walkthrough-top h2 {
+    margin: 0.4rem 0 0;
+    color: #ffffff;
+    font-size: 1.42rem;
+    font-weight: 680;
+    letter-spacing: 0;
+    line-height: 1.18;
+  }
+
+  .EdgeTrace-walkthrough-body {
+    margin: 1.2rem 0 0;
+    color: rgba(214, 224, 235, 0.78);
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  .EdgeTrace-walkthrough-metrics {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.65rem;
+    margin-top: 1.1rem;
+  }
+
+  .EdgeTrace-walkthrough-metrics div {
+    min-height: 5.25rem;
+    border: 1px solid rgba(130, 161, 190, 0.16);
+    border-radius: 6px;
+    background: rgba(3, 9, 17, 0.42);
+    padding: 0.75rem;
+    overflow-wrap: anywhere;
+  }
+
+  .EdgeTrace-walkthrough-metrics span {
+    display: block;
+    color: rgba(214, 224, 235, 0.62);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1.25;
+    text-transform: uppercase;
+  }
+
+  .EdgeTrace-walkthrough-metrics strong {
+    display: block;
+    margin-top: 0.55rem;
+    color: #ffffff;
+    font-size: 1.05rem;
+    font-weight: 650;
+    letter-spacing: 0;
+    line-height: 1.22;
+  }
+
+  .EdgeTrace-walkthrough-metrics .tone-red strong {
+    color: #ff6878;
+  }
+
+  .EdgeTrace-walkthrough-metrics .tone-yellow strong {
+    color: #ffcf72;
+  }
+
+  .EdgeTrace-walkthrough-metrics .tone-green strong {
+    color: #84d990;
+  }
+
+  .EdgeTrace-walkthrough-metrics .tone-blue strong {
+    color: #62c8ff;
+  }
+
+  .EdgeTrace-walkthrough-metrics .tone-gray strong {
+    color: rgba(214, 224, 235, 0.82);
+  }
+
+  .EdgeTrace-walkthrough-details {
+    display: grid;
+    gap: 0.62rem;
+    margin: 1.1rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .EdgeTrace-walkthrough-details li {
+    display: grid;
+    grid-template-columns: 1rem minmax(0, 1fr);
+    gap: 0.58rem;
+    align-items: start;
+    color: rgba(214, 224, 235, 0.76);
+    font-size: 0.86rem;
+    line-height: 1.5;
+  }
+
+  .EdgeTrace-walkthrough-details svg {
+    margin-top: 0.13rem;
+    color: #62c8ff;
+  }
+
+  .EdgeTrace-walkthrough-footer {
+    display: grid;
+    gap: 0.95rem;
+    margin-top: 1.25rem;
+  }
+
+  .EdgeTrace-walkthrough-progress {
+    height: 0.42rem;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(130, 161, 190, 0.14);
+  }
+
+  .EdgeTrace-walkthrough-progress span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: #62c8ff;
+    transition: width 160ms ease;
+  }
+
+  .EdgeTrace-walkthrough-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .EdgeTrace-walkthrough-back,
+  .EdgeTrace-walkthrough-next {
+    display: inline-flex;
+    min-height: 2.55rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.48rem;
+    border-radius: 6px;
+    padding: 0.68rem 1rem;
+    font-size: 0.84rem;
+    font-weight: 680;
+  }
+
+  .EdgeTrace-walkthrough-back {
+    border: 1px solid rgba(130, 161, 190, 0.22);
+    color: rgba(246, 248, 251, 0.82);
+    background: rgba(255, 255, 255, 0.025);
+  }
+
+  .EdgeTrace-walkthrough-back:hover:not(:disabled) {
+    border-color: rgba(130, 161, 190, 0.44);
+    background: rgba(255, 255, 255, 0.055);
+  }
+
+  .EdgeTrace-walkthrough-back:disabled {
+    cursor: not-allowed;
+    opacity: 0.42;
+  }
+
+  .EdgeTrace-walkthrough-next {
+    border: 1px solid rgba(69, 183, 244, 0.82);
+    color: #dff6ff;
+    background: rgba(69, 183, 244, 0.15);
+  }
+
+  .EdgeTrace-walkthrough-next:hover {
+    border-color: #62c8ff;
+    background: rgba(69, 183, 244, 0.22);
+  }
+
   .EdgeTrace-dashboard-alerts {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
@@ -1853,6 +2103,15 @@
     .EdgeTrace-overview-tags {
       justify-content: flex-start;
     }
+
+    .EdgeTrace-walkthrough-dialog {
+      max-height: 92vh;
+      padding: 1.15rem;
+    }
+
+    .EdgeTrace-walkthrough-metrics {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
 
   @media (max-width: 560px) {
@@ -1869,6 +2128,44 @@
 
     .EdgeTrace-dashboard-primary,
     .EdgeTrace-dashboard-secondary {
+      width: 100%;
+    }
+
+    .EdgeTrace-walkthrough-overlay {
+      align-items: stretch;
+      padding: 0.75rem;
+    }
+
+    .EdgeTrace-walkthrough-dialog {
+      width: 100%;
+      max-height: calc(100vh - 1.5rem);
+    }
+
+    .EdgeTrace-walkthrough-top {
+      grid-template-columns: 1fr;
+      padding-right: 2.6rem;
+    }
+
+    .EdgeTrace-walkthrough-icon {
+      width: 2.35rem;
+      height: 2.35rem;
+    }
+
+    .EdgeTrace-walkthrough-top h2 {
+      font-size: 1.2rem;
+    }
+
+    .EdgeTrace-walkthrough-metrics,
+    .EdgeTrace-walkthrough-actions {
+      grid-template-columns: 1fr;
+    }
+
+    .EdgeTrace-walkthrough-actions {
+      display: grid;
+    }
+
+    .EdgeTrace-walkthrough-back,
+    .EdgeTrace-walkthrough-next {
       width: 100%;
     }
   }

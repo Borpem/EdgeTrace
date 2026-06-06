@@ -15,8 +15,11 @@ import {
   AlertCircle,
   ArrowRight,
   BarChart3,
+  BookOpen,
   CalendarDays,
+  CheckCircle2,
   ChevronDown,
+  ChevronLeft,
   FileText,
   FolderOpen,
   HelpCircle,
@@ -28,7 +31,8 @@ import {
   Scale,
   TrendingDown,
   TrendingUp,
-  UserCircle
+  UserCircle,
+  X
 } from "lucide-react";
 import { AddToStrategySetDialog } from "../components/AddToStrategySetDialog";
 import { PaywallGate } from "../components/PaywallGate";
@@ -62,6 +66,20 @@ type BreakdownSortKey =
   | "averageRealizedR"
   | "costDragPct";
 type DashboardTab = "overview" | "breakdown" | "trades";
+type GuideMetricTone = "red" | "yellow" | "green" | "blue" | "gray" | "white";
+type GuideMetric = {
+  label: string;
+  value: string;
+  tone?: GuideMetricTone;
+};
+type GuidedReportStep = {
+  id: string;
+  eyebrow: string;
+  title: string;
+  body: string;
+  metrics?: GuideMetric[];
+  details?: string[];
+};
 
 type DashboardPageProps = {
   result: DiagnosticsResult;
@@ -112,7 +130,8 @@ export function DashboardPage({
   const [activeTab, setActiveTab] = useState<DashboardTab>("overview");
   const [isEditingDetails, setIsEditingDetails] = useState(false);
   const [isAddingToStrategySet, setIsAddingToStrategySet] = useState(false);
-  const [demoStep, setDemoStep] = useState(0);
+  const [isGuideOpen, setIsGuideOpen] = useState(false);
+  const [guideStep, setGuideStep] = useState(0);
   const [activation, setActivation] = useState<ActivationSummary | null>(null);
 
   const trades = Array.isArray(result.trades) ? result.trades : [];
@@ -192,6 +211,37 @@ export function DashboardPage({
   const priorityInsights = buildPriorityInsights(result, intelligence, largestLeak, primaryInspection);
   const actionItems = buildActionItems(intelligence, primaryInspection, largestLeak, metrics);
   const reportDate = result.createdAt ? new Date(result.createdAt) : undefined;
+  const guideSteps = useMemo(
+    () =>
+      buildGuidedReportSteps({
+        result: safeResult,
+        intelligence,
+        normalizedTradeCount,
+        costsIncluded,
+        rValuesAvailable,
+        reconstructionUsed,
+        largestLeak,
+        strongestSegment,
+        primaryInspection,
+        priorityInsights,
+        actionItems
+      }),
+    [
+      actionItems,
+      costsIncluded,
+      intelligence,
+      largestLeak,
+      normalizedTradeCount,
+      primaryInspection,
+      priorityInsights,
+      rValuesAvailable,
+      reconstructionUsed,
+      safeResult,
+      strongestSegment
+    ]
+  );
+  const walkthroughOpen = isGuideOpen || Boolean(demoMode);
+  const activeGuideStep = Math.min(guideStep, Math.max(guideSteps.length - 1, 0));
 
   useEffect(() => {
     let active = true;
@@ -206,6 +256,71 @@ export function DashboardPage({
       active = false;
     };
   }, [result.id]);
+
+  useEffect(() => {
+    setGuideStep(0);
+    setIsGuideOpen(false);
+  }, [result.id]);
+
+  useEffect(() => {
+    setGuideStep((current) => Math.min(current, Math.max(guideSteps.length - 1, 0)));
+  }, [guideSteps.length]);
+
+  useEffect(() => {
+    if (!walkthroughOpen) return undefined;
+    const previousOverflow = document.body.style.overflow;
+    const handleKeyDown = (event: globalThis.KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      if (demoMode && onExitDemo) {
+        onExitDemo();
+      } else {
+        setIsGuideOpen(false);
+      }
+    };
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [demoMode, onExitDemo, walkthroughOpen]);
+
+  const openWalkthrough = () => {
+    setGuideStep(0);
+    setIsGuideOpen(true);
+    trackEvent("dashboard_walkthrough_opened", { reportId: result.id, stepCount: guideSteps.length });
+  };
+
+  const closeWalkthrough = () => {
+    if (demoMode && onExitDemo) {
+      onExitDemo();
+    } else {
+      setIsGuideOpen(false);
+    }
+  };
+
+  const finishWalkthrough = () => {
+    if (demoMode && onExitDemo) {
+      onExitDemo();
+    } else {
+      setIsGuideOpen(false);
+    }
+    trackEvent("dashboard_walkthrough_completed", { reportId: result.id });
+  };
+
+  const goToNextWalkthroughStep = () => {
+    if (activeGuideStep >= guideSteps.length - 1) {
+      finishWalkthrough();
+      return;
+    }
+    const nextStep = activeGuideStep + 1;
+    setGuideStep(nextStep);
+    trackEvent("dashboard_walkthrough_step_opened", { reportId: result.id, step: guideSteps[nextStep]?.id ?? "" });
+  };
+
+  const goToPreviousWalkthroughStep = () => {
+    setGuideStep((current) => Math.max(current - 1, 0));
+  };
 
   const inspectPrimarySegment = () => {
     if (!primaryInspection) return;
@@ -283,7 +398,7 @@ export function DashboardPage({
   };
 
   return (
-    <main className="EdgeTrace-report-dashboard">
+    <main className={`EdgeTrace-report-dashboard ${walkthroughOpen ? "has-walkthrough-open" : ""}`}>
       <DashboardSidebar
         userName={userName}
         userEmail={userEmail}
@@ -295,9 +410,10 @@ export function DashboardPage({
         onCompare={handleSidebarCompare}
         onFeatures={onOpenFeatures}
         onAccount={onOpenAccount}
+        ariaHidden={walkthroughOpen}
       />
 
-      <section className="EdgeTrace-dashboard-main">
+      <section className="EdgeTrace-dashboard-main" aria-hidden={walkthroughOpen}>
         <header className="EdgeTrace-dashboard-header">
           <div>
             <h1>Dashboard</h1>
@@ -328,6 +444,10 @@ export function DashboardPage({
             <button className="EdgeTrace-dashboard-primary" onClick={inspectPrimarySegment} disabled={!primaryInspection}>
               <LineChartIcon size={17} aria-hidden="true" />
               Analyze Trades
+            </button>
+            <button className="EdgeTrace-dashboard-secondary" onClick={openWalkthrough}>
+              <BookOpen size={17} aria-hidden="true" />
+              Walkthrough
             </button>
             <button
               className="EdgeTrace-dashboard-secondary"
@@ -717,12 +837,14 @@ export function DashboardPage({
           onSaved={() => setIsAddingToStrategySet(false)}
         />
       )}
-      {demoMode && (
-        <DemoTour
-          step={demoStep}
-          onNext={() => setDemoStep((current) => Math.min(current + 1, demoSteps.length - 1))}
-          onBack={() => setDemoStep((current) => Math.max(current - 1, 0))}
-          onExit={onExitDemo}
+      {walkthroughOpen && guideSteps.length > 0 && (
+        <GuidedReportWalkthrough
+          step={guideSteps[activeGuideStep]}
+          stepIndex={activeGuideStep}
+          stepCount={guideSteps.length}
+          onBack={goToPreviousWalkthroughStep}
+          onClose={closeWalkthrough}
+          onNext={goToNextWalkthroughStep}
         />
       )}
     </main>
@@ -739,7 +861,8 @@ function DashboardSidebar({
   onCollections,
   onCompare,
   onFeatures,
-  onAccount
+  onAccount,
+  ariaHidden
 }: {
   userName?: string;
   userEmail?: string;
@@ -751,6 +874,7 @@ function DashboardSidebar({
   onCompare?: () => void;
   onFeatures?: () => void;
   onAccount?: () => void;
+  ariaHidden?: boolean;
 }) {
   const navItems = [
     { label: "Dashboard", icon: Home, action: onDashboard, active: true },
@@ -762,7 +886,7 @@ function DashboardSidebar({
   ];
 
   return (
-    <aside className="EdgeTrace-dashboard-sidebar">
+    <aside className="EdgeTrace-dashboard-sidebar" aria-hidden={ariaHidden}>
       <button className="EdgeTrace-sidebar-brand" onClick={onDashboard} aria-label="EdgeTrace dashboard">
         <img src="/brand/edgetrace_icon_monochrome_white_transparent.png" alt="" aria-hidden="true" />
         <span>EDGETRACE</span>
@@ -1139,71 +1263,260 @@ function getTradeCosts(trade: NormalizedTrade) {
   return Math.abs((trade.commission ?? 0) + (trade.fees ?? 0) + (trade.estimatedCosts ?? 0) + (trade.totalAllocatedCosts ?? 0));
 }
 
-const demoSteps = [
-  {
-    title: "This is the strategy health score.",
-    text: "It compresses net PnL, expectancy, cost drag, R capture, profit factor, win rate, and loss concentration into one diagnostic readout."
-  },
-  {
-    title: "This is the primary issue EdgeTrace detected.",
-    text: "The diagnosis tells you whether the main problem is costs, expectancy, R capture, large losses, or segment concentration."
-  },
-  {
-    title: "These are the most important metrics.",
-    text: "The strip keeps attention on net PnL, expectancy, average R, cost drag, profit factor, and win rate."
-  },
-  {
-    title: "These recommended paths tell you where to inspect next.",
-    text: "Click a recommended segment to drill into the exact trades and patterns driving the issue."
-  },
-  {
-    title: "Drilldowns show the exact trades causing the issue.",
-    text: "A drilldown explains segment metrics, leak rules, patterns, and the underlying trades."
-  },
-  {
-    title: "Compare reports to see whether a strategy improved or degraded.",
-    text: "Use Compare and Strategy Sets after you have multiple reports from strategy iterations."
-  }
-];
-
-function DemoTour({
+function GuidedReportWalkthrough({
   step,
-  onNext,
+  stepIndex,
+  stepCount,
   onBack,
-  onExit
+  onClose,
+  onNext
 }: {
-  step: number;
-  onNext: () => void;
+  step: GuidedReportStep;
+  stepIndex: number;
+  stepCount: number;
   onBack: () => void;
-  onExit?: () => void;
+  onClose: () => void;
+  onNext: () => void;
 }) {
-  const current = demoSteps[step];
+  const isFinalStep = stepIndex === stepCount - 1;
+  const progress = `${((stepIndex + 1) / stepCount) * 100}%`;
+
   return (
-    <div className="fixed bottom-6 right-6 z-50 max-w-sm rounded-lg border border-violet/60 bg-panel p-5 shadow-2xl">
-      <p className="text-xs uppercase tracking-[0.18em] text-violet">Demo Guide {step + 1} / {demoSteps.length}</p>
-      <h2 className="mt-2 text-lg font-semibold">{current.title}</h2>
-      <p className="mt-3 text-sm leading-6 text-muted">{current.text}</p>
-      <div className="mt-5 flex flex-wrap justify-between gap-2">
-        <button className="rounded-md border border-line px-3 py-1.5 text-xs text-muted hover:border-cyan" onClick={onExit}>
-          Exit Demo
+    <div className="EdgeTrace-walkthrough-overlay" role="presentation">
+      <section
+        className="EdgeTrace-walkthrough-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="dashboard-walkthrough-title"
+      >
+        <button className="EdgeTrace-walkthrough-close" onClick={onClose} aria-label="Close walkthrough">
+          <X size={18} aria-hidden="true" />
         </button>
-        <div className="flex gap-2">
-          <button className="rounded-md border border-line px-3 py-1.5 text-xs hover:border-cyan disabled:opacity-40" disabled={step === 0} onClick={onBack}>
-            Back
-          </button>
-          {step === demoSteps.length - 1 ? (
-            <button className="EdgeTrace-compact-primary px-3 py-1.5 text-xs" onClick={onExit}>
-              Finish
-            </button>
-          ) : (
-            <button className="EdgeTrace-compact-primary px-3 py-1.5 text-xs" onClick={onNext}>
-              Next
-            </button>
-          )}
+
+        <div className="EdgeTrace-walkthrough-top">
+          <div className="EdgeTrace-walkthrough-icon" aria-hidden="true">
+            <BookOpen size={22} />
+          </div>
+          <div>
+            <p>{step.eyebrow} {stepIndex + 1} / {stepCount}</p>
+            <h2 id="dashboard-walkthrough-title">{step.title}</h2>
+          </div>
         </div>
-      </div>
+
+        <p className="EdgeTrace-walkthrough-body">{step.body}</p>
+
+        {step.metrics?.length ? (
+          <div className="EdgeTrace-walkthrough-metrics">
+            {step.metrics.map((metric) => (
+              <div key={`${step.id}-${metric.label}`} className={`tone-${metric.tone ?? "white"}`}>
+                <span>{metric.label}</span>
+                <strong>{metric.value}</strong>
+              </div>
+            ))}
+          </div>
+        ) : null}
+
+        {step.details?.length ? (
+          <ul className="EdgeTrace-walkthrough-details">
+            {step.details.map((detail) => (
+              <li key={`${step.id}-${detail}`}>
+                <CheckCircle2 size={15} aria-hidden="true" />
+                <span>{detail}</span>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+
+        <div className="EdgeTrace-walkthrough-footer">
+          <div className="EdgeTrace-walkthrough-progress" aria-hidden="true">
+            <span style={{ width: progress }} />
+          </div>
+          <div className="EdgeTrace-walkthrough-actions">
+            <button className="EdgeTrace-walkthrough-back" onClick={onBack} disabled={stepIndex === 0}>
+              <ChevronLeft size={16} aria-hidden="true" />
+              Back
+            </button>
+            <button className="EdgeTrace-walkthrough-next" onClick={onNext}>
+              {isFinalStep ? <CheckCircle2 size={16} aria-hidden="true" /> : <ArrowRight size={16} aria-hidden="true" />}
+              {isFinalStep ? "Finish" : "Next"}
+            </button>
+          </div>
+        </div>
+      </section>
     </div>
   );
+}
+
+function buildGuidedReportSteps({
+  result,
+  intelligence,
+  normalizedTradeCount,
+  costsIncluded,
+  rValuesAvailable,
+  reconstructionUsed,
+  largestLeak,
+  strongestSegment,
+  primaryInspection,
+  priorityInsights,
+  actionItems
+}: {
+  result: DiagnosticsResult;
+  intelligence: ReturnType<typeof buildReportIntelligence>;
+  normalizedTradeCount: number;
+  costsIncluded: boolean;
+  rValuesAvailable: boolean;
+  reconstructionUsed: boolean;
+  largestLeak: BreakdownRow | undefined;
+  strongestSegment: BreakdownRow | undefined;
+  primaryInspection: ReturnType<typeof buildReportIntelligence>["nextBestInspections"][number] | undefined;
+  priorityInsights: Array<{ label: string; title: string; detail: string; tone: "red" | "yellow" | "gray" | "green" }>;
+  actionItems: Array<{ title: string; impact: string; tone: "red" | "yellow" | "green" | "gray" }>;
+}): GuidedReportStep[] {
+  const provenance = result.importProvenance;
+  const source = provenance?.brokerDisplayName ?? provenance?.selectedSource ?? provenance?.detectedSource ?? "Uploaded CSV";
+  const importedAt = formatGuideDate(provenance?.importedAt ?? result.createdAt);
+  const warningCount = provenance?.warningCount ?? provenance?.warnings?.length ?? 0;
+  const firstWarning = provenance?.warnings?.[0];
+  const topInsight = priorityInsights[0];
+  const firstAction = actionItems[0];
+
+  return [
+    {
+      id: "import",
+      eyebrow: "Imported data",
+      title: "First, confirm what EdgeTrace read.",
+      body: `This walkthrough starts from ${provenance?.originalFilename ?? "the imported file"} and explains the report in the same order a reviewer would read it.`,
+      metrics: [
+        { label: "Source", value: source, tone: "blue" },
+        { label: "Trades read", value: number.format(normalizedTradeCount), tone: normalizedTradeCount > 0 ? "green" : "yellow" },
+        { label: "Data quality", value: provenance?.confidenceLabel ?? (warningCount ? "Review" : "Ready"), tone: warningCount ? "yellow" : "green" },
+        { label: "Imported", value: importedAt ?? "Unknown", tone: "gray" }
+      ],
+      details: compactDetails([
+        provenance?.excludedRowCount ? `${number.format(provenance.excludedRowCount)} source rows were excluded before diagnostics.` : undefined,
+        warningCount ? `${number.format(warningCount)} import warning${warningCount === 1 ? "" : "s"} should be reviewed.` : "No import warnings are blocking this read.",
+        firstWarning ? `First warning: ${firstWarning}` : undefined
+      ])
+    },
+    {
+      id: "verdict",
+      eyebrow: "Main read",
+      title: `The headline is ${humanDiagnosis(intelligence.primaryDiagnosis)}.`,
+      body: intelligence.primaryExplanation,
+      metrics: [
+        { label: "Health score", value: `${intelligence.strategyHealthScore}/100`, tone: guideToneForScore(intelligence.strategyHealthScore) },
+        { label: "Band", value: intelligence.healthBand, tone: guideToneForScore(intelligence.strategyHealthScore) },
+        { label: "Primary leak", value: intelligence.primaryLeak.title.replace("Primary Leak: ", ""), tone: intelligence.primaryDiagnosis === "Healthy" ? "green" : "red" }
+      ],
+      details: compactDetails([
+        intelligence.primaryLeak.explanation,
+        `Inspection path: ${intelligence.primaryLeak.recommendedInspection}`
+      ])
+    },
+    {
+      id: "performance",
+      eyebrow: "Money",
+      title: "Now translate the report into dollars.",
+      body: `Net PnL is the number that matters after costs. Gross PnL tells you what the strategy produced before friction; the gap between the two is execution drag.`,
+      metrics: [
+        { label: "Gross PnL", value: currency.format(result.metrics.grossPnl), tone: result.metrics.grossPnl >= 0 ? "green" : "red" },
+        { label: "Net PnL", value: currency.format(result.metrics.netPnl), tone: result.metrics.netPnl >= 0 ? "green" : "red" },
+        { label: "Total costs", value: currency.format(result.metrics.totalCosts), tone: result.metrics.totalCosts > 0 ? "yellow" : "gray" },
+        { label: "Profit factor", value: formatNumber(result.metrics.profitFactor), tone: result.metrics.profitFactor >= 1 ? "green" : "red" }
+      ],
+      details: compactDetails([
+        `Expectancy is ${currency.format(result.metrics.expectancy)} per trade after costs.`,
+        `Gross expectancy is ${currency.format(result.metrics.grossExpectancy)}, before commission, fees, and estimated costs.`,
+        intelligence.costDragLabel ? `Cost drag is classified as ${intelligence.costDragLabel}.` : undefined
+      ])
+    },
+    {
+      id: "quality",
+      eyebrow: "Trade quality",
+      title: "Next, check whether the individual trades are healthy.",
+      body: "This step separates a strategy that wins enough often from one that wins enough size. Win rate, average win, average loss, and R-multiple need to make sense together.",
+      metrics: [
+        { label: "Win rate", value: percent.format(result.metrics.winRate), tone: statusTone(intelligence.keyMetricStatuses.winRate) },
+        { label: "Average win", value: currency.format(result.metrics.averageWin), tone: "green" },
+        { label: "Average loss", value: currency.format(result.metrics.averageLoss), tone: "red" },
+        {
+          label: "Average R",
+          value: result.metrics.averageRealizedR !== undefined ? `${number.format(result.metrics.averageRealizedR)}R` : "Unavailable",
+          tone: statusTone(intelligence.keyMetricStatuses.averageR)
+        }
+      ],
+      details: compactDetails([
+        winRateCopy(result.metrics.winRate),
+        profitFactorCopy(result.metrics.profitFactor) === "Weak" ? "Profit factor is below 1, so losses outweigh winners." : `Profit factor is ${profitFactorCopy(result.metrics.profitFactor).toLowerCase()}.`,
+        rMultipleCopy(result.metrics.averageRealizedR)
+      ])
+    },
+    {
+      id: "data-context",
+      eyebrow: "Data context",
+      title: "Then check what the data can and cannot prove.",
+      body: "Some conclusions are stronger when the import includes costs, R-multiple data, and clean trade reconstruction. Missing inputs do not break the dashboard, but they change how much confidence to put in the read.",
+      metrics: [
+        { label: "Costs", value: costsIncluded ? "Included" : "Missing", tone: costsIncluded ? "green" : "yellow" },
+        { label: "R data", value: rValuesAvailable ? "Available" : "Limited", tone: rValuesAvailable ? "green" : "yellow" },
+        { label: "Reconstruction", value: reconstructionUsed ? "Used" : "Not used", tone: reconstructionUsed ? "blue" : "gray" },
+        { label: "Warnings", value: number.format(warningCount), tone: warningCount ? "yellow" : "green" }
+      ],
+      details: compactDetails([
+        costsIncluded ? "Net performance includes detected costs." : "Net performance may be overstated because cost data was not detected.",
+        rValuesAvailable ? "R-based quality checks are available." : "R analysis is limited because stop or risk data was not available.",
+        reconstructionUsed ? "Some trades were reconstructed from execution records, so the audit view can explain lineage." : undefined
+      ])
+    },
+    {
+      id: "segments",
+      eyebrow: "Where to look",
+      title: primaryInspection ? `The first place to inspect is ${primaryInspection.group}.` : "Now look for the weakest segment.",
+      body: "The dashboard is not asking you to scan every table first. It points you to the segment most likely to explain the leak.",
+      metrics: [
+        { label: "Recommended", value: primaryInspection?.group ?? "Review breakdowns", tone: primaryInspection ? "blue" : "gray" },
+        { label: "Reason", value: primaryInspection?.reason ?? "No dominant segment", tone: "gray" },
+        { label: "Metric", value: primaryInspection?.metric ?? "N/A", tone: primaryInspection?.metric?.startsWith("-") ? "red" : "yellow" }
+      ],
+      details: compactDetails([
+        largestLeak ? `Largest leak in the visible breakdown: ${largestLeak.group} at ${currency.format(largestLeak.netPnl)} net PnL.` : undefined,
+        strongestSegment ? `Strongest segment: ${strongestSegment.group} at ${currency.format(strongestSegment.netPnl)} net PnL.` : undefined,
+        "Use the Breakdown tab or Analyze Trades when you want the exact rows behind this signal."
+      ])
+    },
+    {
+      id: "actions",
+      eyebrow: "Action list",
+      title: firstAction ? `Start with: ${firstAction.title}.` : "Turn the read into a next action.",
+      body: "After the report has been spoon-fed, the useful move is to act on the smallest set of issues that can change expectancy.",
+      metrics: [
+        { label: "Top priority", value: firstAction?.title ?? "Review report", tone: firstAction?.tone ?? "gray" },
+        { label: "Impact", value: firstAction?.impact ?? "Unknown", tone: firstAction?.tone ?? "gray" },
+        { label: "Top insight", value: topInsight?.title ?? "No extra insight", tone: topInsight?.tone ?? "gray" }
+      ],
+      details: compactDetails([
+        topInsight ? topInsight.detail : undefined,
+        actionItems[1] ? `Second action: ${actionItems[1].title}.` : undefined,
+        actionItems[2] ? `Third action: ${actionItems[2].title}.` : undefined
+      ])
+    },
+    {
+      id: "handoff",
+      eyebrow: "Full dashboard",
+      title: "That is the guided read. The dashboard is still here for the full picture.",
+      body: "Use the dashboard after this point to explore freely: Overview for the summary, Breakdown for attribution, and Trades for row-level evidence.",
+      metrics: [
+        { label: "Overview", value: "Narrative", tone: "blue" },
+        { label: "Breakdown", value: "Attribution", tone: "yellow" },
+        { label: "Trades", value: "Evidence", tone: "green" }
+      ],
+      details: compactDetails([
+        "The walkthrough gives the initial interpretation.",
+        "The dashboard keeps every metric and table available once you want to inspect the source data yourself.",
+        "Open Compare or Strategy Sets after you have multiple reports for the same strategy."
+      ])
+    }
+  ];
 }
 
 function SegmentCard({
@@ -1352,6 +1665,10 @@ function buildActionItems(
   ] satisfies Array<{ title: string; impact: string; tone: "red" | "yellow" | "green" | "gray" }>;
 }
 
+function compactDetails(values: Array<string | undefined | false>) {
+  return values.filter((value): value is string => Boolean(value));
+}
+
 function overviewStatus(score: number, diagnosis: ReturnType<typeof buildReportIntelligence>["primaryDiagnosis"]) {
   if (diagnosis === "Healthy" && score >= 80) return "On Track";
   if (diagnosis === "Insufficient Data") return "Needs Data";
@@ -1390,6 +1707,13 @@ function statusTone(status: MetricStatus): "red" | "yellow" | "green" | "blue" |
   if (status === "warning") return "yellow";
   if (status === "weak") return "red";
   return "gray";
+}
+
+function guideToneForScore(score: number): GuideMetricTone {
+  if (score >= 80) return "green";
+  if (score >= 60) return "yellow";
+  if (score >= 40) return "yellow";
+  return "red";
 }
 
 function humanDiagnosis(diagnosis: ReturnType<typeof buildReportIntelligence>["primaryDiagnosis"]) {
@@ -1473,6 +1797,13 @@ function costDragValueClass(value: number | undefined) {
 function formatNumber(value: number | undefined) {
   if (value === undefined || !Number.isFinite(value)) return "N/A";
   return number.format(value);
+}
+
+function formatGuideDate(value: string | undefined) {
+  if (!value) return undefined;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return undefined;
+  return date.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
 }
 
 function formatPercent(value: number | undefined) {
