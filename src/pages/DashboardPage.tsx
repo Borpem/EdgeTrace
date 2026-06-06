@@ -445,10 +445,11 @@ export function DashboardPage({
               <span className="EdgeTrace-results-walkthrough-icon" aria-hidden="true">
                 <BookOpen size={24} />
               </span>
-              <span>
+              <span className="EdgeTrace-results-walkthrough-copy">
                 <strong>Results Walkthrough</strong>
                 <small>Step-by-step report explanation</small>
               </span>
+              <ArrowRight className="EdgeTrace-results-walkthrough-arrow" size={19} aria-hidden="true" />
             </button>
           </div>
         </header>
