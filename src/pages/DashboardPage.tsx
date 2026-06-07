@@ -91,6 +91,7 @@ type EdgeScoreFactor = {
   label: string;
   value: number;
   detail: string;
+  nextStep: string;
   tone: "green" | "yellow" | "red" | "gray";
 };
 type EdgeScoreOutput = {
@@ -115,6 +116,7 @@ type DashboardReviewAgenda = {
   title: string;
   summary: string;
   items: string[];
+  checks: Array<{ label: string; current: string; target: string }>;
 };
 
 type DashboardPageProps = {
@@ -1392,11 +1394,31 @@ function ProIntelligenceWorkspace({
   reviewAgenda: DashboardReviewAgenda;
 }) {
   const [activeQuestion, setActiveQuestion] = useState<ProQuestionId>("fix-first");
+  const [customQuestion, setCustomQuestion] = useState("");
+  const [submittedQuestion, setSubmittedQuestion] = useState("");
   const [costReductionPct, setCostReductionPct] = useState(15);
-  const [winRateLiftPct, setWinRateLiftPct] = useState(3);
+  const [winRateTargetPct, setWinRateTargetPct] = useState(() => Math.round(clamp(metrics.winRate * 100 + 3, 0, 95) * 10) / 10);
   const [rCaptureLift, setRCaptureLift] = useState(0.15);
   const activeAnswer = answers[activeQuestion];
-  const projection = projectWhatIf(metrics, costReductionPct, winRateLiftPct, rCaptureLift);
+  const displayedAnswer = submittedQuestion
+    ? answerLocalCoachQuestion(submittedQuestion, { answers, metrics, edgeScore, regressionWatch, reviewAgenda })
+    : activeAnswer;
+  const projection = projectWhatIf(metrics, costReductionPct, winRateTargetPct, rCaptureLift);
+
+  const submitQuestion = () => {
+    const question = customQuestion.trim();
+    if (!question) return;
+    setSubmittedQuestion(question);
+    trackEvent("ask_edge_trace_custom_question_submitted", { questionLength: question.length });
+  };
+
+  useEffect(() => {
+    setWinRateTargetPct(Math.round(clamp(metrics.winRate * 100 + 3, 0, 95) * 10) / 10);
+    setCostReductionPct(15);
+    setRCaptureLift(0.15);
+    setSubmittedQuestion("");
+    setCustomQuestion("");
+  }, [metrics.totalTrades, metrics.winRate]);
 
   return (
     <section className="EdgeTrace-dashboard-panel EdgeTrace-pro-workspace">
@@ -1414,6 +1436,20 @@ function ProIntelligenceWorkspace({
             <HelpCircle size={17} aria-hidden="true" />
             <span>Ask EdgeTrace</span>
           </div>
+          <div className="EdgeTrace-pro-ask-box">
+            <input
+              type="text"
+              value={customQuestion}
+              placeholder="Ask about costs, win rate, R, risk, next action..."
+              onChange={(event) => setCustomQuestion(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") submitQuestion();
+              }}
+            />
+            <button type="button" onClick={submitQuestion}>
+              Ask
+            </button>
+          </div>
           <div className="EdgeTrace-pro-question-tabs" role="tablist" aria-label="Ask EdgeTrace local prompts">
             {(Object.entries(answers) as Array<[ProQuestionId, LocalCoachAnswer]>).map(([id, answer]) => (
               <button
@@ -1422,6 +1458,7 @@ function ProIntelligenceWorkspace({
                 className={activeQuestion === id ? "active" : ""}
                 onClick={() => {
                   setActiveQuestion(id);
+                  setSubmittedQuestion("");
                   trackEvent("ask_edge_trace_prompt_selected", { prompt: id });
                 }}
               >
@@ -1430,10 +1467,11 @@ function ProIntelligenceWorkspace({
             ))}
           </div>
           <div className="EdgeTrace-pro-answer">
-            <h3>{activeAnswer.title}</h3>
-            <p>{activeAnswer.body}</p>
+            {submittedQuestion && <span className="EdgeTrace-pro-answer-source">Local answer to: {submittedQuestion}</span>}
+            <h3>{displayedAnswer.title}</h3>
+            <p>{displayedAnswer.body}</p>
             <ul>
-              {activeAnswer.bullets.map((bullet) => (
+              {displayedAnswer.bullets.map((bullet) => (
                 <li key={bullet}>{bullet}</li>
               ))}
             </ul>
@@ -1463,8 +1501,19 @@ function ProIntelligenceWorkspace({
                 <i aria-hidden="true">
                   <b style={{ width: `${factor.value}%` }} />
                 </i>
+                <small>{factor.nextStep}</small>
               </div>
             ))}
+          </div>
+          <div className="EdgeTrace-edge-score-actions">
+            <span>Highest-value score moves</span>
+            {edgeScore.factors
+              .filter((factor) => factor.value < 70)
+              .slice(0, 2)
+              .map((factor) => (
+                <p key={`move-${factor.label}`}>{factor.nextStep}</p>
+              ))}
+            {edgeScore.factors.every((factor) => factor.value >= 70) && <p>Preserve the current process and use the next report to verify stability.</p>}
           </div>
         </div>
 
@@ -1479,26 +1528,29 @@ function ProIntelligenceWorkspace({
               value={`${costReductionPct}%`}
               min={0}
               max={60}
-              step={5}
+              step={0.1}
               numericValue={costReductionPct}
+              suffix="%"
               onChange={setCostReductionPct}
             />
             <SimulatorControl
-              label="Improve win rate"
-              value={`+${winRateLiftPct} pts`}
+              label="Target win rate"
+              value={`${number.format(winRateTargetPct)}%`}
               min={0}
-              max={15}
-              step={1}
-              numericValue={winRateLiftPct}
-              onChange={setWinRateLiftPct}
+              max={95}
+              step={0.1}
+              numericValue={winRateTargetPct}
+              suffix="%"
+              onChange={setWinRateTargetPct}
             />
             <SimulatorControl
               label="Increase R capture"
               value={`+${number.format(rCaptureLift)}R`}
               min={0}
               max={0.5}
-              step={0.05}
+              step={0.01}
               numericValue={rCaptureLift}
+              suffix="R"
               onChange={setRCaptureLift}
             />
           </div>
@@ -1510,6 +1562,12 @@ function ProIntelligenceWorkspace({
               </strong>
             </div>
             <div>
+              <span>Projected Expectancy</span>
+              <strong className={projection.projectedExpectancy >= 0 ? "text-profit" : "text-loss"}>
+                {currency.format(projection.projectedExpectancy)}
+              </strong>
+            </div>
+            <div>
               <span>Expected Change</span>
               <strong className={projection.delta >= 0 ? "text-profit" : "text-loss"}>
                 {projection.delta >= 0 ? "+" : ""}
@@ -1517,6 +1575,27 @@ function ProIntelligenceWorkspace({
               </strong>
             </div>
             <p>{projection.summary}</p>
+            <div className="EdgeTrace-pro-impact-stack">
+              <span>Cost impact: {currency.format(projection.costImpact)}</span>
+              <span>Win-rate impact: {currency.format(projection.winRateImpact)}</span>
+              <span>R-capture impact: {currency.format(projection.rCaptureImpact)}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="EdgeTrace-pro-cell EdgeTrace-pro-regression">
+          <div className="EdgeTrace-pro-cell-heading">
+            <TrendingDown size={17} aria-hidden="true" />
+            <span>Regression Watch</span>
+          </div>
+          <p>Signals to compare against the next import. These are the metrics most likely to confirm improvement or deterioration.</p>
+          <div className="EdgeTrace-pro-regression-watch is-standalone">
+            {regressionWatch.map((item) => (
+              <div key={item.title} className={`tone-${item.severity}`}>
+                <strong>{item.title}</strong>
+                <small>{item.detail}</small>
+              </div>
+            ))}
           </div>
         </div>
 
@@ -1532,12 +1611,13 @@ function ProIntelligenceWorkspace({
               <li key={item}>{item}</li>
             ))}
           </ul>
-          <div className="EdgeTrace-pro-regression-watch">
-            <span>Regression Watch</span>
-            {regressionWatch.map((item) => (
-              <div key={item.title} className={`tone-${item.severity}`}>
-                <strong>{item.title}</strong>
-                <small>{item.detail}</small>
+          <div className="EdgeTrace-pro-review-checks">
+            <span>Next-report pass/fail checks</span>
+            {reviewAgenda.checks.map((check) => (
+              <div key={check.label}>
+                <strong>{check.label}</strong>
+                <small>{check.current}</small>
+                <em>{check.target}</em>
               </div>
             ))}
           </div>
@@ -1554,6 +1634,7 @@ function SimulatorControl({
   max,
   step,
   numericValue,
+  suffix,
   onChange
 }: {
   label: string;
@@ -1562,22 +1643,38 @@ function SimulatorControl({
   max: number;
   step: number;
   numericValue: number;
+  suffix?: string;
   onChange: (value: number) => void;
 }) {
+  const commitValue = (value: number) => onChange(clamp(value, min, max));
+
   return (
     <label>
       <span>
         <strong>{label}</strong>
         <em>{value}</em>
       </span>
-      <input
-        type="range"
-        min={min}
-        max={max}
-        step={step}
-        value={numericValue}
-        onChange={(event) => onChange(Number(event.target.value))}
-      />
+      <div className="EdgeTrace-pro-control-row">
+        <input
+          type="range"
+          min={min}
+          max={max}
+          step={step}
+          value={numericValue}
+          onChange={(event) => commitValue(Number(event.target.value))}
+        />
+        <div className="EdgeTrace-pro-number-input">
+          <input
+            type="number"
+            min={min}
+            max={max}
+            step={step}
+            value={numericValue}
+            onChange={(event) => commitValue(Number(event.target.value))}
+          />
+          {suffix && <span>{suffix}</span>}
+        </div>
+      </div>
     </label>
   );
 }
@@ -2237,6 +2334,129 @@ function buildLocalCoachAnswers({
   };
 }
 
+function answerLocalCoachQuestion(
+  question: string,
+  {
+    answers,
+    metrics,
+    edgeScore,
+    regressionWatch,
+    reviewAgenda
+  }: {
+    answers: Record<ProQuestionId, LocalCoachAnswer>;
+    metrics: DiagnosticsResult["metrics"];
+    edgeScore: EdgeScoreOutput;
+    regressionWatch: RegressionWatchItem[];
+    reviewAgenda: DashboardReviewAgenda;
+  }
+): LocalCoachAnswer {
+  const normalized = question.toLowerCase();
+  const costDragPct = metrics.grossPnl > 0 ? metrics.totalCosts / metrics.grossPnl : undefined;
+  const weakestFactor = [...edgeScore.factors].sort((a, b) => a.value - b.value)[0];
+  const firstWatch = regressionWatch.find((item) => item.severity !== "clear") ?? regressionWatch[0];
+
+  if (/(cost|commission|fee|slippage|friction|spread)/.test(normalized)) {
+    return {
+      label: "Costs",
+      title: costDragPct !== undefined && costDragPct > 0.3 ? "Costs are large enough to change the read." : "Cost drag is a monitoring variable.",
+      body:
+        costDragPct !== undefined
+          ? `Detected costs are ${percent.format(costDragPct)} of gross PnL. The practical question is whether the next report lowers that percentage without reducing trade quality.`
+          : "This report does not have enough gross-profit context to calculate cost drag cleanly.",
+      bullets: compactDetails([
+        `Current detected costs: ${currency.format(metrics.totalCosts)}.`,
+        costDragPct !== undefined ? `Target next report: keep cost drag below ${percent.format(Math.max(0.18, costDragPct - 0.05))}.` : undefined,
+        "Use the What-If Simulator cost control to estimate the PnL impact before changing execution rules."
+      ])
+    };
+  }
+
+  if (/(win|hit rate|accuracy|percent|%)/.test(normalized)) {
+    const targetWinRate = Math.min(0.95, metrics.winRate + 0.05);
+    const projected = projectWhatIf(metrics, 0, targetWinRate * 100, 0);
+    return {
+      label: "Win rate",
+      title: `A ${percent.format(targetWinRate)} win-rate target changes PnL by ${currency.format(projected.winRateImpact)}.`,
+      body: "Win rate only matters if payoff quality holds. The simulator keeps the current average win/loss profile and changes the number of winners.",
+      bullets: [
+        `Current win rate: ${percent.format(metrics.winRate)}.`,
+        `Five percentage points higher projects net PnL at ${currency.format(projected.projectedNetPnl)}.`,
+        "If payoff quality drops while hit rate improves, the report can still regress."
+      ]
+    };
+  }
+
+  if (/(r\b|r-|reward|payoff|average win|average loss|loss)/.test(normalized)) {
+    return {
+      label: "R capture",
+      title: metrics.averageRealizedR === undefined ? "R capture is unavailable in this import." : `Average R is ${number.format(metrics.averageRealizedR)}R.`,
+      body:
+        metrics.averageRealizedR === undefined
+          ? "Ask EdgeTrace cannot judge planned-risk conversion without stop/risk inputs. Use average win/loss and segment losses as substitutes."
+          : "R capture is the fastest way to separate a strategy that wins often from one that wins enough size.",
+      bullets: compactDetails([
+        metrics.averageRealizedR !== undefined && metrics.averageRealizedR < 0.5 ? "Target the next report above 0.50R before increasing size." : undefined,
+        `Average win: ${currency.format(metrics.averageWin)}. Average loss: ${currency.format(metrics.averageLoss)}.`,
+        "Use the R-capture simulator input to test whether holding winners longer changes expectancy enough to matter."
+      ])
+    };
+  }
+
+  if (/(edge score|score|grade|rating)/.test(normalized)) {
+    return {
+      label: "Edge Score",
+      title: weakestFactor ? `${weakestFactor.label} is holding the Edge Score down.` : `Edge Score is ${edgeScore.score}.`,
+      body: "Edge Score is useful only as a to-do list. The factor bars show which dimension has the best chance to move the score next.",
+      bullets: compactDetails([
+        weakestFactor?.nextStep,
+        `Current band: ${edgeScore.band}.`,
+        "Treat the score as secondary to expectancy; do not optimize the score if after-cost expectancy gets worse."
+      ])
+    };
+  }
+
+  if (/(regression|watch|risk|worse|break|fail)/.test(normalized)) {
+    return {
+      label: "Risk",
+      title: firstWatch ? firstWatch.title : "No regression watch item is active.",
+      body: firstWatch?.detail ?? "The current report does not show a dominant regression trigger.",
+      bullets: [
+        "Use Regression Watch as the pass/fail list for the next import.",
+        reviewAgenda.checks[0] ? `${reviewAgenda.checks[0].label}: ${reviewAgenda.checks[0].target}.` : "Compare the next report against this baseline.",
+        "If two watch items worsen at the same time, inspect before changing more variables."
+      ]
+    };
+  }
+
+  if (/(size|position|scale|increase size|bigger)/.test(normalized)) {
+    return {
+      label: "Sizing",
+      title: metrics.expectancy > 0 && edgeScore.score >= 70 ? "Sizing can be considered, but only after the next confirmation report." : "Do not size up from this report alone.",
+      body: "Sizing should follow repeatability. This report needs the next import to confirm the same expectancy and risk profile before size increases.",
+      bullets: [
+        `Current expectancy: ${currency.format(metrics.expectancy)} per trade.`,
+        `Current Edge Score: ${edgeScore.score} (${edgeScore.band}).`,
+        "Use the weekly review checks as the gate before adding risk."
+      ]
+    };
+  }
+
+  if (/(next|do|fix|first|action|priority)/.test(normalized)) {
+    return answers["fix-first"];
+  }
+
+  return {
+    label: "Local answer",
+    title: "I can answer this locally if it maps to report metrics.",
+    body: "Try asking about costs, win rate, R capture, Edge Score, regression risk, sizing, or the next action. This local coach does not call an external AI model.",
+    bullets: [
+      `Current primary read: ${answers["explain-report"].title}`,
+      `Most useful next prompt: ${weakestFactor ? `How do I improve ${weakestFactor.label.toLowerCase()}?` : "What should I fix first?"}`,
+      "For open-ended strategy questions, add more reports to a strategy set so the local logic has history to compare."
+    ]
+  };
+}
+
 function buildEdgeScore({
   metrics,
   normalizedTradeCount,
@@ -2275,30 +2495,58 @@ function buildEdgeScore({
       label: "Expectancy",
       value: expectancyScore,
       detail: `${currency.format(metrics.expectancy)} per trade`,
+      nextStep:
+        metrics.expectancy < 0
+          ? `Get after-cost expectancy above ${currency.format(0)} before adding size.`
+          : `Keep next-report expectancy above ${currency.format(Math.max(0, metrics.expectancy * 0.85))}.`,
       tone: scoreTone(expectancyScore)
     },
     {
       label: "Friction",
       value: frictionScore,
       detail: costDragPct === undefined ? "Cost drag unavailable" : `${percent.format(costDragPct)} of gross PnL`,
+      nextStep:
+        costDragPct === undefined
+          ? "Import commission/fee data so cost drag can be scored."
+          : costDragPct > 0.2
+            ? `Reduce cost drag toward ${percent.format(Math.max(0.15, costDragPct - 0.08))}.`
+            : "Preserve the current execution cost profile.",
       tone: scoreTone(frictionScore)
     },
     {
       label: "Payoff Quality",
       value: payoffScore,
       detail: metrics.averageRealizedR === undefined ? "R data unavailable" : `${number.format(metrics.averageRealizedR)}R average capture`,
+      nextStep:
+        metrics.averageRealizedR === undefined
+          ? "Add planned risk or stop data so R capture can be scored."
+          : metrics.averageRealizedR < 0.5
+            ? "Push average R above 0.50R in the next report."
+            : "Keep R capture stable while improving selectivity.",
       tone: scoreTone(payoffScore)
     },
     {
       label: "Consistency",
       value: consistencyScore,
       detail: `${percent.format(metrics.winRate)} win rate, ${profitFactorCopy(metrics.profitFactor)} profit factor`,
+      nextStep:
+        metrics.profitFactor < 1
+          ? "Lift profit factor above 1.00 by cutting low-quality losses first."
+          : metrics.winRate < 0.5
+            ? "Raise win rate above 50% without shrinking average win."
+            : "Confirm the same win-rate/profit-factor mix in the next import.",
       tone: scoreTone(consistencyScore)
     },
     {
       label: "Data Confidence",
       value: dataScore,
       detail: `${number.format(normalizedTradeCount)} normalized trades`,
+      nextStep:
+        normalizedTradeCount < 50
+          ? `Add ${number.format(50 - normalizedTradeCount)} more trades before trusting fine-grained conclusions.`
+          : !costsIncluded || !rValuesAvailable
+            ? "Improve import quality by including costs and planned-risk fields."
+            : "Use strategy-set history to validate repeatability.",
       tone: scoreTone(dataScore)
     }
   ];
@@ -2379,44 +2627,76 @@ function buildDashboardReviewAgenda(
 ): DashboardReviewAgenda {
   const nextReviewDate = nextWeeklyReviewDate(result.createdAt);
   const firstRegression = regressionWatch.find((item) => item.severity !== "clear");
+  const metrics = result.metrics;
+  const costDragPct = metrics.grossPnl > 0 ? metrics.totalCosts / metrics.grossPnl : undefined;
+  const targetExpectancy = metrics.expectancy < 0 ? 0 : Math.max(0, metrics.expectancy * 0.85);
+  const targetCostDrag = costDragPct === undefined ? undefined : Math.max(0.15, costDragPct - 0.05);
+  const targetR = metrics.averageRealizedR === undefined ? undefined : Math.max(0.5, metrics.averageRealizedR);
 
   return {
     label: "Weekly Review Agenda",
-    title: `${humanDiagnosis(intelligence.primaryDiagnosis)} is the next review theme.`,
+    title: `Next review theme: prove ${humanDiagnosis(intelligence.primaryDiagnosis).toLowerCase()} improved.`,
     summary: nextReviewDate
-      ? `Use this report as the baseline for the ${nextReviewDate} review. The next import should confirm whether the primary leak improved or expanded.`
-      : "Use this report as the baseline for the next weekly review. The next import should confirm whether the primary leak improved or expanded.",
+      ? `Use this report as the baseline for ${nextReviewDate}. The next report passes only if the leak improves without creating a new one.`
+      : "Use this report as the baseline for the next review. The next report passes only if the leak improves without creating a new one.",
     items: compactDetails([
-      actionItems[0] ? `Priority: ${actionItems[0].title}.` : undefined,
-      firstRegression ? `Watch: ${firstRegression.title}.` : "Watch: no current regression trigger, preserve what is working.",
-      `Compare the next report against ${result.name ?? "this report"} before changing more than one variable.`
-    ]).slice(0, 3)
+      actionItems[0] ? `Change one variable tied to ${actionItems[0].title.toLowerCase()}.` : undefined,
+      firstRegression ? `Do not ignore ${firstRegression.title.toLowerCase()}; it is the first fail condition.` : "Preserve what is working; the fail condition is any new red watch item.",
+      `Compare the next report against ${result.name ?? "this report"} before making another process change.`
+    ]).slice(0, 3),
+    checks: [
+      {
+        label: "Expectancy",
+        current: `Now ${currency.format(metrics.expectancy)} / trade`,
+        target: `Pass ${currency.format(targetExpectancy)} or better`
+      },
+      {
+        label: "Cost drag",
+        current: costDragPct === undefined ? "Now unavailable" : `Now ${percent.format(costDragPct)}`,
+        target: targetCostDrag === undefined ? "Pass with detected cost data" : `Pass below ${percent.format(targetCostDrag)}`
+      },
+      {
+        label: "R capture",
+        current: metrics.averageRealizedR === undefined ? "Now unavailable" : `Now ${number.format(metrics.averageRealizedR)}R`,
+        target: targetR === undefined ? "Pass with risk/R data" : `Pass at ${number.format(targetR)}R or better`
+      }
+    ]
   };
 }
 
 function projectWhatIf(
   metrics: DiagnosticsResult["metrics"],
   costReductionPct: number,
-  winRateLiftPct: number,
+  winRateTargetPct: number,
   rCaptureLift: number
 ) {
   const tradeCount = Math.max(1, metrics.totalTrades);
   const averageWin = metrics.averageWin > 0 ? metrics.averageWin : Math.max(metrics.expectancy, 1);
   const averageLoss = metrics.averageLoss < 0 ? metrics.averageLoss : -Math.max(Math.abs(metrics.expectancy), averageWin * 0.7, 1);
+  const currentWinRate = clamp(metrics.winRate, 0, 0.95);
+  const targetWinRate = clamp(winRateTargetPct / 100, 0, 0.95);
+  const currentWinningTrades = currentWinRate * tradeCount;
+  const targetWinningTrades = targetWinRate * tradeCount;
   const costSavings = metrics.totalCosts * (costReductionPct / 100);
-  const adjustedWinRate = clamp(metrics.winRate + winRateLiftPct / 100, 0, 0.95);
-  const adjustedAverageWin = averageWin + rCaptureLift * Math.abs(averageLoss);
-  const projectedExpectancy = adjustedWinRate * adjustedAverageWin + (1 - adjustedWinRate) * averageLoss + costSavings / tradeCount;
-  const projectedNetPnl = projectedExpectancy * tradeCount;
-  const delta = projectedNetPnl - metrics.netPnl;
+  const rCaptureImpact = targetWinningTrades * rCaptureLift * Math.abs(averageLoss);
+  const winRateImpact = (targetWinningTrades - currentWinningTrades) * (averageWin - averageLoss);
+  const modeledCurrentNetPnl = currentWinningTrades * averageWin + (tradeCount - currentWinningTrades) * averageLoss;
+  const currentNetPnl = Number.isFinite(metrics.netPnl) ? metrics.netPnl : modeledCurrentNetPnl;
+  const projectedNetPnl = currentNetPnl + costSavings + winRateImpact + rCaptureImpact;
+  const projectedExpectancy = projectedNetPnl / tradeCount;
+  const delta = projectedNetPnl - currentNetPnl;
 
   return {
     projectedNetPnl,
+    projectedExpectancy,
     delta,
+    costImpact: costSavings,
+    winRateImpact,
+    rCaptureImpact,
     summary:
       delta >= 0
-        ? `This scenario adds ${currency.format(delta)} across the same ${number.format(tradeCount)} trades.`
-        : `This scenario still trails the current report by ${currency.format(Math.abs(delta))}.`
+        ? `Targeting ${percent.format(targetWinRate)} win rate adds ${currency.format(delta)} across the same ${number.format(tradeCount)} trades.`
+        : `Targeting ${percent.format(targetWinRate)} win rate still trails the current report by ${currency.format(Math.abs(delta))}.`
   };
 }
 
