@@ -1,5 +1,6 @@
 import type { NormalizedTrade } from "../types";
 import { classifyCostDrag, costDragSortValue, type CostDragState } from "./costDrag";
+import { NO_LOSS_PROFIT_FACTOR } from "./diagnostics";
 
 export type BreakdownDimension = "symbol" | "strategy" | "timeOfDay";
 
@@ -95,7 +96,7 @@ export function buildBreakdown(trades: NormalizedTrade[], dimension: BreakdownDi
         averageRealizedR: realizedRs.length ? average(realizedRs) : undefined,
         averageWin: average(wins.map((trade) => trade.netPnl)),
         averageLoss: average(losses.map((trade) => trade.netPnl)),
-        profitFactor: grossLoss === 0 ? (grossProfit > 0 ? Infinity : 0) : grossProfit / grossLoss,
+        profitFactor: grossLoss === 0 ? (grossProfit > 0 ? NO_LOSS_PROFIT_FACTOR : 0) : grossProfit / grossLoss,
         costDragPct: grossPnl > 0 ? totalCosts / grossPnl : undefined,
         costDrag: classifyCostDrag({
           grossPnl,

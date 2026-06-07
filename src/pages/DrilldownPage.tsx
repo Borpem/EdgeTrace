@@ -12,6 +12,7 @@ import {
   YAxis
 } from "recharts";
 import { breakdownLabels, type BreakdownDimension } from "../lib/breakdowns";
+import { NO_LOSS_PROFIT_FACTOR } from "../lib/diagnostics";
 import {
   analyzeSegmentLeaks,
   buildSegmentCharts,
@@ -126,7 +127,7 @@ export function DrilldownPage({
     ["Net PnL", currency.format(summary.netPnl)],
     ["Expectancy", currency.format(summary.expectancy)],
     ["Average R", formatNumber(summary.averageRealizedR)],
-    ["Profit Factor", formatNumber(summary.profitFactor)],
+    ["Profit Factor", formatProfitFactor(summary.profitFactor)],
     ["Cost Drag", summary.costDrag.label],
     ["Net/Gross", formatPercent(summary.netToGrossPct)]
   ];
@@ -271,6 +272,13 @@ function ChartPanel({ title, children }: { title: string; children: React.ReactN
 
 function formatNumber(value: number | undefined) {
   if (value === undefined || !Number.isFinite(value)) return "N/A";
+  return number.format(value);
+}
+
+function formatProfitFactor(value: number | undefined) {
+  if (typeof value !== "number" || Number.isNaN(value)) return "N/A";
+  if (value === Infinity || value >= NO_LOSS_PROFIT_FACTOR) return "No losses";
+  if (!Number.isFinite(value)) return "N/A";
   return number.format(value);
 }
 

@@ -25,6 +25,7 @@ import {
 } from "recharts";
 import type { BreakdownDimension } from "../lib/breakdowns";
 import { getCollection, getReport, listCollections, listReports } from "../lib/api";
+import { NO_LOSS_PROFIT_FACTOR, normalizePortfolioMetrics } from "../lib/diagnostics";
 import { buildReportIntelligence, type MetricStatus } from "../lib/reportIntelligence";
 import type { DiagnosticsResult, ReportCollectionDetail, ReportCollectionSummary, ReportSummary } from "../types";
 
@@ -163,19 +164,7 @@ export function StrategyDashboardPage({
     if (!activeReport) return null;
     const trades = Array.isArray(activeReport.trades) ? activeReport.trades : [];
     const charts = activeReport.charts ?? emptyCharts;
-    const metrics = activeReport.metrics ?? {
-      totalTrades: trades.length,
-      winRate: 0,
-      grossPnl: 0,
-      totalCosts: 0,
-      netPnl: 0,
-      averageWin: 0,
-      averageLoss: 0,
-      profitFactor: 0,
-      expectancy: 0,
-      grossExpectancy: 0,
-      averageRealizedR: undefined
-    };
+    const metrics = normalizePortfolioMetrics(activeReport.metrics, trades);
 
     return { ...activeReport, trades, charts, metrics };
   }, [activeReport]);
@@ -453,7 +442,7 @@ export function StrategyDashboardPage({
                   <BriefMetric label="Cost Drag" value={intelligence.costDragLabel} detail={currency.format(metrics.totalCosts)} status={intelligence.keyMetricStatuses.costDrag} />
                   <BriefMetric label="R Capture" value={metrics.averageRealizedR === undefined ? "Unavailable" : `${number.format(metrics.averageRealizedR)}R`} detail="Risk conversion" status={intelligence.keyMetricStatuses.averageR} />
                   <BriefMetric label="Win Rate" value={percent.format(metrics.winRate)} detail="Closed trades" status={metrics.winRate >= 0.5 ? "healthy" : metrics.winRate >= 0.4 ? "warning" : "weak"} />
-                  <BriefMetric label="Profit Factor" value={number.format(metrics.profitFactor)} detail="Gross win/loss" status={metrics.profitFactor >= 1.5 ? "healthy" : metrics.profitFactor >= 1 ? "warning" : "weak"} />
+                  <BriefMetric label="Profit Factor" value={formatProfitFactor(metrics.profitFactor)} detail="Gross win/loss" status={metrics.profitFactor >= 1.5 ? "healthy" : metrics.profitFactor >= 1 ? "warning" : "weak"} />
                 </div>
               )}
             </div>
@@ -1089,6 +1078,13 @@ function reportLikeFromDiagnostics(report: DiagnosticsResult): ReportLike {
     averageRealizedR: report.metrics.averageRealizedR,
     profitFactor: report.metrics.profitFactor
   };
+}
+
+function formatProfitFactor(value: number | undefined) {
+  if (typeof value !== "number" || Number.isNaN(value)) return "N/A";
+  if (value === Infinity || value >= NO_LOSS_PROFIT_FACTOR) return "No losses";
+  if (!Number.isFinite(value)) return "N/A";
+  return number.format(value);
 }
 
 function scoreReportSummary(report: ReportLike) {

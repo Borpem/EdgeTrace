@@ -1,5 +1,7 @@
 import type { DiagnosticsResult, InsightCard, NormalizedTrade, PortfolioMetrics } from "../types";
 
+export const NO_LOSS_PROFIT_FACTOR = 99;
+
 const sum = (values: number[]) => values.reduce((total, value) => total + value, 0);
 const average = (values: number[]) => (values.length ? sum(values) / values.length : 0);
 
@@ -23,11 +25,45 @@ export function calculateMetrics(trades: NormalizedTrade[]): PortfolioMetrics {
     netPnl,
     averageWin: average(wins.map((trade) => trade.netPnl)),
     averageLoss: average(losses.map((trade) => trade.netPnl)),
-    profitFactor: grossLoss === 0 ? (grossProfit > 0 ? Infinity : 0) : grossProfit / grossLoss,
+    profitFactor: grossLoss === 0 ? (grossProfit > 0 ? NO_LOSS_PROFIT_FACTOR : 0) : grossProfit / grossLoss,
     expectancy: trades.length ? netPnl / trades.length : 0,
     grossExpectancy: trades.length ? grossPnl / trades.length : 0,
     averageRealizedR: realizedRs.length ? average(realizedRs) : undefined
   };
+}
+
+export function normalizePortfolioMetrics(
+  metrics: Partial<PortfolioMetrics> | null | undefined,
+  trades: NormalizedTrade[] = []
+): PortfolioMetrics {
+  const recalculated = calculateMetrics(trades);
+
+  return {
+    totalTrades: finiteMetric(metrics?.totalTrades, recalculated.totalTrades),
+    winRate: finiteMetric(metrics?.winRate, recalculated.winRate),
+    grossPnl: finiteMetric(metrics?.grossPnl, recalculated.grossPnl),
+    totalCosts: finiteMetric(metrics?.totalCosts, recalculated.totalCosts),
+    netPnl: finiteMetric(metrics?.netPnl, recalculated.netPnl),
+    averageWin: finiteMetric(metrics?.averageWin, recalculated.averageWin),
+    averageLoss: finiteMetric(metrics?.averageLoss, recalculated.averageLoss),
+    profitFactor: realMetric(metrics?.profitFactor, recalculated.profitFactor),
+    expectancy: finiteMetric(metrics?.expectancy, recalculated.expectancy),
+    grossExpectancy: finiteMetric(metrics?.grossExpectancy, recalculated.grossExpectancy),
+    averageRealizedR: optionalFiniteMetric(metrics?.averageRealizedR, recalculated.averageRealizedR)
+  };
+}
+
+function finiteMetric(value: unknown, fallback: number) {
+  return typeof value === "number" && Number.isFinite(value) ? value : fallback;
+}
+
+function realMetric(value: unknown, fallback: number) {
+  return typeof value === "number" && !Number.isNaN(value) ? value : fallback;
+}
+
+function optionalFiniteMetric(value: unknown, fallback: number | undefined) {
+  if (typeof value === "number" && Number.isFinite(value)) return value;
+  return fallback;
 }
 
 export function generateInsights(metrics: PortfolioMetrics): InsightCard[] {

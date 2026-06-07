@@ -35,8 +35,8 @@ const brokerPills = ["Interactive Brokers", "Robinhood", "Thinkorswim", "Fidelit
 
 const trustItems: Array<{ icon: LucideIcon; title: string; body: string }> = [
   { icon: Shield, title: "Aggregate intelligence", body: "Trade history can power sharper diagnostics and benchmark insights." },
-  { icon: Lock, title: "Secure infrastructure", body: "Encrypted in transit and at rest." },
-  { icon: BarChart3, title: "Transparent analysis", body: "See how every report is calculated." },
+  { icon: Lock, title: "Secure access", body: "Encrypted transport and account-scoped access controls." },
+  { icon: BarChart3, title: "Transparent analysis", body: "Key report inputs and diagnostic logic are visible in the workflow." },
   { icon: Send, title: "Built by traders", body: "For traders who want real answers." }
 ];
 

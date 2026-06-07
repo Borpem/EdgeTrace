@@ -1978,6 +1978,11 @@
     color: #75ccff;
   }
 
+  .EdgeTrace-dashboard-link:disabled {
+    color: rgba(154, 167, 181, 0.45);
+    cursor: not-allowed;
+  }
+
   .EdgeTrace-insights-panel {
     display: flex;
     flex-direction: column;
@@ -2229,34 +2234,39 @@
   }
 
   .EdgeTrace-detail-dock {
-    margin-top: 1rem;
+    margin-top: 1.1rem;
+    scroll-margin-top: 1rem;
   }
 
   .EdgeTrace-detail-tabs {
-    display: flex;
-    gap: 0.45rem;
-    border-bottom: 1px solid rgba(130, 161, 190, 0.13);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.55rem;
     margin-bottom: 0.9rem;
   }
 
   .EdgeTrace-detail-tabs button {
-    border-bottom: 2px solid transparent;
-    color: rgba(214, 224, 235, 0.68);
-    padding: 0.7rem 0.75rem;
+    border: 1px solid rgba(130, 161, 190, 0.16);
+    border-radius: 7px;
+    background: rgba(9, 20, 31, 0.74);
+    color: rgba(214, 224, 235, 0.7);
+    padding: 0.82rem 0.9rem;
     font-size: 0.82rem;
     font-weight: 620;
     text-transform: capitalize;
   }
 
   .EdgeTrace-detail-tabs button.active {
-    border-color: #45b7f4;
+    border-color: rgba(69, 183, 244, 0.58);
+    background: linear-gradient(180deg, rgba(69, 183, 244, 0.14), rgba(69, 183, 244, 0.06));
     color: #ffffff;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 12px 34px -30px rgba(69, 183, 244, 0.9);
   }
 
   .EdgeTrace-overview-panel {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
     gap: 1rem;
     padding: 1.2rem;
   }
@@ -2274,6 +2284,71 @@
     color: rgba(214, 224, 235, 0.78);
     padding: 0.32rem 0.48rem;
     font-size: 0.72rem;
+  }
+
+  .EdgeTrace-overview-insights {
+    grid-column: 1 / -1;
+    border-top: 1px solid rgba(130, 161, 190, 0.12);
+    padding-top: 1rem;
+  }
+
+  .EdgeTrace-overview-insight-list {
+    display: grid;
+    gap: 0.65rem;
+    margin-top: 0.9rem;
+  }
+
+  .EdgeTrace-overview-insight-list div {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.75rem;
+    align-items: start;
+  }
+
+  .EdgeTrace-overview-insight-list span {
+    display: inline-flex;
+    width: 1.65rem;
+    height: 1.65rem;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    color: #9aa7b5;
+    font-size: 0.72rem;
+  }
+
+  .EdgeTrace-overview-insight-list .tone-red span {
+    color: #ff485c;
+  }
+
+  .EdgeTrace-overview-insight-list .tone-yellow span {
+    color: #ffb82e;
+  }
+
+  .EdgeTrace-overview-insight-list .tone-green span {
+    color: #74c476;
+  }
+
+  .EdgeTrace-overview-insight-list p {
+    margin: 0;
+  }
+
+  .EdgeTrace-overview-insight-list strong,
+  .EdgeTrace-overview-insight-list small {
+    display: block;
+  }
+
+  .EdgeTrace-overview-insight-list strong {
+    color: rgba(246, 248, 251, 0.9);
+    font-size: 0.84rem;
+    font-weight: 620;
+  }
+
+  .EdgeTrace-overview-insight-list small {
+    margin-top: 0.18rem;
+    color: rgba(214, 224, 235, 0.72);
+    font-size: 0.73rem;
+    line-height: 1.4;
   }
 
   .EdgeTrace-dimension-toggle {
@@ -2492,6 +2567,7 @@
 
     .EdgeTrace-overview-panel {
       display: grid;
+      grid-template-columns: 1fr;
     }
 
     .EdgeTrace-overview-tags {

@@ -79,7 +79,7 @@ const faqs = [
   {
     question: "Is my data secure?",
     answer:
-      "EdgeTrace uses managed production infrastructure, encrypted transport, and account-scoped access controls for the diagnostic workflow."
+      "EdgeTrace uses encrypted HTTPS transport, managed production infrastructure, and account-scoped access controls for the diagnostic workflow."
   }
 ];
 
@@ -91,14 +91,14 @@ const trustItems: Array<{ title: string; body: string; icon: LucideIcon; accent:
     accent: "cyan"
   },
   {
-    title: "Secure infrastructure",
-    body: "Encrypted in transit and at rest.",
+    title: "Secure access",
+    body: "Encrypted transport and account-scoped access controls.",
     icon: ShieldCheck,
     accent: "purple"
   },
   {
     title: "Transparent diagnostics",
-    body: "See how every report is calculated.",
+    body: "Key report inputs and diagnostic logic are visible in the workflow.",
     icon: ReceiptText,
     accent: "cyan"
   },

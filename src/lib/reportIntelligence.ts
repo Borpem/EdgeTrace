@@ -5,6 +5,7 @@ import {
   type BreakdownRow
 } from "./breakdowns";
 import { classifyCostDrag, numericCostDrag } from "./costDrag";
+import { normalizePortfolioMetrics } from "./diagnostics";
 import type { DiagnosticsResult } from "../types";
 
 export type MetricStatus = "healthy" | "warning" | "weak" | "neutral";
@@ -45,40 +46,42 @@ const percent = new Intl.NumberFormat("en-US", { style: "percent", maximumFracti
 const number = new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 });
 
 export function buildReportIntelligence(report: DiagnosticsResult): ReportIntelligence {
+  const trades = Array.isArray(report.trades) ? report.trades : [];
+  const reportToAnalyze = { ...report, trades, metrics: normalizePortfolioMetrics(report.metrics, trades) };
   const costDrag = classifyCostDrag({
-    grossPnl: report.metrics.grossPnl,
-    totalCosts: report.metrics.totalCosts,
-    totalTrades: report.metrics.totalTrades
+    grossPnl: reportToAnalyze.metrics.grossPnl,
+    totalCosts: reportToAnalyze.metrics.totalCosts,
+    totalTrades: reportToAnalyze.metrics.totalTrades
   });
   const costDragPct = numericCostDrag(costDrag);
-  const largestLossRatio = largestLossToAverageLossRatio(report);
-  const allBreakdowns = buildAllBreakdowns(report);
+  const largestLossRatio = largestLossToAverageLossRatio(reportToAnalyze);
+  const allBreakdowns = buildAllBreakdowns(reportToAnalyze);
   const worstSegment = allBreakdowns
     .flatMap(({ dimension, rows }) => rows.map((row) => ({ dimension, row })))
     .sort((a, b) => a.row.netPnl - b.row.netPnl)[0];
 
-  const strategyHealthScore = scoreReport(report, costDragPct, largestLossRatio);
+  const strategyHealthScore = scoreReport(reportToAnalyze, costDragPct, largestLossRatio);
   const healthBand = scoreBand(strategyHealthScore);
-  const primaryDiagnosis = diagnose(report, costDragPct, largestLossRatio);
-  const primaryLeak = buildPrimaryLeak(report, costDrag, costDragPct, largestLossRatio, worstSegment);
+  const primaryDiagnosis = diagnose(reportToAnalyze, costDragPct, largestLossRatio);
+  const primaryLeak = buildPrimaryLeak(reportToAnalyze, costDrag, costDragPct, largestLossRatio, worstSegment);
 
   return {
     strategyHealthScore,
     healthBand,
     primaryDiagnosis,
-    primaryExplanation: explanationForDiagnosis(primaryDiagnosis, report, costDrag),
+    primaryExplanation: explanationForDiagnosis(primaryDiagnosis, reportToAnalyze, costDrag),
     primaryLeak,
     costDragLabel: costDrag.label,
-    nextBestInspections: buildNextBestInspections(report, allBreakdowns),
+    nextBestInspections: buildNextBestInspections(reportToAnalyze, allBreakdowns),
     keyMetricStatuses: {
-      netPnl: report.metrics.netPnl > 0 ? "healthy" : "weak",
-      expectancy: report.metrics.expectancy > 0 ? "healthy" : "weak",
+      netPnl: reportToAnalyze.metrics.netPnl > 0 ? "healthy" : "weak",
+      expectancy: reportToAnalyze.metrics.expectancy > 0 ? "healthy" : "weak",
       averageR:
-        report.metrics.averageRealizedR === undefined
+        reportToAnalyze.metrics.averageRealizedR === undefined
           ? "neutral"
-          : report.metrics.averageRealizedR >= 0.5
+          : reportToAnalyze.metrics.averageRealizedR >= 0.5
             ? "healthy"
-            : report.metrics.averageRealizedR >= 0.2
+            : reportToAnalyze.metrics.averageRealizedR >= 0.2
               ? "warning"
               : "weak",
       costDrag:
@@ -91,8 +94,14 @@ export function buildReportIntelligence(report: DiagnosticsResult): ReportIntell
             : costDrag.value <= 0.4
               ? "warning"
               : "weak",
-      profitFactor: report.metrics.profitFactor >= 1.5 ? "healthy" : report.metrics.profitFactor >= 1 ? "warning" : "weak",
-      winRate: report.metrics.winRate >= 0.5 ? "healthy" : report.metrics.winRate >= 0.45 ? "warning" : "weak"
+      profitFactor:
+        reportToAnalyze.metrics.profitFactor >= 1.5
+          ? "healthy"
+          : reportToAnalyze.metrics.profitFactor >= 1
+            ? "warning"
+            : "weak",
+      winRate:
+        reportToAnalyze.metrics.winRate >= 0.5 ? "healthy" : reportToAnalyze.metrics.winRate >= 0.45 ? "warning" : "weak"
     }
   };
 }

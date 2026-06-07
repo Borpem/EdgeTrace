@@ -47,6 +47,7 @@ import {
   type BreakdownRow
 } from "../lib/breakdowns";
 import { costDragSortValue } from "../lib/costDrag";
+import { NO_LOSS_PROFIT_FACTOR, normalizePortfolioMetrics } from "../lib/diagnostics";
 import { canUseFeature, canViewFullDrilldown, getPlanConfig, getReportAccessLevel } from "../lib/entitlements";
 import { buildReportIntelligence, type MetricStatus } from "../lib/reportIntelligence";
 import type {
@@ -145,19 +146,7 @@ export function DashboardPage({
 
   const trades = Array.isArray(result.trades) ? result.trades : [];
   const charts = result.charts ?? { equityCurve: [], pnlBySymbol: [], pnlByHour: [] };
-  const metrics = result.metrics ?? {
-    totalTrades: trades.length,
-    winRate: 0,
-    grossPnl: 0,
-    totalCosts: 0,
-    netPnl: 0,
-    averageWin: 0,
-    averageLoss: 0,
-    profitFactor: 0,
-    expectancy: 0,
-    grossExpectancy: 0,
-    averageRealizedR: undefined
-  };
+  const metrics = useMemo(() => normalizePortfolioMetrics(result.metrics, trades), [result.metrics, trades]);
   const safeResult = useMemo(() => ({ ...result, trades, charts, metrics }), [charts, metrics, result, trades]);
 
   const sortedTrades = useMemo(() => {
@@ -221,7 +210,7 @@ export function DashboardPage({
   const normalizedTradeCount = provenance?.normalizedTradeCount ?? metrics.totalTrades ?? trades.length;
   const performanceData = charts.equityCurve.length ? charts.equityCurve : buildEquityCurve(trades);
   const impactBreakdown = buildImpactBreakdown(metrics, largestLeak);
-  const priorityInsights = buildPriorityInsights(result, intelligence, largestLeak, primaryInspection);
+  const priorityInsights = buildPriorityInsights(safeResult, intelligence, largestLeak, primaryInspection);
   const actionItems = buildActionItems(intelligence, primaryInspection, largestLeak, metrics);
   const reportDate = result.createdAt ? new Date(result.createdAt) : undefined;
   const guideSteps = useMemo(
@@ -377,6 +366,14 @@ export function DashboardPage({
       group: primaryInspection.group
     });
     onDrillDown?.({ dimension: primaryInspection.dimension, group: primaryInspection.group });
+  };
+
+  const openDetailTab = (tab: DashboardTab) => {
+    setActiveTab(tab);
+    trackEvent("report_tab_opened", { reportId: result.id, tab, source: "dashboard_action" });
+    window.requestAnimationFrame(() => {
+      document.getElementById("dashboard-detail-dock")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
   };
 
   const handleAudit = () => {
@@ -592,7 +589,7 @@ export function DashboardPage({
             intelligence={intelligence}
             metrics={metrics}
             impactBreakdown={impactBreakdown}
-            onBreakdown={() => setActiveTab("breakdown")}
+            onBreakdown={() => openDetailTab("breakdown")}
           />
 
           <div className="EdgeTrace-dashboard-panel EdgeTrace-trend-panel">
@@ -631,12 +628,16 @@ export function DashboardPage({
                 />
               </LineChart>
             </ResponsiveContainer>
-            <button className="EdgeTrace-dashboard-link" onClick={() => setActiveTab("breakdown")}>
-              View advanced charts <ArrowRight size={14} aria-hidden="true" />
+            <button className="EdgeTrace-dashboard-link" onClick={() => openDetailTab("breakdown")}>
+              View breakdown analytics <ArrowRight size={14} aria-hidden="true" />
             </button>
           </div>
 
-          <PriorityInsights insights={priorityInsights} onOpenInsight={inspectPrimarySegment} />
+          <PriorityInsights
+            insights={priorityInsights}
+            onOpenInsight={inspectPrimarySegment}
+            onViewAllInsights={() => openDetailTab("overview")}
+          />
         </section>
 
         <BenchmarkIntelligencePanel
@@ -647,7 +648,12 @@ export function DashboardPage({
         />
 
         <section className="EdgeTrace-dashboard-bottom">
-          <SnapshotStats metrics={metrics} averageR={metrics.averageRealizedR} normalizedTradeCount={normalizedTradeCount} />
+          <SnapshotStats
+            metrics={metrics}
+            averageR={metrics.averageRealizedR}
+            normalizedTradeCount={normalizedTradeCount}
+            onCompare={onCompareReport ? () => onCompareReport(result.id) : undefined}
+          />
           <TopActions
             actionItems={actionItems}
             workflowAction={workflowAction}
@@ -665,7 +671,7 @@ export function DashboardPage({
 
         <DashboardLegend />
 
-        <section className="EdgeTrace-detail-dock" aria-label="Detailed report data">
+        <section id="dashboard-detail-dock" className="EdgeTrace-detail-dock" aria-label="Detailed report data">
           <div className="EdgeTrace-detail-tabs">
             {(["overview", "breakdown", "trades"] as DashboardTab[]).map((tab) => (
               <button
@@ -695,6 +701,20 @@ export function DashboardPage({
                 {(result.tags ?? []).slice(0, 4).map((tag) => (
                   <span key={tag}>{tag}</span>
                 ))}
+              </div>
+              <div className="EdgeTrace-overview-insights">
+                <PanelHeader title="All Insights" info />
+                <div className="EdgeTrace-overview-insight-list">
+                  {priorityInsights.map((insight) => (
+                    <div key={`${insight.label}-${insight.title}`} className={`tone-${insight.tone}`}>
+                      <span>{insight.label}</span>
+                      <p>
+                        <strong>{insight.title}</strong>
+                        <small>{insight.detail}</small>
+                      </p>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           )}
@@ -804,7 +824,7 @@ export function DashboardPage({
                           </td>
                           <td className="px-4 py-3 text-cyan">{currency.format(row.averageWin)}</td>
                           <td className="px-4 py-3 text-loss">{currency.format(row.averageLoss)}</td>
-                          <td className="px-4 py-3 text-muted">{formatNumber(row.profitFactor)}</td>
+                          <td className="px-4 py-3 text-muted">{formatProfitFactor(row.profitFactor)}</td>
                           <td className="px-4 py-3 text-muted">{formatPercent(row.netToGrossPct)}</td>
                         </tr>
                       ))}
@@ -1080,10 +1100,12 @@ function DiagnosisPanel({
 
 function PriorityInsights({
   insights,
-  onOpenInsight
+  onOpenInsight,
+  onViewAllInsights
 }: {
   insights: Array<{ label: string; title: string; detail: string; tone: "red" | "yellow" | "gray" | "green" }>;
   onOpenInsight: () => void;
+  onViewAllInsights: () => void;
 }) {
   return (
     <div className="EdgeTrace-dashboard-panel EdgeTrace-insights-panel">
@@ -1100,7 +1122,7 @@ function PriorityInsights({
           </button>
         ))}
       </div>
-      <button className="EdgeTrace-dashboard-link" onClick={onOpenInsight}>
+      <button className="EdgeTrace-dashboard-link" onClick={onViewAllInsights}>
         View all insights <ArrowRight size={14} aria-hidden="true" />
       </button>
     </div>
@@ -1217,17 +1239,19 @@ function BenchmarkMetricRow({ metric }: { metric: AggregateBenchmarkMetric }) {
 function SnapshotStats({
   metrics,
   averageR,
-  normalizedTradeCount
+  normalizedTradeCount,
+  onCompare
 }: {
   metrics: DiagnosticsResult["metrics"];
   averageR?: number;
   normalizedTradeCount: number;
+  onCompare?: () => void;
 }) {
   const items = [
     { label: "Net PnL", value: currency.format(metrics.netPnl), delta: `${normalizedTradeCount} trades`, tone: metrics.netPnl >= 0 ? "green" : "red" },
     { label: "Expectancy", value: currency.format(metrics.expectancy), delta: "After costs", tone: metrics.expectancy >= 0 ? "green" : "red" },
     { label: "Win Rate", value: percent.format(metrics.winRate), delta: winRateCopy(metrics.winRate), tone: metrics.winRate >= 0.5 ? "green" : "red" },
-    { label: "Profit Factor", value: formatNumber(metrics.profitFactor), delta: profitFactorCopy(metrics.profitFactor), tone: metrics.profitFactor >= 1 ? "green" : "red" },
+    { label: "Profit Factor", value: formatProfitFactor(metrics.profitFactor), delta: profitFactorCopy(metrics.profitFactor), tone: metrics.profitFactor >= 1 ? "green" : "red" },
     { label: "R-Multiple", value: averageR !== undefined ? `${number.format(averageR)}R` : "N/A", delta: rMultipleCopy(averageR), tone: (averageR ?? 0) >= 0.5 ? "green" : "yellow" }
   ];
 
@@ -1243,7 +1267,7 @@ function SnapshotStats({
           </div>
         ))}
       </div>
-      <button className="EdgeTrace-dashboard-link">
+      <button className="EdgeTrace-dashboard-link" onClick={onCompare} disabled={!onCompare}>
         See full comparison <ArrowRight size={14} aria-hidden="true" />
       </button>
     </div>
@@ -1558,7 +1582,7 @@ function buildGuidedReportSteps({
         { label: "Gross PnL", value: currency.format(result.metrics.grossPnl), tone: result.metrics.grossPnl >= 0 ? "green" : "red" },
         { label: "Net PnL", value: currency.format(result.metrics.netPnl), tone: result.metrics.netPnl >= 0 ? "green" : "red" },
         { label: "Total costs", value: currency.format(result.metrics.totalCosts), tone: result.metrics.totalCosts > 0 ? "yellow" : "gray" },
-        { label: "Profit factor", value: formatNumber(result.metrics.profitFactor), tone: result.metrics.profitFactor >= 1 ? "green" : "red" }
+        { label: "Profit factor", value: formatProfitFactor(result.metrics.profitFactor), tone: result.metrics.profitFactor >= 1 ? "green" : "red" }
       ],
       details: compactDetails([
         `Expectancy is ${currency.format(result.metrics.expectancy)} per trade after costs.`,
@@ -1728,6 +1752,14 @@ function buildPriorityInsights(
   largestLeak: BreakdownRow | undefined,
   primaryInspection: ReturnType<typeof buildReportIntelligence>["nextBestInspections"][number] | undefined
 ): Array<{ label: string; title: string; detail: string; tone: "red" | "yellow" | "gray" | "green" }> {
+  const averageRTitle =
+    result.metrics.averageRealizedR === undefined
+      ? "R Data Unavailable"
+      : result.metrics.averageRealizedR >= 1
+        ? "Strong R Capture"
+        : result.metrics.averageRealizedR >= 0.5
+          ? "Acceptable R Capture"
+          : "Weak R Capture";
   const base = [
     {
       label: "1",
@@ -1737,7 +1769,7 @@ function buildPriorityInsights(
     },
     {
       label: "2",
-      title: "Weak R:R Profile",
+      title: averageRTitle,
       detail: result.metrics.averageRealizedR !== undefined ? `Average R is ${number.format(result.metrics.averageRealizedR)}R` : "R-multiple data unavailable",
       tone: intelligence.keyMetricStatuses.averageR === "healthy" ? "green" : "yellow"
     },
@@ -1826,13 +1858,14 @@ function winRateCopy(winRate: number) {
 
 function rMultipleCopy(value: number | undefined) {
   if (value === undefined || !Number.isFinite(value)) return "R data unavailable";
-  if (value >= 1) return "Strong quality distribution";
-  if (value >= 0.5) return "Acceptable quality distribution";
-  return "Low quality distribution";
+  if (value >= 1) return "Strong R capture";
+  if (value >= 0.5) return "Acceptable R capture";
+  return "Weak R capture";
 }
 
 function profitFactorCopy(value: number | undefined) {
-  if (value === undefined || !Number.isFinite(value)) return "Unavailable";
+  if (typeof value !== "number" || Number.isNaN(value)) return "Unavailable";
+  if (value === Infinity || value >= NO_LOSS_PROFIT_FACTOR) return "No losses";
   if (value >= 1.5) return "Strong";
   if (value >= 1) return "Watch";
   return "Weak";
@@ -1946,6 +1979,13 @@ function openBenchmarkPricing() {
 
 function formatNumber(value: number | undefined) {
   if (value === undefined || !Number.isFinite(value)) return "N/A";
+  return number.format(value);
+}
+
+function formatProfitFactor(value: number | undefined) {
+  if (typeof value !== "number" || Number.isNaN(value)) return "N/A";
+  if (value === Infinity || value >= NO_LOSS_PROFIT_FACTOR) return "No losses";
+  if (!Number.isFinite(value)) return "N/A";
   return number.format(value);
 }
 
