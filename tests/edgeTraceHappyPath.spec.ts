@@ -80,6 +80,25 @@ test.describe.serial("EdgeTrace happy path", () => {
     expect(remainingReports.some((report) => report.id === reports[0].id)).toBeFalsy();
   });
 
+  test("Authenticated app shell keeps page content directly below the top bar", async ({ page }) => {
+    const routes = ["/app/upload", "/app/reports", "/app/collections", "/app/compare", "/app/how-it-works"];
+
+    for (const route of routes) {
+      await login(page, route);
+
+      const topbar = page.locator(".EdgeTrace-auth-topbar");
+      const content = page.locator(".EdgeTrace-auth-framed > main.EdgeTrace-shell").first();
+      await expect(topbar).toBeVisible();
+      await expect(content).toBeVisible();
+
+      const topbarBox = await topbar.boundingBox();
+      const contentBox = await content.boundingBox();
+      expect(topbarBox).not.toBeNull();
+      expect(contentBox).not.toBeNull();
+      expect(contentBox!.y).toBeLessThanOrEqual(topbarBox!.y + topbarBox!.height + 24);
+    }
+  });
+
   test("Public interactive demo flow", async ({ page }) => {
     await page.goto("/");
     await page.getByTestId("launch-full-demo-button").click();

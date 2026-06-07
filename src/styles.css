@@ -243,6 +243,7 @@
     min-height: 100vh;
     display: grid;
     grid-template-columns: 15rem minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
     align-items: stretch;
     color: #f6f8fb;
     background:
@@ -251,10 +252,16 @@
       linear-gradient(180deg, #06101b 0%, #07101a 48%, #050b12 100%);
   }
 
+  .EdgeTrace-auth-framed > .EdgeTrace-dashboard-sidebar {
+    grid-column: 1;
+    grid-row: 1 / -1;
+  }
+
   .EdgeTrace-auth-framed > main,
   .EdgeTrace-auth-framed > section,
   .EdgeTrace-auth-framed > .EdgeTrace-shell {
     grid-column: 2;
+    grid-row: 2;
     min-width: 0;
     width: 100%;
   }
@@ -275,6 +282,7 @@
     z-index: 35;
     display: flex;
     grid-column: 2;
+    grid-row: 1;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
@@ -3140,6 +3148,12 @@
     .EdgeTrace-report-dashboard,
     .EdgeTrace-auth-framed {
       grid-template-columns: 1fr;
+      grid-template-rows: auto auto minmax(0, 1fr);
+    }
+
+    .EdgeTrace-auth-framed > .EdgeTrace-dashboard-sidebar {
+      grid-column: 1;
+      grid-row: 1;
     }
 
     .EdgeTrace-dashboard-sidebar {
@@ -3152,6 +3166,7 @@
     .EdgeTrace-auth-topbar {
       position: sticky;
       grid-column: 1;
+      grid-row: 2;
     }
 
     .EdgeTrace-sidebar-brand {
@@ -3216,6 +3231,7 @@
     .EdgeTrace-auth-framed > section,
     .EdgeTrace-auth-framed > .EdgeTrace-shell {
       grid-column: 1;
+      grid-row: 3;
     }
   }
 
