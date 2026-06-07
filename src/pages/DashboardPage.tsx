@@ -133,6 +133,7 @@ type DashboardPageProps = {
   onOpenCollections?: () => void;
   onOpenFeatures?: () => void;
   onOpenAccount?: () => void;
+  accountControl?: ReactNode;
   userName?: string;
   userEmail?: string;
   reportJustCreated?: boolean;
@@ -155,6 +156,7 @@ export function DashboardPage({
   onOpenCollections,
   onOpenFeatures,
   onOpenAccount,
+  accountControl,
   userName,
   userEmail,
   reportJustCreated,
@@ -607,6 +609,7 @@ export function DashboardPage({
               </span>
               <CalendarDays size={13} aria-hidden="true" />
             </div>
+            {accountControl && <div className="EdgeTrace-dashboard-account-control">{accountControl}</div>}
           </div>
           <div className="EdgeTrace-dashboard-actions">
             <button className="EdgeTrace-results-walkthrough-button" onClick={openWalkthrough}>
@@ -1094,7 +1097,7 @@ function DashboardSidebar({
     <aside className="EdgeTrace-dashboard-sidebar" aria-hidden={ariaHidden}>
       <button className="EdgeTrace-sidebar-brand" onClick={onDashboard} aria-label="EdgeTrace dashboard">
         <img src="/brand/edgetrace_icon_monochrome_white_transparent.png" alt="" aria-hidden="true" />
-        <span>EDGETRACE</span>
+        <img className="EdgeTrace-sidebar-wordmark" src="/brand/edgetrace_wordmark_monochrome_white.png" alt="EdgeTrace" />
       </button>
 
       <nav aria-label="Dashboard navigation" className="EdgeTrace-sidebar-nav">

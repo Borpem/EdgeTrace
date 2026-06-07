@@ -659,6 +659,21 @@ export function App() {
           onSignOut={handleSignOut}
         />
       )}
+      {useAuthenticatedAppShell && (
+        <AuthenticatedTopbar
+          activeLabel={labelForPage(activeNavPage)}
+          userName={user?.name}
+          profile={userProfile}
+          authMode={authMode}
+          onAnalyze={() => navigate("upload")}
+          onAccount={() => navigate("account")}
+          onGuide={() => {
+            trackEvent("guide_restarted");
+            restartOnboarding();
+          }}
+          onSignOut={handleSignOut}
+        />
+      )}
 
       {!useReportDashboardShell && !useAuthenticatedAppShell && !usePricingPageShell && (
       <header className="EdgeTrace-topbar sticky top-0 z-40">
@@ -1066,6 +1081,19 @@ export function App() {
           onOpenCollections={() => navigate("collections")}
           onOpenFeatures={() => navigate("features")}
           onOpenAccount={() => navigate("account")}
+          accountControl={
+            <AccountUtility
+              userName={user?.name}
+              profile={userProfile}
+              authMode={authMode}
+              onAccount={() => navigate("account")}
+              onGuide={() => {
+                trackEvent("guide_restarted");
+                restartOnboarding();
+              }}
+              onSignOut={handleSignOut}
+            />
+          }
           userName={user?.name}
           userEmail={user?.email}
         />
@@ -1163,7 +1191,7 @@ function AuthenticatedSidebar({
     <aside className="EdgeTrace-dashboard-sidebar EdgeTrace-auth-sidebar">
       <button className="EdgeTrace-sidebar-brand" onClick={onDashboard} aria-label="EdgeTrace dashboard">
         <img src="/brand/edgetrace_icon_monochrome_white_transparent.png" alt="" aria-hidden="true" />
-        <span>EDGETRACE</span>
+        <img className="EdgeTrace-sidebar-wordmark" src="/brand/edgetrace_wordmark_monochrome_white.png" alt="EdgeTrace" />
       </button>
 
       <nav aria-label="Application navigation" className="EdgeTrace-sidebar-nav">
@@ -1211,6 +1239,91 @@ function AuthenticatedSidebar({
   );
 }
 
+function AuthenticatedTopbar({
+  activeLabel,
+  userName,
+  profile,
+  authMode,
+  onAnalyze,
+  onAccount,
+  onGuide,
+  onSignOut
+}: {
+  activeLabel: string;
+  userName?: string;
+  profile?: UserProfile | null;
+  authMode: "clerk" | "mock";
+  onAnalyze: () => void;
+  onAccount: () => void;
+  onGuide: () => void;
+  onSignOut: () => void;
+}) {
+  return (
+    <header className="EdgeTrace-auth-topbar">
+      <div>
+        <p>{activeLabel}</p>
+        <span>{profile?.planId ? `${profile.planId.toUpperCase()} plan` : "Workspace"}</span>
+      </div>
+      <div className="EdgeTrace-auth-topbar-actions">
+        <button className="EdgeTrace-auth-topbar-primary" onClick={onAnalyze}>
+          Import Trades
+        </button>
+        <AccountUtility
+          userName={userName}
+          profile={profile}
+          authMode={authMode}
+          onAccount={onAccount}
+          onGuide={onGuide}
+          onSignOut={onSignOut}
+        />
+      </div>
+    </header>
+  );
+}
+
+function AccountUtility({
+  userName,
+  profile,
+  authMode,
+  onAccount,
+  onGuide,
+  onSignOut
+}: {
+  userName?: string;
+  profile?: UserProfile | null;
+  authMode: "clerk" | "mock";
+  onAccount: () => void;
+  onGuide: () => void;
+  onSignOut: () => void;
+}) {
+  return (
+    <div className="EdgeTrace-account-utility">
+      <button className="EdgeTrace-account-utility-profile" type="button" onClick={onAccount}>
+        <span>{userName ? initials(userName) : <UserCircle size={16} aria-hidden="true" />}</span>
+        <strong>{userName ?? "Account"}</strong>
+        {profile?.planId && <em>{profile.planId.toUpperCase()}</em>}
+      </button>
+      <button className="EdgeTrace-account-utility-link" type="button" onClick={onGuide}>
+        Guide
+      </button>
+      {authMode === "clerk" ? (
+        <UserButton
+          afterSignOutUrl="/"
+          appearance={{
+            elements: {
+              avatarBox: "h-8 w-8 border border-white/15"
+            }
+          }}
+        />
+      ) : (
+        <button className="EdgeTrace-account-utility-link" type="button" onClick={onSignOut}>
+          Sign out <LogOut size={14} aria-hidden="true" />
+        </button>
+      )}
+    </div>
+  );
+}
+
 function isAuthenticatedAppPage(page: Page) {
   return [
     "strategyDashboard",
@@ -1228,6 +1341,26 @@ function isAuthenticatedAppPage(page: Page) {
     "compareDrilldown",
     "reconstructionAudit"
   ].includes(page);
+}
+
+function labelForPage(page: Page) {
+  const labels: Partial<Record<Page, string>> = {
+    strategyDashboard: "Dashboard",
+    upload: "Import Trades",
+    reports: "Reports",
+    collections: "Strategy Sets",
+    collectionDetail: "Strategy Set",
+    collectionAttribution: "Attribution",
+    collectionReviewWorkspace: "Review Workspace",
+    compare: "Compare",
+    features: "How It Works",
+    account: "Account",
+    dashboard: "Dashboard",
+    drilldown: "Drilldown",
+    compareDrilldown: "Compare Drilldown",
+    reconstructionAudit: "Reconstruction Audit"
+  };
+  return labels[page] ?? "Workspace";
 }
 
 function initials(value: string) {
