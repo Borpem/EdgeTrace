@@ -32,7 +32,7 @@ const pricingPlans: PricingPlan[] = [
   {
     id: "pro",
     eyebrow: "Most Popular",
-    summary: "For traders who want local coaching, aggregate benchmarks, alerts, simulations, and Edge Score.",
+    summary: "For traders who want local coaching, report simulations, benchmark context, and review automation.",
     accent: "purple",
     recommended: true
   }
@@ -48,11 +48,11 @@ const featureRows: Array<{ label: string; access: Record<PlanId, string> }> = [
   { label: "Exports", access: { free: "Included", pro: "Included", advanced: "Included" } },
   { label: "Strategy health monitoring", access: { free: "Included", pro: "Included", advanced: "Included" } },
   { label: "Aggregate benchmark intelligence", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Weekly strategy reviews", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Regression alerts", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Ask EdgeTrace", access: { free: "-", pro: "Included", advanced: "Included" } },
+  { label: "Weekly review agenda", access: { free: "-", pro: "Included", advanced: "Included" } },
+  { label: "Regression watch alerts", access: { free: "-", pro: "Included", advanced: "Included" } },
+  { label: "Ask EdgeTrace local coach", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "What-If Simulator", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Edge Score", access: { free: "-", pro: "Included", advanced: "Included" } }
+  { label: "Edge Score factor breakdown", access: { free: "-", pro: "Included", advanced: "Included" } }
 ];
 
 const faqs = [
@@ -64,12 +64,12 @@ const faqs = [
   {
     question: "What does Pro unlock?",
     answer:
-      "Pro is the $9.99/month intelligence layer: aggregate benchmarks, weekly strategy reviews, regression alerts, Ask EdgeTrace, What-If Simulator, and Edge Score."
+      "Pro is the $9.99/month intelligence layer: aggregate benchmarks, local Ask EdgeTrace coaching, What-If projections, Edge Score factor breakdowns, weekly review agendas, and regression watch alerts."
   },
   {
     question: "Does Ask EdgeTrace require ChatGPT?",
     answer:
-      "The paid Ask EdgeTrace experience is designed around local report data and deterministic answers first, so it does not require expensive ChatGPT calls."
+      "No. The paid Ask EdgeTrace workspace uses deterministic local report logic first, so it can answer common coaching prompts without expensive ChatGPT calls."
   },
   {
     question: "Can I use Free long term?",
@@ -545,7 +545,7 @@ function FinalCta({
       </div>
       <div>
         <h2>Ready to gain the edge?</h2>
-        <p>Start with the free workflow, then upgrade to Pro when you want benchmarks, coaching, alerts, simulations, and Edge Score.</p>
+        <p>Start with the free workflow, then upgrade to Pro when you want benchmarks, local coaching, simulations, review agendas, regression watch, and Edge Score factors.</p>
       </div>
       <div>
         <button className="EdgeTrace-pricing-primary" onClick={onPro}>

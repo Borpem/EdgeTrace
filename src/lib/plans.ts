@@ -123,11 +123,11 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
     featureBullets: [
       "Everything in Free",
       "Aggregate benchmark intelligence",
-      "Weekly strategy reviews",
-      "Regression alerts",
-      "Ask EdgeTrace",
+      "Weekly review agenda",
+      "Regression watch alerts",
+      "Ask EdgeTrace local coach",
       "What-If Simulator",
-      "Edge Score"
+      "Edge Score factor breakdown"
     ]
   },
   advanced: {
@@ -168,11 +168,11 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
     featureBullets: [
       "Everything in Free",
       "Aggregate benchmark intelligence",
-      "Weekly strategy reviews",
-      "Regression alerts",
-      "Ask EdgeTrace",
+      "Weekly review agenda",
+      "Regression watch alerts",
+      "Ask EdgeTrace local coach",
       "What-If Simulator",
-      "Edge Score"
+      "Edge Score factor breakdown"
     ]
   }
 };

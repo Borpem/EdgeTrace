@@ -75,11 +75,11 @@ const featureRows: Array<{ label: string; feature?: FeatureKey; access: Record<P
   { label: "Exports", feature: "audit_exports", access: { free: "Included", pro: "Included", advanced: "Included" } },
   { label: "Strategy monitoring", feature: "strategy_health_monitoring", access: { free: "Included", pro: "Included", advanced: "Included" } },
   { label: "Aggregate benchmark intelligence", feature: "aggregate_benchmarks", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Weekly strategy reviews", feature: "recurring_reviews", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Regression alerts", feature: "regression_alerts", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Ask EdgeTrace", feature: "ask_edge_trace", access: { free: "-", pro: "Included", advanced: "Included" } },
+  { label: "Weekly review agenda", feature: "recurring_reviews", access: { free: "-", pro: "Included", advanced: "Included" } },
+  { label: "Regression watch alerts", feature: "regression_alerts", access: { free: "-", pro: "Included", advanced: "Included" } },
+  { label: "Ask EdgeTrace local coach", feature: "ask_edge_trace", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "What-If Simulator", feature: "what_if_simulator", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Edge Score", feature: "edge_stability_score", access: { free: "-", pro: "Included", advanced: "Included" } }
+  { label: "Edge Score factor breakdown", feature: "edge_stability_score", access: { free: "-", pro: "Included", advanced: "Included" } }
 ];
 
 export function FeatureEducationPage({
@@ -601,7 +601,7 @@ function PlansSection({
         <h2>Core analytics are free. Pro adds benchmarks and coaching.</h2>
         <span>
           EdgeTrace gives every trader the complete reporting workflow. The paid tier is reserved for aggregate
-          benchmarks, weekly reviews, regression alerts, Ask EdgeTrace, What-If Simulator, and Edge Score.
+          benchmarks, local Ask EdgeTrace coaching, What-If Simulator, Edge Score factors, weekly review agendas, and regression watch alerts.
         </span>
         {isAuthenticated && (
           <em className={currentPlanPillClass(currentPlan)}>

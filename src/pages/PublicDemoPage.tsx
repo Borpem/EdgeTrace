@@ -116,7 +116,7 @@ const guidedSteps: StepConfig[] = [
     title: "Ready to analyze your own trades?",
     shortTitle: "Start",
     body: "You have seen the EdgeTrace workflow on sample data. Create a free account to analyze your own trade history.",
-    why: "Free includes the complete workflow. Pro adds aggregate benchmarks, coaching, alerts, simulations, and Edge Score.",
+    why: "Free includes the complete workflow. Pro adds aggregate benchmarks, local coaching, simulations, review agendas, regression watch, and Edge Score factors.",
     cta: "Create Free Account"
   }
 ];

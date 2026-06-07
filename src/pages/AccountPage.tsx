@@ -173,8 +173,8 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
               <h2>Choose the workflow depth your strategy needs.</h2>
             </div>
             <p>
-              Free includes the full core workflow. Pro adds aggregate benchmarks, local coaching, alerts, simulations,
-              and Edge Score for $9.99/month.
+              Free includes the full core workflow. Pro adds aggregate benchmarks, local coaching, simulations,
+              Edge Score factors, review agendas, and regression watch for $9.99/month.
             </p>
           </div>
           <div className="EdgeTrace-account-billing-card">
@@ -183,7 +183,7 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
             <span>
               {isPaid
                 ? "Open Stripe for payment methods, invoices, and cancellation settings."
-                : "Activate aggregate benchmarks, weekly reviews, regression alerts, Ask EdgeTrace, What-If Simulator, and Edge Score."}
+                : "Activate aggregate benchmarks, local Ask EdgeTrace coaching, What-If Simulator, Edge Score factors, review agendas, and regression watch."}
             </span>
             {isPaid && !hasStripeCustomer ? (
               <button className="EdgeTrace-pricing-secondary mt-5 w-full" disabled={activeAction === "refresh"} onClick={() => void refreshProfile()}>
@@ -295,7 +295,7 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
         <InfoTile
           icon={Sparkles}
           title="Pro automation"
-          body="Pro adds aggregate benchmarks, weekly strategy reviews, regression alerts, Ask EdgeTrace, What-If Simulator, and Edge Score."
+          body="Pro adds aggregate benchmarks, local coaching, What-If projections, Edge Score factors, review agendas, and regression watch."
           accent="purple"
         />
       </section>
@@ -485,7 +485,7 @@ function accessItems(planId: PlanId) {
     },
     {
       title: "Weekly reviews and alerts",
-      body: pro ? "Pro automation is active." : "Upgrade for recurring reviews and regression alerts.",
+      body: pro ? "Pro automation is active." : "Upgrade for review agendas and regression watch.",
       enabled: pro
     },
     {
@@ -495,7 +495,7 @@ function accessItems(planId: PlanId) {
     },
     {
       title: "Ask, simulate, and score",
-      body: pro ? "Ask EdgeTrace, What-If Simulator, and Edge Score are active." : "Upgrade for local coaching, simulations, and Edge Score.",
+      body: pro ? "Ask EdgeTrace, What-If Simulator, and Edge Score factors are active." : "Upgrade for local coaching, simulations, and Edge Score factors.",
       enabled: pro
     }
   ];

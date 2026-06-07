@@ -518,8 +518,8 @@ function StrategyMonitoringSection({
       <PaywallGate
         feature="edge_stability_score"
         accessLevel={stabilityAccess}
-        title="Upgrade to Pro to unlock Edge Score."
-        description="Pro evaluates consistency across expectancy, cost drag, R capture, loss concentration, and report history."
+        title="Upgrade to Pro to unlock Edge Score factors."
+        description="Pro breaks the score into expectancy, friction, payoff quality, consistency, and report-history confidence."
       >
         <div className="border border-white/[0.1] bg-white/[0.025] p-6">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted">Edge Score</p>
@@ -533,8 +533,8 @@ function StrategyMonitoringSection({
       <PaywallGate
         feature="regression_alerts"
         accessLevel={regressionAccess}
-        title="Upgrade to Pro to unlock regression alerts."
-        description="Pro flags expectancy deterioration, rising cost drag, weakening R capture, and large-loss concentration."
+        title="Upgrade to Pro to unlock regression watch alerts."
+        description="Pro flags expectancy deterioration, rising cost drag, weakening R capture, and large-loss concentration across reports."
       >
         <div className="border border-white/[0.1] bg-white/[0.025] p-6">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-warning">Regression Alerts</p>
@@ -556,7 +556,7 @@ function StrategyMonitoringSection({
       <PaywallGate
         feature="recurring_reviews"
         accessLevel={reviewAccess}
-        title="Upgrade to Pro to unlock weekly strategy reviews."
+        title="Upgrade to Pro to unlock weekly review agendas."
         description="Pro summarizes what changed, what improved, what deteriorated, and what deserves the next inspection."
       >
         <div className="border border-white/[0.1] bg-white/[0.025] p-6">

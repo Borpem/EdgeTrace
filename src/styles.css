@@ -923,20 +923,52 @@
     text-align: right;
   }
 
-  .EdgeTrace-report-selector {
-    display: inline-flex;
-    min-width: 0;
-    align-items: center;
-    gap: 0.55rem;
-    color: #ffffff;
-    font-size: 0.86rem;
-    font-weight: 620;
+  .EdgeTrace-report-selector-wrap {
+    display: grid;
+    gap: 0.25rem;
+    justify-items: end;
   }
 
-  .EdgeTrace-report-selector span {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  .EdgeTrace-report-selector-wrap label {
+    color: rgba(214, 224, 235, 0.56);
+    font-size: 0.64rem;
+    font-weight: 720;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .EdgeTrace-report-selector {
+    width: min(22rem, 42vw);
+    min-height: 2.35rem;
+    border: 1px solid rgba(130, 161, 190, 0.18);
+    border-radius: 7px;
+    background: linear-gradient(180deg, rgba(12, 27, 42, 0.96), rgba(7, 17, 29, 0.98));
+    color: #ffffff;
+    padding: 0 2.1rem 0 0.8rem;
+    font-size: 0.86rem;
+    font-weight: 620;
+    outline: none;
+  }
+
+  .EdgeTrace-report-selector:focus {
+    border-color: rgba(69, 183, 244, 0.62);
+    box-shadow: 0 0 0 3px rgba(69, 183, 244, 0.08);
+  }
+
+  .EdgeTrace-report-selector-wrap small {
+    color: #ffb82e;
+    font-size: 0.68rem;
+  }
+
+  .EdgeTrace-report-edit-button {
+    justify-self: end;
+    color: #45b7f4;
+    font-size: 0.72rem;
+    font-weight: 650;
+  }
+
+  .EdgeTrace-report-edit-button:hover {
+    color: #75ccff;
   }
 
   .EdgeTrace-report-generated {
@@ -1819,6 +1851,343 @@
     font-size: 0.72rem;
   }
 
+  .EdgeTrace-pro-workspace {
+    margin-top: 0.92rem;
+    padding: 1.35rem;
+    background:
+      radial-gradient(circle at 96% 4%, rgba(120, 97, 255, 0.1), transparent 18rem),
+      radial-gradient(circle at 6% 100%, rgba(88, 214, 255, 0.08), transparent 18rem),
+      linear-gradient(180deg, rgba(9, 21, 34, 0.95), rgba(5, 14, 25, 0.96));
+  }
+
+  .EdgeTrace-pro-workspace-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .EdgeTrace-pro-workspace-header h2 {
+    margin: 0.65rem 0 0;
+    max-width: 44rem;
+    color: #f6f8fb;
+    font-size: 1.24rem;
+    font-weight: 650;
+    letter-spacing: 0;
+    line-height: 1.25;
+  }
+
+  .EdgeTrace-pro-workspace-header > span {
+    border: 1px solid rgba(116, 196, 118, 0.28);
+    border-radius: 999px;
+    background: rgba(116, 196, 118, 0.08);
+    color: #a7ecac;
+    padding: 0.38rem 0.62rem;
+    font-size: 0.68rem;
+    font-weight: 760;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .EdgeTrace-pro-workspace-grid {
+    display: grid;
+    grid-template-columns: minmax(19rem, 1.12fr) minmax(18rem, 0.88fr);
+    gap: 0.72rem;
+    margin-top: 1rem;
+  }
+
+  .EdgeTrace-pro-cell {
+    min-width: 0;
+    border: 1px solid rgba(130, 161, 190, 0.14);
+    border-radius: 8px;
+    background: rgba(3, 8, 16, 0.38);
+    padding: 1rem;
+  }
+
+  .EdgeTrace-pro-cell-heading {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: #58d6ff;
+    font-size: 0.72rem;
+    font-weight: 760;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .EdgeTrace-pro-question-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.42rem;
+    margin-top: 0.85rem;
+  }
+
+  .EdgeTrace-pro-question-tabs button {
+    min-height: 2.35rem;
+    border: 1px solid rgba(130, 161, 190, 0.16);
+    border-radius: 6px;
+    background: rgba(9, 20, 31, 0.72);
+    color: rgba(214, 224, 235, 0.74);
+    padding: 0.44rem 0.5rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+  }
+
+  .EdgeTrace-pro-question-tabs button.active {
+    border-color: rgba(88, 214, 255, 0.5);
+    background: rgba(88, 214, 255, 0.1);
+    color: #ffffff;
+  }
+
+  .EdgeTrace-pro-answer {
+    margin-top: 0.95rem;
+  }
+
+  .EdgeTrace-pro-answer h3,
+  .EdgeTrace-pro-review h3 {
+    margin: 0;
+    color: #f6f8fb;
+    font-size: 1rem;
+    font-weight: 660;
+    line-height: 1.3;
+  }
+
+  .EdgeTrace-pro-answer p,
+  .EdgeTrace-pro-review > p,
+  .EdgeTrace-pro-projection p {
+    margin: 0.5rem 0 0;
+    color: rgba(214, 224, 235, 0.72);
+    font-size: 0.78rem;
+    line-height: 1.55;
+  }
+
+  .EdgeTrace-pro-answer ul,
+  .EdgeTrace-pro-review-list {
+    display: grid;
+    gap: 0.45rem;
+    margin: 0.8rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .EdgeTrace-pro-answer li,
+  .EdgeTrace-pro-review-list li {
+    position: relative;
+    padding-left: 0.85rem;
+    color: rgba(214, 224, 235, 0.72);
+    font-size: 0.74rem;
+    line-height: 1.45;
+  }
+
+  .EdgeTrace-pro-answer li::before,
+  .EdgeTrace-pro-review-list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.52em;
+    width: 0.34rem;
+    height: 0.34rem;
+    border-radius: 50%;
+    background: #58d6ff;
+  }
+
+  .EdgeTrace-edge-score-readout {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.9rem;
+    align-items: center;
+    margin-top: 0.88rem;
+  }
+
+  .EdgeTrace-edge-score-readout > strong {
+    color: #f6f8fb;
+    font-size: 3.45rem;
+    font-weight: 710;
+    line-height: 0.9;
+    letter-spacing: -0.055em;
+  }
+
+  .EdgeTrace-edge-score-readout span {
+    display: block;
+    color: #58d6ff;
+    font-size: 0.9rem;
+    font-weight: 720;
+  }
+
+  .EdgeTrace-edge-score-readout p {
+    margin: 0.24rem 0 0;
+    color: rgba(214, 224, 235, 0.66);
+    font-size: 0.74rem;
+    line-height: 1.4;
+  }
+
+  .EdgeTrace-edge-factor-list {
+    display: grid;
+    gap: 0.62rem;
+    margin-top: 0.92rem;
+  }
+
+  .EdgeTrace-edge-factor-list > div {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.45rem 0.7rem;
+    align-items: center;
+  }
+
+  .EdgeTrace-edge-factor-list strong,
+  .EdgeTrace-edge-factor-list span {
+    display: block;
+  }
+
+  .EdgeTrace-edge-factor-list strong {
+    color: rgba(246, 248, 251, 0.86);
+    font-size: 0.76rem;
+    font-weight: 660;
+  }
+
+  .EdgeTrace-edge-factor-list span {
+    margin-top: 0.08rem;
+    color: rgba(214, 224, 235, 0.56);
+    font-size: 0.68rem;
+  }
+
+  .EdgeTrace-edge-factor-list em {
+    color: currentColor;
+    font-size: 0.76rem;
+    font-style: normal;
+    font-weight: 760;
+  }
+
+  .EdgeTrace-edge-factor-list i {
+    display: block;
+    grid-column: 1 / -1;
+    height: 0.28rem;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(130, 161, 190, 0.15);
+  }
+
+  .EdgeTrace-edge-factor-list b {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: currentColor;
+  }
+
+  .EdgeTrace-edge-factor-list .tone-green,
+  .EdgeTrace-pro-regression-watch .tone-clear {
+    color: #74c476;
+  }
+
+  .EdgeTrace-edge-factor-list .tone-yellow,
+  .EdgeTrace-pro-regression-watch .tone-medium {
+    color: #ffb82e;
+  }
+
+  .EdgeTrace-edge-factor-list .tone-red,
+  .EdgeTrace-pro-regression-watch .tone-high {
+    color: #ff485c;
+  }
+
+  .EdgeTrace-edge-factor-list .tone-gray,
+  .EdgeTrace-pro-regression-watch .tone-low {
+    color: #9aa7b5;
+  }
+
+  .EdgeTrace-pro-sliders {
+    display: grid;
+    gap: 0.85rem;
+    margin-top: 0.9rem;
+  }
+
+  .EdgeTrace-pro-sliders label {
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .EdgeTrace-pro-sliders label > span,
+  .EdgeTrace-pro-projection > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .EdgeTrace-pro-sliders strong,
+  .EdgeTrace-pro-projection span {
+    color: rgba(214, 224, 235, 0.7);
+    font-size: 0.72rem;
+    font-weight: 680;
+  }
+
+  .EdgeTrace-pro-sliders em {
+    color: #f6f8fb;
+    font-size: 0.72rem;
+    font-style: normal;
+    font-weight: 760;
+  }
+
+  .EdgeTrace-pro-sliders input {
+    width: 100%;
+    accent-color: #58d6ff;
+  }
+
+  .EdgeTrace-pro-projection {
+    display: grid;
+    gap: 0.55rem;
+    margin-top: 0.98rem;
+    border-top: 1px solid rgba(130, 161, 190, 0.12);
+    padding-top: 0.85rem;
+  }
+
+  .EdgeTrace-pro-projection strong {
+    font-size: 0.92rem;
+  }
+
+  .EdgeTrace-pro-review h3 {
+    margin-top: 0.86rem;
+  }
+
+  .EdgeTrace-pro-regression-watch {
+    display: grid;
+    gap: 0.5rem;
+    margin-top: 0.95rem;
+    border-top: 1px solid rgba(130, 161, 190, 0.12);
+    padding-top: 0.8rem;
+  }
+
+  .EdgeTrace-pro-regression-watch > span {
+    color: rgba(214, 224, 235, 0.58);
+    font-size: 0.68rem;
+    font-weight: 760;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .EdgeTrace-pro-regression-watch div {
+    border-left: 2px solid currentColor;
+    padding-left: 0.62rem;
+  }
+
+  .EdgeTrace-pro-regression-watch strong,
+  .EdgeTrace-pro-regression-watch small {
+    display: block;
+  }
+
+  .EdgeTrace-pro-regression-watch strong {
+    color: rgba(246, 248, 251, 0.88);
+    font-size: 0.74rem;
+    font-weight: 680;
+  }
+
+  .EdgeTrace-pro-regression-watch small {
+    margin-top: 0.1rem;
+    color: rgba(214, 224, 235, 0.62);
+    font-size: 0.68rem;
+    line-height: 1.42;
+  }
+
   .EdgeTrace-diagnosis-panel,
   .EdgeTrace-trend-panel,
   .EdgeTrace-insights-panel,
@@ -2475,6 +2844,14 @@
       text-align: left;
     }
 
+    .EdgeTrace-report-selector-wrap {
+      justify-items: start;
+    }
+
+    .EdgeTrace-report-selector {
+      width: min(28rem, calc(100vw - 2rem));
+    }
+
     .EdgeTrace-dashboard-actions {
       justify-content: center;
       justify-self: stretch;
@@ -2515,6 +2892,18 @@
     .EdgeTrace-benchmark-percentile > span {
       justify-items: start;
       text-align: left;
+    }
+
+    .EdgeTrace-pro-workspace-header,
+    .EdgeTrace-pro-sliders label > span,
+    .EdgeTrace-pro-projection > div {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .EdgeTrace-pro-workspace-grid {
+      grid-template-columns: 1fr;
     }
 
     .EdgeTrace-education-feature-row {
@@ -2600,6 +2989,18 @@
     .EdgeTrace-dashboard-secondary,
     .EdgeTrace-results-walkthrough-button {
       width: 100%;
+    }
+
+    .EdgeTrace-report-selector {
+      width: 100%;
+    }
+
+    .EdgeTrace-pro-question-tabs {
+      grid-template-columns: 1fr;
+    }
+
+    .EdgeTrace-edge-score-readout {
+      grid-template-columns: 1fr;
     }
 
     .EdgeTrace-walkthrough-overlay {

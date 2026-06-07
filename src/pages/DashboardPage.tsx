@@ -18,7 +18,6 @@ import {
   BookOpen,
   CalendarDays,
   CheckCircle2,
-  ChevronDown,
   ChevronLeft,
   FileText,
   HelpCircle,
@@ -37,7 +36,7 @@ import { PaywallGate } from "../components/PaywallGate";
 import { formatReportType, ReportDetailsEditor } from "../components/ReportDetailsEditor";
 import { TableContainer } from "../components/ui/Primitives";
 import { trackEvent } from "../lib/analytics";
-import { getActivationSummary, getReportBenchmarks } from "../lib/api";
+import { getActivationSummary, getReportBenchmarks, listReports } from "../lib/api";
 import {
   breakdownLabels,
   buildBreakdown,
@@ -74,6 +73,7 @@ type BreakdownSortKey =
   | "costDragPct";
 type DashboardTab = "overview" | "breakdown" | "trades";
 type GuideMetricTone = "red" | "yellow" | "green" | "blue" | "gray" | "white";
+type ProQuestionId = "fix-first" | "explain-report" | "next-risk";
 type GuideMetric = {
   label: string;
   value: string;
@@ -87,6 +87,35 @@ type GuidedReportStep = {
   metrics?: GuideMetric[];
   details?: string[];
 };
+type EdgeScoreFactor = {
+  label: string;
+  value: number;
+  detail: string;
+  tone: "green" | "yellow" | "red" | "gray";
+};
+type EdgeScoreOutput = {
+  score: number;
+  band: string;
+  summary: string;
+  factors: EdgeScoreFactor[];
+};
+type LocalCoachAnswer = {
+  label: string;
+  title: string;
+  body: string;
+  bullets: string[];
+};
+type RegressionWatchItem = {
+  title: string;
+  detail: string;
+  severity: "high" | "medium" | "low" | "clear";
+};
+type DashboardReviewAgenda = {
+  label: string;
+  title: string;
+  summary: string;
+  items: string[];
+};
 
 type DashboardPageProps = {
   result: DiagnosticsResult;
@@ -95,6 +124,7 @@ type DashboardPageProps = {
   onReconstructionAudit?: () => void;
   onReportUpdated?: (report: ReportSummary) => void;
   onCompareReport?: (reportId: string) => void;
+  onSelectReport?: (reportId: string) => Promise<void> | void;
   onViewReports?: () => void;
   onCreateReport?: () => void;
   onOpenDashboard?: () => void;
@@ -116,6 +146,7 @@ export function DashboardPage({
   onReconstructionAudit,
   onReportUpdated,
   onCompareReport,
+  onSelectReport,
   onViewReports,
   onCreateReport,
   onOpenDashboard,
@@ -143,6 +174,9 @@ export function DashboardPage({
   const [benchmarks, setBenchmarks] = useState<AggregateBenchmarkSnapshot | null>(null);
   const [benchmarksLoading, setBenchmarksLoading] = useState(false);
   const [benchmarksError, setBenchmarksError] = useState("");
+  const [availableReports, setAvailableReports] = useState<ReportSummary[]>([]);
+  const [reportsLoading, setReportsLoading] = useState(false);
+  const [reportSelectorError, setReportSelectorError] = useState("");
 
   const trades = Array.isArray(result.trades) ? result.trades : [];
   const charts = result.charts ?? { equityCurve: [], pnlBySymbol: [], pnlByHour: [] };
@@ -182,6 +216,10 @@ export function DashboardPage({
     result
   );
   const canViewAggregateBenchmarks = canUseFeature(plan, "aggregate_benchmarks");
+  const canUseProIntelligence =
+    canUseFeature(plan, "ask_edge_trace") &&
+    canUseFeature(plan, "what_if_simulator") &&
+    canUseFeature(plan, "edge_stability_score");
   const canInspectFullDrilldown = reportAccessLevel === "full" && canViewFullDrilldown(plan);
   const fullAttributionAccess =
     canInspectFullDrilldown &&
@@ -212,6 +250,38 @@ export function DashboardPage({
   const impactBreakdown = buildImpactBreakdown(metrics, largestLeak);
   const priorityInsights = buildPriorityInsights(safeResult, intelligence, largestLeak, primaryInspection);
   const actionItems = buildActionItems(intelligence, primaryInspection, largestLeak, metrics);
+  const edgeScore = useMemo(
+    () =>
+      buildEdgeScore({
+        metrics,
+        normalizedTradeCount,
+        costsIncluded,
+        rValuesAvailable
+      }),
+    [costsIncluded, metrics, normalizedTradeCount, rValuesAvailable]
+  );
+  const proCoachAnswers = useMemo(
+    () =>
+      buildLocalCoachAnswers({
+        result: safeResult,
+        intelligence,
+        primaryInspection,
+        largestLeak,
+        strongestSegment,
+        actionItems,
+        priorityInsights,
+        edgeScore
+      }),
+    [actionItems, edgeScore, intelligence, largestLeak, primaryInspection, priorityInsights, safeResult, strongestSegment]
+  );
+  const regressionWatch = useMemo(
+    () => buildDashboardRegressionWatch(metrics, intelligence, largestLeak),
+    [intelligence, largestLeak, metrics]
+  );
+  const reviewAgenda = useMemo(
+    () => buildDashboardReviewAgenda(safeResult, intelligence, actionItems, regressionWatch),
+    [actionItems, intelligence, regressionWatch, safeResult]
+  );
   const reportDate = result.createdAt ? new Date(result.createdAt) : undefined;
   const guideSteps = useMemo(
     () =>
@@ -253,6 +323,29 @@ export function DashboardPage({
       })
       .catch(() => {
         if (active) setActivation(null);
+      });
+    return () => {
+      active = false;
+    };
+  }, [result.id]);
+
+  useEffect(() => {
+    let active = true;
+    setReportsLoading(true);
+    setReportSelectorError("");
+    void listReports()
+      .then(({ reports }) => {
+        if (!active) return;
+        const sortedReports = [...(reports ?? [])].sort(
+          (a, b) => new Date(b.updatedAt || b.createdAt).getTime() - new Date(a.updatedAt || a.createdAt).getTime()
+        );
+        setAvailableReports(sortedReports);
+      })
+      .catch(() => {
+        if (active) setReportSelectorError("Reports could not be loaded.");
+      })
+      .finally(() => {
+        if (active) setReportsLoading(false);
       });
     return () => {
       active = false;
@@ -390,6 +483,21 @@ export function DashboardPage({
     if (onCompareReport) onCompareReport(result.id);
   };
 
+  const handleReportSelect = async (reportId: string) => {
+    if (!reportId || reportId === result.id) return;
+    if (!onSelectReport) {
+      onViewReports?.();
+      return;
+    }
+    setReportSelectorError("");
+    try {
+      trackEvent("dashboard_report_selector_changed", { reportId });
+      await onSelectReport(reportId);
+    } catch (err) {
+      setReportSelectorError(err instanceof Error ? err.message : "Selected report could not be opened.");
+    }
+  };
+
   const workflowAction = useMemo(() => {
     if (!activation?.hasClickedDrilldown && primaryInspection) {
       return {
@@ -459,9 +567,28 @@ export function DashboardPage({
             <p>Post-report intelligence at a glance.</p>
           </div>
           <div className="EdgeTrace-dashboard-report-meta">
-            <button className="EdgeTrace-report-selector" onClick={() => setIsEditingDetails(true)}>
-              <span>Report: {result.name ?? "Diagnostic Report"}</span>
-              <ChevronDown size={14} aria-hidden="true" />
+            <div className="EdgeTrace-report-selector-wrap">
+              <label htmlFor="dashboard-report-select">Report</label>
+              <select
+                id="dashboard-report-select"
+                className="EdgeTrace-report-selector"
+                value={result.id}
+                disabled={reportsLoading}
+                onChange={(event) => void handleReportSelect(event.target.value)}
+              >
+                {!availableReports.some((report) => report.id === result.id) && (
+                  <option value={result.id}>{result.name ?? "Diagnostic Report"}</option>
+                )}
+                {availableReports.map((report) => (
+                  <option key={report.id} value={report.id}>
+                    {report.name}
+                  </option>
+                ))}
+              </select>
+              {reportSelectorError && <small>{reportSelectorError}</small>}
+            </div>
+            <button className="EdgeTrace-report-edit-button" type="button" onClick={() => setIsEditingDetails(true)}>
+              Edit details
             </button>
             <div className="EdgeTrace-report-generated">
               <span>
@@ -646,6 +773,21 @@ export function DashboardPage({
           isLoading={benchmarksLoading}
           error={benchmarksError}
         />
+
+        <PaywallGate
+          feature="ask_edge_trace"
+          accessLevel={canUseProIntelligence ? "full" : "preview"}
+          title="Upgrade to Pro to unlock the local intelligence workspace."
+          description="Pro adds local Ask EdgeTrace answers, What-If Simulator projections, Edge Score factors, review agenda, and regression watch on the dashboard."
+        >
+          <ProIntelligenceWorkspace
+            answers={proCoachAnswers}
+            edgeScore={edgeScore}
+            metrics={metrics}
+            regressionWatch={regressionWatch}
+            reviewAgenda={reviewAgenda}
+          />
+        </PaywallGate>
 
         <section className="EdgeTrace-dashboard-bottom">
           <SnapshotStats
@@ -1148,7 +1290,7 @@ function BenchmarkIntelligencePanel({
           <h2>See how this report compares to the aggregate trader cohort.</h2>
           <p>
             Pro turns collected report data into cost-drag percentiles, R-capture comparisons, expectancy benchmarks,
-            and Edge Score context.
+            and Edge Score factor context.
           </p>
         </div>
 
@@ -1233,6 +1375,210 @@ function BenchmarkMetricRow({ metric }: { metric: AggregateBenchmarkMetric }) {
         </i>
       </div>
     </div>
+  );
+}
+
+function ProIntelligenceWorkspace({
+  answers,
+  edgeScore,
+  metrics,
+  regressionWatch,
+  reviewAgenda
+}: {
+  answers: Record<ProQuestionId, LocalCoachAnswer>;
+  edgeScore: EdgeScoreOutput;
+  metrics: DiagnosticsResult["metrics"];
+  regressionWatch: RegressionWatchItem[];
+  reviewAgenda: DashboardReviewAgenda;
+}) {
+  const [activeQuestion, setActiveQuestion] = useState<ProQuestionId>("fix-first");
+  const [costReductionPct, setCostReductionPct] = useState(15);
+  const [winRateLiftPct, setWinRateLiftPct] = useState(3);
+  const [rCaptureLift, setRCaptureLift] = useState(0.15);
+  const activeAnswer = answers[activeQuestion];
+  const projection = projectWhatIf(metrics, costReductionPct, winRateLiftPct, rCaptureLift);
+
+  return (
+    <section className="EdgeTrace-dashboard-panel EdgeTrace-pro-workspace">
+      <div className="EdgeTrace-pro-workspace-header">
+        <div>
+          <PanelHeader title="Pro Intelligence Workspace" info />
+          <h2>Local coaching, simulations, and review planning from this report.</h2>
+        </div>
+        <span>Runs locally</span>
+      </div>
+
+      <div className="EdgeTrace-pro-workspace-grid">
+        <div className="EdgeTrace-pro-cell EdgeTrace-pro-coach">
+          <div className="EdgeTrace-pro-cell-heading">
+            <HelpCircle size={17} aria-hidden="true" />
+            <span>Ask EdgeTrace</span>
+          </div>
+          <div className="EdgeTrace-pro-question-tabs" role="tablist" aria-label="Ask EdgeTrace local prompts">
+            {(Object.entries(answers) as Array<[ProQuestionId, LocalCoachAnswer]>).map(([id, answer]) => (
+              <button
+                key={id}
+                type="button"
+                className={activeQuestion === id ? "active" : ""}
+                onClick={() => {
+                  setActiveQuestion(id);
+                  trackEvent("ask_edge_trace_prompt_selected", { prompt: id });
+                }}
+              >
+                {answer.label}
+              </button>
+            ))}
+          </div>
+          <div className="EdgeTrace-pro-answer">
+            <h3>{activeAnswer.title}</h3>
+            <p>{activeAnswer.body}</p>
+            <ul>
+              {activeAnswer.bullets.map((bullet) => (
+                <li key={bullet}>{bullet}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <div className="EdgeTrace-pro-cell EdgeTrace-pro-score">
+          <div className="EdgeTrace-pro-cell-heading">
+            <Activity size={17} aria-hidden="true" />
+            <span>Edge Score</span>
+          </div>
+          <div className="EdgeTrace-edge-score-readout">
+            <strong>{edgeScore.score}</strong>
+            <div>
+              <span>{edgeScore.band}</span>
+              <p>{edgeScore.summary}</p>
+            </div>
+          </div>
+          <div className="EdgeTrace-edge-factor-list">
+            {edgeScore.factors.map((factor) => (
+              <div key={factor.label} className={`tone-${factor.tone}`}>
+                <div>
+                  <strong>{factor.label}</strong>
+                  <span>{factor.detail}</span>
+                </div>
+                <em>{factor.value}</em>
+                <i aria-hidden="true">
+                  <b style={{ width: `${factor.value}%` }} />
+                </i>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="EdgeTrace-pro-cell EdgeTrace-pro-simulator">
+          <div className="EdgeTrace-pro-cell-heading">
+            <Scale size={17} aria-hidden="true" />
+            <span>What-If Simulator</span>
+          </div>
+          <div className="EdgeTrace-pro-sliders">
+            <SimulatorControl
+              label="Reduce costs"
+              value={`${costReductionPct}%`}
+              min={0}
+              max={60}
+              step={5}
+              numericValue={costReductionPct}
+              onChange={setCostReductionPct}
+            />
+            <SimulatorControl
+              label="Improve win rate"
+              value={`+${winRateLiftPct} pts`}
+              min={0}
+              max={15}
+              step={1}
+              numericValue={winRateLiftPct}
+              onChange={setWinRateLiftPct}
+            />
+            <SimulatorControl
+              label="Increase R capture"
+              value={`+${number.format(rCaptureLift)}R`}
+              min={0}
+              max={0.5}
+              step={0.05}
+              numericValue={rCaptureLift}
+              onChange={setRCaptureLift}
+            />
+          </div>
+          <div className="EdgeTrace-pro-projection">
+            <div>
+              <span>Projected Net PnL</span>
+              <strong className={projection.projectedNetPnl >= 0 ? "text-profit" : "text-loss"}>
+                {currency.format(projection.projectedNetPnl)}
+              </strong>
+            </div>
+            <div>
+              <span>Expected Change</span>
+              <strong className={projection.delta >= 0 ? "text-profit" : "text-loss"}>
+                {projection.delta >= 0 ? "+" : ""}
+                {currency.format(projection.delta)}
+              </strong>
+            </div>
+            <p>{projection.summary}</p>
+          </div>
+        </div>
+
+        <div className="EdgeTrace-pro-cell EdgeTrace-pro-review">
+          <div className="EdgeTrace-pro-cell-heading">
+            <CalendarDays size={17} aria-hidden="true" />
+            <span>{reviewAgenda.label}</span>
+          </div>
+          <h3>{reviewAgenda.title}</h3>
+          <p>{reviewAgenda.summary}</p>
+          <ul className="EdgeTrace-pro-review-list">
+            {reviewAgenda.items.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+          <div className="EdgeTrace-pro-regression-watch">
+            <span>Regression Watch</span>
+            {regressionWatch.map((item) => (
+              <div key={item.title} className={`tone-${item.severity}`}>
+                <strong>{item.title}</strong>
+                <small>{item.detail}</small>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function SimulatorControl({
+  label,
+  value,
+  min,
+  max,
+  step,
+  numericValue,
+  onChange
+}: {
+  label: string;
+  value: string;
+  min: number;
+  max: number;
+  step: number;
+  numericValue: number;
+  onChange: (value: number) => void;
+}) {
+  return (
+    <label>
+      <span>
+        <strong>{label}</strong>
+        <em>{value}</em>
+      </span>
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={numericValue}
+        onChange={(event) => onChange(Number(event.target.value))}
+      />
+    </label>
   );
 }
 
@@ -1831,6 +2177,266 @@ function buildActionItems(
       tone: "green"
     }
   ] satisfies Array<{ title: string; impact: string; tone: "red" | "yellow" | "green" | "gray" }>;
+}
+
+function buildLocalCoachAnswers({
+  result,
+  intelligence,
+  primaryInspection,
+  largestLeak,
+  strongestSegment,
+  actionItems,
+  priorityInsights,
+  edgeScore
+}: {
+  result: DiagnosticsResult;
+  intelligence: ReturnType<typeof buildReportIntelligence>;
+  primaryInspection: ReturnType<typeof buildReportIntelligence>["nextBestInspections"][number] | undefined;
+  largestLeak: BreakdownRow | undefined;
+  strongestSegment: BreakdownRow | undefined;
+  actionItems: Array<{ title: string; impact: string; tone: "red" | "yellow" | "green" | "gray" }>;
+  priorityInsights: Array<{ label: string; title: string; detail: string; tone: "red" | "yellow" | "gray" | "green" }>;
+  edgeScore: EdgeScoreOutput;
+}): Record<ProQuestionId, LocalCoachAnswer> {
+  const firstAction = actionItems[0]?.title ?? "Review Primary Leak";
+  const secondAction = actionItems[1]?.title ?? "Improve Expectancy";
+  const topInsight = priorityInsights[0];
+  const inspectionTarget = primaryInspection ? `${primaryInspection.group} (${breakdownLabels[primaryInspection.dimension]})` : "the weakest visible segment";
+
+  return {
+    "fix-first": {
+      label: "Fix first",
+      title: `Start with ${firstAction.toLowerCase()}.`,
+      body: intelligence.primaryLeak.explanation,
+      bullets: compactDetails([
+        `Open ${inspectionTarget} before scanning every table.`,
+        largestLeak ? `${largestLeak.group} is currently the largest visible leak at ${currency.format(largestLeak.netPnl)} net PnL.` : undefined,
+        `Second move: ${secondAction}.`
+      ])
+    },
+    "explain-report": {
+      label: "Explain result",
+      title: `${humanDiagnosis(intelligence.primaryDiagnosis)} with an Edge Score of ${edgeScore.score}.`,
+      body: `This report has ${number.format(result.metrics.totalTrades)} trades, ${percent.format(result.metrics.winRate)} win rate, and ${currency.format(result.metrics.expectancy)} after-cost expectancy.`,
+      bullets: compactDetails([
+        `Net PnL is ${currency.format(result.metrics.netPnl)} after ${currency.format(result.metrics.totalCosts)} of detected costs.`,
+        `Profit factor reads ${profitFactorCopy(result.metrics.profitFactor).toLowerCase()}.`,
+        strongestSegment ? `${strongestSegment.group} is the strongest visible segment at ${currency.format(strongestSegment.netPnl)} net PnL.` : undefined
+      ])
+    },
+    "next-risk": {
+      label: "Next risk",
+      title: topInsight ? topInsight.title : "Monitor the first weak metric that changes next.",
+      body: topInsight?.detail ?? "The current report does not show a single dominant extra risk beyond the primary diagnosis.",
+      bullets: compactDetails([
+        `Primary monitoring metric: ${intelligence.primaryLeak.supportingMetric}.`,
+        primaryInspection ? `If the next report worsens, compare this report against ${primaryInspection.group}.` : undefined,
+        "Keep the next import attached to the same strategy set so regression watch has history to compare."
+      ])
+    }
+  };
+}
+
+function buildEdgeScore({
+  metrics,
+  normalizedTradeCount,
+  costsIncluded,
+  rValuesAvailable
+}: {
+  metrics: DiagnosticsResult["metrics"];
+  normalizedTradeCount: number;
+  costsIncluded: boolean;
+  rValuesAvailable: boolean;
+}): EdgeScoreOutput {
+  const costDragPct = metrics.grossPnl > 0 ? metrics.totalCosts / metrics.grossPnl : undefined;
+  const expectancyScore = metrics.expectancy > 0 ? 82 : metrics.expectancy > -2 ? 58 : metrics.expectancy > -8 ? 38 : 22;
+  const frictionScore =
+    costDragPct === undefined ? 62 : costDragPct <= 0.15 ? 92 : costDragPct <= 0.3 ? 72 : costDragPct <= 0.45 ? 48 : 24;
+  const payoffScore =
+    metrics.averageRealizedR === undefined
+      ? 52
+      : metrics.averageRealizedR >= 1
+        ? 92
+        : metrics.averageRealizedR >= 0.5
+          ? 74
+          : metrics.averageRealizedR >= 0.2
+            ? 48
+            : 24;
+  const profitFactorScore = metrics.profitFactor >= 1.5 ? 92 : metrics.profitFactor >= 1 ? 72 : metrics.profitFactor >= 0.8 ? 46 : 24;
+  const winRateScore = metrics.winRate >= 0.55 ? 88 : metrics.winRate >= 0.5 ? 74 : metrics.winRate >= 0.45 ? 52 : 30;
+  const consistencyScore = Math.round(profitFactorScore * 0.62 + winRateScore * 0.38);
+  let dataScore = normalizedTradeCount >= 100 ? 92 : normalizedTradeCount >= 50 ? 78 : normalizedTradeCount >= 20 ? 62 : 38;
+  if (!costsIncluded) dataScore -= 10;
+  if (!rValuesAvailable) dataScore -= 10;
+  dataScore = clamp(dataScore, 0, 100);
+
+  const factors: EdgeScoreFactor[] = [
+    {
+      label: "Expectancy",
+      value: expectancyScore,
+      detail: `${currency.format(metrics.expectancy)} per trade`,
+      tone: scoreTone(expectancyScore)
+    },
+    {
+      label: "Friction",
+      value: frictionScore,
+      detail: costDragPct === undefined ? "Cost drag unavailable" : `${percent.format(costDragPct)} of gross PnL`,
+      tone: scoreTone(frictionScore)
+    },
+    {
+      label: "Payoff Quality",
+      value: payoffScore,
+      detail: metrics.averageRealizedR === undefined ? "R data unavailable" : `${number.format(metrics.averageRealizedR)}R average capture`,
+      tone: scoreTone(payoffScore)
+    },
+    {
+      label: "Consistency",
+      value: consistencyScore,
+      detail: `${percent.format(metrics.winRate)} win rate, ${profitFactorCopy(metrics.profitFactor)} profit factor`,
+      tone: scoreTone(consistencyScore)
+    },
+    {
+      label: "Data Confidence",
+      value: dataScore,
+      detail: `${number.format(normalizedTradeCount)} normalized trades`,
+      tone: scoreTone(dataScore)
+    }
+  ];
+  const score = Math.round(
+    expectancyScore * 0.3 + frictionScore * 0.2 + payoffScore * 0.22 + consistencyScore * 0.18 + dataScore * 0.1
+  );
+  const band = score >= 85 ? "Durable Edge" : score >= 70 ? "Tradable Edge" : score >= 55 ? "Watchlist Edge" : score >= 40 ? "Fragile Edge" : "No Clear Edge";
+  const weakestFactor = [...factors].sort((a, b) => a.value - b.value)[0];
+
+  return {
+    score,
+    band,
+    summary: weakestFactor ? `Weakest factor: ${weakestFactor.label.toLowerCase()}.` : "Add more reports to improve confidence.",
+    factors
+  };
+}
+
+function buildDashboardRegressionWatch(
+  metrics: DiagnosticsResult["metrics"],
+  intelligence: ReturnType<typeof buildReportIntelligence>,
+  largestLeak: BreakdownRow | undefined
+): RegressionWatchItem[] {
+  const items: RegressionWatchItem[] = [];
+  const costDragPct = metrics.grossPnl > 0 ? metrics.totalCosts / metrics.grossPnl : undefined;
+
+  if (metrics.expectancy < 0) {
+    items.push({
+      severity: "high",
+      title: "Negative expectancy",
+      detail: `${currency.format(metrics.expectancy)} per trade after costs needs review before the next import.`
+    });
+  }
+  if (costDragPct !== undefined && costDragPct > 0.3) {
+    items.push({
+      severity: costDragPct > 0.45 ? "high" : "medium",
+      title: "Cost drag risk",
+      detail: `Costs are ${percent.format(costDragPct)} of gross PnL; watch whether the next report rises further.`
+    });
+  }
+  if (metrics.averageRealizedR !== undefined && metrics.averageRealizedR < 0.5) {
+    items.push({
+      severity: metrics.averageRealizedR < 0.2 ? "high" : "medium",
+      title: "R capture risk",
+      detail: `Average R is ${number.format(metrics.averageRealizedR)}R; monitor payoff quality next.`
+    });
+  }
+  if (metrics.winRate < 0.45) {
+    items.push({
+      severity: "medium",
+      title: "Win-rate pressure",
+      detail: `${percent.format(metrics.winRate)} win rate is below the break-even watch zone.`
+    });
+  }
+  if (largestLeak && largestLeak.netPnl < 0) {
+    items.push({
+      severity: "low",
+      title: `${largestLeak.group} leak`,
+      detail: `${currency.format(largestLeak.netPnl)} net PnL is the first segment to compare against the next report.`
+    });
+  }
+
+  if (!items.length) {
+    items.push({
+      severity: "clear",
+      title: "No immediate regression trigger",
+      detail: `${intelligence.healthBand} status is not showing a dominant one-report deterioration signal.`
+    });
+  }
+
+  return items.slice(0, 4);
+}
+
+function buildDashboardReviewAgenda(
+  result: DiagnosticsResult,
+  intelligence: ReturnType<typeof buildReportIntelligence>,
+  actionItems: Array<{ title: string; impact: string; tone: "red" | "yellow" | "green" | "gray" }>,
+  regressionWatch: RegressionWatchItem[]
+): DashboardReviewAgenda {
+  const nextReviewDate = nextWeeklyReviewDate(result.createdAt);
+  const firstRegression = regressionWatch.find((item) => item.severity !== "clear");
+
+  return {
+    label: "Weekly Review Agenda",
+    title: `${humanDiagnosis(intelligence.primaryDiagnosis)} is the next review theme.`,
+    summary: nextReviewDate
+      ? `Use this report as the baseline for the ${nextReviewDate} review. The next import should confirm whether the primary leak improved or expanded.`
+      : "Use this report as the baseline for the next weekly review. The next import should confirm whether the primary leak improved or expanded.",
+    items: compactDetails([
+      actionItems[0] ? `Priority: ${actionItems[0].title}.` : undefined,
+      firstRegression ? `Watch: ${firstRegression.title}.` : "Watch: no current regression trigger, preserve what is working.",
+      `Compare the next report against ${result.name ?? "this report"} before changing more than one variable.`
+    ]).slice(0, 3)
+  };
+}
+
+function projectWhatIf(
+  metrics: DiagnosticsResult["metrics"],
+  costReductionPct: number,
+  winRateLiftPct: number,
+  rCaptureLift: number
+) {
+  const tradeCount = Math.max(1, metrics.totalTrades);
+  const averageWin = metrics.averageWin > 0 ? metrics.averageWin : Math.max(metrics.expectancy, 1);
+  const averageLoss = metrics.averageLoss < 0 ? metrics.averageLoss : -Math.max(Math.abs(metrics.expectancy), averageWin * 0.7, 1);
+  const costSavings = metrics.totalCosts * (costReductionPct / 100);
+  const adjustedWinRate = clamp(metrics.winRate + winRateLiftPct / 100, 0, 0.95);
+  const adjustedAverageWin = averageWin + rCaptureLift * Math.abs(averageLoss);
+  const projectedExpectancy = adjustedWinRate * adjustedAverageWin + (1 - adjustedWinRate) * averageLoss + costSavings / tradeCount;
+  const projectedNetPnl = projectedExpectancy * tradeCount;
+  const delta = projectedNetPnl - metrics.netPnl;
+
+  return {
+    projectedNetPnl,
+    delta,
+    summary:
+      delta >= 0
+        ? `This scenario adds ${currency.format(delta)} across the same ${number.format(tradeCount)} trades.`
+        : `This scenario still trails the current report by ${currency.format(Math.abs(delta))}.`
+  };
+}
+
+function scoreTone(score: number): EdgeScoreFactor["tone"] {
+  if (score >= 70) return "green";
+  if (score >= 50) return "yellow";
+  if (score > 0) return "red";
+  return "gray";
+}
+
+function nextWeeklyReviewDate(value: string | undefined) {
+  const base = value ? new Date(value) : new Date();
+  if (Number.isNaN(base.getTime())) return undefined;
+  const next = new Date(base);
+  next.setDate(next.getDate() + 7);
+  return next.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+}
+
+function clamp(value: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, value));
 }
 
 function compactDetails(values: Array<string | undefined | false>) {

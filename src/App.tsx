@@ -1053,6 +1053,13 @@ export function App() {
           }}
           onReportUpdated={applyReportSummary}
           onCompareReport={(reportId) => openCompare(reportId)}
+          onSelectReport={async (reportId) => {
+            const report = await getReport(reportId);
+            setResult(report);
+            setDemoMode(false);
+            setCreatedReportId(null);
+            navigate("dashboard", `/app/dashboard/report/${report.id}`);
+          }}
           onViewReports={() => navigate("reports")}
           onCreateReport={() => navigate("upload")}
           onOpenDashboard={() => navigate("dashboard", `/app/dashboard/report/${result.id}`)}

@@ -17,7 +17,7 @@ export function buildStrategyReviewDigest(collection: ReportCollectionDetail): S
 
   if (!latest || analytics.reportCount < 2) {
     return {
-      periodLabel: "Latest Strategy Review",
+      periodLabel: "Weekly Review Setup",
       summary: "This strategy set needs at least two reports before EdgeTrace can produce a reliable recurring review.",
       highlights: [],
       warnings: ["Insufficient report history for iteration review."],
@@ -47,7 +47,7 @@ export function buildStrategyReviewDigest(collection: ReportCollectionDetail): S
       : analytics.primaryCollectionInsight;
 
   return {
-    periodLabel: "Latest Strategy Review",
+    periodLabel: "Weekly Review Agenda",
     summary,
     highlights: unique(highlights).slice(0, 4),
     warnings: unique(warnings).slice(0, 5),
