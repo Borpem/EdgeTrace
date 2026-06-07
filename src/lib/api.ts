@@ -13,7 +13,8 @@ import type {
   SavedComparisonInput,
   UserProfile,
   PlanId,
-  ImportProvenance
+  ImportProvenance,
+  AggregateBenchmarkSnapshot
 } from "../types";
 import { runDiagnostics } from "./diagnostics";
 import { describeNormalizationIssue, normalizeTrades } from "./normalize";
@@ -370,6 +371,12 @@ export async function getReport(id: string) {
   const response = await fetch(apiUrl(`/api/diagnostics/${id}`), { headers: await apiHeaders() });
   if (!response.ok) throw new Error("Unable to load report");
   return response.json() as Promise<DiagnosticsResult>;
+}
+
+export async function getReportBenchmarks(id: string) {
+  const response = await fetch(apiUrl(`/api/diagnostics/${id}/benchmarks`), { headers: await apiHeaders() });
+  if (!response.ok) throw new Error(await readApiError(response, "Unable to load aggregate benchmarks"));
+  return response.json() as Promise<AggregateBenchmarkSnapshot>;
 }
 
 export async function deleteReport(id: string) {

@@ -67,6 +67,10 @@ export async function listDiagnosticReports(userId: string) {
   return adapter.listDiagnosticReports(userId);
 }
 
+export async function listBenchmarkReports(maxReports?: number) {
+  return adapter.listBenchmarkReports(maxReports);
+}
+
 export async function getDiagnosticReport(userId: string, id: string) {
   return adapter.getDiagnosticReport(userId, id);
 }

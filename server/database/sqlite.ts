@@ -411,6 +411,25 @@ export function listDiagnosticReports(userId: string): ReportSummary[] {
   return rows.map(mapSummaryRow);
 }
 
+export function listBenchmarkReports(maxReports = 5000): ReportSummary[] {
+  const rows = db
+    .prepare(
+      `
+      SELECT id, user_id, name, notes, tags_json, strategy_label, report_type, created_at, updated_at, total_trades, win_rate, gross_pnl,
+        total_costs, net_pnl, expectancy, average_realized_r, summary_json, import_provenance_json
+      FROM diagnostic_reports
+      WHERE user_id NOT LIKE 'deleted:%'
+      ORDER BY created_at DESC
+      LIMIT ?
+    `
+    )
+    .all(Math.max(1, Math.min(maxReports, 10000))) as (Omit<ReportRow, "insights_json" | "trades_json" | "charts_json"> & {
+    summary_json: string;
+  })[];
+
+  return rows.filter((row) => !isDemoReportLike(row)).map(mapSummaryRow);
+}
+
 function mapSummaryRow(
   row: Omit<ReportRow, "summary_json" | "insights_json" | "trades_json" | "charts_json"> &
     Partial<Pick<ReportRow, "summary_json">>

@@ -29,7 +29,7 @@ export function SignupPage({
               {[
                 "Full reporting workflow on Free",
                 "Unlimited reports, imports, drilldowns, compare, and strategy sets",
-                "Upgrade to Pro for weekly reviews, alerts, Ask EdgeTrace, What-If, and Edge Score"
+                "Upgrade to Pro for aggregate benchmarks, weekly reviews, alerts, Ask EdgeTrace, What-If, and Edge Score"
               ].map((item) => (
                 <div key={item} className="flex items-center gap-3 text-sm text-muted">
                   <Check className="text-cyan" size={16} strokeWidth={1.7} />

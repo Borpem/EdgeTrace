@@ -425,6 +425,19 @@ export async function listDiagnosticReports(userId: string): Promise<ReportSumma
   return result.rows.map(mapSummaryRow);
 }
 
+export async function listBenchmarkReports(maxReports = 5000): Promise<ReportSummary[]> {
+  const result = await query<Omit<ReportRow, "insights_json" | "trades_json" | "charts_json">>(
+    `SELECT id, user_id, name, notes, tags_json, strategy_label, report_type, created_at, updated_at,
+       total_trades, win_rate, gross_pnl, total_costs, net_pnl, expectancy, average_realized_r, summary_json, import_provenance_json
+     FROM diagnostic_reports
+     WHERE user_id NOT LIKE 'deleted:%'
+     ORDER BY created_at DESC
+     LIMIT $1`,
+    [Math.max(1, Math.min(maxReports, 10000))]
+  );
+  return result.rows.filter((row) => !isDemoReportLike(row)).map(mapSummaryRow);
+}
+
 export async function getDiagnosticReport(userId: string, id: string): Promise<DiagnosticsResult | null> {
   const row = await getOne<ReportRow>("SELECT * FROM diagnostic_reports WHERE id = $1 AND user_id = $2", [id, userId]);
   if (!row) return null;

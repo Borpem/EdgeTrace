@@ -48,6 +48,7 @@ export type DatabaseAdapter = {
   countSavedComparisons: (userId: string) => number | Promise<number>;
   saveDiagnosticReport: (userId: string, result: DiagnosticsResult, name?: string) => DiagnosticsResult | Promise<DiagnosticsResult>;
   listDiagnosticReports: (userId: string) => ReportSummary[] | Promise<ReportSummary[]>;
+  listBenchmarkReports: (maxReports?: number) => ReportSummary[] | Promise<ReportSummary[]>;
   getDiagnosticReport: (userId: string, id: string) => DiagnosticsResult | null | Promise<DiagnosticsResult | null>;
   deleteDiagnosticReport: (userId: string, id: string) => boolean | Promise<boolean>;
   archiveDiagnosticReport: (userId: string, id: string) => boolean | Promise<boolean>;

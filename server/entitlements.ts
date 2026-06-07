@@ -133,6 +133,7 @@ export function upgradeMessageForFeature(feature: EntitlementFeature, _requiredP
     strategy_health_monitoring: "Strategy health monitoring is included on Free.",
     recurring_reviews: "Upgrade to Pro to unlock weekly strategy reviews.",
     regression_alerts: "Upgrade to Pro to unlock regression alerts.",
+    aggregate_benchmarks: "Upgrade to Pro to unlock aggregate benchmark intelligence.",
     edge_stability_score: "Upgrade to Pro to unlock Edge Score.",
     ask_edge_trace: "Upgrade to Pro to unlock Ask EdgeTrace.",
     what_if_simulator: "Upgrade to Pro to unlock the What-If Simulator."

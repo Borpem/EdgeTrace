@@ -261,3 +261,35 @@ export type ActivationSummary = {
   firstReportCreatedAt?: string;
   lastEventAt?: string;
 };
+
+export type BenchmarkMetricKey = "expectancy" | "winRate" | "costDragPct" | "averageRealizedR" | "profitFactor";
+
+export type BenchmarkMetricUnit = "currency" | "percent" | "number" | "rMultiple";
+
+export type BenchmarkMetricStatus = "leading" | "in_line" | "lagging" | "unavailable";
+
+export type AggregateBenchmarkMetric = {
+  key: BenchmarkMetricKey;
+  label: string;
+  description: string;
+  unit: BenchmarkMetricUnit;
+  higherIsBetter: boolean;
+  userValue?: number;
+  populationMedian?: number;
+  percentile?: number;
+  sampleSize: number;
+  status: BenchmarkMetricStatus;
+  insight: string;
+};
+
+export type AggregateBenchmarkSnapshot = {
+  accessLevel: "full" | "locked";
+  generatedAt: string;
+  cohortLabel: string;
+  minimumCohortSize: number;
+  sampleSize: number;
+  metrics: AggregateBenchmarkMetric[];
+  topInsight: string;
+  privacyNote: string;
+  upgradeMessage?: string;
+};

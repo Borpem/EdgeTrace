@@ -18,6 +18,7 @@ export type FeatureKey =
   | "strategy_health_monitoring"
   | "recurring_reviews"
   | "regression_alerts"
+  | "aggregate_benchmarks"
   | "edge_stability_score"
   | "ask_edge_trace"
   | "what_if_simulator";
@@ -71,6 +72,7 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
       strategy_health_monitoring: true,
       recurring_reviews: false,
       regression_alerts: false,
+      aggregate_benchmarks: false,
       edge_stability_score: false,
       ask_edge_trace: false,
       what_if_simulator: false
@@ -87,7 +89,7 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
     id: "pro",
     displayName: "Pro",
     monthlyPriceLabel: "$9.99/month",
-    description: "Local coaching and automation.",
+    description: "Local coaching, benchmarks, and automation.",
     limits: {
       maxReports: "unlimited",
       maxFullReports: "unlimited",
@@ -113,12 +115,14 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
       strategy_health_monitoring: true,
       recurring_reviews: true,
       regression_alerts: true,
+      aggregate_benchmarks: true,
       edge_stability_score: true,
       ask_edge_trace: true,
       what_if_simulator: true
     },
     featureBullets: [
       "Everything in Free",
+      "Aggregate benchmark intelligence",
       "Weekly strategy reviews",
       "Regression alerts",
       "Ask EdgeTrace",
@@ -156,12 +160,14 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
       strategy_health_monitoring: true,
       recurring_reviews: true,
       regression_alerts: true,
+      aggregate_benchmarks: true,
       edge_stability_score: true,
       ask_edge_trace: true,
       what_if_simulator: true
     },
     featureBullets: [
       "Everything in Free",
+      "Aggregate benchmark intelligence",
       "Weekly strategy reviews",
       "Regression alerts",
       "Ask EdgeTrace",

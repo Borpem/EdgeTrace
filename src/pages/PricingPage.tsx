@@ -32,7 +32,7 @@ const pricingPlans: PricingPlan[] = [
   {
     id: "pro",
     eyebrow: "Most Popular",
-    summary: "For traders who want local coaching, alerts, simulations, and Edge Score.",
+    summary: "For traders who want local coaching, aggregate benchmarks, alerts, simulations, and Edge Score.",
     accent: "purple",
     recommended: true
   }
@@ -47,6 +47,7 @@ const featureRows: Array<{ label: string; access: Record<PlanId, string> }> = [
   { label: "Reconstruction audit", access: { free: "Included", pro: "Included", advanced: "Included" } },
   { label: "Exports", access: { free: "Included", pro: "Included", advanced: "Included" } },
   { label: "Strategy health monitoring", access: { free: "Included", pro: "Included", advanced: "Included" } },
+  { label: "Aggregate benchmark intelligence", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Weekly strategy reviews", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Regression alerts", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Ask EdgeTrace", access: { free: "-", pro: "Included", advanced: "Included" } },
@@ -63,7 +64,7 @@ const faqs = [
   {
     question: "What does Pro unlock?",
     answer:
-      "Pro is the $9.99/month automation layer: weekly strategy reviews, regression alerts, Ask EdgeTrace, What-If Simulator, and Edge Score."
+      "Pro is the $9.99/month intelligence layer: aggregate benchmarks, weekly strategy reviews, regression alerts, Ask EdgeTrace, What-If Simulator, and Edge Score."
   },
   {
     question: "Does Ask EdgeTrace require ChatGPT?",
@@ -340,7 +341,7 @@ export function PricingPage({
 
       <div className="EdgeTrace-pricing-footnote">
         <ShieldCheck size={18} aria-hidden="true" />
-        <span>Core analytics are free. Pro adds local coaching and automation for $9.99/month.</span>
+        <span>Core analytics are free. Pro adds aggregate benchmarks, local coaching, and automation for $9.99/month.</span>
       </div>
 
       <FeatureComparison currentPlanId={highlightedPlanId} />
@@ -544,7 +545,7 @@ function FinalCta({
       </div>
       <div>
         <h2>Ready to gain the edge?</h2>
-        <p>Start with the free workflow, then upgrade to Pro when you want coaching, alerts, simulations, and Edge Score.</p>
+        <p>Start with the free workflow, then upgrade to Pro when you want benchmarks, coaching, alerts, simulations, and Edge Score.</p>
       </div>
       <div>
         <button className="EdgeTrace-pricing-primary" onClick={onPro}>

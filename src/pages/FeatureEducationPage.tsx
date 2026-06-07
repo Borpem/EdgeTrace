@@ -74,6 +74,7 @@ const featureRows: Array<{ label: string; feature?: FeatureKey; access: Record<P
   { label: "Reconstruction audit", feature: "reconstruction_audit", access: { free: "Included", pro: "Included", advanced: "Included" } },
   { label: "Exports", feature: "audit_exports", access: { free: "Included", pro: "Included", advanced: "Included" } },
   { label: "Strategy monitoring", feature: "strategy_health_monitoring", access: { free: "Included", pro: "Included", advanced: "Included" } },
+  { label: "Aggregate benchmark intelligence", feature: "aggregate_benchmarks", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Weekly strategy reviews", feature: "recurring_reviews", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Regression alerts", feature: "regression_alerts", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Ask EdgeTrace", feature: "ask_edge_trace", access: { free: "-", pro: "Included", advanced: "Included" } },
@@ -594,75 +595,52 @@ function PlansSection({
   onPricing: () => void;
 }) {
   return (
-    <section className="relative z-10 border-y border-white/[0.08] bg-[radial-gradient(circle_at_80%_0%,rgba(124,92,255,0.035),transparent_30rem),rgba(3,6,12,0.24)] py-12 md:py-16">
-      <div className="mb-7 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-        <div>
-          <h2 className="max-w-3xl text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl">
-            Core analytics are free. Pro adds coaching.
-          </h2>
-          <p className="mt-4 max-w-2xl text-base leading-7 text-muted">
-            EdgeTrace gives every trader the complete reporting workflow. The paid tier is reserved for weekly reviews,
-            regression alerts, Ask EdgeTrace, What-If Simulator, and Edge Score.
-          </p>
-        </div>
+    <section className="EdgeTrace-education-plans-section">
+      <div className="EdgeTrace-education-plans-head">
+        <p>Free vs Pro</p>
+        <h2>Core analytics are free. Pro adds benchmarks and coaching.</h2>
+        <span>
+          EdgeTrace gives every trader the complete reporting workflow. The paid tier is reserved for aggregate
+          benchmarks, weekly reviews, regression alerts, Ask EdgeTrace, What-If Simulator, and Edge Score.
+        </span>
         {isAuthenticated && (
-          <p className={`shrink-0 border px-4 py-3 text-sm ${currentPlanPillClass(currentPlan)}`}>
-            Current plan: <span className="font-semibold">{planConfigs[currentPlan].displayName}</span>
-          </p>
+          <em className={currentPlanPillClass(currentPlan)}>
+            Current plan: <strong>{planConfigs[currentPlan].displayName}</strong>
+          </em>
         )}
       </div>
 
-      <div className="mb-4 grid gap-3 md:grid-cols-2">
-        {planOrder.map((planId) => {
-          const toneClass = toneClasses[planToneFromId(planId)];
-          return (
-            <div key={planId} className={`border px-4 py-3 ${toneClass.border} ${toneClass.bg}`}>
-              <p className={`text-xs font-semibold uppercase tracking-[0.16em] ${toneClass.text}`}>
-                {planConfigs[planId].displayName}
-              </p>
-              <p className="mt-2 text-sm text-muted">
+      <div className="EdgeTrace-education-feature-card">
+        <div className="EdgeTrace-education-feature-row is-head">
+          <span>Feature access</span>
+          {planOrder.map((planId) => (
+            <strong key={planId} className={currentPlan === planId ? "is-current" : ""}>
+              {planConfigs[planId].displayName}
+              <small>
                 {planId === "free"
-                  ? "Complete core workflow"
+                  ? "Complete workflow"
                   : planId === "pro"
-                    ? "$9.99/month coaching"
+                    ? "$9.99/month intelligence"
                     : "Legacy automation"}
-              </p>
-            </div>
-          );
-        })}
-      </div>
-
-      <div>
-        <div className="overflow-x-auto border border-white/[0.1] bg-[#050a12]/94 shadow-[0_18px_60px_-52px_rgba(88,214,255,0.45)]">
-          <table className="min-w-full text-sm">
-            <thead className="border-b border-white/[0.1] bg-white/[0.035] text-left text-muted">
-              <tr>
-                <th className="px-5 py-4 font-semibold text-ink">Feature access</th>
-                {planOrder.map((planId) => (
-                  <th key={planId} className={`px-5 py-4 font-semibold ${currentPlanTableClass(currentPlan, planId, "head")}`}>
-                    {planConfigs[planId].displayName}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/[0.06]">
-              {featureRows.map((row, index) => (
-                <tr key={row.label} className={index % 2 === 1 ? "bg-white/[0.016]" : ""}>
-                  <td className="px-5 py-4 font-semibold text-ink">{row.label}</td>
-                  {planOrder.map((planId) => (
-                    <td key={planId} className={`px-5 py-4 ${currentPlanTableClass(currentPlan, planId, "body")}`}>
-                      <AccessValue value={row.access[planId]} planId={planId} />
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
+              </small>
+            </strong>
+          ))}
         </div>
+
+        {featureRows.map((row) => (
+          <div key={row.label} className="EdgeTrace-education-feature-row">
+            <span>{row.label}</span>
+            {planOrder.map((planId) => (
+              <div key={planId} className={currentPlan === planId ? "is-current" : ""}>
+                <AccessValue value={row.access[planId]} planId={planId} />
+              </div>
+            ))}
+          </div>
+        ))}
       </div>
 
       {!isAuthenticated && (
-        <button className="EdgeTrace-secondary-button mt-5" onClick={onPricing}>
+        <button className="EdgeTrace-secondary-button EdgeTrace-education-pricing-cta" onClick={onPricing}>
           Compare Pricing
         </button>
       )}

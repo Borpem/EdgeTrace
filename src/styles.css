@@ -1600,9 +1600,229 @@
     margin-top: 0.92rem;
   }
 
+  .EdgeTrace-benchmark-panel {
+    display: grid;
+    grid-template-columns: minmax(18rem, 0.78fr) minmax(24rem, 1.22fr);
+    gap: 1.2rem;
+    align-items: start;
+    margin-top: 0.92rem;
+    padding: 1.35rem;
+    background:
+      radial-gradient(circle at 88% 0%, rgba(88, 214, 255, 0.09), transparent 18rem),
+      radial-gradient(circle at 10% 110%, rgba(120, 97, 255, 0.08), transparent 20rem),
+      linear-gradient(180deg, rgba(10, 24, 39, 0.94), rgba(6, 16, 27, 0.95));
+  }
+
+  .EdgeTrace-benchmark-panel.is-locked {
+    grid-template-columns: minmax(18rem, 0.86fr) minmax(20rem, 0.94fr) auto;
+    align-items: center;
+    border-color: rgba(88, 214, 255, 0.22);
+  }
+
+  .EdgeTrace-benchmark-copy h2 {
+    margin: 0.75rem 0 0;
+    max-width: 48rem;
+    color: #f6f8fb;
+    font-size: 1.32rem;
+    font-weight: 640;
+    line-height: 1.2;
+    letter-spacing: 0;
+  }
+
+  .EdgeTrace-benchmark-copy p {
+    margin: 0.65rem 0 0;
+    max-width: 42rem;
+    color: rgba(214, 224, 235, 0.72);
+    font-size: 0.82rem;
+    line-height: 1.6;
+  }
+
+  .EdgeTrace-benchmark-preview,
+  .EdgeTrace-benchmark-metrics {
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .EdgeTrace-benchmark-preview div,
+  .EdgeTrace-benchmark-row,
+  .EdgeTrace-benchmark-empty {
+    border: 1px solid rgba(130, 161, 190, 0.14);
+    border-radius: 6px;
+    background: rgba(3, 8, 16, 0.42);
+  }
+
+  .EdgeTrace-benchmark-preview div {
+    padding: 0.85rem;
+  }
+
+  .EdgeTrace-benchmark-preview span,
+  .EdgeTrace-benchmark-preview strong {
+    display: block;
+  }
+
+  .EdgeTrace-benchmark-preview span {
+    color: rgba(214, 224, 235, 0.64);
+    font-size: 0.72rem;
+  }
+
+  .EdgeTrace-benchmark-preview strong {
+    margin-top: 0.22rem;
+    color: #f6f8fb;
+    font-size: 0.92rem;
+    font-weight: 620;
+  }
+
+  .EdgeTrace-benchmark-preview i {
+    display: block;
+    height: 0.26rem;
+    margin-top: 0.72rem;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #58d6ff, #7861ff);
+    box-shadow: 0 0 16px -8px rgba(88, 214, 255, 0.88);
+  }
+
+  .EdgeTrace-benchmark-lock {
+    display: grid;
+    min-width: 11rem;
+    justify-items: end;
+    gap: 0.6rem;
+    color: rgba(214, 224, 235, 0.72);
+    font-size: 0.76rem;
+    font-weight: 640;
+  }
+
+  .EdgeTrace-benchmark-lock button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.42rem;
+    border: 1px solid rgba(88, 214, 255, 0.34);
+    border-radius: 4px;
+    background: rgba(88, 214, 255, 0.08);
+    color: #dff8ff;
+    padding: 0.48rem 0.68rem;
+    font-size: 0.76rem;
+    font-weight: 720;
+  }
+
+  .EdgeTrace-benchmark-lock button:hover {
+    border-color: rgba(88, 214, 255, 0.58);
+    background: rgba(88, 214, 255, 0.12);
+  }
+
+  .EdgeTrace-benchmark-row {
+    display: grid;
+    grid-template-columns: minmax(15rem, 1fr) minmax(8rem, auto) minmax(9rem, 0.44fr);
+    gap: 1rem;
+    align-items: center;
+    padding: 0.78rem 0.85rem;
+  }
+
+  .EdgeTrace-benchmark-row strong,
+  .EdgeTrace-benchmark-row span,
+  .EdgeTrace-benchmark-row small {
+    display: block;
+  }
+
+  .EdgeTrace-benchmark-row strong {
+    color: #f6f8fb;
+    font-size: 0.84rem;
+    font-weight: 650;
+  }
+
+  .EdgeTrace-benchmark-row span,
+  .EdgeTrace-benchmark-row small {
+    color: rgba(214, 224, 235, 0.66);
+    font-size: 0.72rem;
+    line-height: 1.4;
+  }
+
+  .EdgeTrace-benchmark-row > div:first-child span {
+    margin-top: 0.18rem;
+  }
+
+  .EdgeTrace-benchmark-values {
+    text-align: right;
+  }
+
+  .EdgeTrace-benchmark-values span {
+    color: #f6f8fb;
+    font-size: 0.9rem;
+    font-weight: 640;
+  }
+
+  .EdgeTrace-benchmark-percentile {
+    display: grid;
+    gap: 0.38rem;
+  }
+
+  .EdgeTrace-benchmark-percentile > span {
+    color: #58d6ff;
+    font-size: 0.8rem;
+    font-weight: 720;
+    text-align: right;
+  }
+
+  .EdgeTrace-benchmark-percentile i {
+    display: block;
+    height: 0.32rem;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(130, 161, 190, 0.17);
+  }
+
+  .EdgeTrace-benchmark-percentile b {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: currentColor;
+  }
+
+  .EdgeTrace-benchmark-row.tone-leading {
+    color: #74c476;
+    border-color: rgba(116, 196, 118, 0.24);
+  }
+
+  .EdgeTrace-benchmark-row.tone-in_line {
+    color: #58d6ff;
+  }
+
+  .EdgeTrace-benchmark-row.tone-lagging {
+    color: #ffb82e;
+    border-color: rgba(255, 184, 46, 0.26);
+  }
+
+  .EdgeTrace-benchmark-row.tone-unavailable {
+    color: #9aa7b5;
+  }
+
+  .EdgeTrace-benchmark-empty {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    min-height: 4rem;
+    padding: 1rem;
+    color: rgba(214, 224, 235, 0.74);
+    font-size: 0.82rem;
+  }
+
+  .EdgeTrace-benchmark-empty.tone-warning {
+    color: #ffcf84;
+    border-color: rgba(255, 184, 46, 0.26);
+  }
+
+  .EdgeTrace-benchmark-note {
+    grid-column: 1 / -1;
+    margin: 0;
+    border-top: 1px solid rgba(130, 161, 190, 0.1);
+    padding-top: 0.75rem;
+    color: rgba(214, 224, 235, 0.58);
+    font-size: 0.72rem;
+  }
+
   .EdgeTrace-diagnosis-panel,
   .EdgeTrace-trend-panel,
   .EdgeTrace-insights-panel,
+  .EdgeTrace-benchmark-panel,
   .EdgeTrace-snapshot-panel,
   .EdgeTrace-actions-panel,
   .EdgeTrace-context-panel {
@@ -2209,6 +2429,40 @@
       grid-template-columns: 1fr;
     }
 
+    .EdgeTrace-benchmark-panel,
+    .EdgeTrace-benchmark-panel.is-locked,
+    .EdgeTrace-benchmark-row {
+      grid-template-columns: 1fr;
+    }
+
+    .EdgeTrace-benchmark-lock,
+    .EdgeTrace-benchmark-values,
+    .EdgeTrace-benchmark-percentile > span {
+      justify-items: start;
+      text-align: left;
+    }
+
+    .EdgeTrace-education-feature-row {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .EdgeTrace-education-feature-row > span {
+      grid-column: 1 / -1;
+      border-bottom: 1px solid rgba(247, 247, 243, 0.06);
+      background: rgba(247, 247, 243, 0.018);
+    }
+
+    .EdgeTrace-education-feature-row.is-head > span {
+      border-bottom: 0;
+      background: transparent;
+    }
+
+    .EdgeTrace-education-feature-row > div,
+    .EdgeTrace-education-feature-row > strong {
+      border-left: 0;
+      border-top: 1px solid rgba(247, 247, 243, 0.045);
+    }
+
     .EdgeTrace-insights-panel,
     .EdgeTrace-context-panel {
       grid-column: auto;
@@ -2465,6 +2719,204 @@
   .EdgeTrace-compact-secondary:hover {
     border-color: rgba(88, 214, 255, 0.42);
     background: linear-gradient(135deg, rgba(247, 247, 243, 0.12), rgba(88, 214, 255, 0.07));
+  }
+
+  .EdgeTrace-education-plans-section {
+    position: relative;
+    z-index: 10;
+    border-top: 1px solid rgba(247, 247, 243, 0.08);
+    border-bottom: 1px solid rgba(247, 247, 243, 0.08);
+    background:
+      radial-gradient(circle at 50% 0%, rgba(88, 214, 255, 0.055), transparent 30rem),
+      radial-gradient(circle at 82% 6%, rgba(120, 97, 255, 0.04), transparent 26rem),
+      rgba(3, 6, 12, 0.24);
+    padding: 3.25rem 0;
+  }
+
+  .EdgeTrace-education-plans-head {
+    display: grid;
+    justify-items: center;
+    max-width: 780px;
+    margin: 0 auto 1.65rem;
+    text-align: center;
+  }
+
+  .EdgeTrace-education-plans-head > p {
+    margin: 0 0 0.8rem;
+    color: #58d6ff;
+    font-size: 0.74rem;
+    font-weight: 820;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .EdgeTrace-education-plans-head h2 {
+    margin: 0;
+    color: #f7f7f3;
+    font-size: clamp(2rem, 4vw, 3.15rem);
+    font-weight: 780;
+    letter-spacing: 0;
+    line-height: 1.08;
+  }
+
+  .EdgeTrace-education-plans-head > span {
+    display: block;
+    max-width: 650px;
+    margin-top: 1rem;
+    color: rgba(247, 247, 243, 0.66);
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  .EdgeTrace-education-plans-head em {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: 1.1rem;
+    border-radius: 4px;
+    padding: 0.52rem 0.72rem;
+    font-size: 0.82rem;
+    font-style: normal;
+  }
+
+  .EdgeTrace-education-feature-card {
+    overflow: hidden;
+    width: min(100%, 1120px);
+    margin: 0 auto;
+    border: 1px solid rgba(88, 214, 255, 0.18);
+    border-radius: 8px;
+    background:
+      linear-gradient(90deg, transparent 0%, transparent 54%, rgba(88, 214, 255, 0.035) 54%, rgba(88, 214, 255, 0.035) 100%),
+      linear-gradient(180deg, rgba(8, 18, 30, 0.96), rgba(4, 10, 18, 0.96));
+    box-shadow:
+      inset 0 1px 0 rgba(247, 247, 243, 0.055),
+      0 24px 82px -66px rgba(88, 214, 255, 0.58);
+  }
+
+  .EdgeTrace-education-feature-row {
+    display: grid;
+    grid-template-columns: minmax(18rem, 1.25fr) repeat(2, minmax(10.5rem, 0.56fr));
+    align-items: center;
+    min-height: 3.45rem;
+    border-bottom: 1px solid rgba(247, 247, 243, 0.07);
+  }
+
+  .EdgeTrace-education-feature-row:last-child {
+    border-bottom: 0;
+  }
+
+  .EdgeTrace-education-feature-row > span,
+  .EdgeTrace-education-feature-row > div,
+  .EdgeTrace-education-feature-row > strong {
+    min-width: 0;
+    padding: 0.92rem 1rem;
+  }
+
+  .EdgeTrace-education-feature-row > span {
+    color: #f7f7f3;
+    font-size: 0.88rem;
+    font-weight: 680;
+  }
+
+  .EdgeTrace-education-feature-row > div,
+  .EdgeTrace-education-feature-row > strong {
+    border-left: 1px solid rgba(247, 247, 243, 0.07);
+  }
+
+  .EdgeTrace-education-feature-row.is-head {
+    min-height: 4.8rem;
+    background:
+      linear-gradient(90deg, rgba(88, 214, 255, 0.055), rgba(120, 97, 255, 0.025)),
+      rgba(247, 247, 243, 0.025);
+  }
+
+  .EdgeTrace-education-feature-row.is-head > span {
+    color: rgba(247, 247, 243, 0.76);
+    font-size: 0.76rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .EdgeTrace-education-feature-row.is-head strong {
+    color: #f7f7f3;
+    font-size: 0.92rem;
+    font-weight: 780;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .EdgeTrace-education-feature-row.is-head small {
+    display: block;
+    margin-top: 0.28rem;
+    color: rgba(247, 247, 243, 0.56);
+    font-size: 0.68rem;
+    font-weight: 620;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .EdgeTrace-education-feature-row .is-current {
+    background: rgba(88, 214, 255, 0.045);
+    box-shadow: inset 2px 0 0 rgba(88, 214, 255, 0.36);
+  }
+
+  .EdgeTrace-education-pricing-cta {
+    display: flex;
+    width: fit-content;
+    margin: 1.25rem auto 0;
+  }
+
+  @media (max-width: 900px) {
+    .EdgeTrace-education-plans-section {
+      padding: 2.7rem 0;
+    }
+
+    .EdgeTrace-education-feature-row {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .EdgeTrace-education-feature-row > span {
+      grid-column: 1 / -1;
+      border-bottom: 1px solid rgba(247, 247, 243, 0.06);
+      background: rgba(247, 247, 243, 0.018);
+    }
+
+    .EdgeTrace-education-feature-row.is-head > span {
+      border-bottom: 0;
+      background: transparent;
+    }
+
+    .EdgeTrace-education-feature-row > div,
+    .EdgeTrace-education-feature-row > strong {
+      border-left: 0;
+      border-top: 1px solid rgba(247, 247, 243, 0.045);
+    }
+  }
+
+  @media (max-width: 520px) {
+    .EdgeTrace-education-plans-head {
+      padding: 0 0.85rem;
+    }
+
+    .EdgeTrace-education-plans-head > span {
+      font-size: 0.94rem;
+      line-height: 1.62;
+    }
+
+    .EdgeTrace-education-feature-row > span,
+    .EdgeTrace-education-feature-row > div,
+    .EdgeTrace-education-feature-row > strong {
+      padding: 0.82rem 0.85rem;
+    }
+
+    .EdgeTrace-education-feature-row.is-head strong {
+      font-size: 0.82rem;
+      letter-spacing: 0.05em;
+    }
+
+    .EdgeTrace-education-feature-row.is-head small {
+      font-size: 0.62rem;
+    }
   }
 
   .EdgeTrace-command-button {

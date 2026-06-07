@@ -173,8 +173,8 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
               <h2>Choose the workflow depth your strategy needs.</h2>
             </div>
             <p>
-              Free includes the full core workflow. Pro adds local coaching, alerts, simulations, and Edge Score for
-              $9.99/month.
+              Free includes the full core workflow. Pro adds aggregate benchmarks, local coaching, alerts, simulations,
+              and Edge Score for $9.99/month.
             </p>
           </div>
           <div className="EdgeTrace-account-billing-card">
@@ -183,7 +183,7 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
             <span>
               {isPaid
                 ? "Open Stripe for payment methods, invoices, and cancellation settings."
-                : "Activate weekly reviews, regression alerts, Ask EdgeTrace, What-If Simulator, and Edge Score."}
+                : "Activate aggregate benchmarks, weekly reviews, regression alerts, Ask EdgeTrace, What-If Simulator, and Edge Score."}
             </span>
             {isPaid && !hasStripeCustomer ? (
               <button className="EdgeTrace-pricing-secondary mt-5 w-full" disabled={activeAction === "refresh"} onClick={() => void refreshProfile()}>
@@ -295,7 +295,7 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
         <InfoTile
           icon={Sparkles}
           title="Pro automation"
-          body="Pro adds weekly strategy reviews, regression alerts, Ask EdgeTrace, What-If Simulator, and Edge Score."
+          body="Pro adds aggregate benchmarks, weekly strategy reviews, regression alerts, Ask EdgeTrace, What-If Simulator, and Edge Score."
           accent="purple"
         />
       </section>
@@ -486,6 +486,11 @@ function accessItems(planId: PlanId) {
     {
       title: "Weekly reviews and alerts",
       body: pro ? "Pro automation is active." : "Upgrade for recurring reviews and regression alerts.",
+      enabled: pro
+    },
+    {
+      title: "Aggregate benchmarks",
+      body: pro ? "Cohort benchmark intelligence is active." : "Upgrade for cost drag, R-capture, and expectancy benchmarks.",
       enabled: pro
     },
     {

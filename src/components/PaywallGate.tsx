@@ -99,6 +99,7 @@ function featureParam(feature: FeatureKey | string) {
     export_audit: "exports",
     audit_exports: "exports",
     strategy_health_monitoring: "strategy-monitoring",
+    aggregate_benchmarks: "aggregate-benchmarks",
     edge_stability_score: "strategy-monitoring",
     recurring_reviews: "strategy-monitoring",
     regression_alerts: "strategy-monitoring",

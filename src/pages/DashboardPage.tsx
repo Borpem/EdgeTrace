@@ -25,6 +25,7 @@ import {
   Home,
   Info,
   Layers3,
+  Lock,
   Scale,
   TrendingDown,
   TrendingUp,
@@ -36,7 +37,7 @@ import { PaywallGate } from "../components/PaywallGate";
 import { formatReportType, ReportDetailsEditor } from "../components/ReportDetailsEditor";
 import { TableContainer } from "../components/ui/Primitives";
 import { trackEvent } from "../lib/analytics";
-import { getActivationSummary } from "../lib/api";
+import { getActivationSummary, getReportBenchmarks } from "../lib/api";
 import {
   breakdownLabels,
   buildBreakdown,
@@ -48,7 +49,15 @@ import {
 import { costDragSortValue } from "../lib/costDrag";
 import { canUseFeature, canViewFullDrilldown, getPlanConfig, getReportAccessLevel } from "../lib/entitlements";
 import { buildReportIntelligence, type MetricStatus } from "../lib/reportIntelligence";
-import type { ActivationSummary, DiagnosticsResult, NormalizedTrade, ReportSummary, UserProfile } from "../types";
+import type {
+  ActivationSummary,
+  AggregateBenchmarkMetric,
+  AggregateBenchmarkSnapshot,
+  DiagnosticsResult,
+  NormalizedTrade,
+  ReportSummary,
+  UserProfile
+} from "../types";
 
 const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
 const percent = new Intl.NumberFormat("en-US", { style: "percent", maximumFractionDigits: 1 });
@@ -130,6 +139,9 @@ export function DashboardPage({
   const [isGuideOpen, setIsGuideOpen] = useState(false);
   const [guideStep, setGuideStep] = useState(0);
   const [activation, setActivation] = useState<ActivationSummary | null>(null);
+  const [benchmarks, setBenchmarks] = useState<AggregateBenchmarkSnapshot | null>(null);
+  const [benchmarksLoading, setBenchmarksLoading] = useState(false);
+  const [benchmarksError, setBenchmarksError] = useState("");
 
   const trades = Array.isArray(result.trades) ? result.trades : [];
   const charts = result.charts ?? { equityCurve: [], pnlBySymbol: [], pnlByHour: [] };
@@ -180,6 +192,7 @@ export function DashboardPage({
     reportJustCreated || activation?.firstReportCreatedAt === result.createdAt ? 0 : 1,
     result
   );
+  const canViewAggregateBenchmarks = canUseFeature(plan, "aggregate_benchmarks");
   const canInspectFullDrilldown = reportAccessLevel === "full" && canViewFullDrilldown(plan);
   const fullAttributionAccess =
     canInspectFullDrilldown &&
@@ -256,6 +269,35 @@ export function DashboardPage({
       active = false;
     };
   }, [result.id]);
+
+  useEffect(() => {
+    let active = true;
+    setBenchmarks(null);
+    setBenchmarksError("");
+
+    if (!canViewAggregateBenchmarks) {
+      setBenchmarksLoading(false);
+      return () => {
+        active = false;
+      };
+    }
+
+    setBenchmarksLoading(true);
+    void getReportBenchmarks(result.id)
+      .then((snapshot) => {
+        if (active) setBenchmarks(snapshot);
+      })
+      .catch((err) => {
+        if (active) setBenchmarksError(err instanceof Error ? err.message : "Aggregate benchmarks could not be loaded.");
+      })
+      .finally(() => {
+        if (active) setBenchmarksLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [canViewAggregateBenchmarks, result.id]);
 
   useEffect(() => {
     setGuideStep(0);
@@ -596,6 +638,13 @@ export function DashboardPage({
 
           <PriorityInsights insights={priorityInsights} onOpenInsight={inspectPrimarySegment} />
         </section>
+
+        <BenchmarkIntelligencePanel
+          accessLevel={canViewAggregateBenchmarks ? "full" : "locked"}
+          snapshot={benchmarks}
+          isLoading={benchmarksLoading}
+          error={benchmarksError}
+        />
 
         <section className="EdgeTrace-dashboard-bottom">
           <SnapshotStats metrics={metrics} averageR={metrics.averageRealizedR} normalizedTradeCount={normalizedTradeCount} />
@@ -1054,6 +1103,113 @@ function PriorityInsights({
       <button className="EdgeTrace-dashboard-link" onClick={onOpenInsight}>
         View all insights <ArrowRight size={14} aria-hidden="true" />
       </button>
+    </div>
+  );
+}
+
+function BenchmarkIntelligencePanel({
+  accessLevel,
+  snapshot,
+  isLoading,
+  error
+}: {
+  accessLevel: "full" | "locked";
+  snapshot: AggregateBenchmarkSnapshot | null;
+  isLoading: boolean;
+  error: string;
+}) {
+  if (accessLevel === "locked") {
+    return (
+      <section className="EdgeTrace-dashboard-panel EdgeTrace-benchmark-panel is-locked">
+        <div className="EdgeTrace-benchmark-copy">
+          <PanelHeader title="EdgeTrace Benchmarks" info />
+          <h2>See how this report compares to the aggregate trader cohort.</h2>
+          <p>
+            Pro turns collected report data into cost-drag percentiles, R-capture comparisons, expectancy benchmarks,
+            and Edge Score context.
+          </p>
+        </div>
+
+        <div className="EdgeTrace-benchmark-preview" aria-hidden="true">
+          {[
+            ["Cost Drag", "Percentile"],
+            ["R Capture", "Benchmark"],
+            ["Expectancy", "Median Gap"]
+          ].map(([label, value], index) => (
+            <div key={label}>
+              <span>{label}</span>
+              <strong>{value}</strong>
+              <i style={{ width: `${72 - index * 14}%` }} />
+            </div>
+          ))}
+        </div>
+
+        <div className="EdgeTrace-benchmark-lock">
+          <Lock size={16} aria-hidden="true" />
+          <span>Included with Pro</span>
+          <button type="button" onClick={openBenchmarkPricing}>
+            Upgrade <ArrowRight size={14} aria-hidden="true" />
+          </button>
+        </div>
+      </section>
+    );
+  }
+
+  const metrics = snapshot?.metrics ?? [];
+
+  return (
+    <section className="EdgeTrace-dashboard-panel EdgeTrace-benchmark-panel">
+      <div className="EdgeTrace-benchmark-copy">
+        <PanelHeader title="EdgeTrace Benchmarks" info />
+        <h2>{snapshot?.topInsight ?? "Compare this report against the aggregate cohort."}</h2>
+        <p>
+          {snapshot
+            ? `${snapshot.cohortLabel} · ${snapshot.sampleSize} eligible reports · minimum cohort ${snapshot.minimumCohortSize}`
+            : "Loading cohort medians and percentiles for this report."}
+        </p>
+      </div>
+
+      <div className="EdgeTrace-benchmark-metrics">
+        {isLoading && (
+          <div className="EdgeTrace-benchmark-empty">
+            <BarChart3 size={18} aria-hidden="true" />
+            <span>Loading aggregate benchmarks...</span>
+          </div>
+        )}
+
+        {!isLoading && error && (
+          <div className="EdgeTrace-benchmark-empty tone-warning">
+            <AlertCircle size={18} aria-hidden="true" />
+            <span>{error}</span>
+          </div>
+        )}
+
+        {!isLoading && !error && metrics.map((metric) => <BenchmarkMetricRow key={metric.key} metric={metric} />)}
+      </div>
+
+      {snapshot?.privacyNote && <p className="EdgeTrace-benchmark-note">{snapshot.privacyNote}</p>}
+    </section>
+  );
+}
+
+function BenchmarkMetricRow({ metric }: { metric: AggregateBenchmarkMetric }) {
+  const percentileValue = metric.percentile ?? 0;
+  return (
+    <div className={`EdgeTrace-benchmark-row tone-${metric.status}`}>
+      <div>
+        <strong>{metric.label}</strong>
+        <span>{metric.description}</span>
+      </div>
+      <div className="EdgeTrace-benchmark-values">
+        <span>{formatBenchmarkValue(metric.userValue, metric.unit)}</span>
+        <small>Median {formatBenchmarkValue(metric.populationMedian, metric.unit)}</small>
+      </div>
+      <div className="EdgeTrace-benchmark-percentile" aria-label={`${metric.label} percentile`}>
+        <span>{metric.percentile ? `${metric.percentile}th` : "N/A"}</span>
+        <i>
+          <b style={{ width: `${Math.max(0, Math.min(100, percentileValue))}%` }} />
+        </i>
+      </div>
     </div>
   );
 }
@@ -1772,6 +1928,20 @@ function costDragValueClass(value: number | undefined) {
   if (value > 0.4) return "text-loss";
   if (value > 0.2) return "text-warning";
   return "text-cyan";
+}
+
+function formatBenchmarkValue(value: number | undefined, unit: AggregateBenchmarkMetric["unit"]) {
+  if (value === undefined || !Number.isFinite(value)) return "N/A";
+  if (unit === "currency") return currency.format(value);
+  if (unit === "percent") return percent.format(value);
+  if (unit === "rMultiple") return `${number.format(value)}R`;
+  return number.format(value);
+}
+
+function openBenchmarkPricing() {
+  trackEvent("plan_feature_cta_clicked", { feature: "aggregate_benchmarks", requiredPlan: "pro" });
+  window.history.pushState(null, "", "/pricing");
+  window.dispatchEvent(new PopStateEvent("popstate"));
 }
 
 function formatNumber(value: number | undefined) {

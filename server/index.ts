@@ -24,6 +24,7 @@ import {
   getOrCreateUserProfile,
   getSavedComparison,
   initDb,
+  listBenchmarkReports,
   listDiagnosticReports,
   listCollections,
   listCollectionReviewStates,
@@ -56,15 +57,18 @@ import {
   canCreateCollection,
   canCreateReport,
   canCreateSavedComparison,
+  canUseFeature,
   canUseBrokerAdapter,
   getPlanConfig
 } from "../src/lib/entitlements";
 import { normalizePlanId } from "../src/lib/plans";
 import type { ImportProvenance } from "../src/types";
 import {
+  planUpgradeResponse,
   sanitizeCollectionForUser,
   sanitizeReportForUser
 } from "./entitlements";
+import { buildAggregateBenchmarkSnapshot } from "./aggregateBenchmarks";
 
 const { authMode } = validateServerEnvironment();
 if (!process.env.CLERK_PUBLISHABLE_KEY && process.env.VITE_CLERK_PUBLISHABLE_KEY) {
@@ -649,6 +653,32 @@ app.post("/api/reports/archive", async (req, res) => {
       message: safeApiErrorMessage(err, "Unable to delete report. Refresh the reports page and try again."),
       debugRequestId,
       ...(debugEnabled ? { debugHint: isProduction ? "Check Railway logs for this debugRequestId." : archiveMessage } : {})
+    });
+  }
+});
+
+app.get("/api/diagnostics/:id/benchmarks", async (req, res) => {
+  try {
+    const userId = getUserId(req);
+    const plan = getPlanConfig((await getOrCreateUserProfile(userId)).planId);
+    if (!canUseFeature(plan, "aggregate_benchmarks")) {
+      res.status(403).json(planUpgradeResponse("aggregate_benchmarks"));
+      return;
+    }
+
+    const result = await getDiagnosticReport(userId, req.params.id);
+    if (!result) {
+      res.status(404).json({ error: "Diagnostics not found" });
+      return;
+    }
+
+    const benchmarkReports = await listBenchmarkReports();
+    res.json(buildAggregateBenchmarkSnapshot(result, benchmarkReports));
+  } catch (err) {
+    console.error(`[benchmarks] Unable to build aggregate benchmarks for report=${String(req.params.id ?? "")}`, err);
+    res.status(422).json({
+      error: "BENCHMARKS_UNAVAILABLE",
+      message: safeApiErrorMessage(err, "Aggregate benchmarks could not be loaded.")
     });
   }
 });
