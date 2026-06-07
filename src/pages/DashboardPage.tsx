@@ -28,7 +28,6 @@ import {
   Scale,
   TrendingDown,
   TrendingUp,
-  UserCircle,
   X
 } from "lucide-react";
 import { AddToStrategySetDialog } from "../components/AddToStrategySetDialog";
@@ -132,10 +131,7 @@ type DashboardPageProps = {
   onOpenDashboard?: () => void;
   onOpenCollections?: () => void;
   onOpenFeatures?: () => void;
-  onOpenAccount?: () => void;
   accountControl?: ReactNode;
-  userName?: string;
-  userEmail?: string;
   reportJustCreated?: boolean;
   onDismissCreatedBanner?: () => void;
   demoMode?: boolean;
@@ -155,10 +151,7 @@ export function DashboardPage({
   onOpenDashboard,
   onOpenCollections,
   onOpenFeatures,
-  onOpenAccount,
   accountControl,
-  userName,
-  userEmail,
   reportJustCreated,
   onDismissCreatedBanner,
   demoMode,
@@ -551,16 +544,12 @@ export function DashboardPage({
   return (
     <main className={`EdgeTrace-report-dashboard ${walkthroughOpen ? "has-walkthrough-open" : ""}`}>
       <DashboardSidebar
-        userName={userName}
-        userEmail={userEmail}
-        profile={profile}
         onDashboard={onOpenDashboard}
         onAnalyze={onCreateReport}
         onReports={onViewReports}
         onCollections={onOpenCollections}
         onCompare={handleSidebarCompare}
         onFeatures={onOpenFeatures}
-        onAccount={onOpenAccount}
         ariaHidden={walkthroughOpen}
       />
 
@@ -1060,28 +1049,20 @@ export function DashboardPage({
 }
 
 function DashboardSidebar({
-  userName,
-  userEmail,
-  profile,
   onDashboard,
   onAnalyze,
   onReports,
   onCollections,
   onCompare,
   onFeatures,
-  onAccount,
   ariaHidden
 }: {
-  userName?: string;
-  userEmail?: string;
-  profile?: UserProfile | null;
   onDashboard?: () => void;
   onAnalyze?: () => void;
   onReports?: () => void;
   onCollections?: () => void;
   onCompare?: () => void;
   onFeatures?: () => void;
-  onAccount?: () => void;
   ariaHidden?: boolean;
 }) {
   const navItems = [
@@ -1108,19 +1089,6 @@ function DashboardSidebar({
           </button>
         ))}
       </nav>
-
-      <button className="EdgeTrace-sidebar-user" onClick={onAccount}>
-        <span className="EdgeTrace-sidebar-avatar">
-          {userName ? initials(userName) : <UserCircle size={18} aria-hidden="true" />}
-        </span>
-        <span className="min-w-0">
-          <span className="EdgeTrace-sidebar-name">
-            {userName ?? "Demo Analyst"}
-            {profile?.planId && <small>{profile.planId.toUpperCase()}</small>}
-          </span>
-          <span className="EdgeTrace-sidebar-email">{userEmail ?? "demo@edgetrace.local"}</span>
-        </span>
-      </button>
     </aside>
   );
 }
@@ -2809,15 +2777,6 @@ function estimateTradeFrequency(trades: NormalizedTrade[]) {
   if (dates.length < 2) return undefined;
   const days = Math.max(1, Math.ceil((dates[dates.length - 1] - dates[0]) / 86_400_000));
   return number.format(trades.length / days);
-}
-
-function initials(value: string) {
-  return value
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase())
-    .join("");
 }
 
 function scoreClass(score: number) {

@@ -44,6 +44,8 @@ test.describe.serial("EdgeTrace happy path", () => {
 
     const healthCard = page.getByTestId("dashboard-health-card");
     await expect(healthCard).toBeVisible();
+    await expect(page.locator(".EdgeTrace-sidebar-user")).toHaveCount(0);
+    await expect(page.locator(".EdgeTrace-dashboard-account-control .EdgeTrace-account-utility-profile")).toBeVisible();
     await expect(page.getByText("After-cost performance", { exact: true }).first()).toBeVisible();
     await expect(page.getByText("Execution friction", { exact: true }).first()).toBeVisible();
   });
@@ -90,6 +92,8 @@ test.describe.serial("EdgeTrace happy path", () => {
       const content = page.locator(".EdgeTrace-auth-framed > main.EdgeTrace-shell").first();
       await expect(topbar).toBeVisible();
       await expect(content).toBeVisible();
+      await expect(page.locator(".EdgeTrace-sidebar-user")).toHaveCount(0);
+      await expect(page.locator(".EdgeTrace-account-utility-profile")).toBeVisible();
 
       const topbarBox = await topbar.boundingBox();
       const contentBox = await content.boundingBox();

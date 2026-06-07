@@ -638,10 +638,6 @@ export function App() {
       {useAuthenticatedAppShell && (
         <AuthenticatedSidebar
           activeNavPage={activeNavPage}
-          userName={user?.name}
-          userEmail={user?.email}
-          profile={userProfile}
-          authMode={authMode}
           onDashboard={() => void openLatestReportDashboard()}
           onAnalyze={() => navigate("upload")}
           onReports={() => navigate("reports")}
@@ -651,12 +647,6 @@ export function App() {
             navigate("compare");
           }}
           onFeatures={() => navigate("features", "/app/how-it-works")}
-          onAccount={() => navigate("account")}
-          onGuide={() => {
-            trackEvent("guide_restarted");
-            restartOnboarding();
-          }}
-          onSignOut={handleSignOut}
         />
       )}
       {useAuthenticatedAppShell && (
@@ -1080,7 +1070,6 @@ export function App() {
           onOpenDashboard={() => navigate("dashboard", `/app/dashboard/report/${result.id}`)}
           onOpenCollections={() => navigate("collections")}
           onOpenFeatures={() => navigate("features")}
-          onOpenAccount={() => navigate("account")}
           accountControl={
             <AccountUtility
               userName={user?.name}
@@ -1094,8 +1083,6 @@ export function App() {
               onSignOut={handleSignOut}
             />
           }
-          userName={user?.name}
-          userEmail={user?.email}
         />
       )}
       {page === "dashboard" && !result && (
@@ -1149,34 +1136,20 @@ export function App() {
 
 function AuthenticatedSidebar({
   activeNavPage,
-  userName,
-  userEmail,
-  profile,
-  authMode,
   onDashboard,
   onAnalyze,
   onReports,
   onCollections,
   onCompare,
-  onFeatures,
-  onAccount,
-  onGuide,
-  onSignOut
+  onFeatures
 }: {
   activeNavPage: Page;
-  userName?: string;
-  userEmail?: string;
-  profile?: UserProfile | null;
-  authMode: "clerk" | "mock";
   onDashboard: () => void;
   onAnalyze: () => void;
   onReports: () => void;
   onCollections: () => void;
   onCompare: () => void;
   onFeatures: () => void;
-  onAccount: () => void;
-  onGuide: () => void;
-  onSignOut: () => void;
 }) {
   const navItems: Array<{ target: Page; label: string; icon: typeof Home; action: () => void }> = [
     { target: "strategyDashboard", label: "Dashboard", icon: Home, action: onDashboard },
@@ -1202,39 +1175,6 @@ function AuthenticatedSidebar({
           </button>
         ))}
       </nav>
-
-      <div className="EdgeTrace-auth-sidebar-footer">
-        <button className="EdgeTrace-sidebar-user" onClick={onAccount}>
-          <span className="EdgeTrace-sidebar-avatar">
-            {userName ? initials(userName) : <UserCircle size={18} aria-hidden="true" />}
-          </span>
-          <span className="min-w-0">
-            <span className="EdgeTrace-sidebar-name">
-              {userName ?? "Demo Analyst"}
-              {profile?.planId && <small>{profile.planId.toUpperCase()}</small>}
-            </span>
-            <span className="EdgeTrace-sidebar-email">{userEmail ?? "demo@edgetrace.local"}</span>
-          </span>
-        </button>
-
-        <div className="EdgeTrace-auth-sidebar-tools">
-          <button onClick={onGuide}>Guide</button>
-          {authMode === "clerk" ? (
-            <UserButton
-              afterSignOutUrl="/"
-              appearance={{
-                elements: {
-                  avatarBox: "h-8 w-8 border border-white/15"
-                }
-              }}
-            />
-          ) : (
-            <button onClick={onSignOut}>
-              Sign out <LogOut size={14} aria-hidden="true" />
-            </button>
-          )}
-        </div>
-      </div>
     </aside>
   );
 }
@@ -1296,30 +1236,39 @@ function AccountUtility({
   onGuide: () => void;
   onSignOut: () => void;
 }) {
+  const planLabel = profile?.planId ? profile.planId.toUpperCase() : "FREE";
+
   return (
     <div className="EdgeTrace-account-utility">
       <button className="EdgeTrace-account-utility-profile" type="button" onClick={onAccount}>
-        <span>{userName ? initials(userName) : <UserCircle size={16} aria-hidden="true" />}</span>
-        <strong>{userName ?? "Account"}</strong>
-        {profile?.planId && <em>{profile.planId.toUpperCase()}</em>}
+        <span className="EdgeTrace-account-utility-avatar">
+          {userName ? initials(userName) : <UserCircle size={16} aria-hidden="true" />}
+        </span>
+        <span className="EdgeTrace-account-utility-copy">
+          <strong>{userName ?? "Account"}</strong>
+          <small>Account settings</small>
+        </span>
+        <em>{planLabel}</em>
       </button>
-      <button className="EdgeTrace-account-utility-link" type="button" onClick={onGuide}>
-        Guide
-      </button>
-      {authMode === "clerk" ? (
-        <UserButton
-          afterSignOutUrl="/"
-          appearance={{
-            elements: {
-              avatarBox: "h-8 w-8 border border-white/15"
-            }
-          }}
-        />
-      ) : (
-        <button className="EdgeTrace-account-utility-link" type="button" onClick={onSignOut}>
-          Sign out <LogOut size={14} aria-hidden="true" />
+      <div className="EdgeTrace-account-utility-actions">
+        <button className="EdgeTrace-account-utility-link" type="button" onClick={onGuide}>
+          Guide
         </button>
-      )}
+        {authMode === "clerk" ? (
+          <UserButton
+            afterSignOutUrl="/"
+            appearance={{
+              elements: {
+                avatarBox: "h-9 w-9 border border-cyan/35 shadow-[0_0_24px_-14px_rgba(98,200,255,0.9)]"
+              }
+            }}
+          />
+        ) : (
+          <button className="EdgeTrace-account-utility-link" type="button" onClick={onSignOut}>
+            Sign out <LogOut size={14} aria-hidden="true" />
+          </button>
+        )}
+      </div>
     </div>
   );
 }
