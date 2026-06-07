@@ -30,6 +30,24 @@ test.describe.serial("EdgeTrace happy path", () => {
     await expect(page.getByRole("heading", { name: "Create a Diagnostic Report" })).toBeVisible();
   });
 
+  test("Public pricing keeps the shared site header", async ({ page }) => {
+    await page.goto("/");
+    await page.getByRole("button", { name: "Pricing" }).click();
+
+    const topbar = page.locator("header.EdgeTrace-topbar");
+    await expect(page).toHaveURL(/\/pricing/);
+    await expect(topbar).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Simple pricing. Serious edge." })).toBeVisible();
+    await expect(page.locator(".EdgeTrace-pricing-nav")).toHaveCount(0);
+    await expect(topbar.getByRole("button", { name: "Product" })).toBeVisible();
+    await expect(topbar.getByRole("button", { name: "How It Works" })).toBeVisible();
+    await expect(topbar.getByRole("button", { name: "Pricing" })).toHaveClass(/EdgeTrace-nav-link-active/);
+    await expect(topbar.getByRole("button", { name: "Login" })).toBeVisible();
+    await expect(topbar.getByRole("button", { name: "Sign Up" })).toBeVisible();
+    await expect(topbar.getByRole("button", { name: "Resources" })).toHaveCount(0);
+    await expect(topbar.getByRole("button", { name: "About" })).toHaveCount(0);
+  });
+
   test("Upload sample CSV flow", async ({ page }) => {
     await page.goto("/app/upload");
     await expect(page).toHaveURL(/\/login\?next=/);

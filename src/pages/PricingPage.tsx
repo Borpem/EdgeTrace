@@ -2,7 +2,6 @@ import { useEffect, useState, type ReactNode } from "react";
 import {
   ArrowRight,
   Check,
-  ChevronDown,
   Database,
   Lock,
   ReceiptText,
@@ -315,8 +314,6 @@ export function PricingPage({
 
   return (
     <main className="EdgeTrace-pricing-page">
-      <PricingNav isAuthenticated={isAuthenticated} onStart={onStart} />
-
       <section className="EdgeTrace-pricing-hero">
         <p className="EdgeTrace-pricing-eyebrow">Pricing</p>
         <h1>Simple pricing. Serious edge.</h1>
@@ -349,39 +346,6 @@ export function PricingPage({
       <FaqSection />
       <FinalCta onStart={onStart} onPro={handleProCta} activeAction={activeAction} profile={profile} isAuthenticated={isAuthenticated} />
     </main>
-  );
-}
-
-function PricingNav({ isAuthenticated, onStart }: { isAuthenticated: boolean; onStart: () => void }) {
-  const navigateTo = (path: string) => {
-    window.history.pushState(null, "", path);
-    window.dispatchEvent(new PopStateEvent("popstate"));
-  };
-
-  return (
-    <header className="EdgeTrace-pricing-nav">
-      <button className="EdgeTrace-pricing-brand" onClick={() => navigateTo(isAuthenticated ? "/app/dashboard" : "/")}>
-        <img src="/brand/edgetrace_icon_monochrome_white_transparent.png" alt="" aria-hidden="true" />
-        <img src="/brand/edgetrace_wordmark_monochrome_white.png" alt="EdgeTrace" />
-      </button>
-      <nav aria-label="Pricing navigation">
-        <button onClick={() => navigateTo("/")}>
-          Product <ChevronDown size={14} aria-hidden="true" />
-        </button>
-        <button onClick={() => navigateTo(isAuthenticated ? "/app/how-it-works" : "/how-it-works")}>How It Works</button>
-        <button className="active" onClick={() => navigateTo("/pricing")}>Pricing</button>
-        <button onClick={() => navigateTo("/demo")}>
-          Resources <ChevronDown size={14} aria-hidden="true" />
-        </button>
-        <button onClick={() => navigateTo(isAuthenticated ? "/app/account" : "/signup")}>About</button>
-      </nav>
-      <div className="EdgeTrace-pricing-nav-actions">
-        {!isAuthenticated && <button onClick={() => navigateTo("/login")}>Log in</button>}
-        <button className="EdgeTrace-pricing-primary" onClick={onStart}>
-          {isAuthenticated ? "Import Trades" : "Start Free"}
-        </button>
-      </div>
-    </header>
   );
 }
 

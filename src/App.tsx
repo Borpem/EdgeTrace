@@ -630,7 +630,7 @@ export function App() {
     { target: "features", label: "How It Works" }
   ];
   const useReportDashboardShell = page === "dashboard" && Boolean(result);
-  const usePricingPageShell = page === "pricing";
+  const isPricingPage = page === "pricing";
   const useAuthenticatedAppShell = isAuthenticated && !useReportDashboardShell && isAuthenticatedAppPage(page);
 
   return (
@@ -665,7 +665,7 @@ export function App() {
         />
       )}
 
-      {!useReportDashboardShell && !useAuthenticatedAppShell && !usePricingPageShell && (
+      {!useReportDashboardShell && !useAuthenticatedAppShell && (
       <header className="EdgeTrace-topbar sticky top-0 z-40">
         <div className="EdgeTrace-shell relative flex h-auto flex-col items-center gap-4 py-4 lg:h-16 lg:flex-row lg:justify-between lg:py-0">
           <button
@@ -730,7 +730,7 @@ export function App() {
                 How It Works
               </button>
               <button
-                className="EdgeTrace-nav-link"
+                className={`EdgeTrace-nav-link ${page === "pricing" ? "EdgeTrace-nav-link-active" : ""}`}
                 onClick={() => navigate("pricing")}
               >
                 Pricing
@@ -804,7 +804,7 @@ export function App() {
       </header>
       )}
 
-      {isAuthenticated && !useReportDashboardShell && !usePricingPageShell && (
+      {isAuthenticated && !useReportDashboardShell && !isPricingPage && (
         <OnboardingOverlay
           onStart={() => navigate("upload")}
           onLearn={() => {
