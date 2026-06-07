@@ -23,7 +23,7 @@ test.describe.serial("EdgeTrace happy path", () => {
     await expect(page.getByRole("button", { name: "How It Works" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Pricing" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Login" })).toBeVisible();
-    await page.getByRole("button", { name: "Analyze My Trades", exact: true }).click();
+    await page.getByRole("button", { name: "Import My Trades", exact: true }).click();
 
     await expect(page.getByText("Create a strategy diagnostics workspace.")).toBeVisible();
     await page.getByRole("button", { name: "Create Demo Account" }).click();

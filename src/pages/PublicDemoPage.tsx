@@ -219,7 +219,7 @@ export function PublicDemoPage({
     <PageShell>
       <PageHeader
         title="Follow the path from trade history to strategy insight."
-        subtitle="A guided Pro preview using sample data: diagnose the report, inspect the leak, compare iterations, then monitor the strategy trend."
+        subtitle="A guided sample workflow: diagnose the report, inspect the leak, compare iterations, then monitor the strategy trend."
         aside={
           <aside className="border border-cyan/30 bg-cyan/[0.045] p-5">
             <p className="text-sm font-semibold text-ink">Interactive Demo</p>
@@ -228,7 +228,7 @@ export function PublicDemoPage({
               {primaryReport ? `${primaryReport.metrics.totalTrades} trades analyzed` : "Loading sample"}
             </p>
             <p className="mt-3 text-sm leading-6 text-muted">
-              No database writes. No real broker data. This walkthrough previews the Pro value loop only.
+              No database writes. No real broker data. This walkthrough previews the core EdgeTrace workflow.
             </p>
           </aside>
         }

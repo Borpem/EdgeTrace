@@ -63,7 +63,10 @@ async function apiHeaders(extra?: HeadersInit): Promise<HeadersInit> {
 
 export function isReportsDebugEnabled() {
   if (typeof window === "undefined") return false;
-  return !import.meta.env.PROD || new URLSearchParams(window.location.search).get("debugReports") === "1";
+  return (
+    new URLSearchParams(window.location.search).get("debugReports") === "1" ||
+    import.meta.env.VITE_REPORTS_DEBUG === "1"
+  );
 }
 
 export function emitReportsDebug(label: string, details?: Record<string, unknown>) {

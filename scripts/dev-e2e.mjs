@@ -1,4 +1,6 @@
 import { spawn } from "node:child_process";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
 const npmCommand = process.platform === "win32" ? "npm.cmd" : "npm";
 const env = {
@@ -6,6 +8,9 @@ const env = {
   AUTH_MODE: "mock",
   VITE_AUTH_MODE: "mock",
   VITE_DISABLE_ONBOARDING_OVERLAY: "1",
+  DATABASE_PROVIDER: "sqlite",
+  DATABASE_URL: "",
+  EDGETRACE_DB_PATH: process.env.EDGETRACE_E2E_DB_PATH ?? join(tmpdir(), "edgetrace-e2e.sqlite"),
   PORT: "4107",
   VITE_API_BASE_URL: "http://127.0.0.1:4107"
 };

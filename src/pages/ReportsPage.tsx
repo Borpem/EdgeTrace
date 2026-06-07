@@ -511,7 +511,7 @@ function ReportsDebugPanel({
   bannerRendered: boolean;
   bannerReason: string;
 }) {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const [copyState, setCopyState] = useState("");
   const latestDiagnosticsResponse = [...events]
     .reverse()
