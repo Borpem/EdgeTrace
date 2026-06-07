@@ -34,7 +34,7 @@ const workflowSteps: Array<{ icon: LucideIcon; title: string; body: string; visu
 const brokerPills = ["Interactive Brokers", "Robinhood", "Thinkorswim", "Fidelity", "Webull", "E*TRADE", "Generic CSV"] as const;
 
 const trustItems: Array<{ icon: LucideIcon; title: string; body: string }> = [
-  { icon: Shield, title: "Privacy first", body: "Your data is yours. Raw files are not stored." },
+  { icon: Shield, title: "Aggregate intelligence", body: "Trade history can power sharper diagnostics and benchmark insights." },
   { icon: Lock, title: "Secure infrastructure", body: "Encrypted in transit and at rest." },
   { icon: BarChart3, title: "Transparent analysis", body: "See how every report is calculated." },
   { icon: Send, title: "Built by traders", body: "For traders who want real answers." }

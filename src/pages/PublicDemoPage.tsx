@@ -228,7 +228,7 @@ export function PublicDemoPage({
               {primaryReport ? `${primaryReport.metrics.totalTrades} trades analyzed` : "Loading sample"}
             </p>
             <p className="mt-3 text-sm leading-6 text-muted">
-              No database writes. No real broker data. This walkthrough previews the core EdgeTrace workflow.
+              Sample data only. This walkthrough previews the core EdgeTrace workflow.
             </p>
           </aside>
         }

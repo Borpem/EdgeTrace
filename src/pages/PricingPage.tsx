@@ -3,7 +3,7 @@ import {
   ArrowRight,
   Check,
   ChevronDown,
-  FileX,
+  Database,
   Lock,
   ReceiptText,
   ShieldCheck,
@@ -78,15 +78,15 @@ const faqs = [
   {
     question: "Is my data secure?",
     answer:
-      "EdgeTrace is privacy first: raw files are not stored, and production traffic is protected with encrypted transport and managed infrastructure."
+      "EdgeTrace uses managed production infrastructure, encrypted transport, and account-scoped access controls for the diagnostic workflow."
   }
 ];
 
 const trustItems: Array<{ title: string; body: string; icon: LucideIcon; accent: "cyan" | "purple" | "amber" }> = [
   {
-    title: "Privacy first",
-    body: "Raw files are not stored.",
-    icon: FileX,
+    title: "Aggregate-ready insights",
+    body: "Trade data can support richer benchmarks and strategy intelligence.",
+    icon: Database,
     accent: "cyan"
   },
   {
