@@ -1,7 +1,6 @@
 import { Pencil, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { CollectionEditor } from "../components/CollectionEditor";
-import { CommandPath } from "../components/onboarding/CommandPath";
 import { StrategyLoopGraphic } from "../components/visuals/StrategyLoopGraphic";
 import { deleteCollection, listCollections } from "../lib/api";
 import { canCreateCollection, formatLimit, getPlanConfig } from "../lib/entitlements";
@@ -92,9 +91,6 @@ export function CollectionsPage({
           <p className="mt-2 text-sm text-muted">
             Strategy sets help you track iterations and understand whether a strategy is improving over time.
           </p>
-          <p className="mt-2 text-xs text-muted">
-            After you create reports, the workflow guide will point you here to organize related strategy iterations.
-          </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <button
               className="EdgeTrace-primary-button disabled:cursor-not-allowed disabled:opacity-50"
@@ -108,16 +104,7 @@ export function CollectionsPage({
                 Import Trades
               </button>
             )}
-            <button className="EdgeTrace-secondary-button" onClick={openFeatureGuide}>
-              Learn how this works
-            </button>
           </div>
-          <CommandPath
-            className="mt-7"
-            context="collections"
-            onAnalyze={onAnalyze}
-            onCreateStrategySet={() => setEditing("new")}
-          />
         </section>
       ) : (
         <section className="grid gap-4 md:grid-cols-2">
@@ -183,9 +170,4 @@ function Metric({ label, value }: { label: string; value: string }) {
       <p className="mt-1 font-semibold text-ink">{value}</p>
     </div>
   );
-}
-
-function openFeatureGuide() {
-  window.history.pushState(null, "", "/app/how-it-works?feature=strategy-sets");
-  window.dispatchEvent(new PopStateEvent("popstate"));
 }

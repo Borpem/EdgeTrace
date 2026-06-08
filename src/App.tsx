@@ -12,8 +12,6 @@ import {
 } from "lucide-react";
 import Papa from "papaparse";
 import { useAuth } from "./context/AuthContext";
-import { useOnboarding } from "./context/OnboardingContext";
-import { OnboardingOverlay } from "./components/onboarding/OnboardingOverlay";
 import { trackEvent } from "./lib/analytics";
 import type { BreakdownDimension } from "./lib/breakdowns";
 import {
@@ -62,7 +60,6 @@ type CollectionAttributionSelection = { dimension: BreakdownDimension; group: st
 
 export function App() {
   const { authMode, user, isAuthenticated, isLoading: authLoading, login, signup, logout, getAccessToken } = useAuth();
-  const { restart: restartOnboarding } = useOnboarding();
   const [page, setPage] = useState<Page>("home");
   const [result, setResult] = useState<DiagnosticsResult | null>(null);
   const [drilldownSelection, setDrilldownSelection] = useState<DrilldownSelection | null>(null);
@@ -630,7 +627,6 @@ export function App() {
     { target: "features", label: "How It Works" }
   ];
   const useReportDashboardShell = page === "dashboard" && Boolean(result);
-  const isPricingPage = page === "pricing";
   const useAuthenticatedAppShell = isAuthenticated && !useReportDashboardShell && isAuthenticatedAppPage(page);
 
   return (
@@ -657,10 +653,6 @@ export function App() {
           authMode={authMode}
           onAnalyze={() => navigate("upload")}
           onAccount={() => navigate("account")}
-          onGuide={() => {
-            trackEvent("guide_restarted");
-            restartOnboarding();
-          }}
           onSignOut={handleSignOut}
         />
       )}
@@ -772,15 +764,6 @@ export function App() {
               >
                 My Account{userProfile ? ` · ${userProfile.planId.toUpperCase()}` : ""}
               </button>
-              <button
-                className="border-b border-transparent py-1.5 text-sm font-semibold text-muted hover:border-white/20 hover:text-ink"
-                onClick={() => {
-                  trackEvent("guide_restarted");
-                  restartOnboarding();
-                }}
-              >
-                Guide
-              </button>
               {authMode === "clerk" ? (
                 <UserButton
                   afterSignOutUrl="/"
@@ -802,16 +785,6 @@ export function App() {
           ) : null}
         </div>
       </header>
-      )}
-
-      {isAuthenticated && !useReportDashboardShell && !isPricingPage && (
-        <OnboardingOverlay
-          onStart={() => navigate("upload")}
-          onLearn={() => {
-            trackEvent("onboarding_learn_workflow_clicked");
-            navigate("features", "/app/how-it-works");
-          }}
-        />
       )}
 
       {page === "home" && (
@@ -1076,10 +1049,6 @@ export function App() {
               profile={userProfile}
               authMode={authMode}
               onAccount={() => navigate("account")}
-              onGuide={() => {
-                trackEvent("guide_restarted");
-                restartOnboarding();
-              }}
               onSignOut={handleSignOut}
             />
           }
@@ -1186,7 +1155,6 @@ function AuthenticatedTopbar({
   authMode,
   onAnalyze,
   onAccount,
-  onGuide,
   onSignOut
 }: {
   activeLabel: string;
@@ -1195,12 +1163,11 @@ function AuthenticatedTopbar({
   authMode: "clerk" | "mock";
   onAnalyze: () => void;
   onAccount: () => void;
-  onGuide: () => void;
   onSignOut: () => void;
 }) {
   return (
     <header className="EdgeTrace-auth-topbar">
-      <div>
+      <div className="EdgeTrace-auth-topbar-context">
         <p>{activeLabel}</p>
         <span>{profile?.planId ? `${profile.planId.toUpperCase()} plan` : "Workspace"}</span>
       </div>
@@ -1213,7 +1180,6 @@ function AuthenticatedTopbar({
           profile={profile}
           authMode={authMode}
           onAccount={onAccount}
-          onGuide={onGuide}
           onSignOut={onSignOut}
         />
       </div>
@@ -1226,14 +1192,12 @@ function AccountUtility({
   profile,
   authMode,
   onAccount,
-  onGuide,
   onSignOut
 }: {
   userName?: string;
   profile?: UserProfile | null;
   authMode: "clerk" | "mock";
   onAccount: () => void;
-  onGuide: () => void;
   onSignOut: () => void;
 }) {
   const planLabel = profile?.planId ? profile.planId.toUpperCase() : "FREE";
@@ -1251,9 +1215,6 @@ function AccountUtility({
         <em>{planLabel}</em>
       </button>
       <div className="EdgeTrace-account-utility-actions">
-        <button className="EdgeTrace-account-utility-link" type="button" onClick={onGuide}>
-          Guide
-        </button>
         {authMode === "clerk" ? (
           <UserButton
             afterSignOutUrl="/"

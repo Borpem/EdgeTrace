@@ -64,6 +64,9 @@ test.describe.serial("EdgeTrace happy path", () => {
     await expect(healthCard).toBeVisible();
     await expect(page.locator(".EdgeTrace-sidebar-user")).toHaveCount(0);
     await expect(page.locator(".EdgeTrace-dashboard-account-control .EdgeTrace-account-utility-profile")).toBeVisible();
+    await expect(page.locator(".EdgeTrace-dashboard-title-group .EdgeTrace-report-selector")).toBeVisible();
+    await expect(page.locator(".EdgeTrace-dashboard-report-meta .EdgeTrace-report-selector")).toHaveCount(0);
+    await expect(page.locator(".EdgeTrace-kpi-card", { hasText: "Win Rate" }).locator(".EdgeTrace-kpi-progress")).toHaveCount(0);
     await expect(page.getByText("After-cost performance", { exact: true }).first()).toBeVisible();
     await expect(page.getByText("Execution friction", { exact: true }).first()).toBeVisible();
   });
@@ -112,6 +115,10 @@ test.describe.serial("EdgeTrace happy path", () => {
       await expect(content).toBeVisible();
       await expect(page.locator(".EdgeTrace-sidebar-user")).toHaveCount(0);
       await expect(page.locator(".EdgeTrace-account-utility-profile")).toBeVisible();
+      await expect(topbar.getByRole("button", { name: "Guide" })).toHaveCount(0);
+      if (route === "/app/collections") {
+        await expect(page.getByText("Guided Command Path")).toHaveCount(0);
+      }
 
       const topbarBox = await topbar.boundingBox();
       const contentBox = await content.boundingBox();

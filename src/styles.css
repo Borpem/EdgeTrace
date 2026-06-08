@@ -293,19 +293,19 @@
     backdrop-filter: blur(18px);
   }
 
-  .EdgeTrace-auth-topbar p,
-  .EdgeTrace-auth-topbar span {
+  .EdgeTrace-auth-topbar-context p,
+  .EdgeTrace-auth-topbar-context span {
     display: block;
   }
 
-  .EdgeTrace-auth-topbar p {
+  .EdgeTrace-auth-topbar-context p {
     margin: 0;
     color: #ffffff;
     font-size: 0.92rem;
     font-weight: 680;
   }
 
-  .EdgeTrace-auth-topbar span {
+  .EdgeTrace-auth-topbar-context span {
     margin-top: 0.14rem;
     color: rgba(214, 224, 235, 0.56);
     font-size: 0.7rem;
@@ -1005,11 +1005,17 @@
 
   .EdgeTrace-dashboard-header {
     display: grid;
-    grid-template-columns: minmax(13rem, 1fr) minmax(22rem, auto) minmax(13rem, 1fr);
+    grid-template-columns: minmax(18rem, 1fr) minmax(22rem, auto) minmax(13rem, 1fr);
     gap: 1.2rem;
-    align-items: center;
+    align-items: start;
     padding-bottom: 1.25rem;
     border-bottom: 1px solid rgba(130, 161, 190, 0.14);
+  }
+
+  .EdgeTrace-dashboard-title-group {
+    display: grid;
+    gap: 0.95rem;
+    min-width: 0;
   }
 
   .EdgeTrace-dashboard-header h1 {
@@ -1042,6 +1048,11 @@
     justify-items: end;
   }
 
+  .EdgeTrace-dashboard-title-group .EdgeTrace-report-selector-wrap {
+    width: min(28rem, 100%);
+    justify-items: start;
+  }
+
   .EdgeTrace-report-selector-wrap label {
     color: rgba(214, 224, 235, 0.56);
     font-size: 0.64rem;
@@ -1061,6 +1072,10 @@
     font-size: 0.86rem;
     font-weight: 620;
     outline: none;
+  }
+
+  .EdgeTrace-dashboard-title-group .EdgeTrace-report-selector {
+    width: 100%;
   }
 
   .EdgeTrace-report-selector:focus {

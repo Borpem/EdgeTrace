@@ -555,11 +555,11 @@ export function DashboardPage({
 
       <section className="EdgeTrace-dashboard-main" aria-hidden={walkthroughOpen}>
         <header className="EdgeTrace-dashboard-header">
-          <div>
-            <h1>Dashboard</h1>
-            <p>Post-report intelligence at a glance.</p>
-          </div>
-          <div className="EdgeTrace-dashboard-report-meta">
+          <div className="EdgeTrace-dashboard-title-group">
+            <div>
+              <h1>Dashboard</h1>
+              <p>Post-report intelligence at a glance.</p>
+            </div>
             <div className="EdgeTrace-report-selector-wrap">
               <label htmlFor="dashboard-report-select">Report</label>
               <select
@@ -580,6 +580,8 @@ export function DashboardPage({
               </select>
               {reportSelectorError && <small>{reportSelectorError}</small>}
             </div>
+          </div>
+          <div className="EdgeTrace-dashboard-report-meta">
             <button className="EdgeTrace-report-edit-button" type="button" onClick={() => setIsEditingDetails(true)}>
               Edit details
             </button>
@@ -694,7 +696,6 @@ export function DashboardPage({
             value={percent.format(metrics.winRate)}
             detail={winRateCopy(metrics.winRate)}
             tone={statusTone(intelligence.keyMetricStatuses.winRate)}
-            progress={metrics.winRate}
           />
           <DashboardMetricCard
             title="R-Multiple"
