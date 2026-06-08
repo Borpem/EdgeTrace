@@ -561,7 +561,12 @@ export function DashboardPage({
               <p>Post-report intelligence at a glance.</p>
             </div>
             <div className="EdgeTrace-report-selector-wrap">
-              <label htmlFor="dashboard-report-select">Report</label>
+              <div className="EdgeTrace-report-selector-head">
+                <label htmlFor="dashboard-report-select">Report</label>
+                <button className="EdgeTrace-report-edit-button" type="button" onClick={() => setIsEditingDetails(true)}>
+                  Edit details
+                </button>
+              </div>
               <select
                 id="dashboard-report-select"
                 className="EdgeTrace-report-selector"
@@ -582,9 +587,6 @@ export function DashboardPage({
             </div>
           </div>
           <div className="EdgeTrace-dashboard-report-meta">
-            <button className="EdgeTrace-report-edit-button" type="button" onClick={() => setIsEditingDetails(true)}>
-              Edit details
-            </button>
             <div className="EdgeTrace-report-generated">
               <span>
                 Generated{" "}
@@ -725,14 +727,14 @@ export function DashboardPage({
                   stroke="#8796a8"
                   tickLine={false}
                   axisLine={false}
-                  tick={{ fontSize: 11 }}
+                  tick={{ fontSize: 12 }}
                 />
                 <YAxis
                   stroke="#8796a8"
                   tickLine={false}
                   axisLine={false}
                   width={44}
-                  tick={{ fontSize: 11 }}
+                  tick={{ fontSize: 12 }}
                   tickFormatter={formatAxisCurrency}
                 />
                 <Tooltip
@@ -844,7 +846,6 @@ export function DashboardPage({
                 <div className="EdgeTrace-overview-insight-list">
                   {priorityInsights.map((insight) => (
                     <div key={`${insight.label}-${insight.title}`} className={`tone-${insight.tone}`}>
-                      <span>{insight.label}</span>
                       <p>
                         <strong>{insight.title}</strong>
                         <small>{insight.detail}</small>
@@ -1228,8 +1229,7 @@ function PriorityInsights({
       <PanelHeader title="Priority Insights" info />
       <div className="EdgeTrace-priority-list">
         {insights.map((insight) => (
-          <button key={`${insight.label}-${insight.title}`} onClick={onOpenInsight}>
-            <span className={`tone-${insight.tone}`}>{insight.label}</span>
+          <button key={`${insight.label}-${insight.title}`} className={`tone-${insight.tone}`} onClick={onOpenInsight}>
             <p>
               <strong>{insight.title}</strong>
               <small>{insight.detail}</small>

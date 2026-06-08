@@ -1021,15 +1021,16 @@
   .EdgeTrace-dashboard-header h1 {
     margin: 0;
     color: #ffffff;
-    font-size: 1.48rem;
-    font-weight: 680;
+    font-size: 1.75rem;
+    font-weight: 720;
     letter-spacing: 0;
   }
 
   .EdgeTrace-dashboard-header p {
     margin: 0.5rem 0 0;
     color: rgba(214, 224, 235, 0.66);
-    font-size: 0.84rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
   }
 
   .EdgeTrace-dashboard-report-meta {
@@ -1049,13 +1050,21 @@
   }
 
   .EdgeTrace-dashboard-title-group .EdgeTrace-report-selector-wrap {
-    width: min(28rem, 100%);
+    width: min(30rem, 100%);
     justify-items: start;
+  }
+
+  .EdgeTrace-report-selector-head {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
   }
 
   .EdgeTrace-report-selector-wrap label {
     color: rgba(214, 224, 235, 0.56);
-    font-size: 0.64rem;
+    font-size: 0.72rem;
     font-weight: 720;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -1063,13 +1072,13 @@
 
   .EdgeTrace-report-selector {
     width: min(22rem, 42vw);
-    min-height: 2.35rem;
+    min-height: 2.65rem;
     border: 1px solid rgba(130, 161, 190, 0.18);
     border-radius: 7px;
     background: linear-gradient(180deg, rgba(12, 27, 42, 0.96), rgba(7, 17, 29, 0.98));
     color: #ffffff;
-    padding: 0 2.1rem 0 0.8rem;
-    font-size: 0.86rem;
+    padding: 0 2.2rem 0 0.92rem;
+    font-size: 0.96rem;
     font-weight: 620;
     outline: none;
   }
@@ -1089,10 +1098,10 @@
   }
 
   .EdgeTrace-report-edit-button {
-    justify-self: end;
     color: #45b7f4;
-    font-size: 0.72rem;
-    font-weight: 650;
+    font-size: 0.78rem;
+    font-weight: 720;
+    white-space: nowrap;
   }
 
   .EdgeTrace-report-edit-button:hover {
@@ -1104,7 +1113,7 @@
     align-items: center;
     gap: 0.45rem;
     color: rgba(214, 224, 235, 0.62);
-    font-size: 0.72rem;
+    font-size: 0.78rem;
   }
 
   .EdgeTrace-dashboard-account-control {
@@ -1230,7 +1239,7 @@
 
   .EdgeTrace-results-walkthrough-button strong {
     color: #ffffff;
-    font-size: 0.98rem;
+    font-size: 1.04rem;
     font-weight: 720;
     letter-spacing: 0;
   }
@@ -1238,7 +1247,7 @@
   .EdgeTrace-results-walkthrough-button small {
     margin-top: 0.12rem;
     color: rgba(214, 224, 235, 0.62);
-    font-size: 0.72rem;
+    font-size: 0.8rem;
     font-weight: 560;
   }
 
@@ -1612,7 +1621,7 @@
 
   .EdgeTrace-kpi-card {
     min-height: 12.55rem;
-    padding: 1.05rem 1.18rem;
+    padding: 1.15rem 1.25rem;
   }
 
   .EdgeTrace-panel-header {
@@ -1620,9 +1629,9 @@
     align-items: center;
     gap: 0.45rem;
     color: rgba(214, 224, 235, 0.84);
-    font-size: 0.72rem;
-    font-weight: 650;
-    letter-spacing: 0.04em;
+    font-size: 0.82rem;
+    font-weight: 720;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
   }
 
@@ -1641,8 +1650,8 @@
   .EdgeTrace-kpi-value {
     margin: 0;
     color: #ffffff;
-    font-size: clamp(1.58rem, 2.2vw, 2.05rem);
-    font-weight: 520;
+    font-size: clamp(1.8rem, 2.45vw, 2.35rem);
+    font-weight: 590;
     line-height: 1.08;
     letter-spacing: 0;
   }
@@ -1650,8 +1659,8 @@
   .EdgeTrace-kpi-value span {
     margin-left: 0.32rem;
     color: rgba(214, 224, 235, 0.78);
-    font-size: 0.78rem;
-    font-weight: 500;
+    font-size: 0.88rem;
+    font-weight: 560;
   }
 
   .EdgeTrace-kpi-card.has-icon .EdgeTrace-kpi-value,
@@ -1660,15 +1669,15 @@
   }
 
   .EdgeTrace-kpi-card.has-icon .EdgeTrace-kpi-value {
-    font-size: clamp(1.42rem, 1.7vw, 1.75rem);
+    font-size: clamp(1.62rem, 2vw, 2rem);
   }
 
   .EdgeTrace-kpi-subdetail,
   .EdgeTrace-kpi-detail {
     margin: 0;
     color: rgba(214, 224, 235, 0.76);
-    font-size: 0.78rem;
-    line-height: 1.5;
+    font-size: 0.88rem;
+    line-height: 1.55;
   }
 
   .EdgeTrace-kpi-subdetail {
@@ -1995,7 +2004,7 @@
 
   .EdgeTrace-pro-workspace {
     margin-top: 0.92rem;
-    padding: 1.35rem;
+    padding: 1.45rem;
     background:
       radial-gradient(circle at 96% 4%, rgba(120, 97, 255, 0.1), transparent 18rem),
       radial-gradient(circle at 6% 100%, rgba(88, 214, 255, 0.08), transparent 18rem),
@@ -2013,8 +2022,8 @@
     margin: 0.65rem 0 0;
     max-width: 44rem;
     color: #f6f8fb;
-    font-size: 1.24rem;
-    font-weight: 650;
+    font-size: 1.5rem;
+    font-weight: 720;
     letter-spacing: 0;
     line-height: 1.25;
   }
@@ -2044,7 +2053,7 @@
     border: 1px solid rgba(130, 161, 190, 0.14);
     border-radius: 8px;
     background: rgba(3, 8, 16, 0.38);
-    padding: 1rem;
+    padding: 1.1rem;
   }
 
   .EdgeTrace-pro-cell-heading {
@@ -2052,9 +2061,9 @@
     align-items: center;
     gap: 0.45rem;
     color: #58d6ff;
-    font-size: 0.72rem;
-    font-weight: 760;
-    letter-spacing: 0.16em;
+    font-size: 0.84rem;
+    font-weight: 820;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
   }
 
@@ -2072,7 +2081,7 @@
     border-radius: 6px;
     background: rgba(5, 13, 24, 0.86);
     color: #f6f8fb;
-    font-size: 0.78rem;
+    font-size: 0.88rem;
     outline: none;
   }
 
@@ -2094,7 +2103,7 @@
     background: rgba(88, 214, 255, 0.1);
     color: #dff8ff;
     padding: 0 0.78rem;
-    font-size: 0.76rem;
+    font-size: 0.84rem;
     font-weight: 760;
   }
 
@@ -2117,7 +2126,7 @@
     background: rgba(9, 20, 31, 0.72);
     color: rgba(214, 224, 235, 0.74);
     padding: 0.44rem 0.5rem;
-    font-size: 0.72rem;
+    font-size: 0.8rem;
     font-weight: 700;
   }
 
@@ -2135,7 +2144,7 @@
     display: block;
     margin-bottom: 0.45rem;
     color: rgba(88, 214, 255, 0.82);
-    font-size: 0.68rem;
+    font-size: 0.76rem;
     font-weight: 680;
   }
 
@@ -2143,8 +2152,8 @@
   .EdgeTrace-pro-review h3 {
     margin: 0;
     color: #f6f8fb;
-    font-size: 1rem;
-    font-weight: 660;
+    font-size: 1.14rem;
+    font-weight: 720;
     line-height: 1.3;
   }
 
@@ -2153,8 +2162,8 @@
   .EdgeTrace-pro-projection p {
     margin: 0.5rem 0 0;
     color: rgba(214, 224, 235, 0.72);
-    font-size: 0.78rem;
-    line-height: 1.55;
+    font-size: 0.88rem;
+    line-height: 1.6;
   }
 
   .EdgeTrace-pro-answer ul,
@@ -2171,8 +2180,8 @@
     position: relative;
     padding-left: 0.85rem;
     color: rgba(214, 224, 235, 0.72);
-    font-size: 0.74rem;
-    line-height: 1.45;
+    font-size: 0.84rem;
+    line-height: 1.5;
   }
 
   .EdgeTrace-pro-answer li::before,
@@ -2197,7 +2206,7 @@
 
   .EdgeTrace-edge-score-readout > strong {
     color: #f6f8fb;
-    font-size: 3.45rem;
+    font-size: 3.75rem;
     font-weight: 710;
     line-height: 0.9;
     letter-spacing: -0.055em;
@@ -2206,15 +2215,15 @@
   .EdgeTrace-edge-score-readout span {
     display: block;
     color: #58d6ff;
-    font-size: 0.9rem;
+    font-size: 1rem;
     font-weight: 720;
   }
 
   .EdgeTrace-edge-score-readout p {
     margin: 0.24rem 0 0;
     color: rgba(214, 224, 235, 0.66);
-    font-size: 0.74rem;
-    line-height: 1.4;
+    font-size: 0.82rem;
+    line-height: 1.45;
   }
 
   .EdgeTrace-edge-factor-list {
@@ -2237,19 +2246,19 @@
 
   .EdgeTrace-edge-factor-list strong {
     color: rgba(246, 248, 251, 0.86);
-    font-size: 0.76rem;
+    font-size: 0.86rem;
     font-weight: 660;
   }
 
   .EdgeTrace-edge-factor-list span {
     margin-top: 0.08rem;
     color: rgba(214, 224, 235, 0.56);
-    font-size: 0.68rem;
+    font-size: 0.76rem;
   }
 
   .EdgeTrace-edge-factor-list em {
     color: currentColor;
-    font-size: 0.76rem;
+    font-size: 0.84rem;
     font-style: normal;
     font-weight: 760;
   }
@@ -2274,8 +2283,8 @@
     display: block;
     grid-column: 1 / -1;
     color: rgba(214, 224, 235, 0.66);
-    font-size: 0.68rem;
-    line-height: 1.4;
+    font-size: 0.76rem;
+    line-height: 1.45;
   }
 
   .EdgeTrace-edge-score-actions {
@@ -2288,7 +2297,7 @@
 
   .EdgeTrace-edge-score-actions span {
     color: rgba(214, 224, 235, 0.58);
-    font-size: 0.68rem;
+    font-size: 0.76rem;
     font-weight: 760;
     letter-spacing: 0.14em;
     text-transform: uppercase;
@@ -2297,8 +2306,8 @@
   .EdgeTrace-edge-score-actions p {
     margin: 0;
     color: rgba(246, 248, 251, 0.8);
-    font-size: 0.72rem;
-    line-height: 1.45;
+    font-size: 0.82rem;
+    line-height: 1.5;
   }
 
   .EdgeTrace-edge-factor-list .tone-green,
@@ -2343,13 +2352,13 @@
   .EdgeTrace-pro-sliders strong,
   .EdgeTrace-pro-projection span {
     color: rgba(214, 224, 235, 0.7);
-    font-size: 0.72rem;
+    font-size: 0.82rem;
     font-weight: 680;
   }
 
   .EdgeTrace-pro-sliders em {
     color: #f6f8fb;
-    font-size: 0.72rem;
+    font-size: 0.82rem;
     font-style: normal;
     font-weight: 760;
   }
@@ -2388,7 +2397,7 @@
   .EdgeTrace-pro-number-input span {
     padding: 0 0.45rem 0 0.15rem;
     color: rgba(214, 224, 235, 0.58);
-    font-size: 0.68rem;
+    font-size: 0.76rem;
     font-weight: 700;
   }
 
@@ -2401,7 +2410,7 @@
   }
 
   .EdgeTrace-pro-projection strong {
-    font-size: 0.92rem;
+    font-size: 1rem;
   }
 
   .EdgeTrace-pro-impact-stack {
@@ -2417,8 +2426,8 @@
     background: rgba(255, 255, 255, 0.025);
     padding: 0.42rem;
     color: rgba(214, 224, 235, 0.68);
-    font-size: 0.66rem;
-    line-height: 1.25;
+    font-size: 0.74rem;
+    line-height: 1.3;
   }
 
   .EdgeTrace-pro-review h3 {
@@ -2428,8 +2437,8 @@
   .EdgeTrace-pro-regression > p {
     margin: 0.82rem 0 0;
     color: rgba(214, 224, 235, 0.72);
-    font-size: 0.78rem;
-    line-height: 1.55;
+    font-size: 0.88rem;
+    line-height: 1.6;
   }
 
   .EdgeTrace-pro-regression-watch {
@@ -2448,7 +2457,7 @@
 
   .EdgeTrace-pro-regression-watch > span {
     color: rgba(214, 224, 235, 0.58);
-    font-size: 0.68rem;
+    font-size: 0.76rem;
     font-weight: 760;
     letter-spacing: 0.14em;
     text-transform: uppercase;
@@ -2466,15 +2475,15 @@
 
   .EdgeTrace-pro-regression-watch strong {
     color: rgba(246, 248, 251, 0.88);
-    font-size: 0.74rem;
+    font-size: 0.84rem;
     font-weight: 680;
   }
 
   .EdgeTrace-pro-regression-watch small {
     margin-top: 0.1rem;
     color: rgba(214, 224, 235, 0.62);
-    font-size: 0.68rem;
-    line-height: 1.42;
+    font-size: 0.76rem;
+    line-height: 1.46;
   }
 
   .EdgeTrace-pro-review-checks {
@@ -2487,7 +2496,7 @@
 
   .EdgeTrace-pro-review-checks > span {
     color: rgba(214, 224, 235, 0.58);
-    font-size: 0.68rem;
+    font-size: 0.76rem;
     font-weight: 760;
     letter-spacing: 0.14em;
     text-transform: uppercase;
@@ -2508,7 +2517,7 @@
   .EdgeTrace-pro-review-checks small,
   .EdgeTrace-pro-review-checks em {
     display: block;
-    font-size: 0.68rem;
+    font-size: 0.76rem;
     line-height: 1.35;
   }
 
@@ -2547,15 +2556,16 @@
 
   .EdgeTrace-diagnosis-layout h2 {
     margin: 0;
-    font-size: 1.45rem;
-    font-weight: 560;
+    font-size: 1.7rem;
+    font-weight: 650;
     letter-spacing: 0;
+    line-height: 1.18;
   }
 
   .EdgeTrace-diagnosis-layout p {
     margin: 0.8rem 0 0;
     color: rgba(214, 224, 235, 0.82);
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     line-height: 1.65;
   }
 
@@ -2599,13 +2609,13 @@
 
   .EdgeTrace-impact-donut span {
     color: rgba(214, 224, 235, 0.78);
-    font-size: 0.72rem;
+    font-size: 0.8rem;
   }
 
   .EdgeTrace-impact-donut strong {
     margin-top: 0.45rem;
     color: #ff485c;
-    font-size: 1.15rem;
+    font-size: 1.28rem;
     font-weight: 600;
   }
 
@@ -2643,19 +2653,19 @@
 
   .EdgeTrace-impact-list strong {
     color: #f6f8fb;
-    font-size: 0.78rem;
+    font-size: 0.88rem;
     font-weight: 600;
   }
 
   .EdgeTrace-impact-list small {
     margin-top: 0.22rem;
     color: #ff485c;
-    font-size: 0.78rem;
+    font-size: 0.84rem;
   }
 
   .EdgeTrace-impact-list em {
     color: rgba(214, 224, 235, 0.78);
-    font-size: 0.78rem;
+    font-size: 0.84rem;
   }
 
   .EdgeTrace-trend-panel {
@@ -2670,7 +2680,7 @@
     border-radius: 4px;
     color: rgba(246, 248, 251, 0.85);
     padding: 0.42rem 1.5rem 0.42rem 0.68rem;
-    font-size: 0.72rem;
+    font-size: 0.8rem;
   }
 
   .EdgeTrace-dashboard-link {
@@ -2678,8 +2688,8 @@
     align-items: center;
     gap: 0.4rem;
     color: #45b7f4;
-    font-size: 0.82rem;
-    font-weight: 560;
+    font-size: 0.9rem;
+    font-weight: 650;
   }
 
   .EdgeTrace-dashboard-link:hover {
@@ -2703,15 +2713,27 @@
   }
 
   .EdgeTrace-priority-list button {
+    position: relative;
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    gap: 0.75rem;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.85rem;
     align-items: start;
     color: #f6f8fb;
+    padding-left: 0.85rem;
     text-align: left;
   }
 
-  .EdgeTrace-priority-list button > span,
+  .EdgeTrace-priority-list button::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.12rem;
+    bottom: 0.12rem;
+    width: 2px;
+    border-radius: 999px;
+    background: var(--priority-accent, rgba(154, 167, 181, 0.72));
+  }
+
   .EdgeTrace-next-actions button > span {
     display: inline-flex;
     width: 1.65rem;
@@ -2725,15 +2747,19 @@
   }
 
   .EdgeTrace-priority-list .tone-red {
-    color: #ff485c;
+    --priority-accent: #ff485c;
   }
 
   .EdgeTrace-priority-list .tone-yellow {
-    color: #ffb82e;
+    --priority-accent: #ffb82e;
   }
 
   .EdgeTrace-priority-list .tone-green {
-    color: #74c476;
+    --priority-accent: #74c476;
+  }
+
+  .EdgeTrace-priority-list .tone-gray {
+    --priority-accent: #9aa7b5;
   }
 
   .EdgeTrace-priority-list p {
@@ -2746,15 +2772,16 @@
   }
 
   .EdgeTrace-priority-list strong {
-    font-size: 0.84rem;
-    font-weight: 620;
+    color: #f6f8fb;
+    font-size: 0.94rem;
+    font-weight: 700;
   }
 
   .EdgeTrace-priority-list small {
     margin-top: 0.18rem;
     color: rgba(214, 224, 235, 0.72);
-    font-size: 0.72rem;
-    line-height: 1.35;
+    font-size: 0.8rem;
+    line-height: 1.42;
   }
 
   .EdgeTrace-priority-list svg {
@@ -2795,20 +2822,20 @@
 
   .EdgeTrace-snapshot-grid span {
     color: rgba(214, 224, 235, 0.68);
-    font-size: 0.74rem;
+    font-size: 0.82rem;
   }
 
   .EdgeTrace-snapshot-grid strong {
     margin-top: 0.72rem;
     color: #ffffff;
-    font-size: 1.1rem;
+    font-size: 1.22rem;
     font-weight: 500;
   }
 
   .EdgeTrace-snapshot-grid small {
     margin-top: 0.5rem;
     color: currentColor;
-    font-size: 0.72rem;
+    font-size: 0.8rem;
   }
 
   .EdgeTrace-snapshot-grid .tone-red {
@@ -2840,15 +2867,15 @@
 
   .EdgeTrace-next-actions strong {
     color: #f6f8fb;
-    font-size: 0.82rem;
-    font-weight: 580;
+    font-size: 0.9rem;
+    font-weight: 650;
   }
 
   .EdgeTrace-next-actions em {
     border-radius: 3px;
     padding: 0.25rem 0.5rem;
     font-style: normal;
-    font-size: 0.68rem;
+    font-size: 0.74rem;
     white-space: nowrap;
   }
 
@@ -2880,7 +2907,7 @@
     border-bottom: 1px solid rgba(130, 161, 190, 0.1);
     padding: 0.58rem 0;
     color: rgba(214, 224, 235, 0.75);
-    font-size: 0.8rem;
+    font-size: 0.88rem;
   }
 
   .EdgeTrace-context-list strong {
@@ -2904,7 +2931,7 @@
   .EdgeTrace-dashboard-legend p {
     margin: 0;
     color: rgba(214, 224, 235, 0.78);
-    font-size: 0.72rem;
+    font-size: 0.78rem;
     letter-spacing: 0.04em;
     text-transform: uppercase;
   }
@@ -2925,7 +2952,7 @@
 
   .EdgeTrace-dashboard-legend strong {
     color: rgba(246, 248, 251, 0.84);
-    font-size: 0.72rem;
+    font-size: 0.78rem;
     font-weight: 600;
   }
 
@@ -2937,7 +2964,7 @@
   .EdgeTrace-dashboard-legend em {
     grid-column: 2;
     color: rgba(214, 224, 235, 0.62);
-    font-size: 0.68rem;
+    font-size: 0.74rem;
     font-style: normal;
   }
 
@@ -2959,8 +2986,8 @@
     background: rgba(9, 20, 31, 0.74);
     color: rgba(214, 224, 235, 0.7);
     padding: 0.82rem 0.9rem;
-    font-size: 0.82rem;
-    font-weight: 620;
+    font-size: 0.9rem;
+    font-weight: 680;
     text-transform: capitalize;
   }
 
@@ -2991,7 +3018,7 @@
     border-radius: 3px;
     color: rgba(214, 224, 235, 0.78);
     padding: 0.32rem 0.48rem;
-    font-size: 0.72rem;
+    font-size: 0.8rem;
   }
 
   .EdgeTrace-overview-insights {
@@ -3007,34 +3034,35 @@
   }
 
   .EdgeTrace-overview-insight-list div {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: 0.75rem;
-    align-items: start;
+    position: relative;
+    padding-left: 0.9rem;
   }
 
-  .EdgeTrace-overview-insight-list span {
-    display: inline-flex;
-    width: 1.65rem;
-    height: 1.65rem;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid currentColor;
-    border-radius: 50%;
-    color: #9aa7b5;
-    font-size: 0.72rem;
+  .EdgeTrace-overview-insight-list div::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.12rem;
+    bottom: 0.12rem;
+    width: 2px;
+    border-radius: 999px;
+    background: var(--overview-insight-accent, rgba(154, 167, 181, 0.72));
   }
 
-  .EdgeTrace-overview-insight-list .tone-red span {
-    color: #ff485c;
+  .EdgeTrace-overview-insight-list .tone-red {
+    --overview-insight-accent: #ff485c;
   }
 
-  .EdgeTrace-overview-insight-list .tone-yellow span {
-    color: #ffb82e;
+  .EdgeTrace-overview-insight-list .tone-yellow {
+    --overview-insight-accent: #ffb82e;
   }
 
-  .EdgeTrace-overview-insight-list .tone-green span {
-    color: #74c476;
+  .EdgeTrace-overview-insight-list .tone-green {
+    --overview-insight-accent: #74c476;
+  }
+
+  .EdgeTrace-overview-insight-list .tone-gray {
+    --overview-insight-accent: #9aa7b5;
   }
 
   .EdgeTrace-overview-insight-list p {
@@ -3048,15 +3076,15 @@
 
   .EdgeTrace-overview-insight-list strong {
     color: rgba(246, 248, 251, 0.9);
-    font-size: 0.84rem;
-    font-weight: 620;
+    font-size: 0.94rem;
+    font-weight: 700;
   }
 
   .EdgeTrace-overview-insight-list small {
     margin-top: 0.18rem;
     color: rgba(214, 224, 235, 0.72);
-    font-size: 0.73rem;
-    line-height: 1.4;
+    font-size: 0.82rem;
+    line-height: 1.45;
   }
 
   .EdgeTrace-dimension-toggle {
@@ -3081,7 +3109,7 @@
 
   .EdgeTrace-metric-mini p {
     color: rgba(214, 224, 235, 0.66);
-    font-size: 0.7rem;
+    font-size: 0.78rem;
     letter-spacing: 0.04em;
     text-transform: uppercase;
   }
@@ -3089,7 +3117,7 @@
   .EdgeTrace-metric-mini strong {
     margin-top: 0.48rem;
     color: #ffffff;
-    font-size: 1rem;
+    font-size: 1.12rem;
     font-weight: 560;
   }
 

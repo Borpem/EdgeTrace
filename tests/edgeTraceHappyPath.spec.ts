@@ -65,8 +65,12 @@ test.describe.serial("EdgeTrace happy path", () => {
     await expect(page.locator(".EdgeTrace-sidebar-user")).toHaveCount(0);
     await expect(page.locator(".EdgeTrace-dashboard-account-control .EdgeTrace-account-utility-profile")).toBeVisible();
     await expect(page.locator(".EdgeTrace-dashboard-title-group .EdgeTrace-report-selector")).toBeVisible();
+    await expect(page.locator(".EdgeTrace-report-selector-head .EdgeTrace-report-edit-button")).toBeVisible();
     await expect(page.locator(".EdgeTrace-dashboard-report-meta .EdgeTrace-report-selector")).toHaveCount(0);
+    await expect(page.locator(".EdgeTrace-dashboard-report-meta .EdgeTrace-report-edit-button")).toHaveCount(0);
     await expect(page.locator(".EdgeTrace-kpi-card", { hasText: "Win Rate" }).locator(".EdgeTrace-kpi-progress")).toHaveCount(0);
+    await expect(page.locator(".EdgeTrace-priority-list button > span")).toHaveCount(0);
+    await expect(page.locator(".EdgeTrace-overview-insight-list > div > span")).toHaveCount(0);
     await expect(page.getByText("After-cost performance", { exact: true }).first()).toBeVisible();
     await expect(page.getByText("Execution friction", { exact: true }).first()).toBeVisible();
   });
