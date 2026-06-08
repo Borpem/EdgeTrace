@@ -719,7 +719,7 @@ export function DashboardPage({
           <div className="EdgeTrace-dashboard-panel EdgeTrace-trend-panel">
             <PanelHeader title="Key Performance Trend" info />
             <div className="EdgeTrace-trend-select">Net PnL</div>
-            <ResponsiveContainer width="100%" height={260}>
+            <ResponsiveContainer width="100%" height={310}>
               <LineChart data={performanceData} margin={{ top: 14, right: 10, left: 2, bottom: 0 }}>
                 <CartesianGrid stroke="#1d3042" strokeOpacity={0.58} vertical={false} />
                 <XAxis
@@ -727,14 +727,14 @@ export function DashboardPage({
                   stroke="#8796a8"
                   tickLine={false}
                   axisLine={false}
-                  tick={{ fontSize: 12 }}
+                  tick={{ fontSize: 13 }}
                 />
                 <YAxis
                   stroke="#8796a8"
                   tickLine={false}
                   axisLine={false}
                   width={44}
-                  tick={{ fontSize: 12 }}
+                  tick={{ fontSize: 13 }}
                   tickFormatter={formatAxisCurrency}
                 />
                 <Tooltip
