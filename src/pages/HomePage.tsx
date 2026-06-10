@@ -63,7 +63,7 @@ export function HomePage({
       <section className="EdgeTrace-shell relative pb-12 pt-12 md:pb-16 md:pt-16 lg:pb-20 lg:pt-20">
         <div className="grid items-center gap-10 lg:grid-cols-[0.88fr_1.12fr] lg:gap-10 xl:gap-12">
           <div className="max-w-[760px]">
-            <h1 className="overflow-visible text-[clamp(3.2rem,5.7vw,6rem)] font-semibold leading-[1.02] tracking-[-0.048em] text-ink md:tracking-[-0.052em]">
+            <h1 className="overflow-visible font-display text-[clamp(3.2rem,5.7vw,6rem)] font-semibold leading-[1.02] tracking-[-0.048em] text-ink md:tracking-[-0.052em]">
               <span className="block">Know exactly why your </span>
               <span className="block">
                 strategy{" "}
@@ -219,7 +219,7 @@ function WorkflowSection() {
   return (
     <section className="EdgeTrace-shell py-14 md:py-20">
       <div className="mx-auto max-w-3xl text-center">
-        <h2 className="text-4xl font-semibold tracking-[-0.042em] text-ink md:text-5xl">From trades to clarity.</h2>
+        <h2 className="font-display text-4xl font-semibold tracking-[-0.042em] text-ink md:text-5xl">From trades to clarity.</h2>
         <p className="mt-5 text-lg leading-8 text-muted">A complete workflow for understanding what changed, what leaked, and what deserves attention.</p>
       </div>
 
@@ -314,7 +314,7 @@ function LeakDiagnosticsSection() {
       <div className="grid items-center gap-12 lg:grid-cols-[1.08fr_0.92fr] lg:gap-16">
         <RadarVisual />
         <div className="max-w-xl">
-          <h2 className="text-4xl font-semibold leading-[1.04] tracking-[-0.042em] text-ink md:text-5xl">
+          <h2 className="font-display text-4xl font-semibold leading-[1.04] tracking-[-0.042em] text-ink md:text-5xl">
             Find what's degrading your edge.
           </h2>
           <p className="mt-6 text-lg leading-8 text-muted">
@@ -380,7 +380,7 @@ function ImportCompatibilitySection() {
     <section className="EdgeTrace-shell py-12 md:py-16">
       <div className="grid items-center gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:gap-16">
         <div>
-          <h2 className="text-4xl font-semibold tracking-[-0.042em] text-ink md:text-5xl">Works with your data.</h2>
+          <h2 className="font-display text-4xl font-semibold tracking-[-0.042em] text-ink md:text-5xl">Works with your data.</h2>
           <p className="mt-6 max-w-xl text-lg leading-8 text-muted">
             Import from major broker exports or use a generic CSV. EdgeTrace normalizes completed trade history into diagnostics without turning it into a manual journal.
           </p>

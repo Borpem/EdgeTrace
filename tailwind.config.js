@@ -3,6 +3,11 @@ export default {
   content: ["./index.html", "./src/**/*.{ts,tsx}"],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["var(--font-ui)"],
+        display: ["var(--font-display)"],
+        mono: ["var(--font-data)"]
+      },
       colors: {
         graphite: "#03060C",
         panel: "#0B111C",

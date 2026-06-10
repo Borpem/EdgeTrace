@@ -1691,6 +1691,21 @@
     letter-spacing: 0;
   }
 
+  .EdgeTrace-kpi-value.is-label {
+    font-family: var(--font-display);
+    font-weight: 650;
+    letter-spacing: -0.012em;
+  }
+
+  .EdgeTrace-kpi-value.is-data,
+  .EdgeTrace-kpi-value.is-data span {
+    font-family: var(--font-data);
+    font-variant-numeric: tabular-nums slashed-zero;
+    font-feature-settings:
+      "tnum" 1,
+      "zero" 1;
+  }
+
   .EdgeTrace-kpi-value span {
     margin-left: 0.32rem;
     color: var(--dash-muted);
@@ -4278,13 +4293,23 @@
   --dash-danger: #f45b72;
   --dash-warning: #e2b84f;
   --dash-success: #6fc78a;
-  font-family:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-ui: "Suisse Int'l", "Suisse Intl", "Suisse International", "Helvetica Neue", Arial, ui-sans-serif,
+    system-ui, sans-serif;
+  --font-display: "Suisse Works", "Suisse Works Trial", "Tiempos Text", "Georgia Pro", Georgia, ui-serif, serif;
+  --font-data: "Berkeley Mono", "Berkeley Mono Trial", "SF Mono", "SFMono-Regular", "Cascadia Mono", "Roboto Mono",
+    Menlo, Consolas, ui-monospace, monospace;
+  font-family: var(--font-ui);
+  font-feature-settings:
+    "kern" 1,
+    "liga" 1,
+    "calt" 1;
 }
 
 body {
   margin: 0;
   background: #03060c;
+  font-family: var(--font-ui);
+  font-optical-sizing: auto;
 }
 
 .EdgeTrace-contours {
@@ -4519,6 +4544,41 @@ body {
   text-rendering: geometricPrecision;
 }
 
+.EdgeTrace-title,
+.EdgeTrace-hero-title,
+.EdgeTrace-contours main.bg-graphite h1,
+.EdgeTrace-dashboard-header h1,
+.EdgeTrace-pricing-hero h1,
+.EdgeTrace-account-hero h1,
+.EdgeTrace-account-plan-top h2,
+.EdgeTrace-education-plans-head h2,
+.EdgeTrace-benchmark-copy h2,
+.EdgeTrace-diagnosis-layout h2,
+.EdgeTrace-pro-workspace-header h2 {
+  font-family: var(--font-display);
+  font-weight: 650;
+  letter-spacing: -0.012em;
+}
+
+.EdgeTrace-trend-panel .recharts-text,
+.EdgeTrace-trend-tooltip strong,
+.EdgeTrace-impact-donut strong,
+.EdgeTrace-benchmark-values span,
+.EdgeTrace-benchmark-percentile > span,
+.EdgeTrace-edge-score-readout > strong,
+.EdgeTrace-edge-factor-list em,
+.EdgeTrace-pro-number-input input,
+.EdgeTrace-metric-mini strong,
+.EdgeTrace-report-generated,
+.EdgeTrace-context-panel strong,
+.EdgeTrace-snapshot-panel strong {
+  font-family: var(--font-data);
+  font-variant-numeric: tabular-nums slashed-zero;
+  font-feature-settings:
+    "tnum" 1,
+    "zero" 1;
+}
+
 @media (max-width: 767px) {
   .EdgeTrace-hero-title {
     letter-spacing: -0.022em;
@@ -4540,6 +4600,13 @@ input {
     color 150ms ease,
     opacity 150ms ease,
     transform 150ms ease;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
 }
 
 select,
