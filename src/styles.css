@@ -1,6 +1,5 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -4297,10 +4296,9 @@
   --dash-danger: #f45b72;
   --dash-warning: #e2b84f;
   --dash-success: #6fc78a;
-  --font-ui: Inter, "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Source Serif 4", "Tiempos Text", "Georgia Pro", Georgia, ui-serif, serif;
-  --font-data: "JetBrains Mono", "SF Mono", "SFMono-Regular", "Cascadia Mono", "Roboto Mono", Menlo, Consolas,
-    ui-monospace, monospace;
+  --font-ui: "IBM Plex Sans", "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
+  --font-display: Archivo, "IBM Plex Sans", "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
+  --font-data: "IBM Plex Sans", "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
   font-family: var(--font-ui);
   font-feature-settings:
     "kern" 1,

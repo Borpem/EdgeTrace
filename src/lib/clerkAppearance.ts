@@ -8,7 +8,7 @@ export const edgeTraceClerkAppearance = {
     colorInputBackground: "#f7f7f3",
     colorInputText: "#050505",
     borderRadius: "0.45rem",
-    fontFamily: "Inter, \"Helvetica Neue\", Arial, ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "\"IBM Plex Sans\", \"Helvetica Neue\", Arial, ui-sans-serif, system-ui, sans-serif"
   },
   elements: {
     rootBox: "w-full",
