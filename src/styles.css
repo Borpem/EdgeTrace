@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..800;1,400..800&family=Newsreader:opsz,wght@6..72,400..700&display=swap");
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -3483,924 +3481,995 @@
     .EdgeTrace-walkthrough-next {
       width: 100%;
     }
-  }
+}
 
-  /* Dashboard modern editorial redesign. */
-  .EdgeTrace-report-dashboard {
-    --dash-black: #07080a;
-    --dash-graphite: #11171c;
-    --dash-ink: #f3efe7;
-    --dash-muted: #9aa3a8;
-    --dash-cyan: #69d7df;
-    --dash-rose: #d8879e;
-    --dash-citron: #c8d764;
-    --dash-border: rgba(243, 239, 231, 0.13);
-    --dash-border-strong: rgba(243, 239, 231, 0.22);
-    --dash-serif: "Newsreader", Georgia, "Times New Roman", serif;
-    --dash-sans: "Instrument Sans", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    grid-template-columns: 15rem minmax(0, 1fr);
-    color: var(--dash-ink);
-    background:
-      linear-gradient(90deg, rgba(243, 239, 231, 0.035) 1px, transparent 1px),
-      radial-gradient(circle at 72% 0%, rgba(105, 215, 223, 0.12), transparent 30rem),
-      radial-gradient(circle at 16% 44%, rgba(216, 135, 158, 0.08), transparent 28rem),
-      linear-gradient(180deg, var(--dash-black) 0%, var(--dash-graphite) 42%, var(--dash-black) 100%);
-    background-size: 4.8rem 100%, auto, auto, auto;
-    font-family: var(--dash-sans);
-  }
+/* Dashboard editorial styling experiment. */
+.EdgeTrace-report-dashboard {
+  --dash-paper: #070a0b;
+  --dash-paper-soft: #0d1213;
+  --dash-panel: #111819;
+  --dash-panel-raised: #172021;
+  --dash-ink: #f4eadf;
+  --dash-muted: #b9ab98;
+  --dash-line: rgba(215, 198, 166, 0.22);
+  --dash-line-strong: rgba(215, 198, 166, 0.38);
+  --dash-mustard: #d1a13c;
+  --dash-rose: #c16f7d;
+  --dash-sage: #7ea174;
+  --dash-cyan: #63aeb9;
+  --dash-rust: #b66a45;
+  --dash-indigo: #747db3;
+  --dash-smoke: #929b95;
+  --dash-serif: Georgia, "Times New Roman", serif;
+  --dash-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  grid-template-columns: 15rem minmax(0, 1fr);
+  color: var(--dash-ink);
+  background:
+    linear-gradient(90deg, rgba(209, 161, 60, 0.08) 0 1px, transparent 1px 100%),
+    linear-gradient(180deg, rgba(193, 111, 125, 0.13), transparent 24rem),
+    radial-gradient(circle at 78% 8%, rgba(116, 125, 179, 0.16), transparent 31rem),
+    radial-gradient(circle at 18% 76%, rgba(99, 174, 185, 0.08), transparent 28rem),
+    linear-gradient(180deg, #080b0c 0%, #0b1112 46%, #060809 100%);
+  background-size: 3rem 100%, auto, auto, auto, auto;
+  font-family: var(--dash-sans);
+}
 
-  .EdgeTrace-report-dashboard * {
-    letter-spacing: 0;
-  }
+.EdgeTrace-report-dashboard * {
+  letter-spacing: 0 !important;
+}
 
-  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-sidebar {
-    border-right: 1px solid var(--dash-border);
-    background:
-      linear-gradient(180deg, rgba(17, 23, 28, 0.96), rgba(7, 8, 10, 0.98)),
-      var(--dash-black);
-    box-shadow: none;
-  }
+.EdgeTrace-report-dashboard .EdgeTrace-dashboard-sidebar {
+  border-right: 1px solid var(--dash-line);
+  background:
+    linear-gradient(180deg, rgba(13, 18, 19, 0.98), rgba(7, 10, 11, 0.98)),
+    var(--dash-paper);
+  box-shadow: none;
+}
 
-  .EdgeTrace-report-dashboard .EdgeTrace-sidebar-brand {
-    height: 5.7rem;
-    border-bottom: 1px solid var(--dash-border);
-  }
+.EdgeTrace-report-dashboard .EdgeTrace-sidebar-brand {
+  height: 6.4rem;
+  border-bottom: 1px solid var(--dash-line);
+  color: var(--dash-ink);
+}
 
-  .EdgeTrace-report-dashboard .EdgeTrace-sidebar-nav {
-    gap: 0.25rem;
-    padding: 1.15rem 1rem;
-  }
+.EdgeTrace-report-dashboard .EdgeTrace-sidebar-brand .EdgeTrace-sidebar-wordmark {
+  opacity: 0.96;
+}
 
-  .EdgeTrace-report-dashboard .EdgeTrace-sidebar-nav button,
-  .EdgeTrace-report-dashboard .EdgeTrace-sidebar-quick button {
-    border: 1px solid transparent;
-    border-radius: 6px;
-    color: rgba(243, 239, 231, 0.72);
-    padding: 0.84rem 0.82rem;
-    font-size: 0.94rem;
-    font-weight: 620;
-  }
+.EdgeTrace-report-dashboard .EdgeTrace-sidebar-nav {
+  gap: 0.18rem;
+  padding: 1.4rem 1rem;
+}
 
-  .EdgeTrace-report-dashboard .EdgeTrace-sidebar-nav button:hover,
-  .EdgeTrace-report-dashboard .EdgeTrace-sidebar-quick button:hover {
-    border-color: rgba(105, 215, 223, 0.18);
-    background: rgba(105, 215, 223, 0.06);
-    color: var(--dash-ink);
-  }
+.EdgeTrace-report-dashboard .EdgeTrace-sidebar-nav button,
+.EdgeTrace-report-dashboard .EdgeTrace-sidebar-quick button {
+  border: 0;
+  border-radius: 0;
+  color: rgba(244, 234, 223, 0.72);
+  padding: 0.9rem 0.78rem;
+  font-size: 0.98rem;
+}
 
-  .EdgeTrace-report-dashboard .EdgeTrace-sidebar-nav button.active {
-    border-color: rgba(105, 215, 223, 0.28);
-    background:
-      linear-gradient(90deg, rgba(105, 215, 223, 0.14), rgba(200, 215, 100, 0.06)),
-      rgba(243, 239, 231, 0.025);
-    color: var(--dash-ink);
-  }
+.EdgeTrace-report-dashboard .EdgeTrace-sidebar-nav button:hover,
+.EdgeTrace-report-dashboard .EdgeTrace-sidebar-quick button:hover {
+  background: rgba(209, 161, 60, 0.08);
+  color: var(--dash-ink);
+}
 
-  .EdgeTrace-report-dashboard .EdgeTrace-sidebar-nav button.active svg,
-  .EdgeTrace-report-dashboard .EdgeTrace-sidebar-quick button:first-of-type {
-    color: var(--dash-cyan);
-  }
+.EdgeTrace-report-dashboard .EdgeTrace-sidebar-nav button.active {
+  border-left: 3px solid var(--dash-mustard);
+  background:
+    linear-gradient(90deg, rgba(209, 161, 60, 0.17), rgba(99, 174, 185, 0.06)),
+    rgba(244, 234, 223, 0.025);
+  color: var(--dash-ink);
+}
 
+.EdgeTrace-report-dashboard .EdgeTrace-sidebar-nav button.active svg,
+.EdgeTrace-report-dashboard .EdgeTrace-sidebar-quick button:first-of-type {
+  color: var(--dash-mustard);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-dashboard-main {
+  width: min(100%, 1640px);
+  padding: 2.55rem clamp(2rem, 3.8vw, 4.6rem) 3.2rem;
+  font-size: 1.1rem;
+  line-height: 1.62;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-dashboard-header {
+  grid-template-columns: minmax(28rem, 1.1fr) minmax(21rem, 0.58fr) minmax(17rem, 0.48fr);
+  gap: 2rem 2.6rem;
+  align-items: end;
+  padding-bottom: 2.35rem;
+  border-bottom: 1px solid var(--dash-line-strong);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-dashboard-title-group {
+  gap: 1.12rem;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-dashboard-header h1 {
+  max-width: 41rem;
+  color: var(--dash-ink);
+  font-family: var(--dash-serif);
+  font-size: clamp(3.1rem, 4.7vw, 5.4rem);
+  font-weight: 500;
+  line-height: 0.95;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-dashboard-header p {
+  max-width: 34rem;
+  color: rgba(244, 234, 223, 0.68);
+  font-size: 1.18rem;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-report-selector-wrap label,
+.EdgeTrace-report-dashboard .EdgeTrace-panel-header,
+.EdgeTrace-report-dashboard .EdgeTrace-dashboard-legend p,
+.EdgeTrace-report-dashboard .EdgeTrace-metric-mini p,
+.EdgeTrace-report-dashboard .EdgeTrace-edge-score-actions span {
+  color: rgba(209, 161, 60, 0.86);
+  font-size: 0.86rem;
+  font-weight: 760;
+  text-transform: uppercase;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-report-selector {
+  min-height: 3.25rem;
+  border-color: var(--dash-line);
+  border-radius: 6px;
+  background:
+    linear-gradient(180deg, rgba(23, 32, 33, 0.98), rgba(10, 15, 16, 0.98)),
+    var(--dash-panel);
+  color: var(--dash-ink);
+  font-size: 1.08rem;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-report-selector:focus,
+.EdgeTrace-report-dashboard .EdgeTrace-pro-ask-box input:focus,
+.EdgeTrace-report-dashboard .EdgeTrace-pro-number-input input:focus {
+  border-color: rgba(209, 161, 60, 0.68);
+  box-shadow: 0 0 0 3px rgba(209, 161, 60, 0.12);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-report-edit-button,
+.EdgeTrace-report-dashboard .EdgeTrace-dashboard-link {
+  color: var(--dash-cyan);
+  font-size: 1.04rem;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-report-edit-button:hover,
+.EdgeTrace-report-dashboard .EdgeTrace-dashboard-link:hover {
+  color: var(--dash-mustard);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-report-generated {
+  color: rgba(244, 234, 223, 0.58);
+  font-size: 0.95rem;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-dashboard-account-control .EdgeTrace-account-utility-profile {
+  max-width: 18.5rem;
+  border-color: var(--dash-line);
+  border-radius: 6px;
+  background: rgba(17, 24, 25, 0.88);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-dashboard-account-control .EdgeTrace-account-utility-avatar,
+.EdgeTrace-report-dashboard .EdgeTrace-dashboard-account-control .EdgeTrace-account-utility-profile em {
+  border-radius: 4px;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-dashboard-actions {
+  justify-self: stretch;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-results-walkthrough-button {
+  min-height: 4.7rem;
+  border-color: rgba(209, 161, 60, 0.38);
+  border-radius: 6px;
+  background:
+    linear-gradient(90deg, rgba(209, 161, 60, 0.16), transparent 34%),
+    linear-gradient(180deg, rgba(24, 31, 32, 0.98), rgba(10, 15, 16, 0.98));
+  box-shadow:
+    0 28px 56px -48px rgba(209, 161, 60, 0.85),
+    inset 0 1px 0 rgba(244, 234, 223, 0.1);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-results-walkthrough-button::before {
+  background:
+    linear-gradient(90deg, rgba(193, 111, 125, 0.1), transparent 38%),
+    linear-gradient(180deg, rgba(244, 234, 223, 0.065), transparent 48%);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-results-walkthrough-icon {
+  border-color: rgba(209, 161, 60, 0.44);
+  border-radius: 6px;
+  background: rgba(209, 161, 60, 0.11);
+  color: var(--dash-mustard);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-results-walkthrough-button strong {
+  color: var(--dash-ink);
+  font-family: var(--dash-serif);
+  font-size: 1.28rem;
+  font-weight: 600;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-results-walkthrough-button small {
+  color: rgba(244, 234, 223, 0.62);
+  font-size: 0.95rem;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-results-walkthrough-arrow {
+  color: var(--dash-mustard);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-dashboard-notice {
+  border-color: rgba(209, 161, 60, 0.32);
+  border-radius: 0;
+  background: rgba(17, 24, 25, 0.76);
+  color: rgba(244, 234, 223, 0.78);
+  font-size: 1rem;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-dashboard-notice strong {
+  color: var(--dash-ink);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-dashboard-notice.tone-blue {
+  border-color: rgba(99, 174, 185, 0.36);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-dashboard-notice.tone-yellow {
+  border-color: rgba(209, 161, 60, 0.44);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-kpi-grid {
+  grid-template-columns: minmax(20rem, 1.28fr) repeat(2, minmax(16rem, 0.86fr));
+  gap: 1.1rem;
+  margin-top: 1.35rem;
+  align-items: stretch;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-dashboard-panel {
+  --panel-accent: var(--dash-smoke);
+  border-color: var(--dash-line);
+  border-radius: 0;
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--panel-accent) 10%, transparent), transparent 44%),
+    linear-gradient(180deg, rgba(17, 24, 25, 0.94), rgba(8, 12, 13, 0.94));
+  box-shadow:
+    inset 0 1px 0 rgba(244, 234, 223, 0.05),
+    0 30px 60px -55px rgba(0, 0, 0, 0.9);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-dashboard-panel::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  width: min(8rem, 40%);
+  height: 2px;
+  background: var(--panel-accent);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-dashboard-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+.EdgeTrace-report-dashboard .tone-red,
+.EdgeTrace-report-dashboard .EdgeTrace-kpi-card.tone-red {
+  --panel-accent: var(--dash-rose);
+  color: var(--dash-rose);
+}
+
+.EdgeTrace-report-dashboard .tone-yellow,
+.EdgeTrace-report-dashboard .EdgeTrace-kpi-card.tone-yellow {
+  --panel-accent: var(--dash-mustard);
+  color: var(--dash-mustard);
+}
+
+.EdgeTrace-report-dashboard .tone-green,
+.EdgeTrace-report-dashboard .EdgeTrace-kpi-card.tone-green {
+  --panel-accent: var(--dash-sage);
+  color: var(--dash-sage);
+}
+
+.EdgeTrace-report-dashboard .tone-blue,
+.EdgeTrace-report-dashboard .EdgeTrace-kpi-card.tone-blue {
+  --panel-accent: var(--dash-cyan);
+  color: var(--dash-cyan);
+}
+
+.EdgeTrace-report-dashboard .tone-gray,
+.EdgeTrace-report-dashboard .EdgeTrace-kpi-card.tone-gray {
+  --panel-accent: var(--dash-smoke);
+  color: var(--dash-smoke);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-kpi-card {
+  min-height: 14.3rem;
+  padding: 1.55rem;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-kpi-card:first-child {
+  grid-row: span 2;
+  min-height: 26rem;
+  padding: 2rem;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-kpi-card:nth-child(6) {
+  grid-column: 1 / -1;
+  min-height: 10.4rem;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-kpi-card:first-child .EdgeTrace-panel-header,
+.EdgeTrace-report-dashboard .EdgeTrace-kpi-card:first-child .EdgeTrace-kpi-body {
+  align-items: flex-start;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-kpi-card:first-child .EdgeTrace-kpi-body {
+  display: grid;
+  gap: 1.25rem;
+  justify-content: start;
+  margin-top: 1.15rem;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-kpi-value {
+  color: var(--dash-ink);
+  font-family: var(--dash-serif);
+  font-size: clamp(2.65rem, 3.4vw, 4.2rem);
+  font-weight: 500;
+  line-height: 0.98;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-kpi-card:first-child .EdgeTrace-kpi-value {
+  max-width: 16rem;
+  font-size: clamp(4rem, 5.4vw, 6.4rem);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-kpi-card.tone-red .EdgeTrace-kpi-value,
+.EdgeTrace-report-dashboard .EdgeTrace-metric-mini.tone-red strong,
+.EdgeTrace-report-dashboard .EdgeTrace-snapshot-grid .tone-red,
+.EdgeTrace-report-dashboard .EdgeTrace-impact-donut strong {
+  color: var(--dash-rose);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-kpi-card.tone-yellow .EdgeTrace-kpi-value,
+.EdgeTrace-report-dashboard .EdgeTrace-metric-mini.tone-yellow strong,
+.EdgeTrace-report-dashboard .EdgeTrace-snapshot-grid .tone-yellow {
+  color: var(--dash-mustard);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-kpi-card.tone-green .EdgeTrace-kpi-value,
+.EdgeTrace-report-dashboard .EdgeTrace-metric-mini.tone-green strong,
+.EdgeTrace-report-dashboard .EdgeTrace-snapshot-grid .tone-green {
+  color: var(--dash-sage);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-kpi-card.tone-blue .EdgeTrace-kpi-value {
+  color: var(--dash-cyan);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-kpi-detail,
+.EdgeTrace-report-dashboard .EdgeTrace-kpi-subdetail,
+.EdgeTrace-report-dashboard .EdgeTrace-benchmark-copy p,
+.EdgeTrace-report-dashboard .EdgeTrace-pro-answer p,
+.EdgeTrace-report-dashboard .EdgeTrace-pro-review > p,
+.EdgeTrace-report-dashboard .EdgeTrace-pro-projection p,
+.EdgeTrace-report-dashboard .EdgeTrace-context-list div,
+.EdgeTrace-report-dashboard .EdgeTrace-dashboard-legend small,
+.EdgeTrace-report-dashboard .EdgeTrace-dashboard-legend em {
+  color: rgba(244, 234, 223, 0.68);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-kpi-detail,
+.EdgeTrace-report-dashboard .EdgeTrace-kpi-subdetail {
+  font-size: 1.08rem;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-kpi-progress,
+.EdgeTrace-report-dashboard .EdgeTrace-kpi-progress span,
+.EdgeTrace-report-dashboard .EdgeTrace-benchmark-percentile i,
+.EdgeTrace-report-dashboard .EdgeTrace-benchmark-percentile b,
+.EdgeTrace-report-dashboard .EdgeTrace-edge-factor-list i,
+.EdgeTrace-report-dashboard .EdgeTrace-edge-factor-list b,
+.EdgeTrace-report-dashboard .EdgeTrace-walkthrough-progress,
+.EdgeTrace-report-dashboard .EdgeTrace-walkthrough-progress span {
+  border-radius: 0;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-kpi-progress span {
+  background: currentColor;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-dashboard-middle {
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.16fr);
+  gap: 1.1rem;
+  margin-top: 1.1rem;
+  align-items: stretch;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-diagnosis-panel {
+  grid-row: span 2;
+  padding: 2rem;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-trend-panel,
+.EdgeTrace-report-dashboard .EdgeTrace-insights-panel,
+.EdgeTrace-report-dashboard .EdgeTrace-benchmark-panel,
+.EdgeTrace-report-dashboard .EdgeTrace-snapshot-panel,
+.EdgeTrace-report-dashboard .EdgeTrace-actions-panel,
+.EdgeTrace-report-dashboard .EdgeTrace-context-panel {
+  padding: 1.65rem;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-insights-panel {
+  grid-column: 2;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-diagnosis-layout {
+  grid-template-columns: minmax(0, 1fr) 11rem;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-diagnosis-layout h2,
+.EdgeTrace-report-dashboard .EdgeTrace-benchmark-copy h2,
+.EdgeTrace-report-dashboard .EdgeTrace-pro-workspace-header h2,
+.EdgeTrace-report-dashboard .EdgeTrace-pro-answer h3,
+.EdgeTrace-report-dashboard .EdgeTrace-pro-review h3 {
+  color: var(--dash-ink);
+  font-family: var(--dash-serif);
+  font-weight: 500;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-diagnosis-layout h2 {
+  font-size: clamp(2.6rem, 3.2vw, 4rem);
+  line-height: 0.98;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-diagnosis-layout p {
+  color: rgba(244, 234, 223, 0.72);
+  font-size: 1.12rem;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-diagnosis-foot {
+  gap: 1.2rem;
+  margin-top: 2rem;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-impact-donut {
+  width: 10.7rem;
+  height: 10.7rem;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-impact-donut::before {
+  background: var(--dash-paper-soft);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-impact-donut span {
+  color: rgba(244, 234, 223, 0.7);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-impact-list {
+  grid-column: 1 / -1;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-impact-list > div {
+  border-bottom-color: var(--dash-line);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-impact-list > div > span,
+.EdgeTrace-report-dashboard .EdgeTrace-dashboard-legend span,
+.EdgeTrace-report-dashboard .EdgeTrace-pro-answer li::before,
+.EdgeTrace-report-dashboard .EdgeTrace-pro-review-list li::before {
+  border-radius: 1px;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-impact-list strong,
+.EdgeTrace-report-dashboard .EdgeTrace-priority-list strong,
+.EdgeTrace-report-dashboard .EdgeTrace-snapshot-grid strong,
+.EdgeTrace-report-dashboard .EdgeTrace-next-actions strong,
+.EdgeTrace-report-dashboard .EdgeTrace-context-list strong,
+.EdgeTrace-report-dashboard .EdgeTrace-dashboard-legend strong {
+  color: var(--dash-ink);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-impact-list small,
+.EdgeTrace-report-dashboard .EdgeTrace-next-actions .tone-red {
+  color: var(--dash-rose);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-priority-list {
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-priority-list button {
+  padding: 0.48rem 0 0.48rem 1rem;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-priority-list button::before,
+.EdgeTrace-report-dashboard .EdgeTrace-overview-insight-list div::before {
+  width: 3px;
+  border-radius: 0;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-priority-list .tone-red,
+.EdgeTrace-report-dashboard .EdgeTrace-overview-insight-list .tone-red {
+  --priority-accent: var(--dash-rose);
+  --overview-insight-accent: var(--dash-rose);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-priority-list .tone-yellow,
+.EdgeTrace-report-dashboard .EdgeTrace-overview-insight-list .tone-yellow {
+  --priority-accent: var(--dash-mustard);
+  --overview-insight-accent: var(--dash-mustard);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-priority-list .tone-green,
+.EdgeTrace-report-dashboard .EdgeTrace-overview-insight-list .tone-green {
+  --priority-accent: var(--dash-sage);
+  --overview-insight-accent: var(--dash-sage);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-priority-list .tone-gray,
+.EdgeTrace-report-dashboard .EdgeTrace-overview-insight-list .tone-gray {
+  --priority-accent: var(--dash-smoke);
+  --overview-insight-accent: var(--dash-smoke);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-priority-list small,
+.EdgeTrace-report-dashboard .EdgeTrace-overview-insight-list small,
+.EdgeTrace-report-dashboard .EdgeTrace-pro-answer li,
+.EdgeTrace-report-dashboard .EdgeTrace-pro-review-list li,
+.EdgeTrace-report-dashboard .EdgeTrace-edge-factor-list small {
+  color: rgba(244, 234, 223, 0.66);
+  font-size: 1rem;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-trend-select,
+.EdgeTrace-report-dashboard .EdgeTrace-detail-tabs button,
+.EdgeTrace-report-dashboard .EdgeTrace-dimension-toggle {
+  border-color: var(--dash-line);
+  border-radius: 4px;
+  background: rgba(10, 15, 16, 0.84);
+  color: rgba(244, 234, 223, 0.78);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-detail-tabs button.active,
+.EdgeTrace-report-dashboard .EdgeTrace-dimension-toggle.active {
+  border-color: rgba(209, 161, 60, 0.58);
+  background: rgba(209, 161, 60, 0.11);
+  color: var(--dash-ink);
+  box-shadow: none;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-benchmark-panel {
+  grid-template-columns: minmax(24rem, 0.78fr) minmax(32rem, 1.22fr);
+  gap: 2rem;
+  margin-top: 1.1rem;
+  padding: 2rem;
+  background:
+    linear-gradient(110deg, rgba(209, 161, 60, 0.12), transparent 42%),
+    linear-gradient(180deg, rgba(17, 24, 25, 0.95), rgba(8, 12, 13, 0.96));
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-benchmark-copy h2 {
+  font-size: clamp(2.2rem, 3vw, 3.6rem);
+  line-height: 1;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-benchmark-preview div,
+.EdgeTrace-report-dashboard .EdgeTrace-benchmark-row,
+.EdgeTrace-report-dashboard .EdgeTrace-benchmark-empty,
+.EdgeTrace-report-dashboard .EdgeTrace-pro-cell,
+.EdgeTrace-report-dashboard .EdgeTrace-pro-review-checks div {
+  border-color: var(--dash-line);
+  border-radius: 0;
+  background: rgba(7, 10, 11, 0.48);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-benchmark-preview i,
+.EdgeTrace-report-dashboard .EdgeTrace-benchmark-percentile b {
+  background: linear-gradient(90deg, var(--dash-mustard), var(--dash-cyan));
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-benchmark-row strong,
+.EdgeTrace-report-dashboard .EdgeTrace-benchmark-values span {
+  color: var(--dash-ink);
+  font-size: 1.06rem;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-benchmark-row span,
+.EdgeTrace-report-dashboard .EdgeTrace-benchmark-row small {
+  color: rgba(244, 234, 223, 0.64);
+  font-size: 0.96rem;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-benchmark-percentile > span,
+.EdgeTrace-report-dashboard .EdgeTrace-pro-cell-heading,
+.EdgeTrace-report-dashboard .EdgeTrace-pro-answer-source,
+.EdgeTrace-report-dashboard .EdgeTrace-edge-score-readout span {
+  color: var(--dash-cyan);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-benchmark-row.tone-leading {
+  color: var(--dash-sage);
+  border-color: rgba(126, 161, 116, 0.34);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-benchmark-row.tone-in_line {
+  color: var(--dash-cyan);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-benchmark-row.tone-lagging,
+.EdgeTrace-report-dashboard .EdgeTrace-benchmark-empty.tone-warning {
+  color: var(--dash-mustard);
+  border-color: rgba(209, 161, 60, 0.34);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-pro-workspace {
+  margin-top: 1.1rem;
+  padding: 2rem;
+  background:
+    linear-gradient(130deg, rgba(116, 125, 179, 0.16), transparent 39%),
+    linear-gradient(180deg, rgba(17, 24, 25, 0.96), rgba(8, 12, 13, 0.97));
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-pro-workspace-header h2 {
+  max-width: 50rem;
+  font-size: clamp(2.35rem, 3.2vw, 4rem);
+  line-height: 1;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-pro-workspace-header > span {
+  border-color: rgba(126, 161, 116, 0.4);
+  border-radius: 4px;
+  background: rgba(126, 161, 116, 0.12);
+  color: #b8cf9e;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-pro-workspace-grid {
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.82fr);
+  gap: 1.15rem;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-pro-cell {
+  padding: 1.5rem;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-pro-ask-box input,
+.EdgeTrace-report-dashboard .EdgeTrace-pro-number-input input,
+.EdgeTrace-report-dashboard .EdgeTrace-pro-ask-box button,
+.EdgeTrace-report-dashboard .EdgeTrace-pro-question-tabs button {
+  border-color: var(--dash-line);
+  border-radius: 4px;
+  background: rgba(7, 10, 11, 0.72);
+  color: var(--dash-ink);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-pro-ask-box button,
+.EdgeTrace-report-dashboard .EdgeTrace-pro-question-tabs button.active {
+  border-color: rgba(209, 161, 60, 0.48);
+  background: rgba(209, 161, 60, 0.12);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-pro-answer h3,
+.EdgeTrace-report-dashboard .EdgeTrace-pro-review h3 {
+  font-size: 1.55rem;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-edge-score-readout > strong,
+.EdgeTrace-report-dashboard .EdgeTrace-snapshot-grid strong,
+.EdgeTrace-report-dashboard .EdgeTrace-metric-mini strong {
+  color: var(--dash-ink);
+  font-family: var(--dash-serif);
+  font-weight: 500;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-edge-score-readout > strong {
+  font-size: 5rem;
+  line-height: 0.9;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-edge-factor-list strong {
+  color: rgba(244, 234, 223, 0.88);
+  font-size: 1.05rem;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-edge-factor-list .tone-green,
+.EdgeTrace-report-dashboard .EdgeTrace-pro-regression-watch .tone-clear,
+.EdgeTrace-report-dashboard .EdgeTrace-pro-review-checks em,
+.EdgeTrace-report-dashboard .EdgeTrace-next-actions .tone-green {
+  color: var(--dash-sage);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-edge-factor-list .tone-yellow,
+.EdgeTrace-report-dashboard .EdgeTrace-pro-regression-watch .tone-medium,
+.EdgeTrace-report-dashboard .EdgeTrace-next-actions .tone-yellow {
+  color: var(--dash-mustard);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-edge-factor-list .tone-red,
+.EdgeTrace-report-dashboard .EdgeTrace-pro-regression-watch .tone-high {
+  color: var(--dash-rose);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-edge-factor-list .tone-gray,
+.EdgeTrace-report-dashboard .EdgeTrace-pro-regression-watch .tone-low {
+  color: var(--dash-smoke);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-pro-sliders input[type="range"] {
+  accent-color: var(--dash-mustard);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-pro-sliders strong,
+.EdgeTrace-report-dashboard .EdgeTrace-pro-projection span {
+  color: rgba(244, 234, 223, 0.7);
+  font-size: 1rem;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-pro-sliders em,
+.EdgeTrace-report-dashboard .EdgeTrace-pro-projection strong {
+  color: var(--dash-ink);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-dashboard-bottom {
+  grid-template-columns: minmax(0, 1.16fr) minmax(20rem, 0.84fr);
+  gap: 1.1rem;
+  margin-top: 1.1rem;
+  align-items: stretch;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-snapshot-panel {
+  grid-column: 1;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-actions-panel {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-context-panel {
+  grid-column: 1 / -1;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-snapshot-grid {
+  gap: 1.2rem;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-snapshot-grid div {
+  border-right-color: var(--dash-line);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-snapshot-grid span {
+  color: rgba(244, 234, 223, 0.62);
+  font-size: 1rem;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-snapshot-grid strong {
+  font-size: 1.7rem;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-next-actions button > span {
+  border-radius: 4px;
+  color: var(--dash-muted);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-next-actions em {
+  border-radius: 4px;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-next-actions .tone-red {
+  background: rgba(193, 111, 125, 0.14);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-next-actions .tone-yellow {
+  background: rgba(209, 161, 60, 0.14);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-next-actions .tone-green {
+  background: rgba(126, 161, 116, 0.14);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-dashboard-legend {
+  border-color: var(--dash-line);
+  border-radius: 0;
+  background: rgba(7, 10, 11, 0.62);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-detail-tabs button {
+  font-size: 1.08rem;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-overview-panel {
+  padding: 1.65rem;
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-overview-tags span {
+  border-color: var(--dash-line);
+  border-radius: 4px;
+  color: rgba(244, 234, 223, 0.74);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-overview-insights {
+  border-top-color: var(--dash-line);
+}
+
+.EdgeTrace-report-dashboard .EdgeTrace-overview-insight-list strong {
+  color: var(--dash-ink);
+  font-size: 1.1rem;
+}
+
+@media (max-width: 1500px) {
   .EdgeTrace-report-dashboard .EdgeTrace-dashboard-main {
-    width: min(100%, 1540px);
-    min-width: 0;
-    padding: 2rem clamp(1.5rem, 3vw, 3rem) 2.7rem;
-    font-size: 1.02rem;
-    line-height: 1.6;
+    padding-inline: 2rem;
   }
 
   .EdgeTrace-report-dashboard .EdgeTrace-dashboard-header {
-    display: grid;
-    grid-template-columns: minmax(22rem, 0.92fr) minmax(21rem, 0.62fr) minmax(17rem, 0.46fr);
-    gap: 1.25rem 1.55rem;
-    align-items: start;
-    padding-bottom: 1.45rem;
-    border-bottom: 1px solid var(--dash-border);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-title-group {
-    gap: 0.85rem;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-header h1 {
-    margin: 0;
-    color: var(--dash-ink);
-    font-family: var(--dash-serif);
-    font-size: clamp(2.45rem, 3.1vw, 3.85rem);
-    font-weight: 620;
-    line-height: 1.02;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-header p {
-    max-width: 34rem;
-    color: rgba(243, 239, 231, 0.64);
-    font-size: 1rem;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-report-selector-wrap label,
-  .EdgeTrace-report-dashboard .EdgeTrace-panel-header,
-  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-legend p,
-  .EdgeTrace-report-dashboard .EdgeTrace-metric-mini p,
-  .EdgeTrace-report-dashboard .EdgeTrace-edge-score-actions span {
-    color: rgba(200, 215, 100, 0.84);
-    font-size: 0.76rem;
-    font-weight: 780;
-    text-transform: uppercase;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-report-selector {
-    min-height: 2.9rem;
-    border-color: var(--dash-border);
-    border-radius: 6px;
-    background: rgba(17, 23, 28, 0.9);
-    color: var(--dash-ink);
-    font-size: 0.98rem;
-    font-weight: 680;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-report-selector:focus,
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-ask-box input:focus,
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-number-input input:focus {
-    border-color: rgba(105, 215, 223, 0.58);
-    box-shadow: 0 0 0 3px rgba(105, 215, 223, 0.1);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-report-edit-button,
-  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-link {
-    color: var(--dash-cyan);
-    font-size: 0.96rem;
-    font-weight: 760;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-report-edit-button:hover,
-  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-link:hover {
-    color: var(--dash-citron);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-report-generated {
-    color: rgba(243, 239, 231, 0.56);
-    font-size: 0.86rem;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-account-control .EdgeTrace-account-utility-profile {
-    max-width: 18rem;
-    border-color: var(--dash-border);
-    border-radius: 6px;
-    background: rgba(17, 23, 28, 0.9);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-account-control .EdgeTrace-account-utility-avatar,
-  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-account-control .EdgeTrace-account-utility-profile em {
-    border-radius: 6px;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-actions {
-    justify-content: stretch;
-    justify-self: stretch;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-results-walkthrough-button {
-    min-height: 4.15rem;
-    min-width: 0;
-    width: 100%;
-    border-color: rgba(105, 215, 223, 0.22);
-    border-radius: 6px;
-    background:
-      linear-gradient(135deg, rgba(105, 215, 223, 0.13), transparent 48%),
-      linear-gradient(180deg, rgba(17, 23, 28, 0.97), rgba(7, 8, 10, 0.97));
-    box-shadow:
-      0 18px 38px -34px rgba(105, 215, 223, 0.8),
-      inset 0 1px 0 rgba(243, 239, 231, 0.08);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-results-walkthrough-button::before {
-    background:
-      linear-gradient(90deg, rgba(216, 135, 158, 0.08), transparent 34%),
-      linear-gradient(180deg, rgba(243, 239, 231, 0.045), transparent 50%);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-results-walkthrough-icon {
-    height: 2.45rem;
-    width: 2.45rem;
-    border-color: rgba(105, 215, 223, 0.3);
-    border-radius: 6px;
-    background: rgba(105, 215, 223, 0.08);
-    color: var(--dash-cyan);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-results-walkthrough-button strong {
-    color: var(--dash-ink);
-    font-size: 1rem;
-    font-weight: 800;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-results-walkthrough-button small {
-    color: rgba(243, 239, 231, 0.58);
-    font-size: 0.82rem;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-results-walkthrough-arrow {
-    color: var(--dash-citron);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-alerts {
-    margin-top: 1rem;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-notice {
-    border-color: rgba(200, 215, 100, 0.28);
-    border-radius: 6px;
-    background: rgba(17, 23, 28, 0.78);
-    color: rgba(243, 239, 231, 0.76);
-    font-size: 0.95rem;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-notice strong {
-    color: var(--dash-ink);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-notice.tone-blue {
-    border-color: rgba(105, 215, 223, 0.3);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-notice.tone-yellow {
-    border-color: rgba(200, 215, 100, 0.34);
+    grid-template-columns: minmax(23rem, 1fr) minmax(19rem, 0.7fr) minmax(16rem, 0.55fr);
+    gap: 1.4rem;
   }
 
   .EdgeTrace-report-dashboard .EdgeTrace-kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.9rem;
-    margin-top: 1rem;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-panel {
-    --panel-accent: var(--dash-muted);
-    border-color: var(--dash-border);
-    border-radius: 6px;
-    background:
-      linear-gradient(135deg, rgba(105, 215, 223, 0.045), transparent 42%),
-      linear-gradient(180deg, rgba(17, 23, 28, 0.92), rgba(7, 8, 10, 0.92));
-    box-shadow:
-      inset 0 1px 0 rgba(243, 239, 231, 0.035),
-      0 20px 50px -46px rgba(0, 0, 0, 0.85);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-panel::before {
-    content: "";
-    position: absolute;
-    inset: 0 auto 0 0;
-    width: 3px;
-    background: var(--panel-accent);
-    opacity: 0.86;
-  }
-
-  .EdgeTrace-report-dashboard .tone-red,
-  .EdgeTrace-report-dashboard .EdgeTrace-kpi-card.tone-red {
-    --panel-accent: var(--dash-rose);
-    color: var(--dash-rose);
-  }
-
-  .EdgeTrace-report-dashboard .tone-yellow,
-  .EdgeTrace-report-dashboard .EdgeTrace-kpi-card.tone-yellow {
-    --panel-accent: var(--dash-citron);
-    color: var(--dash-citron);
-  }
-
-  .EdgeTrace-report-dashboard .tone-green,
-  .EdgeTrace-report-dashboard .EdgeTrace-kpi-card.tone-green {
-    --panel-accent: var(--dash-citron);
-    color: var(--dash-citron);
-  }
-
-  .EdgeTrace-report-dashboard .tone-blue,
-  .EdgeTrace-report-dashboard .EdgeTrace-kpi-card.tone-blue {
-    --panel-accent: var(--dash-cyan);
-    color: var(--dash-cyan);
-  }
-
-  .EdgeTrace-report-dashboard .tone-gray,
-  .EdgeTrace-report-dashboard .EdgeTrace-kpi-card.tone-gray {
-    --panel-accent: var(--dash-muted);
-    color: var(--dash-muted);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-kpi-card {
-    min-height: 12rem;
-    padding: 1.25rem 1.3rem;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-kpi-body {
-    min-height: 6.2rem;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-kpi-value {
-    color: var(--dash-ink);
-    font-family: var(--dash-serif);
-    font-size: clamp(2.3rem, 3vw, 3.25rem);
-    font-weight: 650;
-    line-height: 1;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-kpi-value span {
-    color: rgba(243, 239, 231, 0.68);
-    font-family: var(--dash-sans);
-    font-size: 0.9rem;
-    font-weight: 720;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-kpi-card.tone-red .EdgeTrace-kpi-value,
-  .EdgeTrace-report-dashboard .EdgeTrace-metric-mini.tone-red strong,
-  .EdgeTrace-report-dashboard .EdgeTrace-snapshot-grid .tone-red,
-  .EdgeTrace-report-dashboard .EdgeTrace-impact-donut strong {
-    color: var(--dash-rose);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-kpi-card.tone-yellow .EdgeTrace-kpi-value,
-  .EdgeTrace-report-dashboard .EdgeTrace-metric-mini.tone-yellow strong,
-  .EdgeTrace-report-dashboard .EdgeTrace-snapshot-grid .tone-yellow {
-    color: var(--dash-citron);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-kpi-card.tone-green .EdgeTrace-kpi-value,
-  .EdgeTrace-report-dashboard .EdgeTrace-metric-mini.tone-green strong,
-  .EdgeTrace-report-dashboard .EdgeTrace-snapshot-grid .tone-green {
-    color: var(--dash-citron);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-kpi-card.tone-blue .EdgeTrace-kpi-value {
-    color: var(--dash-cyan);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-kpi-detail,
-  .EdgeTrace-report-dashboard .EdgeTrace-kpi-subdetail,
-  .EdgeTrace-report-dashboard .EdgeTrace-benchmark-copy p,
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-answer p,
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-review > p,
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-projection p,
-  .EdgeTrace-report-dashboard .EdgeTrace-context-list div,
-  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-legend small,
-  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-legend em {
-    color: rgba(243, 239, 231, 0.66);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-kpi-detail,
-  .EdgeTrace-report-dashboard .EdgeTrace-kpi-subdetail {
-    font-size: 0.98rem;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-kpi-progress,
-  .EdgeTrace-report-dashboard .EdgeTrace-kpi-progress span,
-  .EdgeTrace-report-dashboard .EdgeTrace-benchmark-percentile i,
-  .EdgeTrace-report-dashboard .EdgeTrace-benchmark-percentile b,
-  .EdgeTrace-report-dashboard .EdgeTrace-edge-factor-list i,
-  .EdgeTrace-report-dashboard .EdgeTrace-edge-factor-list b {
-    border-radius: 0;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-kpi-progress span {
-    background: currentColor;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-middle {
-    display: grid;
-    grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
-    gap: 0.9rem;
-    margin-top: 0.9rem;
-    align-items: stretch;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-diagnosis-panel {
-    grid-row: span 2;
-    padding: 1.55rem;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-trend-panel,
-  .EdgeTrace-report-dashboard .EdgeTrace-insights-panel,
-  .EdgeTrace-report-dashboard .EdgeTrace-benchmark-panel,
-  .EdgeTrace-report-dashboard .EdgeTrace-snapshot-panel,
-  .EdgeTrace-report-dashboard .EdgeTrace-actions-panel,
-  .EdgeTrace-report-dashboard .EdgeTrace-context-panel {
-    padding: 1.35rem;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-insights-panel {
-    grid-column: 2;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-diagnosis-layout {
-    grid-template-columns: minmax(0, 1fr) 10.5rem;
-    gap: 1.3rem;
-    align-items: start;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-diagnosis-layout h2,
-  .EdgeTrace-report-dashboard .EdgeTrace-benchmark-copy h2,
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-workspace-header h2,
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-answer h3,
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-review h3 {
-    color: var(--dash-ink);
-    font-family: var(--dash-serif);
-    font-weight: 650;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-diagnosis-layout h2 {
-    font-size: clamp(2.1rem, 2.55vw, 3rem);
-    line-height: 1.04;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-diagnosis-layout p {
-    color: rgba(243, 239, 231, 0.72);
-    font-size: 1rem;
-    line-height: 1.68;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-diagnosis-foot {
-    gap: 1rem;
-    margin-top: 1.7rem;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-impact-donut {
-    width: 10.2rem;
-    height: 10.2rem;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-impact-donut::before {
-    background: var(--dash-graphite);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-impact-donut span {
-    color: rgba(243, 239, 231, 0.66);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-impact-list {
-    grid-column: 1 / -1;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-impact-list > div,
-  .EdgeTrace-report-dashboard .EdgeTrace-context-list div {
-    border-bottom-color: var(--dash-border);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-impact-list > div > span,
-  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-legend span,
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-answer li::before,
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-review-list li::before {
-    border-radius: 1px;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-impact-list strong,
-  .EdgeTrace-report-dashboard .EdgeTrace-priority-list strong,
-  .EdgeTrace-report-dashboard .EdgeTrace-snapshot-grid strong,
-  .EdgeTrace-report-dashboard .EdgeTrace-next-actions strong,
-  .EdgeTrace-report-dashboard .EdgeTrace-context-list strong,
-  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-legend strong {
-    color: var(--dash-ink);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-impact-list small,
-  .EdgeTrace-report-dashboard .EdgeTrace-next-actions .tone-red {
-    color: var(--dash-rose);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-priority-list {
-    grid-template-columns: 1fr;
-    gap: 0.72rem;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-priority-list button {
-    padding: 0.34rem 0 0.34rem 0.92rem;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-priority-list button::before,
-  .EdgeTrace-report-dashboard .EdgeTrace-overview-insight-list div::before {
-    width: 3px;
-    border-radius: 0;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-priority-list .tone-red,
-  .EdgeTrace-report-dashboard .EdgeTrace-overview-insight-list .tone-red {
-    --priority-accent: var(--dash-rose);
-    --overview-insight-accent: var(--dash-rose);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-priority-list .tone-yellow,
-  .EdgeTrace-report-dashboard .EdgeTrace-overview-insight-list .tone-yellow,
-  .EdgeTrace-report-dashboard .EdgeTrace-priority-list .tone-green,
-  .EdgeTrace-report-dashboard .EdgeTrace-overview-insight-list .tone-green {
-    --priority-accent: var(--dash-citron);
-    --overview-insight-accent: var(--dash-citron);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-priority-list .tone-gray,
-  .EdgeTrace-report-dashboard .EdgeTrace-overview-insight-list .tone-gray {
-    --priority-accent: var(--dash-muted);
-    --overview-insight-accent: var(--dash-muted);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-priority-list small,
-  .EdgeTrace-report-dashboard .EdgeTrace-overview-insight-list small,
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-answer li,
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-review-list li,
-  .EdgeTrace-report-dashboard .EdgeTrace-edge-factor-list small {
-    color: rgba(243, 239, 231, 0.64);
-    font-size: 0.95rem;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-trend-select,
-  .EdgeTrace-report-dashboard .EdgeTrace-detail-tabs button,
-  .EdgeTrace-report-dashboard .EdgeTrace-dimension-toggle {
-    border-color: var(--dash-border);
-    border-radius: 6px;
-    background: rgba(17, 23, 28, 0.86);
-    color: rgba(243, 239, 231, 0.76);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-detail-tabs button.active,
-  .EdgeTrace-report-dashboard .EdgeTrace-dimension-toggle.active {
-    border-color: rgba(105, 215, 223, 0.48);
-    background: rgba(105, 215, 223, 0.1);
-    color: var(--dash-ink);
-    box-shadow: none;
+    grid-template-columns: minmax(18rem, 1.16fr) repeat(2, minmax(14rem, 0.92fr));
   }
 
   .EdgeTrace-report-dashboard .EdgeTrace-benchmark-panel {
-    grid-template-columns: minmax(22rem, 0.78fr) minmax(30rem, 1.22fr);
-    gap: 1.25rem;
-    margin-top: 0.9rem;
-    padding: 1.55rem;
-    background:
-      linear-gradient(135deg, rgba(200, 215, 100, 0.08), transparent 48%),
-      linear-gradient(180deg, rgba(17, 23, 28, 0.94), rgba(7, 8, 10, 0.94));
+    grid-template-columns: minmax(21rem, 0.8fr) minmax(27rem, 1.2fr);
+  }
+}
+
+@media (max-width: 1180px) {
+  .EdgeTrace-report-dashboard {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
   }
 
-  .EdgeTrace-report-dashboard .EdgeTrace-benchmark-copy h2 {
-    max-width: 35rem;
-    font-size: clamp(1.9rem, 2.3vw, 2.75rem);
-    line-height: 1.05;
+  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-sidebar {
+    position: relative;
+    height: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--dash-line);
   }
 
-  .EdgeTrace-report-dashboard .EdgeTrace-benchmark-preview div,
-  .EdgeTrace-report-dashboard .EdgeTrace-benchmark-row,
-  .EdgeTrace-report-dashboard .EdgeTrace-benchmark-empty,
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-cell,
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-review-checks div {
-    border-color: var(--dash-border);
-    border-radius: 6px;
-    background: rgba(7, 8, 10, 0.44);
+  .EdgeTrace-report-dashboard .EdgeTrace-sidebar-brand {
+    height: 4.6rem;
   }
 
-  .EdgeTrace-report-dashboard .EdgeTrace-benchmark-preview i,
-  .EdgeTrace-report-dashboard .EdgeTrace-benchmark-percentile b {
-    background: linear-gradient(90deg, var(--dash-citron), var(--dash-cyan));
+  .EdgeTrace-report-dashboard .EdgeTrace-sidebar-nav {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .EdgeTrace-report-dashboard .EdgeTrace-benchmark-row strong,
-  .EdgeTrace-report-dashboard .EdgeTrace-benchmark-values span {
-    color: var(--dash-ink);
-    font-size: 1rem;
+  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-header {
+    grid-template-columns: 1fr;
+    align-items: start;
   }
 
-  .EdgeTrace-report-dashboard .EdgeTrace-benchmark-row span,
-  .EdgeTrace-report-dashboard .EdgeTrace-benchmark-row small {
-    color: rgba(243, 239, 231, 0.62);
-    font-size: 0.9rem;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-benchmark-percentile > span,
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-cell-heading,
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-answer-source,
-  .EdgeTrace-report-dashboard .EdgeTrace-edge-score-readout span {
-    color: var(--dash-cyan);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-benchmark-row.tone-leading {
-    color: var(--dash-citron);
-    border-color: rgba(200, 215, 100, 0.28);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-benchmark-row.tone-in_line {
-    color: var(--dash-cyan);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-benchmark-row.tone-lagging,
-  .EdgeTrace-report-dashboard .EdgeTrace-benchmark-empty.tone-warning {
-    color: var(--dash-citron);
-    border-color: rgba(200, 215, 100, 0.3);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-workspace {
-    margin-top: 0.9rem;
-    padding: 1.55rem;
-    background:
-      linear-gradient(135deg, rgba(105, 215, 223, 0.09), transparent 46%),
-      linear-gradient(180deg, rgba(17, 23, 28, 0.95), rgba(7, 8, 10, 0.96));
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-workspace-header h2 {
-    max-width: 50rem;
-    font-size: clamp(1.9rem, 2.35vw, 2.85rem);
-    line-height: 1.05;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-workspace-header > span {
-    border-color: rgba(200, 215, 100, 0.3);
-    border-radius: 6px;
-    background: rgba(200, 215, 100, 0.1);
-    color: var(--dash-citron);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-workspace-grid {
-    grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
-    gap: 0.9rem;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-cell {
-    padding: 1.2rem;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-ask-box input,
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-number-input input,
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-ask-box button,
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-question-tabs button {
-    border-color: var(--dash-border);
-    border-radius: 6px;
-    background: rgba(7, 8, 10, 0.68);
-    color: var(--dash-ink);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-ask-box button,
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-question-tabs button.active {
-    border-color: rgba(105, 215, 223, 0.42);
-    background: rgba(105, 215, 223, 0.1);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-answer h3,
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-review h3 {
-    font-size: 1.28rem;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-edge-score-readout > strong,
-  .EdgeTrace-report-dashboard .EdgeTrace-snapshot-grid strong,
-  .EdgeTrace-report-dashboard .EdgeTrace-metric-mini strong {
-    color: var(--dash-ink);
-    font-family: var(--dash-serif);
-    font-weight: 650;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-edge-score-readout > strong {
-    font-size: 4.15rem;
-    line-height: 0.9;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-edge-factor-list strong {
-    color: rgba(243, 239, 231, 0.88);
-    font-size: 0.98rem;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-edge-factor-list .tone-green,
-  .EdgeTrace-report-dashboard .EdgeTrace-edge-factor-list .tone-yellow,
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-regression-watch .tone-clear,
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-regression-watch .tone-medium,
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-review-checks em,
-  .EdgeTrace-report-dashboard .EdgeTrace-next-actions .tone-green,
-  .EdgeTrace-report-dashboard .EdgeTrace-next-actions .tone-yellow {
-    color: var(--dash-citron);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-edge-factor-list .tone-red,
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-regression-watch .tone-high {
-    color: var(--dash-rose);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-edge-factor-list .tone-gray,
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-regression-watch .tone-low {
-    color: var(--dash-muted);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-sliders input[type="range"] {
-    accent-color: var(--dash-cyan);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-sliders strong,
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-projection span {
-    color: rgba(243, 239, 231, 0.68);
-    font-size: 0.94rem;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-sliders em,
-  .EdgeTrace-report-dashboard .EdgeTrace-pro-projection strong {
-    color: var(--dash-ink);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-bottom {
-    grid-template-columns: minmax(0, 1.12fr) minmax(20rem, 0.88fr);
-    gap: 0.9rem;
-    margin-top: 0.9rem;
-    align-items: stretch;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-snapshot-panel {
+  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-report-meta,
+  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-actions {
     grid-column: 1;
+    grid-row: auto;
+    justify-self: stretch;
+    justify-content: flex-start;
+    text-align: left;
   }
 
-  .EdgeTrace-report-dashboard .EdgeTrace-actions-panel {
-    grid-column: 2;
-    grid-row: 1;
+  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-account-control {
+    justify-content: flex-start;
   }
 
+  .EdgeTrace-report-dashboard .EdgeTrace-kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .EdgeTrace-report-dashboard .EdgeTrace-kpi-card:first-child {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+
+  .EdgeTrace-report-dashboard .EdgeTrace-kpi-card:nth-child(6),
+  .EdgeTrace-report-dashboard .EdgeTrace-insights-panel,
+  .EdgeTrace-report-dashboard .EdgeTrace-snapshot-panel,
+  .EdgeTrace-report-dashboard .EdgeTrace-actions-panel,
   .EdgeTrace-report-dashboard .EdgeTrace-context-panel {
     grid-column: 1 / -1;
   }
 
-  .EdgeTrace-report-dashboard .EdgeTrace-snapshot-grid {
-    gap: 1rem;
+  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-middle,
+  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-bottom,
+  .EdgeTrace-report-dashboard .EdgeTrace-pro-workspace-grid,
+  .EdgeTrace-report-dashboard .EdgeTrace-benchmark-panel {
+    grid-template-columns: 1fr;
   }
 
-  .EdgeTrace-report-dashboard .EdgeTrace-snapshot-grid div {
-    border-right-color: var(--dash-border);
+  .EdgeTrace-report-dashboard .EdgeTrace-diagnosis-panel {
+    grid-row: auto;
   }
+}
 
-  .EdgeTrace-report-dashboard .EdgeTrace-snapshot-grid span {
-    color: rgba(243, 239, 231, 0.62);
-    font-size: 0.9rem;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-snapshot-grid strong {
-    font-size: 1.42rem;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-next-actions button > span {
-    border-radius: 6px;
-    color: var(--dash-muted);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-next-actions em {
-    border-radius: 4px;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-next-actions .tone-red {
-    background: rgba(216, 135, 158, 0.12);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-next-actions .tone-yellow,
-  .EdgeTrace-report-dashboard .EdgeTrace-next-actions .tone-green {
-    background: rgba(200, 215, 100, 0.12);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-legend {
-    border-color: var(--dash-border);
-    border-radius: 6px;
-    background: rgba(17, 23, 28, 0.72);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-detail-tabs button {
-    font-size: 0.98rem;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-overview-panel {
-    padding: 1.35rem;
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-overview-tags span {
-    border-color: var(--dash-border);
-    border-radius: 6px;
-    color: rgba(243, 239, 231, 0.72);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-overview-insights {
-    border-top-color: var(--dash-border);
-  }
-
-  .EdgeTrace-report-dashboard .EdgeTrace-overview-insight-list strong {
-    color: var(--dash-ink);
+@media (max-width: 900px) {
+  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-main {
+    padding: 1.25rem;
     font-size: 1rem;
   }
 
-  @media (max-width: 1500px) {
-    .EdgeTrace-report-dashboard .EdgeTrace-dashboard-main {
-      padding-inline: 1.5rem;
-    }
-
-    .EdgeTrace-report-dashboard .EdgeTrace-dashboard-header {
-      grid-template-columns: minmax(20rem, 1fr) minmax(19rem, 0.72fr) minmax(15rem, 0.52fr);
-      gap: 1rem;
-    }
+  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-header h1 {
+    font-size: clamp(2.7rem, 12vw, 4.2rem);
   }
 
-  @media (max-width: 1180px) {
-    .EdgeTrace-report-dashboard {
-      grid-template-columns: 1fr;
-      grid-template-rows: auto minmax(0, 1fr);
-    }
-
-    .EdgeTrace-report-dashboard .EdgeTrace-dashboard-sidebar {
-      position: relative;
-      height: auto;
-      border-right: 0;
-      border-bottom: 1px solid var(--dash-border);
-    }
-
-    .EdgeTrace-report-dashboard .EdgeTrace-sidebar-brand {
-      height: 4.4rem;
-    }
-
-    .EdgeTrace-report-dashboard .EdgeTrace-sidebar-nav {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .EdgeTrace-report-dashboard .EdgeTrace-dashboard-header,
-    .EdgeTrace-report-dashboard .EdgeTrace-kpi-grid,
-    .EdgeTrace-report-dashboard .EdgeTrace-dashboard-middle,
-    .EdgeTrace-report-dashboard .EdgeTrace-dashboard-bottom,
-    .EdgeTrace-report-dashboard .EdgeTrace-pro-workspace-grid,
-    .EdgeTrace-report-dashboard .EdgeTrace-benchmark-panel {
-      grid-template-columns: 1fr;
-    }
-
-    .EdgeTrace-report-dashboard .EdgeTrace-dashboard-report-meta,
-    .EdgeTrace-report-dashboard .EdgeTrace-dashboard-actions,
-    .EdgeTrace-report-dashboard .EdgeTrace-insights-panel,
-    .EdgeTrace-report-dashboard .EdgeTrace-snapshot-panel,
-    .EdgeTrace-report-dashboard .EdgeTrace-actions-panel,
-    .EdgeTrace-report-dashboard .EdgeTrace-context-panel {
-      grid-column: 1;
-      grid-row: auto;
-      justify-self: stretch;
-      text-align: left;
-    }
-
-    .EdgeTrace-report-dashboard .EdgeTrace-dashboard-account-control {
-      justify-content: flex-start;
-    }
-
-    .EdgeTrace-report-dashboard .EdgeTrace-diagnosis-panel {
-      grid-row: auto;
-    }
+  .EdgeTrace-report-dashboard .EdgeTrace-kpi-grid,
+  .EdgeTrace-report-dashboard .EdgeTrace-priority-list,
+  .EdgeTrace-report-dashboard .EdgeTrace-diagnosis-layout,
+  .EdgeTrace-report-dashboard .EdgeTrace-benchmark-row,
+  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-legend,
+  .EdgeTrace-report-dashboard .EdgeTrace-snapshot-grid {
+    grid-template-columns: 1fr;
   }
 
-  @media (max-width: 900px) {
-    .EdgeTrace-report-dashboard .EdgeTrace-dashboard-main {
-      padding: 1rem;
-      font-size: 0.98rem;
-    }
-
-    .EdgeTrace-report-dashboard .EdgeTrace-dashboard-header h1 {
-      font-size: clamp(2.25rem, 11vw, 3.25rem);
-    }
-
-    .EdgeTrace-report-dashboard .EdgeTrace-diagnosis-layout,
-    .EdgeTrace-report-dashboard .EdgeTrace-priority-list,
-    .EdgeTrace-report-dashboard .EdgeTrace-benchmark-row,
-    .EdgeTrace-report-dashboard .EdgeTrace-dashboard-legend,
-    .EdgeTrace-report-dashboard .EdgeTrace-snapshot-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .EdgeTrace-report-dashboard .EdgeTrace-impact-donut-wrap {
-      justify-content: flex-start;
-    }
-
-    .EdgeTrace-report-dashboard .EdgeTrace-pro-workspace-header,
-    .EdgeTrace-report-dashboard .EdgeTrace-pro-sliders label > span,
-    .EdgeTrace-report-dashboard .EdgeTrace-pro-projection > div {
-      align-items: flex-start;
-      flex-direction: column;
-      gap: 0.42rem;
-    }
-
-    .EdgeTrace-report-dashboard .EdgeTrace-snapshot-grid div {
-      border-right: 0;
-      border-bottom: 1px solid var(--dash-border);
-      padding-bottom: 0.85rem;
-    }
+  .EdgeTrace-report-dashboard .EdgeTrace-kpi-card,
+  .EdgeTrace-report-dashboard .EdgeTrace-kpi-card:first-child,
+  .EdgeTrace-report-dashboard .EdgeTrace-kpi-card:nth-child(6) {
+    min-height: auto;
   }
 
-  @media (max-width: 560px) {
-    .EdgeTrace-report-dashboard .EdgeTrace-dashboard-main {
-      padding-inline: 0.75rem;
-    }
-
-    .EdgeTrace-report-dashboard .EdgeTrace-sidebar-nav,
-    .EdgeTrace-report-dashboard .EdgeTrace-sidebar-quick,
-    .EdgeTrace-report-dashboard .EdgeTrace-dashboard-actions,
-    .EdgeTrace-report-dashboard .EdgeTrace-pro-question-tabs,
-    .EdgeTrace-report-dashboard .EdgeTrace-pro-ask-box,
-    .EdgeTrace-report-dashboard .EdgeTrace-pro-control-row {
-      grid-template-columns: 1fr;
-    }
-
-    .EdgeTrace-report-dashboard .EdgeTrace-results-walkthrough-button,
-    .EdgeTrace-report-dashboard .EdgeTrace-report-selector {
-      width: 100%;
-    }
-
-    .EdgeTrace-report-dashboard .EdgeTrace-dashboard-panel,
-    .EdgeTrace-report-dashboard .EdgeTrace-pro-workspace,
-    .EdgeTrace-report-dashboard .EdgeTrace-benchmark-panel {
-      padding: 1rem;
-    }
+  .EdgeTrace-report-dashboard .EdgeTrace-kpi-card:first-child .EdgeTrace-kpi-value {
+    font-size: clamp(3.4rem, 15vw, 5rem);
   }
+
+  .EdgeTrace-report-dashboard .EdgeTrace-impact-donut-wrap {
+    justify-content: flex-start;
+  }
+
+  .EdgeTrace-report-dashboard .EdgeTrace-pro-workspace-header,
+  .EdgeTrace-report-dashboard .EdgeTrace-pro-sliders label > span,
+  .EdgeTrace-report-dashboard .EdgeTrace-pro-projection > div {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  .EdgeTrace-report-dashboard .EdgeTrace-snapshot-grid div {
+    border-right: 0;
+    border-bottom: 1px solid var(--dash-line);
+    padding-bottom: 0.9rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-main {
+    padding-inline: 0.85rem;
+  }
+
+  .EdgeTrace-report-dashboard .EdgeTrace-sidebar-nav,
+  .EdgeTrace-report-dashboard .EdgeTrace-sidebar-quick {
+    grid-template-columns: 1fr;
+  }
+
+  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-actions,
+  .EdgeTrace-report-dashboard .EdgeTrace-pro-question-tabs,
+  .EdgeTrace-report-dashboard .EdgeTrace-pro-ask-box,
+  .EdgeTrace-report-dashboard .EdgeTrace-pro-control-row {
+    grid-template-columns: 1fr;
+  }
+
+  .EdgeTrace-report-dashboard .EdgeTrace-results-walkthrough-button,
+  .EdgeTrace-report-dashboard .EdgeTrace-report-selector {
+    width: 100%;
+  }
+
+  .EdgeTrace-report-dashboard .EdgeTrace-dashboard-panel,
+  .EdgeTrace-report-dashboard .EdgeTrace-pro-workspace,
+  .EdgeTrace-report-dashboard .EdgeTrace-benchmark-panel {
+    padding: 1.1rem;
+  }
+}
 
   .EdgeTrace-table-container {
     position: relative;
