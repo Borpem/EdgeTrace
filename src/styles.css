@@ -2712,6 +2712,39 @@
     font-size: 0.8rem;
   }
 
+  .EdgeTrace-trend-tooltip {
+    min-width: 8.5rem;
+    border: 1px solid var(--dash-border-strong);
+    border-radius: 6px;
+    background: #07111a;
+    box-shadow: 0 18px 40px -30px rgba(0, 0, 0, 0.9);
+    padding: 0.65rem 0.75rem;
+  }
+
+  .EdgeTrace-trend-tooltip span {
+    display: block;
+    color: var(--dash-muted);
+    font-size: 0.78rem;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  .EdgeTrace-trend-tooltip strong {
+    display: block;
+    margin-top: 0.18rem;
+    font-size: 1rem;
+    font-weight: 760;
+    line-height: 1.25;
+  }
+
+  .EdgeTrace-trend-tooltip.tone-positive strong {
+    color: var(--dash-success);
+  }
+
+  .EdgeTrace-trend-tooltip.tone-negative strong {
+    color: var(--dash-danger);
+  }
+
   .EdgeTrace-dashboard-link {
     display: inline-flex;
     align-items: center;

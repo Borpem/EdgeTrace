@@ -5,6 +5,7 @@ import {
   CartesianGrid,
   Line,
   LineChart,
+  ReferenceLine,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -116,6 +117,11 @@ type DashboardReviewAgenda = {
   summary: string;
   items: string[];
   checks: Array<{ label: string; current: string; target: string }>;
+};
+type EquityCurvePoint = { trade: number; equity: number };
+type SignedEquityCurvePoint = EquityCurvePoint & {
+  positiveEquity: number | null;
+  negativeEquity: number | null;
 };
 
 type DashboardPageProps = {
@@ -244,6 +250,9 @@ export function DashboardPage({
   );
   const normalizedTradeCount = provenance?.normalizedTradeCount ?? metrics.totalTrades ?? trades.length;
   const performanceData = charts.equityCurve.length ? charts.equityCurve : buildEquityCurve(trades);
+  const signedPerformanceData = useMemo(() => buildSignedEquityCurve(performanceData), [performanceData]);
+  const overviewLabel = overviewStatus(intelligence.strategyHealthScore, intelligence.primaryDiagnosis);
+  const overviewCardTone = overviewTone(intelligence.strategyHealthScore, intelligence.primaryDiagnosis);
   const impactBreakdown = buildImpactBreakdown(metrics, largestLeak);
   const priorityInsights = buildPriorityInsights(safeResult, intelligence, largestLeak, primaryInspection);
   const actionItems = buildActionItems(intelligence, primaryInspection, largestLeak, metrics);
@@ -667,10 +676,10 @@ export function DashboardPage({
         <section className="EdgeTrace-kpi-grid" aria-label="Dashboard overview metrics">
           <DashboardMetricCard
             title="Overview"
-            value={overviewStatus(intelligence.strategyHealthScore, intelligence.primaryDiagnosis)}
-            detail="Primary issues are dragging performance."
-            tone={overviewTone(intelligence.strategyHealthScore, intelligence.primaryDiagnosis)}
-            icon={<AlertCircle size={52} />}
+            value={overviewLabel}
+            detail={overviewDetail(overviewLabel)}
+            tone={overviewCardTone}
+            icon={overviewCardTone === "green" ? <CheckCircle2 size={52} /> : <AlertCircle size={52} />}
             dataTestId="dashboard-health-card"
           />
           <DashboardMetricCard
@@ -721,10 +730,13 @@ export function DashboardPage({
             <PanelHeader title="Key Performance Trend" info />
             <div className="EdgeTrace-trend-select">Net PnL</div>
             <ResponsiveContainer width="100%" height={310}>
-              <LineChart data={performanceData} margin={{ top: 14, right: 10, left: 2, bottom: 0 }}>
+              <LineChart data={signedPerformanceData} margin={{ top: 14, right: 10, left: 2, bottom: 0 }}>
                 <CartesianGrid stroke="#1d3042" strokeOpacity={0.58} vertical={false} />
                 <XAxis
                   dataKey="trade"
+                  type="number"
+                  domain={["dataMin", "dataMax"]}
+                  allowDecimals={false}
                   stroke="#8796a8"
                   tickLine={false}
                   axisLine={false}
@@ -738,18 +750,30 @@ export function DashboardPage({
                   tick={{ fontSize: 13 }}
                   tickFormatter={formatAxisCurrency}
                 />
+                <ReferenceLine y={0} stroke="#5b6a76" strokeOpacity={0.45} strokeDasharray="4 4" />
                 <Tooltip
-                  cursor={{ stroke: "#2f8bc9", strokeOpacity: 0.32 }}
-                  contentStyle={{ background: "#07111d", border: "1px solid rgba(88, 214, 255, 0.18)" }}
-                  formatter={(value) => [formatTooltipCurrency(value), "Net PnL"]}
+                  cursor={{ stroke: "#5b6a76", strokeOpacity: 0.36 }}
+                  content={<PerformanceTrendTooltip />}
                 />
                 <Line
-                  type="monotone"
-                  dataKey="equity"
-                  stroke={metrics.netPnl >= 0 ? "#68c27b" : "#ff4b55"}
+                  type="linear"
+                  dataKey="positiveEquity"
+                  stroke="#6fc78a"
                   strokeWidth={2.2}
                   dot={false}
-                  activeDot={{ r: 4, fill: metrics.netPnl >= 0 ? "#68c27b" : "#ff4b55" }}
+                  activeDot={{ r: 4, fill: "#6fc78a", stroke: "#07111d", strokeWidth: 2 }}
+                  isAnimationActive={false}
+                  connectNulls={false}
+                />
+                <Line
+                  type="linear"
+                  dataKey="negativeEquity"
+                  stroke="#f45b72"
+                  strokeWidth={2.2}
+                  dot={false}
+                  activeDot={{ r: 4, fill: "#f45b72", stroke: "#07111d", strokeWidth: 2 }}
+                  isAnimationActive={false}
+                  connectNulls={false}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -1150,6 +1174,26 @@ function DashboardMetricCard({
         </div>
       )}
     </article>
+  );
+}
+
+function PerformanceTrendTooltip({
+  active,
+  payload
+}: {
+  active?: boolean;
+  payload?: Array<{ payload?: SignedEquityCurvePoint }>;
+}) {
+  const point = payload?.find((item) => typeof item.payload?.equity === "number")?.payload;
+  if (!active || !point) return null;
+
+  const tone = point.equity >= 0 ? "positive" : "negative";
+
+  return (
+    <div className={`EdgeTrace-trend-tooltip tone-${tone}`}>
+      <span>Trade {number.format(point.trade)}</span>
+      <strong>{currency.format(point.equity)}</strong>
+    </div>
   );
 }
 
@@ -2176,6 +2220,36 @@ function buildEquityCurve(trades: NormalizedTrade[]) {
   });
 }
 
+function buildSignedEquityCurve(points: EquityCurvePoint[]): SignedEquityCurvePoint[] {
+  const signedPoints: SignedEquityCurvePoint[] = [];
+
+  points.forEach((point, index) => {
+    const previous = points[index - 1];
+    const crossesZero =
+      previous &&
+      previous.equity !== point.equity &&
+      ((previous.equity < 0 && point.equity >= 0) || (previous.equity >= 0 && point.equity < 0));
+
+    if (crossesZero) {
+      const progressToZero = (0 - previous.equity) / (point.equity - previous.equity);
+      signedPoints.push({
+        trade: previous.trade + (point.trade - previous.trade) * progressToZero,
+        equity: 0,
+        positiveEquity: 0,
+        negativeEquity: 0
+      });
+    }
+
+    signedPoints.push({
+      ...point,
+      positiveEquity: point.equity >= 0 ? point.equity : null,
+      negativeEquity: point.equity < 0 ? point.equity : null
+    });
+  });
+
+  return signedPoints;
+}
+
 function buildImpactBreakdown(metrics: DiagnosticsResult["metrics"], largestLeak: BreakdownRow | undefined) {
   const transactionCosts = Math.max(0, Math.abs(metrics.totalCosts));
   const tradeQuality = Math.max(0, Math.abs(Math.min(metrics.expectancy, 0) * Math.max(1, metrics.totalTrades)));
@@ -2725,10 +2799,22 @@ function compactDetails(values: Array<string | undefined | false>) {
 }
 
 function overviewStatus(score: number, diagnosis: ReturnType<typeof buildReportIntelligence>["primaryDiagnosis"]) {
-  if (diagnosis === "Healthy" && score >= 80) return "On Track";
   if (diagnosis === "Insufficient Data") return "Needs Data";
+  if (score >= 80) return hasMaterialOverviewRisk(diagnosis) ? "Review Risk" : "On Track";
   if (score >= 60) return "Watchlist";
   return "Needs Attention";
+}
+
+function hasMaterialOverviewRisk(diagnosis: ReturnType<typeof buildReportIntelligence>["primaryDiagnosis"]) {
+  return ["Negative Expectancy", "Cost Drag Problem", "Large Loss Problem", "Poor R Capture"].includes(diagnosis);
+}
+
+function overviewDetail(status: string) {
+  if (status === "On Track") return "Core metrics are above target. Monitor listed watch items separately.";
+  if (status === "Review Risk") return "Strong overall score, with one material risk still worth reviewing.";
+  if (status === "Watchlist") return "A few metrics need monitoring before adding size.";
+  if (status === "Needs Data") return "Import more complete trade, cost, or risk data.";
+  return "Primary issues are dragging performance.";
 }
 
 function overviewTone(
@@ -2737,6 +2823,7 @@ function overviewTone(
 ): "red" | "yellow" | "green" | "blue" | "gray" {
   const status = overviewStatus(score, diagnosis);
   if (status === "On Track") return "green";
+  if (status === "Review Risk") return "yellow";
   if (status === "Watchlist") return "yellow";
   if (status === "Needs Data") return "gray";
   return "red";
