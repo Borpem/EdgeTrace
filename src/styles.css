@@ -1,3 +1,7 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -4293,11 +4297,10 @@
   --dash-danger: #f45b72;
   --dash-warning: #e2b84f;
   --dash-success: #6fc78a;
-  --font-ui: "Suisse Int'l", "Suisse Intl", "Suisse International", "Helvetica Neue", Arial, ui-sans-serif,
-    system-ui, sans-serif;
-  --font-display: "Suisse Works", "Suisse Works Trial", "Tiempos Text", "Georgia Pro", Georgia, ui-serif, serif;
-  --font-data: "Berkeley Mono", "Berkeley Mono Trial", "SF Mono", "SFMono-Regular", "Cascadia Mono", "Roboto Mono",
-    Menlo, Consolas, ui-monospace, monospace;
+  --font-ui: Inter, "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Source Serif 4", "Tiempos Text", "Georgia Pro", Georgia, ui-serif, serif;
+  --font-data: "JetBrains Mono", "SF Mono", "SFMono-Regular", "Cascadia Mono", "Roboto Mono", Menlo, Consolas,
+    ui-monospace, monospace;
   font-family: var(--font-ui);
   font-feature-settings:
     "kern" 1,
