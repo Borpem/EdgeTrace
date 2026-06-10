@@ -662,6 +662,8 @@ export function DashboardPage({
           </section>
         )}
 
+        <DashboardLegend />
+
         <section className="EdgeTrace-kpi-grid" aria-label="Dashboard overview metrics">
           <DashboardMetricCard
             title="Overview"
@@ -807,8 +809,6 @@ export function DashboardPage({
             onAudit={handleAudit}
           />
         </section>
-
-        <DashboardLegend />
 
         <section id="dashboard-detail-dock" className="EdgeTrace-detail-dock" aria-label="Detailed report data">
           <div className="EdgeTrace-detail-tabs">
