@@ -1627,6 +1627,53 @@
     color: var(--dash-faint);
   }
 
+  .EdgeTrace-panel-info {
+    position: relative;
+    z-index: 12;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--dash-faint);
+    cursor: help;
+    outline: none;
+  }
+
+  .EdgeTrace-panel-info:hover,
+  .EdgeTrace-panel-info:focus-visible {
+    color: var(--dash-accent-strong);
+  }
+
+  .EdgeTrace-panel-tooltip {
+    position: absolute;
+    left: 0;
+    top: calc(100% + 0.45rem);
+    z-index: 30;
+    width: min(18rem, calc(100vw - 2rem));
+    border: 1px solid var(--dash-border-strong);
+    border-radius: 6px;
+    background: #07111a;
+    box-shadow: 0 18px 40px -30px rgba(0, 0, 0, 0.9);
+    color: var(--dash-text);
+    padding: 0.62rem 0.7rem;
+    font-size: 0.78rem;
+    font-weight: 560;
+    letter-spacing: 0;
+    line-height: 1.45;
+    opacity: 0;
+    pointer-events: none;
+    text-transform: none;
+    transform: translateY(-0.2rem);
+    transition:
+      opacity 140ms ease,
+      transform 140ms ease;
+  }
+
+  .EdgeTrace-panel-info:hover .EdgeTrace-panel-tooltip,
+  .EdgeTrace-panel-info:focus-visible .EdgeTrace-panel-tooltip {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
   .EdgeTrace-kpi-body {
     display: flex;
     min-height: 6.6rem;

@@ -677,9 +677,8 @@ export function DashboardPage({
             title="Strategy Health"
             value={`${intelligence.strategyHealthScore}`}
             suffix="/100"
-            detail={`${intelligence.healthBand}. ${healthDeltaCopy(intelligence.strategyHealthScore)}`}
+            detail={healthScoreCopy(intelligence.strategyHealthScore)}
             tone={healthScoreTone(intelligence.strategyHealthScore)}
-            sparkline={performanceData}
           />
           <DashboardMetricCard
             title="Expectancy"
@@ -1817,13 +1816,43 @@ function Notice({
   );
 }
 
-function PanelHeader({ title, info }: { title: string; info?: boolean }) {
+function PanelHeader({ title, info }: { title: string; info?: boolean | string }) {
+  const infoText = typeof info === "string" ? info : info ? panelInfoText(title) : undefined;
+
   return (
     <div className="EdgeTrace-panel-header">
       <span>{title}</span>
-      {info && <Info size={13} aria-hidden="true" />}
+      {infoText && (
+        <span className="EdgeTrace-panel-info" tabIndex={0} aria-label={infoText}>
+          <Info size={13} aria-hidden="true" />
+          <span className="EdgeTrace-panel-tooltip" role="tooltip">{infoText}</span>
+        </span>
+      )}
     </div>
   );
+}
+
+function panelInfoText(title: string) {
+  const descriptions: Record<string, string> = {
+    Overview: "Overall read of the imported report based on health score and primary diagnosis.",
+    "Strategy Health": "Composite 0-100 score from profitability, expectancy, costs, R capture, win rate, and trade count.",
+    Expectancy: "Average after-cost profit or loss per completed trade.",
+    "Net PnL": "Total after-cost profit or loss across the imported trades.",
+    "Win Rate": "Percentage of imported trades that closed profitably.",
+    "R-Multiple": "Average realized reward-to-risk when planned risk or stop data is available.",
+    "Key Performance Trend": "Trade-by-trade net PnL path for the imported report.",
+    "Primary Diagnosis": "The highest-priority issue EdgeTrace found in the report.",
+    "Priority Insights": "The most important items to inspect before changing the strategy.",
+    "EdgeTrace Benchmarks": "How this report compares against eligible aggregate report cohorts.",
+    "Pro Intelligence Workspace": "Local coaching, simulation, score, review, and regression tools for this report.",
+    "What Changed vs Prior Report": "Key report metrics compared with the prior selected report when available.",
+    "Top Actions (Next Steps)": "Suggested review actions ordered by expected impact.",
+    "Context at a Glance": "Supporting metadata and data-quality context for this report.",
+    "Report Snapshot": "Short written summary of the report diagnosis.",
+    "All Insights": "Full list of insights generated for this report."
+  };
+
+  return descriptions[title] ?? `More context about ${title}.`;
 }
 
 function ReportWarning({ message }: { message: string }) {
@@ -2719,10 +2748,11 @@ function healthScoreTone(score: number): "red" | "yellow" | "green" | "blue" | "
   return "red";
 }
 
-function healthDeltaCopy(score: number) {
-  if (score >= 80) return "Healthy";
-  if (score >= 60) return "Monitor";
-  return "Down vs target";
+function healthScoreCopy(score: number) {
+  if (score >= 80) return "Healthy score. At or above target.";
+  if (score >= 60) return "Watchlist score. Monitor before adding size.";
+  if (score >= 40) return "Unstable score. Review weak metrics before the next iteration.";
+  return "High-risk score. Fix the primary leak before adding trades.";
 }
 
 function winRateCopy(winRate: number) {
