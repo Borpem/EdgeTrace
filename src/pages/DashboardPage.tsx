@@ -669,7 +669,7 @@ export function DashboardPage({
             title="Overview"
             value={overviewStatus(intelligence.strategyHealthScore, intelligence.primaryDiagnosis)}
             detail="Primary issues are dragging performance."
-            tone={intelligence.strategyHealthScore >= 60 ? "green" : "red"}
+            tone={overviewTone(intelligence.strategyHealthScore, intelligence.primaryDiagnosis)}
             icon={<AlertCircle size={52} />}
             dataTestId="dashboard-health-card"
           />
@@ -678,7 +678,7 @@ export function DashboardPage({
             value={`${intelligence.strategyHealthScore}`}
             suffix="/100"
             detail={`${intelligence.healthBand}. ${healthDeltaCopy(intelligence.strategyHealthScore)}`}
-            tone={statusTone(intelligence.keyMetricStatuses.profitFactor)}
+            tone={healthScoreTone(intelligence.strategyHealthScore)}
             sparkline={performanceData}
           />
           <DashboardMetricCard
@@ -2700,6 +2700,23 @@ function overviewStatus(score: number, diagnosis: ReturnType<typeof buildReportI
   if (diagnosis === "Insufficient Data") return "Needs Data";
   if (score >= 60) return "Watchlist";
   return "Needs Attention";
+}
+
+function overviewTone(
+  score: number,
+  diagnosis: ReturnType<typeof buildReportIntelligence>["primaryDiagnosis"]
+): "red" | "yellow" | "green" | "blue" | "gray" {
+  const status = overviewStatus(score, diagnosis);
+  if (status === "On Track") return "green";
+  if (status === "Watchlist") return "yellow";
+  if (status === "Needs Data") return "gray";
+  return "red";
+}
+
+function healthScoreTone(score: number): "red" | "yellow" | "green" | "blue" | "gray" {
+  if (score >= 80) return "green";
+  if (score >= 40) return "yellow";
+  return "red";
 }
 
 function healthDeltaCopy(score: number) {
