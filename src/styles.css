@@ -219,14 +219,27 @@
   }
 
   .EdgeTrace-report-dashboard {
+    --dash-bg: #050a0f;
+    --dash-sidebar: #07111a;
+    --dash-surface: #0b1621;
+    --dash-surface-raised: #0f1c29;
+    --dash-border: rgba(136, 158, 180, 0.18);
+    --dash-border-strong: rgba(136, 158, 180, 0.28);
+    --dash-text: #eff5f8;
+    --dash-muted: #93a3b1;
+    --dash-faint: #657583;
+    --dash-accent: #49b7d9;
+    --dash-accent-strong: #72d4ef;
+    --dash-danger: #f45b72;
+    --dash-warning: #e2b84f;
+    --dash-success: #6fc78a;
     min-height: 100vh;
     display: grid;
-    grid-template-columns: 16rem minmax(0, 1fr);
-    color: #f6f8fb;
+    grid-template-columns: 15.5rem minmax(0, 1fr);
+    color: var(--dash-text);
     background:
-      radial-gradient(circle at 52% -12%, rgba(64, 167, 230, 0.11), transparent 30rem),
-      radial-gradient(circle at 100% 28%, rgba(46, 121, 210, 0.08), transparent 34rem),
-      linear-gradient(180deg, #06101b 0%, #07101a 48%, #050b12 100%);
+      linear-gradient(180deg, rgba(11, 22, 33, 0.92), rgba(5, 10, 15, 1) 34rem),
+      var(--dash-bg);
   }
 
   .EdgeTrace-auth-framed {
@@ -411,7 +424,7 @@
 
   .EdgeTrace-account-utility-profile small {
     overflow: hidden;
-    color: rgba(214, 224, 235, 0.58);
+    color: var(--dash-faint);
     font-size: 0.62rem;
     font-weight: 700;
     line-height: 1.1;
@@ -896,11 +909,11 @@
     height: 100vh;
     display: flex;
     flex-direction: column;
-    border-right: 1px solid rgba(130, 161, 190, 0.18);
+    border-right: 1px solid var(--dash-border);
     background:
-      linear-gradient(180deg, rgba(7, 18, 31, 0.96), rgba(5, 13, 22, 0.96)),
-      #07121f;
-    box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.02);
+      linear-gradient(180deg, rgba(7, 17, 26, 0.98), rgba(5, 10, 15, 0.98)),
+      var(--dash-sidebar);
+    box-shadow: none;
   }
 
   .EdgeTrace-sidebar-brand {
@@ -909,8 +922,8 @@
     align-items: center;
     gap: 0.8rem;
     padding: 0 1.2rem;
-    border-bottom: 1px solid rgba(130, 161, 190, 0.12);
-    color: #f6f8fb;
+    border-bottom: 1px solid var(--dash-border);
+    color: var(--dash-text);
     font-size: 1rem;
     letter-spacing: 0.02em;
   }
@@ -930,8 +943,8 @@
 
   .EdgeTrace-sidebar-nav {
     display: grid;
-    gap: 0.35rem;
-    padding: 1.25rem 1.05rem;
+    gap: 0.28rem;
+    padding: 1.1rem 0.9rem;
   }
 
   .EdgeTrace-sidebar-nav button,
@@ -942,56 +955,55 @@
     gap: 0.85rem;
     border: 1px solid transparent;
     border-radius: 6px;
-    color: #f3f6fb;
-    padding: 0.78rem 0.82rem;
+    color: var(--dash-text);
+    padding: 0.72rem 0.78rem;
     text-align: left;
-    font-size: 0.88rem;
+    font-size: 0.9rem;
+    font-weight: 620;
   }
 
   .EdgeTrace-sidebar-nav button {
-    color: rgba(246, 248, 251, 0.78);
+    color: rgba(239, 245, 248, 0.72);
   }
 
   .EdgeTrace-sidebar-nav button:hover,
   .EdgeTrace-sidebar-quick button:hover {
-    border-color: rgba(69, 183, 244, 0.22);
-    background: rgba(69, 183, 244, 0.06);
-    color: #ffffff;
+    border-color: rgba(73, 183, 217, 0.22);
+    background: rgba(73, 183, 217, 0.07);
+    color: var(--dash-text);
   }
 
   .EdgeTrace-sidebar-nav button.active {
-    border-color: rgba(69, 183, 244, 0.1);
-    background:
-      linear-gradient(90deg, rgba(69, 183, 244, 0.16), rgba(69, 183, 244, 0.03)),
-      rgba(69, 183, 244, 0.08);
-    color: #ffffff;
+    border-color: rgba(73, 183, 217, 0.24);
+    background: rgba(73, 183, 217, 0.12);
+    color: var(--dash-text);
   }
 
   .EdgeTrace-sidebar-nav button.active svg {
-    color: #45b7f4;
+    color: var(--dash-accent-strong);
   }
 
   .EdgeTrace-sidebar-quick {
     margin: 1.05rem;
     padding-top: 1.1rem;
-    border-top: 1px solid rgba(130, 161, 190, 0.14);
+    border-top: 1px solid var(--dash-border);
   }
 
   .EdgeTrace-sidebar-quick p {
     margin: 0 0 0.85rem;
-    color: rgba(214, 224, 235, 0.72);
+    color: var(--dash-muted);
     font-size: 0.73rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
   }
 
   .EdgeTrace-sidebar-quick button {
-    color: rgba(246, 248, 251, 0.82);
+    color: rgba(239, 245, 248, 0.78);
     padding-left: 0.15rem;
   }
 
   .EdgeTrace-sidebar-quick button:first-of-type {
-    color: #45b7f4;
+    color: var(--dash-accent);
   }
 
   .EdgeTrace-sidebar-quick button:nth-of-type(2):not(.EdgeTrace-sidebar-open-reports) {
@@ -1002,18 +1014,18 @@
     width: min(100%, 1560px);
     min-width: 0;
     margin: 0 auto;
-    padding: 2rem 2.15rem 2.5rem;
-    font-size: 1rem;
+    padding: 1.55rem 1.75rem 2.35rem;
+    font-size: 0.98rem;
     line-height: 1.55;
   }
 
   .EdgeTrace-dashboard-header {
     display: grid;
-    grid-template-columns: minmax(20rem, 1fr) minmax(22rem, auto) minmax(16rem, 1fr);
-    gap: 1.45rem;
+    grid-template-columns: minmax(24rem, 1fr) minmax(21rem, auto) minmax(17rem, 0.72fr);
+    gap: 1.15rem 1.35rem;
     align-items: start;
-    padding-bottom: 1.45rem;
-    border-bottom: 1px solid rgba(130, 161, 190, 0.14);
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--dash-border);
   }
 
   .EdgeTrace-dashboard-title-group {
@@ -1024,16 +1036,16 @@
 
   .EdgeTrace-dashboard-header h1 {
     margin: 0;
-    color: #ffffff;
-    font-size: 2.08rem;
-    font-weight: 720;
+    color: var(--dash-text);
+    font-size: 2rem;
+    font-weight: 760;
     letter-spacing: 0;
   }
 
   .EdgeTrace-dashboard-header p {
     margin: 0.5rem 0 0;
-    color: rgba(214, 224, 235, 0.66);
-    font-size: 1.05rem;
+    color: var(--dash-muted);
+    font-size: 0.98rem;
     line-height: 1.5;
   }
 
@@ -1067,23 +1079,23 @@
   }
 
   .EdgeTrace-report-selector-wrap label {
-    color: rgba(214, 224, 235, 0.56);
-    font-size: 0.78rem;
+    color: var(--dash-faint);
+    font-size: 0.74rem;
     font-weight: 720;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
   }
 
   .EdgeTrace-report-selector {
     width: min(22rem, 42vw);
-    min-height: 2.95rem;
-    border: 1px solid rgba(130, 161, 190, 0.18);
-    border-radius: 7px;
-    background: linear-gradient(180deg, rgba(12, 27, 42, 0.96), rgba(7, 17, 29, 0.98));
-    color: #ffffff;
+    min-height: 2.8rem;
+    border: 1px solid var(--dash-border);
+    border-radius: 6px;
+    background: var(--dash-surface);
+    color: var(--dash-text);
     padding: 0 2.2rem 0 0.92rem;
-    font-size: 1.05rem;
-    font-weight: 620;
+    font-size: 0.98rem;
+    font-weight: 650;
     outline: none;
   }
 
@@ -1092,32 +1104,32 @@
   }
 
   .EdgeTrace-report-selector:focus {
-    border-color: rgba(69, 183, 244, 0.62);
-    box-shadow: 0 0 0 3px rgba(69, 183, 244, 0.08);
+    border-color: rgba(73, 183, 217, 0.6);
+    box-shadow: 0 0 0 3px rgba(73, 183, 217, 0.1);
   }
 
   .EdgeTrace-report-selector-wrap small {
-    color: #ffb82e;
+    color: var(--dash-warning);
     font-size: 0.82rem;
   }
 
   .EdgeTrace-report-edit-button {
-    color: #45b7f4;
-    font-size: 0.9rem;
+    color: var(--dash-accent);
+    font-size: 0.86rem;
     font-weight: 720;
     white-space: nowrap;
   }
 
   .EdgeTrace-report-edit-button:hover {
-    color: #75ccff;
+    color: var(--dash-accent-strong);
   }
 
   .EdgeTrace-report-generated {
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
-    color: rgba(214, 224, 235, 0.62);
-    font-size: 0.9rem;
+    color: var(--dash-muted);
+    font-size: 0.84rem;
   }
 
   .EdgeTrace-dashboard-account-control {
@@ -1132,6 +1144,8 @@
 
   .EdgeTrace-dashboard-account-control .EdgeTrace-account-utility-profile {
     max-width: 18rem;
+    border-color: var(--dash-border);
+    background: var(--dash-surface);
   }
 
   .EdgeTrace-dashboard-actions {
@@ -1149,24 +1163,18 @@
     isolation: isolate;
     overflow: hidden;
     display: grid;
-    min-height: 4.55rem;
-    min-width: min(27rem, 100%);
+    min-height: 4rem;
+    min-width: min(24rem, 100%);
     grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
     gap: 0.9rem;
-    border: 1px solid rgba(167, 198, 225, 0.2);
-    border-radius: 8px;
-    background:
-      linear-gradient(180deg, rgba(20, 35, 50, 0.96), rgba(8, 18, 29, 0.96)),
-      rgba(8, 18, 29, 0.92);
-    backdrop-filter: blur(18px) saturate(1.1);
-    box-shadow:
-      0 22px 48px -38px rgba(0, 0, 0, 0.95),
-      0 10px 28px -28px rgba(69, 183, 244, 0.42),
-      inset 0 1px 0 rgba(255, 255, 255, 0.12),
-      inset 0 -1px 0 rgba(0, 0, 0, 0.42);
-    color: #f7fbff;
-    padding: 0.82rem 0.92rem 0.82rem 0.98rem;
+    border: 1px solid rgba(73, 183, 217, 0.24);
+    border-radius: 6px;
+    background: var(--dash-surface);
+    backdrop-filter: none;
+    box-shadow: none;
+    color: var(--dash-text);
+    padding: 0.75rem 0.9rem;
     text-align: left;
     transition:
       border-color 160ms ease,
@@ -1176,42 +1184,22 @@
   }
 
   .EdgeTrace-results-walkthrough-button::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.075), transparent 46%),
-      linear-gradient(90deg, rgba(69, 183, 244, 0.08), transparent 34%, transparent 66%, rgba(255, 255, 255, 0.03));
-    opacity: 0.9;
+    content: none;
   }
 
   .EdgeTrace-results-walkthrough-button::after {
-    content: "";
-    position: absolute;
-    left: 0.75rem;
-    right: 0.75rem;
-    top: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.34), transparent);
-    pointer-events: none;
+    content: none;
   }
 
   .EdgeTrace-results-walkthrough-button:hover {
-    border-color: rgba(98, 200, 255, 0.42);
-    background:
-      linear-gradient(180deg, rgba(23, 42, 59, 0.98), rgba(9, 20, 32, 0.98)),
-      rgba(9, 20, 32, 0.94);
-    box-shadow:
-      0 24px 56px -38px rgba(0, 0, 0, 1),
-      0 12px 30px -28px rgba(98, 200, 255, 0.58),
-      inset 0 1px 0 rgba(255, 255, 255, 0.16),
-      inset 0 -1px 0 rgba(0, 0, 0, 0.48);
+    border-color: rgba(73, 183, 217, 0.48);
+    background: var(--dash-surface-raised);
+    box-shadow: none;
     transform: translateY(-1px);
   }
 
   .EdgeTrace-results-walkthrough-button:focus-visible {
-    outline: 2px solid rgba(98, 200, 255, 0.78);
+    outline: 2px solid rgba(73, 183, 217, 0.72);
     outline-offset: 3px;
   }
 
@@ -1221,14 +1209,14 @@
 
   .EdgeTrace-results-walkthrough-icon {
     display: grid;
-    height: 2.6rem;
-    width: 2.6rem;
+    height: 2.35rem;
+    width: 2.35rem;
     place-items: center;
-    border: 1px solid rgba(98, 200, 255, 0.24);
-    border-radius: 50%;
-    background: rgba(98, 200, 255, 0.09);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
-    color: #62c8ff;
+    border: 1px solid rgba(73, 183, 217, 0.28);
+    border-radius: 6px;
+    background: rgba(73, 183, 217, 0.09);
+    box-shadow: none;
+    color: var(--dash-accent-strong);
   }
 
   .EdgeTrace-results-walkthrough-copy {
@@ -1242,21 +1230,21 @@
   }
 
   .EdgeTrace-results-walkthrough-button strong {
-    color: #ffffff;
-    font-size: 1.12rem;
-    font-weight: 720;
+    color: var(--dash-text);
+    font-size: 0.98rem;
+    font-weight: 760;
     letter-spacing: 0;
   }
 
   .EdgeTrace-results-walkthrough-button small {
     margin-top: 0.12rem;
-    color: rgba(214, 224, 235, 0.62);
-    font-size: 0.92rem;
+    color: var(--dash-muted);
+    font-size: 0.82rem;
     font-weight: 560;
   }
 
   .EdgeTrace-results-walkthrough-arrow {
-    color: #62c8ff;
+    color: var(--dash-accent);
     transition: transform 160ms ease;
   }
 
@@ -1273,20 +1261,20 @@
     gap: 0.6rem;
     border-radius: 4px;
     padding: 0.72rem 1rem;
-    color: #f7fbff;
+    color: var(--dash-text);
     font-size: 0.85rem;
     font-weight: 650;
   }
 
   .EdgeTrace-dashboard-primary {
-    border: 1px solid rgba(69, 183, 244, 0.82);
-    background: rgba(69, 183, 244, 0.12);
-    color: #62c8ff;
+    border: 1px solid rgba(73, 183, 217, 0.7);
+    background: rgba(73, 183, 217, 0.12);
+    color: var(--dash-accent-strong);
   }
 
   .EdgeTrace-dashboard-primary:hover {
-    border-color: #62c8ff;
-    background: rgba(69, 183, 244, 0.18);
+    border-color: var(--dash-accent-strong);
+    background: rgba(73, 183, 217, 0.18);
   }
 
   .EdgeTrace-dashboard-primary:disabled {
@@ -1295,13 +1283,13 @@
   }
 
   .EdgeTrace-dashboard-secondary {
-    border: 1px solid rgba(130, 161, 190, 0.24);
-    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--dash-border);
+    background: var(--dash-surface);
   }
 
   .EdgeTrace-dashboard-secondary:hover {
-    border-color: rgba(130, 161, 190, 0.42);
-    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--dash-border-strong);
+    background: var(--dash-surface-raised);
   }
 
   .EdgeTrace-report-dashboard.has-walkthrough-open > .EdgeTrace-dashboard-sidebar,
@@ -1590,57 +1578,53 @@
 
   .EdgeTrace-dashboard-notice button {
     margin-left: auto;
-    color: #45b7f4;
+    color: var(--dash-accent);
     font-weight: 650;
   }
 
   .EdgeTrace-dashboard-notice.tone-blue {
-    border-color: rgba(69, 183, 244, 0.28);
+    border-color: rgba(73, 183, 217, 0.28);
   }
 
   .EdgeTrace-dashboard-notice.tone-yellow {
-    border-color: rgba(255, 184, 46, 0.3);
+    border-color: rgba(226, 184, 79, 0.3);
   }
 
   .EdgeTrace-kpi-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1rem;
-    margin-top: 1.15rem;
+    gap: 0.85rem;
+    margin-top: 1rem;
   }
 
   .EdgeTrace-dashboard-panel {
     position: relative;
     isolation: isolate;
     overflow: hidden;
-    border: 1px solid rgba(130, 161, 190, 0.15);
+    border: 1px solid var(--dash-border);
     border-radius: 6px;
-    background:
-      radial-gradient(circle at 100% 0%, rgba(69, 183, 244, 0.055), transparent 14rem),
-      linear-gradient(180deg, rgba(11, 26, 42, 0.92), rgba(8, 20, 32, 0.92));
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.035),
-      0 20px 50px -46px rgba(69, 183, 244, 0.5);
+    background: var(--dash-surface);
+    box-shadow: none;
   }
 
   .EdgeTrace-kpi-card {
-    min-height: 12.8rem;
-    padding: 1.35rem 1.45rem;
+    min-height: 11.8rem;
+    padding: 1.18rem 1.25rem;
   }
 
   .EdgeTrace-panel-header {
     display: flex;
     align-items: center;
     gap: 0.45rem;
-    color: rgba(214, 224, 235, 0.84);
-    font-size: 0.95rem;
+    color: var(--dash-muted);
+    font-size: 0.78rem;
     font-weight: 760;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
   }
 
   .EdgeTrace-panel-header svg {
-    color: rgba(214, 224, 235, 0.72);
+    color: var(--dash-faint);
   }
 
   .EdgeTrace-kpi-body {
@@ -1653,18 +1637,18 @@
 
   .EdgeTrace-kpi-value {
     margin: 0;
-    color: #ffffff;
-    font-size: clamp(2.25rem, 3.1vw, 3rem);
-    font-weight: 590;
+    color: var(--dash-text);
+    font-size: clamp(2.1rem, 2.7vw, 2.75rem);
+    font-weight: 680;
     line-height: 1.08;
     letter-spacing: 0;
   }
 
   .EdgeTrace-kpi-value span {
     margin-left: 0.32rem;
-    color: rgba(214, 224, 235, 0.78);
-    font-size: 1rem;
-    font-weight: 560;
+    color: var(--dash-muted);
+    font-size: 0.86rem;
+    font-weight: 650;
   }
 
   .EdgeTrace-kpi-card.has-icon .EdgeTrace-kpi-value,
@@ -1679,14 +1663,14 @@
   .EdgeTrace-kpi-subdetail,
   .EdgeTrace-kpi-detail {
     margin: 0;
-    color: rgba(214, 224, 235, 0.76);
-    font-size: 1rem;
+    color: var(--dash-muted);
+    font-size: 0.94rem;
     line-height: 1.55;
   }
 
   .EdgeTrace-kpi-subdetail {
     margin-top: 0.45rem;
-    color: rgba(246, 248, 251, 0.88);
+    color: rgba(239, 245, 248, 0.84);
   }
 
   .EdgeTrace-kpi-detail {
@@ -1707,48 +1691,48 @@
   }
 
   .EdgeTrace-kpi-card.tone-red {
-    color: #ff485c;
+    color: var(--dash-danger);
   }
 
   .EdgeTrace-kpi-card.tone-red .EdgeTrace-kpi-value {
-    color: #ff485c;
+    color: var(--dash-danger);
   }
 
   .EdgeTrace-kpi-card.tone-yellow {
-    color: #ffb82e;
+    color: var(--dash-warning);
   }
 
   .EdgeTrace-kpi-card.tone-yellow .EdgeTrace-kpi-value {
-    color: #ffb82e;
+    color: var(--dash-warning);
   }
 
   .EdgeTrace-kpi-card.tone-green {
-    color: #74c476;
+    color: var(--dash-success);
   }
 
   .EdgeTrace-kpi-card.tone-green .EdgeTrace-kpi-value {
-    color: #74c476;
+    color: var(--dash-success);
   }
 
   .EdgeTrace-kpi-card.tone-blue {
-    color: #45b7f4;
+    color: var(--dash-accent);
   }
 
   .EdgeTrace-kpi-card.tone-blue .EdgeTrace-kpi-value {
-    color: #45b7f4;
+    color: var(--dash-accent);
   }
 
   .EdgeTrace-kpi-card.tone-gray {
-    color: #9aa7b5;
+    color: var(--dash-muted);
   }
 
   .EdgeTrace-kpi-card.tone-gray .EdgeTrace-kpi-value {
-    color: #ffffff;
+    color: var(--dash-text);
   }
 
   .EdgeTrace-kpi-sparkline {
     height: 2.8rem;
-    color: #ffb82e;
+    color: var(--dash-warning);
   }
 
   .EdgeTrace-kpi-progress {
@@ -1758,9 +1742,9 @@
   .EdgeTrace-kpi-progress > span {
     display: block;
     height: 0.26rem;
-    border-radius: 999px;
+    border-radius: 0;
     background: currentColor;
-    box-shadow: 0 0 18px -6px currentColor;
+    box-shadow: none;
   }
 
   .EdgeTrace-kpi-progress::before {
@@ -1768,50 +1752,47 @@
     display: block;
     height: 0.26rem;
     margin-bottom: -0.26rem;
-    border-radius: 999px;
-    background: rgba(130, 161, 190, 0.2);
+    border-radius: 0;
+    background: rgba(136, 158, 180, 0.2);
   }
 
   .EdgeTrace-kpi-progress div {
     display: flex;
     justify-content: space-between;
     margin-top: 0.46rem;
-    color: rgba(214, 224, 235, 0.7);
+    color: var(--dash-muted);
     font-size: 0.68rem;
   }
 
   .EdgeTrace-dashboard-middle {
     display: grid;
     grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-    gap: 1rem;
-    margin-top: 1rem;
+    gap: 0.85rem;
+    margin-top: 0.85rem;
   }
 
   .EdgeTrace-benchmark-panel {
     display: grid;
     grid-template-columns: minmax(22rem, 0.82fr) minmax(30rem, 1.18fr);
-    gap: 1.4rem;
+    gap: 1.2rem;
     align-items: start;
-    margin-top: 1rem;
-    padding: 1.55rem;
-    background:
-      radial-gradient(circle at 88% 0%, rgba(88, 214, 255, 0.09), transparent 18rem),
-      radial-gradient(circle at 10% 110%, rgba(120, 97, 255, 0.08), transparent 20rem),
-      linear-gradient(180deg, rgba(10, 24, 39, 0.94), rgba(6, 16, 27, 0.95));
+    margin-top: 0.85rem;
+    padding: 1.35rem;
+    background: var(--dash-surface);
   }
 
   .EdgeTrace-benchmark-panel.is-locked {
     grid-template-columns: minmax(18rem, 0.86fr) minmax(20rem, 0.94fr) auto;
     align-items: center;
-    border-color: rgba(88, 214, 255, 0.22);
+    border-color: rgba(73, 183, 217, 0.22);
   }
 
   .EdgeTrace-benchmark-copy h2 {
     margin: 0.75rem 0 0;
     max-width: 48rem;
-    color: #f6f8fb;
-    font-size: 1.65rem;
-    font-weight: 700;
+    color: var(--dash-text);
+    font-size: 1.48rem;
+    font-weight: 760;
     line-height: 1.22;
     letter-spacing: 0;
   }
@@ -1819,8 +1800,8 @@
   .EdgeTrace-benchmark-copy p {
     margin: 0.65rem 0 0;
     max-width: 42rem;
-    color: rgba(214, 224, 235, 0.72);
-    font-size: 1rem;
+    color: var(--dash-muted);
+    font-size: 0.94rem;
     line-height: 1.62;
   }
 
@@ -1833,9 +1814,9 @@
   .EdgeTrace-benchmark-preview div,
   .EdgeTrace-benchmark-row,
   .EdgeTrace-benchmark-empty {
-    border: 1px solid rgba(130, 161, 190, 0.14);
+    border: 1px solid var(--dash-border);
     border-radius: 6px;
-    background: rgba(3, 8, 16, 0.42);
+    background: rgba(5, 10, 15, 0.44);
   }
 
   .EdgeTrace-benchmark-preview div {
@@ -1848,13 +1829,13 @@
   }
 
   .EdgeTrace-benchmark-preview span {
-    color: rgba(214, 224, 235, 0.64);
+    color: var(--dash-muted);
     font-size: 0.72rem;
   }
 
   .EdgeTrace-benchmark-preview strong {
     margin-top: 0.22rem;
-    color: #f6f8fb;
+    color: var(--dash-text);
     font-size: 0.92rem;
     font-weight: 620;
   }
@@ -1863,9 +1844,9 @@
     display: block;
     height: 0.26rem;
     margin-top: 0.72rem;
-    border-radius: 999px;
-    background: linear-gradient(90deg, #58d6ff, #7861ff);
-    box-shadow: 0 0 16px -8px rgba(88, 214, 255, 0.88);
+    border-radius: 0;
+    background: var(--dash-accent);
+    box-shadow: none;
   }
 
   .EdgeTrace-benchmark-lock {
@@ -1873,7 +1854,7 @@
     min-width: 11rem;
     justify-items: end;
     gap: 0.6rem;
-    color: rgba(214, 224, 235, 0.72);
+    color: var(--dash-muted);
     font-size: 0.76rem;
     font-weight: 640;
   }
@@ -1882,18 +1863,18 @@
     display: inline-flex;
     align-items: center;
     gap: 0.42rem;
-    border: 1px solid rgba(88, 214, 255, 0.34);
+    border: 1px solid rgba(73, 183, 217, 0.34);
     border-radius: 4px;
-    background: rgba(88, 214, 255, 0.08);
-    color: #dff8ff;
+    background: rgba(73, 183, 217, 0.08);
+    color: var(--dash-accent-strong);
     padding: 0.48rem 0.68rem;
     font-size: 0.76rem;
     font-weight: 720;
   }
 
   .EdgeTrace-benchmark-lock button:hover {
-    border-color: rgba(88, 214, 255, 0.58);
-    background: rgba(88, 214, 255, 0.12);
+    border-color: rgba(73, 183, 217, 0.58);
+    background: rgba(73, 183, 217, 0.12);
   }
 
   .EdgeTrace-benchmark-row {
@@ -1911,14 +1892,14 @@
   }
 
   .EdgeTrace-benchmark-row strong {
-    color: #f6f8fb;
+    color: var(--dash-text);
     font-size: 1rem;
     font-weight: 650;
   }
 
   .EdgeTrace-benchmark-row span,
   .EdgeTrace-benchmark-row small {
-    color: rgba(214, 224, 235, 0.66);
+    color: var(--dash-muted);
     font-size: 0.88rem;
     line-height: 1.45;
   }
@@ -1932,7 +1913,7 @@
   }
 
   .EdgeTrace-benchmark-values span {
-    color: #f6f8fb;
+    color: var(--dash-text);
     font-size: 1.02rem;
     font-weight: 640;
   }
@@ -1943,7 +1924,7 @@
   }
 
   .EdgeTrace-benchmark-percentile > span {
-    color: #58d6ff;
+    color: var(--dash-accent);
     font-size: 0.95rem;
     font-weight: 720;
     text-align: right;
@@ -1953,8 +1934,8 @@
     display: block;
     height: 0.32rem;
     overflow: hidden;
-    border-radius: 999px;
-    background: rgba(130, 161, 190, 0.17);
+    border-radius: 0;
+    background: rgba(136, 158, 180, 0.17);
   }
 
   .EdgeTrace-benchmark-percentile b {
@@ -1965,21 +1946,21 @@
   }
 
   .EdgeTrace-benchmark-row.tone-leading {
-    color: #74c476;
-    border-color: rgba(116, 196, 118, 0.24);
+    color: var(--dash-success);
+    border-color: rgba(111, 199, 138, 0.24);
   }
 
   .EdgeTrace-benchmark-row.tone-in_line {
-    color: #58d6ff;
+    color: var(--dash-accent);
   }
 
   .EdgeTrace-benchmark-row.tone-lagging {
-    color: #ffb82e;
-    border-color: rgba(255, 184, 46, 0.26);
+    color: var(--dash-warning);
+    border-color: rgba(226, 184, 79, 0.26);
   }
 
   .EdgeTrace-benchmark-row.tone-unavailable {
-    color: #9aa7b5;
+    color: var(--dash-muted);
   }
 
   .EdgeTrace-benchmark-empty {
@@ -1988,31 +1969,28 @@
     gap: 0.55rem;
     min-height: 4rem;
     padding: 1rem;
-    color: rgba(214, 224, 235, 0.74);
+    color: var(--dash-muted);
     font-size: 0.82rem;
   }
 
   .EdgeTrace-benchmark-empty.tone-warning {
-    color: #ffcf84;
-    border-color: rgba(255, 184, 46, 0.26);
+    color: var(--dash-warning);
+    border-color: rgba(226, 184, 79, 0.26);
   }
 
   .EdgeTrace-benchmark-note {
     grid-column: 1 / -1;
     margin: 0;
-    border-top: 1px solid rgba(130, 161, 190, 0.1);
+    border-top: 1px solid var(--dash-border);
     padding-top: 0.75rem;
-    color: rgba(214, 224, 235, 0.58);
+    color: var(--dash-faint);
     font-size: 0.86rem;
   }
 
   .EdgeTrace-pro-workspace {
-    margin-top: 1rem;
-    padding: 1.65rem;
-    background:
-      radial-gradient(circle at 96% 4%, rgba(120, 97, 255, 0.1), transparent 18rem),
-      radial-gradient(circle at 6% 100%, rgba(88, 214, 255, 0.08), transparent 18rem),
-      linear-gradient(180deg, rgba(9, 21, 34, 0.95), rgba(5, 14, 25, 0.96));
+    margin-top: 0.85rem;
+    padding: 1.4rem;
+    background: var(--dash-surface);
   }
 
   .EdgeTrace-pro-workspace-header {
@@ -2025,18 +2003,18 @@
   .EdgeTrace-pro-workspace-header h2 {
     margin: 0.65rem 0 0;
     max-width: 58rem;
-    color: #f6f8fb;
-    font-size: 1.85rem;
+    color: var(--dash-text);
+    font-size: 1.5rem;
     font-weight: 720;
     letter-spacing: 0;
     line-height: 1.25;
   }
 
   .EdgeTrace-pro-workspace-header > span {
-    border: 1px solid rgba(116, 196, 118, 0.28);
-    border-radius: 999px;
-    background: rgba(116, 196, 118, 0.08);
-    color: #a7ecac;
+    border: 1px solid rgba(111, 199, 138, 0.28);
+    border-radius: 6px;
+    background: rgba(111, 199, 138, 0.08);
+    color: var(--dash-success);
     padding: 0.38rem 0.62rem;
     font-size: 0.78rem;
     font-weight: 760;
@@ -2048,26 +2026,26 @@
   .EdgeTrace-pro-workspace-grid {
     display: grid;
     grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-    gap: 1rem;
-    margin-top: 1.2rem;
+    gap: 0.85rem;
+    margin-top: 1rem;
   }
 
   .EdgeTrace-pro-cell {
     min-width: 0;
-    border: 1px solid rgba(130, 161, 190, 0.14);
-    border-radius: 8px;
-    background: rgba(3, 8, 16, 0.38);
-    padding: 1.3rem;
+    border: 1px solid var(--dash-border);
+    border-radius: 6px;
+    background: rgba(5, 10, 15, 0.44);
+    padding: 1.15rem;
   }
 
   .EdgeTrace-pro-cell-heading {
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
-    color: #58d6ff;
-    font-size: 1rem;
+    color: var(--dash-accent);
+    font-size: 0.82rem;
     font-weight: 820;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
   }
 
@@ -2081,11 +2059,11 @@
   .EdgeTrace-pro-ask-box input,
   .EdgeTrace-pro-number-input input {
     min-width: 0;
-    border: 1px solid rgba(130, 161, 190, 0.16);
+    border: 1px solid var(--dash-border);
     border-radius: 6px;
-    background: rgba(5, 13, 24, 0.86);
-    color: #f6f8fb;
-    font-size: 1rem;
+    background: rgba(5, 10, 15, 0.74);
+    color: var(--dash-text);
+    font-size: 0.95rem;
     outline: none;
   }
 
@@ -2096,24 +2074,24 @@
 
   .EdgeTrace-pro-ask-box input:focus,
   .EdgeTrace-pro-number-input input:focus {
-    border-color: rgba(88, 214, 255, 0.55);
-    box-shadow: 0 0 0 3px rgba(88, 214, 255, 0.08);
+    border-color: rgba(73, 183, 217, 0.55);
+    box-shadow: 0 0 0 3px rgba(73, 183, 217, 0.08);
   }
 
   .EdgeTrace-pro-ask-box button {
     min-height: 2.8rem;
-    border: 1px solid rgba(88, 214, 255, 0.34);
+    border: 1px solid rgba(73, 183, 217, 0.34);
     border-radius: 6px;
-    background: rgba(88, 214, 255, 0.1);
-    color: #dff8ff;
+    background: rgba(73, 183, 217, 0.1);
+    color: var(--dash-accent-strong);
     padding: 0 0.78rem;
     font-size: 0.96rem;
     font-weight: 760;
   }
 
   .EdgeTrace-pro-ask-box button:hover {
-    border-color: rgba(88, 214, 255, 0.58);
-    background: rgba(88, 214, 255, 0.14);
+    border-color: rgba(73, 183, 217, 0.58);
+    background: rgba(73, 183, 217, 0.14);
   }
 
   .EdgeTrace-pro-question-tabs {
@@ -2125,19 +2103,19 @@
 
   .EdgeTrace-pro-question-tabs button {
     min-height: 2.7rem;
-    border: 1px solid rgba(130, 161, 190, 0.16);
+    border: 1px solid var(--dash-border);
     border-radius: 6px;
-    background: rgba(9, 20, 31, 0.72);
-    color: rgba(214, 224, 235, 0.74);
+    background: rgba(5, 10, 15, 0.52);
+    color: var(--dash-muted);
     padding: 0.44rem 0.5rem;
     font-size: 0.92rem;
     font-weight: 700;
   }
 
   .EdgeTrace-pro-question-tabs button.active {
-    border-color: rgba(88, 214, 255, 0.5);
-    background: rgba(88, 214, 255, 0.1);
-    color: #ffffff;
+    border-color: rgba(73, 183, 217, 0.5);
+    background: rgba(73, 183, 217, 0.1);
+    color: var(--dash-text);
   }
 
   .EdgeTrace-pro-answer {
@@ -2147,7 +2125,7 @@
   .EdgeTrace-pro-answer-source {
     display: block;
     margin-bottom: 0.45rem;
-    color: rgba(88, 214, 255, 0.82);
+    color: var(--dash-accent);
     font-size: 0.88rem;
     font-weight: 680;
   }
@@ -2155,9 +2133,9 @@
   .EdgeTrace-pro-answer h3,
   .EdgeTrace-pro-review h3 {
     margin: 0;
-    color: #f6f8fb;
-    font-size: 1.35rem;
-    font-weight: 720;
+    color: var(--dash-text);
+    font-size: 1.18rem;
+    font-weight: 740;
     line-height: 1.3;
   }
 
@@ -2165,8 +2143,8 @@
   .EdgeTrace-pro-review > p,
   .EdgeTrace-pro-projection p {
     margin: 0.5rem 0 0;
-    color: rgba(214, 224, 235, 0.72);
-    font-size: 1rem;
+    color: var(--dash-muted);
+    font-size: 0.94rem;
     line-height: 1.65;
   }
 
@@ -2183,7 +2161,7 @@
   .EdgeTrace-pro-review-list li {
     position: relative;
     padding-left: 0.85rem;
-    color: rgba(214, 224, 235, 0.72);
+    color: var(--dash-muted);
     font-size: 0.96rem;
     line-height: 1.56;
   }
@@ -2197,7 +2175,7 @@
     width: 0.34rem;
     height: 0.34rem;
     border-radius: 50%;
-    background: #58d6ff;
+    background: var(--dash-accent);
   }
 
   .EdgeTrace-edge-score-readout {
@@ -2209,23 +2187,23 @@
   }
 
   .EdgeTrace-edge-score-readout > strong {
-    color: #f6f8fb;
-    font-size: 4.2rem;
-    font-weight: 710;
+    color: var(--dash-text);
+    font-size: 3.6rem;
+    font-weight: 720;
     line-height: 0.9;
-    letter-spacing: -0.055em;
+    letter-spacing: 0;
   }
 
   .EdgeTrace-edge-score-readout span {
     display: block;
-    color: #58d6ff;
+    color: var(--dash-accent);
     font-size: 1.15rem;
     font-weight: 720;
   }
 
   .EdgeTrace-edge-score-readout p {
     margin: 0.24rem 0 0;
-    color: rgba(214, 224, 235, 0.66);
+    color: var(--dash-muted);
     font-size: 0.94rem;
     line-height: 1.45;
   }
@@ -2249,14 +2227,14 @@
   }
 
   .EdgeTrace-edge-factor-list strong {
-    color: rgba(246, 248, 251, 0.86);
+    color: rgba(239, 245, 248, 0.88);
     font-size: 1rem;
     font-weight: 660;
   }
 
   .EdgeTrace-edge-factor-list span {
     margin-top: 0.08rem;
-    color: rgba(214, 224, 235, 0.56);
+    color: var(--dash-faint);
     font-size: 0.9rem;
   }
 
@@ -2272,8 +2250,8 @@
     grid-column: 1 / -1;
     height: 0.28rem;
     overflow: hidden;
-    border-radius: 999px;
-    background: rgba(130, 161, 190, 0.15);
+    border-radius: 0;
+    background: rgba(136, 158, 180, 0.16);
   }
 
   .EdgeTrace-edge-factor-list b {
@@ -2286,7 +2264,7 @@
   .EdgeTrace-edge-factor-list small {
     display: block;
     grid-column: 1 / -1;
-    color: rgba(214, 224, 235, 0.66);
+    color: var(--dash-muted);
     font-size: 0.88rem;
     line-height: 1.5;
   }
@@ -2295,12 +2273,12 @@
     display: grid;
     gap: 0.42rem;
     margin-top: 0.9rem;
-    border-top: 1px solid rgba(130, 161, 190, 0.12);
+    border-top: 1px solid var(--dash-border);
     padding-top: 0.78rem;
   }
 
   .EdgeTrace-edge-score-actions span {
-    color: rgba(214, 224, 235, 0.58);
+    color: var(--dash-faint);
     font-size: 0.86rem;
     font-weight: 760;
     letter-spacing: 0.14em;
@@ -2309,29 +2287,29 @@
 
   .EdgeTrace-edge-score-actions p {
     margin: 0;
-    color: rgba(246, 248, 251, 0.8);
+    color: rgba(239, 245, 248, 0.82);
     font-size: 0.94rem;
     line-height: 1.5;
   }
 
   .EdgeTrace-edge-factor-list .tone-green,
   .EdgeTrace-pro-regression-watch .tone-clear {
-    color: #74c476;
+    color: var(--dash-success);
   }
 
   .EdgeTrace-edge-factor-list .tone-yellow,
   .EdgeTrace-pro-regression-watch .tone-medium {
-    color: #ffb82e;
+    color: var(--dash-warning);
   }
 
   .EdgeTrace-edge-factor-list .tone-red,
   .EdgeTrace-pro-regression-watch .tone-high {
-    color: #ff485c;
+    color: var(--dash-danger);
   }
 
   .EdgeTrace-edge-factor-list .tone-gray,
   .EdgeTrace-pro-regression-watch .tone-low {
-    color: #9aa7b5;
+    color: var(--dash-muted);
   }
 
   .EdgeTrace-pro-sliders {
@@ -2355,13 +2333,13 @@
 
   .EdgeTrace-pro-sliders strong,
   .EdgeTrace-pro-projection span {
-    color: rgba(214, 224, 235, 0.7);
+    color: var(--dash-muted);
     font-size: 0.96rem;
     font-weight: 680;
   }
 
   .EdgeTrace-pro-sliders em {
-    color: #f6f8fb;
+    color: var(--dash-text);
     font-size: 0.96rem;
     font-style: normal;
     font-weight: 760;
@@ -2369,7 +2347,7 @@
 
   .EdgeTrace-pro-sliders input {
     width: 100%;
-    accent-color: #58d6ff;
+    accent-color: var(--dash-accent);
   }
 
   .EdgeTrace-pro-control-row {
@@ -2409,7 +2387,7 @@
     display: grid;
     gap: 0.55rem;
     margin-top: 0.98rem;
-    border-top: 1px solid rgba(130, 161, 190, 0.12);
+    border-top: 1px solid var(--dash-border);
     padding-top: 0.85rem;
   }
 
@@ -2425,11 +2403,11 @@
   }
 
   .EdgeTrace-pro-impact-stack span {
-    border: 1px solid rgba(130, 161, 190, 0.12);
+    border: 1px solid var(--dash-border);
     border-radius: 5px;
-    background: rgba(255, 255, 255, 0.025);
+    background: rgba(5, 10, 15, 0.44);
     padding: 0.42rem;
-    color: rgba(214, 224, 235, 0.68);
+    color: var(--dash-muted);
     font-size: 0.86rem;
     line-height: 1.35;
   }
@@ -2440,7 +2418,7 @@
 
   .EdgeTrace-pro-regression > p {
     margin: 0.82rem 0 0;
-    color: rgba(214, 224, 235, 0.72);
+    color: var(--dash-muted);
     font-size: 1rem;
     line-height: 1.65;
   }
@@ -2449,7 +2427,7 @@
     display: grid;
     gap: 0.5rem;
     margin-top: 0.95rem;
-    border-top: 1px solid rgba(130, 161, 190, 0.12);
+    border-top: 1px solid var(--dash-border);
     padding-top: 0.8rem;
   }
 
@@ -2460,7 +2438,7 @@
   }
 
   .EdgeTrace-pro-regression-watch > span {
-    color: rgba(214, 224, 235, 0.58);
+    color: var(--dash-faint);
     font-size: 0.86rem;
     font-weight: 760;
     letter-spacing: 0.14em;
@@ -2478,14 +2456,14 @@
   }
 
   .EdgeTrace-pro-regression-watch strong {
-    color: rgba(246, 248, 251, 0.88);
+    color: rgba(239, 245, 248, 0.88);
     font-size: 0.98rem;
     font-weight: 680;
   }
 
   .EdgeTrace-pro-regression-watch small {
     margin-top: 0.1rem;
-    color: rgba(214, 224, 235, 0.62);
+    color: var(--dash-muted);
     font-size: 0.9rem;
     line-height: 1.5;
   }
@@ -2494,12 +2472,12 @@
     display: grid;
     gap: 0.5rem;
     margin-top: 0.95rem;
-    border-top: 1px solid rgba(130, 161, 190, 0.12);
+    border-top: 1px solid var(--dash-border);
     padding-top: 0.8rem;
   }
 
   .EdgeTrace-pro-review-checks > span {
-    color: rgba(214, 224, 235, 0.58);
+    color: var(--dash-faint);
     font-size: 0.86rem;
     font-weight: 760;
     letter-spacing: 0.14em;
@@ -2511,9 +2489,9 @@
     grid-template-columns: minmax(0, 0.7fr) minmax(0, 0.8fr) minmax(0, 1fr);
     gap: 0.55rem;
     align-items: start;
-    border: 1px solid rgba(130, 161, 190, 0.11);
+    border: 1px solid var(--dash-border);
     border-radius: 5px;
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(5, 10, 15, 0.44);
     padding: 0.52rem;
   }
 
@@ -2526,16 +2504,16 @@
   }
 
   .EdgeTrace-pro-review-checks strong {
-    color: rgba(246, 248, 251, 0.86);
+    color: rgba(239, 245, 248, 0.86);
     font-weight: 700;
   }
 
   .EdgeTrace-pro-review-checks small {
-    color: rgba(214, 224, 235, 0.6);
+    color: var(--dash-muted);
   }
 
   .EdgeTrace-pro-review-checks em {
-    color: #a7ecac;
+    color: var(--dash-success);
     font-style: normal;
     font-weight: 680;
   }
@@ -2547,7 +2525,7 @@
   .EdgeTrace-snapshot-panel,
   .EdgeTrace-actions-panel,
   .EdgeTrace-context-panel {
-    padding: 1.55rem;
+    padding: 1.35rem;
   }
 
   .EdgeTrace-diagnosis-layout {
@@ -2568,8 +2546,8 @@
 
   .EdgeTrace-diagnosis-layout p {
     margin: 0.8rem 0 0;
-    color: rgba(214, 224, 235, 0.82);
-    font-size: 1.05rem;
+    color: var(--dash-muted);
+    font-size: 0.98rem;
     line-height: 1.68;
   }
 
@@ -2601,8 +2579,8 @@
     position: absolute;
     inset: 0.9rem;
     border-radius: 50%;
-    background: #081421;
-    box-shadow: inset 0 0 0 1px rgba(130, 161, 190, 0.12);
+    background: var(--dash-surface-raised);
+    box-shadow: inset 0 0 0 1px var(--dash-border);
   }
 
   .EdgeTrace-impact-donut span,
@@ -2612,13 +2590,13 @@
   }
 
   .EdgeTrace-impact-donut span {
-    color: rgba(214, 224, 235, 0.78);
+    color: var(--dash-muted);
     font-size: 0.92rem;
   }
 
   .EdgeTrace-impact-donut strong {
     margin-top: 0.45rem;
-    color: #ff485c;
+    color: var(--dash-danger);
     font-size: 1.45rem;
     font-weight: 600;
   }
@@ -2633,7 +2611,7 @@
     grid-template-columns: auto minmax(0, 1fr) auto;
     gap: 0.72rem;
     align-items: start;
-    border-bottom: 1px solid rgba(130, 161, 190, 0.1);
+    border-bottom: 1px solid var(--dash-border);
     padding-bottom: 0.72rem;
   }
 
@@ -2656,19 +2634,19 @@
   }
 
   .EdgeTrace-impact-list strong {
-    color: #f6f8fb;
+    color: var(--dash-text);
     font-size: 1rem;
     font-weight: 600;
   }
 
   .EdgeTrace-impact-list small {
     margin-top: 0.22rem;
-    color: #ff485c;
+    color: var(--dash-danger);
     font-size: 0.95rem;
   }
 
   .EdgeTrace-impact-list em {
-    color: rgba(214, 224, 235, 0.78);
+    color: var(--dash-muted);
     font-size: 0.95rem;
   }
 
@@ -2680,9 +2658,9 @@
     position: absolute;
     right: 1.2rem;
     top: 1.2rem;
-    border: 1px solid rgba(130, 161, 190, 0.16);
+    border: 1px solid var(--dash-border);
     border-radius: 4px;
-    color: rgba(246, 248, 251, 0.85);
+    color: var(--dash-muted);
     padding: 0.42rem 1.5rem 0.42rem 0.68rem;
     font-size: 0.8rem;
   }
@@ -2691,17 +2669,17 @@
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    color: #45b7f4;
+    color: var(--dash-accent);
     font-size: 1rem;
     font-weight: 650;
   }
 
   .EdgeTrace-dashboard-link:hover {
-    color: #75ccff;
+    color: var(--dash-accent-strong);
   }
 
   .EdgeTrace-dashboard-link:disabled {
-    color: rgba(154, 167, 181, 0.45);
+    color: rgba(147, 163, 177, 0.45);
     cursor: not-allowed;
   }
 
@@ -2724,7 +2702,7 @@
     grid-template-columns: minmax(0, 1fr) auto;
     gap: 0.95rem;
     align-items: start;
-    color: #f6f8fb;
+    color: var(--dash-text);
     padding: 0.25rem 0 0.25rem 1rem;
     text-align: left;
   }
@@ -2737,7 +2715,7 @@
     bottom: 0.12rem;
     width: 2px;
     border-radius: 999px;
-    background: var(--priority-accent, rgba(154, 167, 181, 0.72));
+    background: var(--priority-accent, rgba(147, 163, 177, 0.72));
   }
 
   .EdgeTrace-next-actions button > span {
@@ -2748,24 +2726,24 @@
     justify-content: center;
     border: 1px solid currentColor;
     border-radius: 50%;
-    color: #9aa7b5;
+    color: var(--dash-muted);
     font-size: 0.72rem;
   }
 
   .EdgeTrace-priority-list .tone-red {
-    --priority-accent: #ff485c;
+    --priority-accent: var(--dash-danger);
   }
 
   .EdgeTrace-priority-list .tone-yellow {
-    --priority-accent: #ffb82e;
+    --priority-accent: var(--dash-warning);
   }
 
   .EdgeTrace-priority-list .tone-green {
-    --priority-accent: #74c476;
+    --priority-accent: var(--dash-success);
   }
 
   .EdgeTrace-priority-list .tone-gray {
-    --priority-accent: #9aa7b5;
+    --priority-accent: var(--dash-muted);
   }
 
   .EdgeTrace-priority-list p {
@@ -2778,28 +2756,28 @@
   }
 
   .EdgeTrace-priority-list strong {
-    color: #f6f8fb;
+    color: var(--dash-text);
     font-size: 1.08rem;
     font-weight: 700;
   }
 
   .EdgeTrace-priority-list small {
     margin-top: 0.18rem;
-    color: rgba(214, 224, 235, 0.72);
+    color: var(--dash-muted);
     font-size: 0.94rem;
     line-height: 1.5;
   }
 
   .EdgeTrace-priority-list svg {
     margin-top: 0.24rem;
-    color: rgba(214, 224, 235, 0.72);
+    color: var(--dash-muted);
   }
 
   .EdgeTrace-dashboard-bottom {
     display: grid;
     grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-    gap: 1rem;
-    margin-top: 1rem;
+    gap: 0.85rem;
+    margin-top: 0.85rem;
   }
 
   .EdgeTrace-snapshot-panel {
@@ -2816,7 +2794,7 @@
 
   .EdgeTrace-snapshot-grid div {
     min-width: 0;
-    border-right: 1px solid rgba(130, 161, 190, 0.12);
+    border-right: 1px solid var(--dash-border);
     padding-right: 1rem;
   }
 
@@ -2831,13 +2809,13 @@
   }
 
   .EdgeTrace-snapshot-grid span {
-    color: rgba(214, 224, 235, 0.68);
+    color: var(--dash-muted);
     font-size: 0.95rem;
   }
 
   .EdgeTrace-snapshot-grid strong {
     margin-top: 0.72rem;
-    color: #ffffff;
+    color: var(--dash-text);
     font-size: 1.45rem;
     font-weight: 500;
   }
@@ -2849,15 +2827,15 @@
   }
 
   .EdgeTrace-snapshot-grid .tone-red {
-    color: #ff485c;
+    color: var(--dash-danger);
   }
 
   .EdgeTrace-snapshot-grid .tone-yellow {
-    color: #ffb82e;
+    color: var(--dash-warning);
   }
 
   .EdgeTrace-snapshot-grid .tone-green {
-    color: #74c476;
+    color: var(--dash-success);
   }
 
   .EdgeTrace-next-actions {
@@ -2876,7 +2854,7 @@
   }
 
   .EdgeTrace-next-actions strong {
-    color: #f6f8fb;
+    color: var(--dash-text);
     font-size: 1.02rem;
     font-weight: 650;
   }
@@ -2890,18 +2868,18 @@
   }
 
   .EdgeTrace-next-actions .tone-red {
-    background: rgba(255, 72, 92, 0.13);
-    color: #ff7a88;
+    background: rgba(244, 91, 114, 0.13);
+    color: #ff8191;
   }
 
   .EdgeTrace-next-actions .tone-yellow {
-    background: rgba(255, 184, 46, 0.13);
-    color: #ffc75f;
+    background: rgba(226, 184, 79, 0.13);
+    color: var(--dash-warning);
   }
 
   .EdgeTrace-next-actions .tone-green {
-    background: rgba(116, 196, 118, 0.13);
-    color: #7fd383;
+    background: rgba(111, 199, 138, 0.13);
+    color: var(--dash-success);
   }
 
   .EdgeTrace-context-list {
@@ -2914,14 +2892,14 @@
     display: flex;
     justify-content: space-between;
     gap: 1rem;
-    border-bottom: 1px solid rgba(130, 161, 190, 0.1);
+    border-bottom: 1px solid var(--dash-border);
     padding: 0.58rem 0;
-    color: rgba(214, 224, 235, 0.75);
+    color: var(--dash-muted);
     font-size: 1rem;
   }
 
   .EdgeTrace-context-list strong {
-    color: #f6f8fb;
+    color: var(--dash-text);
     font-weight: 520;
     text-align: right;
   }
@@ -2932,15 +2910,15 @@
     gap: 1rem;
     align-items: start;
     margin-top: 1rem;
-    border: 1px solid rgba(130, 161, 190, 0.16);
+    border: 1px solid var(--dash-border);
     border-radius: 6px;
-    background: rgba(7, 17, 29, 0.78);
+    background: var(--dash-surface);
     padding: 1.15rem;
   }
 
   .EdgeTrace-dashboard-legend p {
     margin: 0;
-    color: rgba(214, 224, 235, 0.78);
+    color: var(--dash-muted);
     font-size: 0.9rem;
     letter-spacing: 0.04em;
     text-transform: uppercase;
@@ -2961,19 +2939,19 @@
   }
 
   .EdgeTrace-dashboard-legend strong {
-    color: rgba(246, 248, 251, 0.84);
+    color: rgba(239, 245, 248, 0.84);
     font-size: 0.9rem;
     font-weight: 600;
   }
 
   .EdgeTrace-dashboard-legend small {
-    color: rgba(214, 224, 235, 0.66);
+    color: var(--dash-muted);
     font-weight: 400;
   }
 
   .EdgeTrace-dashboard-legend em {
     grid-column: 2;
-    color: rgba(214, 224, 235, 0.62);
+    color: var(--dash-muted);
     font-size: 0.84rem;
     font-style: normal;
   }
@@ -3003,10 +2981,10 @@
   }
 
   .EdgeTrace-detail-tabs button {
-    border: 1px solid rgba(130, 161, 190, 0.16);
-    border-radius: 7px;
-    background: rgba(9, 20, 31, 0.74);
-    color: rgba(214, 224, 235, 0.7);
+    border: 1px solid var(--dash-border);
+    border-radius: 6px;
+    background: var(--dash-surface);
+    color: var(--dash-muted);
     padding: 0.82rem 0.9rem;
     font-size: 1.02rem;
     font-weight: 680;
@@ -3014,10 +2992,10 @@
   }
 
   .EdgeTrace-detail-tabs button.active {
-    border-color: rgba(69, 183, 244, 0.58);
-    background: linear-gradient(180deg, rgba(69, 183, 244, 0.14), rgba(69, 183, 244, 0.06));
-    color: #ffffff;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 12px 34px -30px rgba(69, 183, 244, 0.9);
+    border-color: rgba(73, 183, 217, 0.58);
+    background: rgba(73, 183, 217, 0.11);
+    color: var(--dash-text);
+    box-shadow: none;
   }
 
   .EdgeTrace-overview-panel {
@@ -3036,16 +3014,16 @@
   }
 
   .EdgeTrace-overview-tags span {
-    border: 1px solid rgba(130, 161, 190, 0.18);
+    border: 1px solid var(--dash-border);
     border-radius: 3px;
-    color: rgba(214, 224, 235, 0.78);
+    color: var(--dash-muted);
     padding: 0.32rem 0.48rem;
     font-size: 0.92rem;
   }
 
   .EdgeTrace-overview-insights {
     grid-column: 1 / -1;
-    border-top: 1px solid rgba(130, 161, 190, 0.12);
+    border-top: 1px solid var(--dash-border);
     padding-top: 1rem;
   }
 
@@ -3068,23 +3046,23 @@
     bottom: 0.12rem;
     width: 2px;
     border-radius: 999px;
-    background: var(--overview-insight-accent, rgba(154, 167, 181, 0.72));
+    background: var(--overview-insight-accent, rgba(147, 163, 177, 0.72));
   }
 
   .EdgeTrace-overview-insight-list .tone-red {
-    --overview-insight-accent: #ff485c;
+    --overview-insight-accent: var(--dash-danger);
   }
 
   .EdgeTrace-overview-insight-list .tone-yellow {
-    --overview-insight-accent: #ffb82e;
+    --overview-insight-accent: var(--dash-warning);
   }
 
   .EdgeTrace-overview-insight-list .tone-green {
-    --overview-insight-accent: #74c476;
+    --overview-insight-accent: var(--dash-success);
   }
 
   .EdgeTrace-overview-insight-list .tone-gray {
-    --overview-insight-accent: #9aa7b5;
+    --overview-insight-accent: var(--dash-muted);
   }
 
   .EdgeTrace-overview-insight-list p {
@@ -3097,30 +3075,30 @@
   }
 
   .EdgeTrace-overview-insight-list strong {
-    color: rgba(246, 248, 251, 0.9);
+    color: rgba(239, 245, 248, 0.9);
     font-size: 1.08rem;
     font-weight: 700;
   }
 
   .EdgeTrace-overview-insight-list small {
     margin-top: 0.18rem;
-    color: rgba(214, 224, 235, 0.72);
+    color: var(--dash-muted);
     font-size: 0.94rem;
     line-height: 1.5;
   }
 
   .EdgeTrace-dimension-toggle {
-    border: 1px solid rgba(130, 161, 190, 0.18);
+    border: 1px solid var(--dash-border);
     border-radius: 4px;
-    color: rgba(246, 248, 251, 0.78);
+    color: var(--dash-muted);
     padding: 0.52rem 0.72rem;
     font-size: 0.78rem;
   }
 
   .EdgeTrace-dimension-toggle.active {
-    border-color: rgba(69, 183, 244, 0.68);
-    color: #62c8ff;
-    background: rgba(69, 183, 244, 0.1);
+    border-color: rgba(73, 183, 217, 0.68);
+    color: var(--dash-accent-strong);
+    background: rgba(73, 183, 217, 0.1);
   }
 
   .EdgeTrace-metric-mini p,
@@ -3130,7 +3108,7 @@
   }
 
   .EdgeTrace-metric-mini p {
-    color: rgba(214, 224, 235, 0.66);
+    color: var(--dash-muted);
     font-size: 0.9rem;
     letter-spacing: 0.04em;
     text-transform: uppercase;
@@ -3138,21 +3116,21 @@
 
   .EdgeTrace-metric-mini strong {
     margin-top: 0.48rem;
-    color: #ffffff;
+    color: var(--dash-text);
     font-size: 1.3rem;
     font-weight: 560;
   }
 
   .EdgeTrace-metric-mini.tone-red strong {
-    color: #ff485c;
+    color: var(--dash-danger);
   }
 
   .EdgeTrace-metric-mini.tone-green strong {
-    color: #74c476;
+    color: var(--dash-success);
   }
 
   .EdgeTrace-metric-mini.tone-yellow strong {
-    color: #ffb82e;
+    color: var(--dash-warning);
   }
 
   @media (max-width: 1500px) {
@@ -4206,6 +4184,20 @@
 
 :root {
   color-scheme: dark;
+  --dash-bg: #050a0f;
+  --dash-sidebar: #07111a;
+  --dash-surface: #0b1621;
+  --dash-surface-raised: #0f1c29;
+  --dash-border: rgba(136, 158, 180, 0.18);
+  --dash-border-strong: rgba(136, 158, 180, 0.28);
+  --dash-text: #eff5f8;
+  --dash-muted: #93a3b1;
+  --dash-faint: #657583;
+  --dash-accent: #49b7d9;
+  --dash-accent-strong: #72d4ef;
+  --dash-danger: #f45b72;
+  --dash-warning: #e2b84f;
+  --dash-success: #6fc78a;
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
