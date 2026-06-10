@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -4303,6 +4303,7 @@
     "kern" 1,
     "liga" 1,
     "calt" 1;
+  font-synthesis-weight: none;
 }
 
 body {
@@ -4310,6 +4311,7 @@ body {
   background: #03060c;
   font-family: var(--font-ui);
   font-optical-sizing: auto;
+  font-synthesis-weight: none;
 }
 
 .EdgeTrace-contours {
@@ -4577,6 +4579,56 @@ body {
   font-feature-settings:
     "tnum" 1,
     "zero" 1;
+}
+
+.EdgeTrace-dashboard-main {
+  font-weight: 400;
+}
+
+.EdgeTrace-dashboard-header h1 {
+  font-weight: 600;
+}
+
+.EdgeTrace-dashboard-main :is(strong, b, .font-semibold, .font-bold) {
+  font-weight: 500;
+}
+
+.EdgeTrace-panel-header,
+.EdgeTrace-report-selector-wrap label,
+.EdgeTrace-dashboard-legend p,
+.EdgeTrace-dashboard-legend strong {
+  font-weight: 500;
+}
+
+.EdgeTrace-report-selector,
+.EdgeTrace-report-edit-button,
+.EdgeTrace-results-walkthrough-button strong,
+.EdgeTrace-dashboard-link {
+  font-weight: 500;
+}
+
+.EdgeTrace-kpi-value,
+.EdgeTrace-kpi-value.is-data,
+.EdgeTrace-kpi-value.is-label,
+.EdgeTrace-diagnosis-layout h2 {
+  font-weight: 500;
+}
+
+.EdgeTrace-kpi-value span,
+.EdgeTrace-kpi-subdetail,
+.EdgeTrace-impact-list strong,
+.EdgeTrace-impact-donut strong,
+.EdgeTrace-priority-list strong,
+.EdgeTrace-benchmark-row strong,
+.EdgeTrace-pro-workspace-header h2,
+.EdgeTrace-edge-score-readout span {
+  font-weight: 500;
+}
+
+.EdgeTrace-kpi-detail,
+.EdgeTrace-diagnosis-layout p,
+.EdgeTrace-priority-list small {
+  font-weight: 400;
 }
 
 @media (max-width: 767px) {
