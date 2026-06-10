@@ -1141,14 +1141,12 @@ function DashboardMetricCard({
   progress?: number;
   dataTestId?: string;
 }) {
-  const valueKind = /[\d$%]|N\/A/.test(value) ? "is-data" : "is-label";
-
   return (
     <article className={`EdgeTrace-dashboard-panel EdgeTrace-kpi-card tone-${tone} ${icon ? "has-icon" : ""}`} data-testid={dataTestId}>
       <PanelHeader title={title} info />
       <div className="EdgeTrace-kpi-body">
         <div>
-          <p className={`EdgeTrace-kpi-value ${valueKind}`}>
+          <p className="EdgeTrace-kpi-value">
             {value}
             {suffix && <span>{suffix}</span>}
           </p>
