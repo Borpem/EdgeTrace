@@ -1592,8 +1592,8 @@
 
   .EdgeTrace-kpi-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.85rem;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 0.72rem;
     margin-top: 1rem;
   }
 
@@ -1603,13 +1603,15 @@
     overflow: hidden;
     border: 1px solid var(--dash-border);
     border-radius: 6px;
-    background: var(--dash-surface);
+    background:
+      linear-gradient(180deg, rgba(15, 28, 41, 0.76), rgba(9, 19, 30, 0.82)),
+      var(--dash-surface);
     box-shadow: none;
   }
 
   .EdgeTrace-kpi-card {
-    min-height: 11.8rem;
-    padding: 1.18rem 1.25rem;
+    min-height: 9.8rem;
+    padding: 1rem 1.05rem;
   }
 
   .EdgeTrace-panel-header {
@@ -1676,7 +1678,7 @@
 
   .EdgeTrace-kpi-body {
     display: flex;
-    min-height: 6.6rem;
+    min-height: 5.45rem;
     align-items: center;
     justify-content: space-between;
     gap: 0.8rem;
@@ -1685,7 +1687,7 @@
   .EdgeTrace-kpi-value {
     margin: 0;
     color: var(--dash-text);
-    font-size: clamp(2.1rem, 2.7vw, 2.75rem);
+    font-size: clamp(1.9rem, 2.25vw, 2.45rem);
     font-weight: 680;
     line-height: 1.08;
     letter-spacing: 0;
@@ -1704,7 +1706,7 @@
   }
 
   .EdgeTrace-kpi-card.has-icon .EdgeTrace-kpi-value {
-    font-size: clamp(2rem, 2.8vw, 2.65rem);
+    font-size: clamp(1.8rem, 2.25vw, 2.35rem);
   }
 
   .EdgeTrace-kpi-subdetail,
@@ -1726,15 +1728,15 @@
 
   .EdgeTrace-kpi-icon {
     position: absolute;
-    right: 1.3rem;
-    top: 4.65rem;
+    right: 1.05rem;
+    top: 4.15rem;
     color: currentColor;
     opacity: 0.95;
   }
 
   .EdgeTrace-kpi-icon svg {
-    width: 2.75rem;
-    height: 2.75rem;
+    width: 2.25rem;
+    height: 2.25rem;
   }
 
   .EdgeTrace-kpi-card.tone-red {
@@ -1813,7 +1815,7 @@
 
   .EdgeTrace-dashboard-middle {
     display: grid;
-    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
     gap: 0.85rem;
     margin-top: 0.85rem;
   }
@@ -2577,8 +2579,8 @@
 
   .EdgeTrace-diagnosis-layout {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 11.5rem minmax(14rem, 0.9fr);
-    gap: 1.55rem;
+    grid-template-columns: minmax(16rem, 0.92fr) minmax(11rem, 0.42fr) minmax(15rem, 0.82fr);
+    gap: 1.3rem;
     align-items: center;
     margin-top: 1.15rem;
   }
@@ -2602,7 +2604,47 @@
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1rem;
-    margin-top: 2.4rem;
+    margin-top: 2rem;
+  }
+
+  .EdgeTrace-impact-summary {
+    display: grid;
+    align-content: center;
+    gap: 0.5rem;
+    min-height: 7.5rem;
+    border-left: 1px solid var(--dash-border);
+    border-right: 1px solid var(--dash-border);
+    padding: 0 1.05rem;
+  }
+
+  .EdgeTrace-impact-summary span,
+  .EdgeTrace-impact-summary strong {
+    display: block;
+  }
+
+  .EdgeTrace-impact-summary span {
+    color: var(--dash-muted);
+    font-size: 0.86rem;
+  }
+
+  .EdgeTrace-impact-summary strong {
+    color: var(--dash-danger);
+    font-size: 1.45rem;
+    font-weight: 600;
+  }
+
+  .EdgeTrace-impact-bar {
+    display: flex;
+    overflow: hidden;
+    width: 100%;
+    height: 0.42rem;
+    border-radius: 0;
+    background: rgba(136, 158, 180, 0.18);
+  }
+
+  .EdgeTrace-impact-bar i {
+    display: block;
+    height: 100%;
   }
 
   .EdgeTrace-impact-donut-wrap {
@@ -3400,6 +3442,15 @@
 
     .EdgeTrace-diagnosis-layout {
       grid-template-columns: 1fr;
+    }
+
+    .EdgeTrace-impact-summary {
+      min-height: auto;
+      border-top: 1px solid var(--dash-border);
+      border-right: 0;
+      border-bottom: 1px solid var(--dash-border);
+      border-left: 0;
+      padding: 1rem 0;
     }
 
     .EdgeTrace-impact-donut-wrap {
@@ -4523,7 +4574,7 @@ body {
   font-weight: 600;
 }
 
-.EdgeTrace-dashboard-main :is(.EdgeTrace-kpi-value span, .EdgeTrace-impact-donut strong, .EdgeTrace-impact-list strong, .EdgeTrace-priority-list strong) {
+.EdgeTrace-dashboard-main :is(.EdgeTrace-kpi-value span, .EdgeTrace-impact-summary strong, .EdgeTrace-impact-donut strong, .EdgeTrace-impact-list strong, .EdgeTrace-priority-list strong) {
   font-weight: 580;
 }
 

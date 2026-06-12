@@ -1209,14 +1209,6 @@ function DiagnosisPanel({
   onBreakdown: () => void;
 }) {
   const totalImpact = impactBreakdown.reduce((total, item) => total + item.value, 0);
-  let running = 0;
-  const stops = impactBreakdown
-    .map((item) => {
-      const start = running;
-      running += item.percent;
-      return `${item.color} ${start}% ${running}%`;
-    })
-    .join(", ");
 
   return (
     <div id="primary-diagnosis" className="EdgeTrace-dashboard-panel EdgeTrace-diagnosis-panel">
@@ -1231,10 +1223,13 @@ function DiagnosisPanel({
           </div>
         </div>
 
-        <div className="EdgeTrace-impact-donut-wrap">
-          <div className="EdgeTrace-impact-donut" style={{ background: `conic-gradient(${stops})` }}>
-            <span>Total Impact</span>
-            <strong>{currency.format(-Math.abs(totalImpact || metrics.totalCosts))}</strong>
+        <div className="EdgeTrace-impact-summary">
+          <span>Total impact</span>
+          <strong>{currency.format(-Math.abs(totalImpact || metrics.totalCosts))}</strong>
+          <div className="EdgeTrace-impact-bar" aria-hidden="true">
+            {impactBreakdown.map((item) => (
+              <i key={item.label} style={{ width: `${item.percent}%`, backgroundColor: item.color }} />
+            ))}
           </div>
         </div>
 
