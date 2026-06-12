@@ -2799,7 +2799,7 @@ function compactDetails(values: Array<string | undefined | false>) {
 
 function overviewStatus(score: number, diagnosis: ReturnType<typeof buildReportIntelligence>["primaryDiagnosis"]) {
   if (diagnosis === "Insufficient Data") return "Needs Data";
-  if (score >= 80) return hasMaterialOverviewRisk(diagnosis) ? "Strong Overall" : "On Track";
+  if (score >= 80) return hasMaterialOverviewRisk(diagnosis) ? "Strong But Uneven" : "On Track";
   if (score >= 60) return "Watchlist";
   return "Needs Attention";
 }
@@ -2810,7 +2810,7 @@ function hasMaterialOverviewRisk(diagnosis: ReturnType<typeof buildReportIntelli
 
 function overviewDetail(status: string) {
   if (status === "On Track") return "Core metrics are above target. Monitor listed watch items separately.";
-  if (status === "Strong Overall") return "Strategy health is strong. One smaller issue still deserves review.";
+  if (status === "Strong But Uneven") return "Most metrics are healthy, but large-loss exposure still needs review.";
   if (status === "Watchlist") return "A few metrics need monitoring before adding size.";
   if (status === "Needs Data") return "Import more complete trade, cost, or risk data.";
   return "Primary issues are dragging performance.";
@@ -2822,7 +2822,7 @@ function overviewTone(
 ): "red" | "yellow" | "green" | "blue" | "gray" {
   const status = overviewStatus(score, diagnosis);
   if (status === "On Track") return "green";
-  if (status === "Strong Overall") return "green";
+  if (status === "Strong But Uneven") return "blue";
   if (status === "Watchlist") return "yellow";
   if (status === "Needs Data") return "gray";
   return "red";
@@ -2880,7 +2880,7 @@ function humanDiagnosis(diagnosis: ReturnType<typeof buildReportIntelligence>["p
   if (diagnosis === "Cost Drag Problem") return "High Cost Drag";
   if (diagnosis === "Negative Expectancy") return "Negative Expectancy";
   if (diagnosis === "Poor R Capture") return "Poor R Capture";
-  if (diagnosis === "Large Loss Problem") return "Large Loss Problem";
+  if (diagnosis === "Large Loss Problem") return "Loss Concentration";
   if (diagnosis === "Insufficient Data") return "Insufficient Data";
   return diagnosis;
 }

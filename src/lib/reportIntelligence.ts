@@ -158,7 +158,7 @@ function explanationForDiagnosis(
     return "EdgeTrace classifies this report as Poor R Capture. The strategy is not capturing enough reward relative to planned risk.";
   }
   if (diagnosis === "Large Loss Problem") {
-    return "EdgeTrace classifies this report as Large Loss Problem. One or two losses are disproportionately damaging performance.";
+    return "EdgeTrace classifies this report as Loss Concentration. One or two losses are disproportionately damaging performance.";
   }
   if (diagnosis === "Insufficient Data") {
     return "EdgeTrace classifies this report as Insufficient Data. More trades are needed before segment-level conclusions are reliable.";
