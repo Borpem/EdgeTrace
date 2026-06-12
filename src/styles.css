@@ -4507,6 +4507,26 @@ body {
   text-rendering: geometricPrecision;
 }
 
+.EdgeTrace-dashboard-header h1 {
+  font-weight: 650;
+}
+
+.EdgeTrace-dashboard-main :is(.EdgeTrace-panel-header, .EdgeTrace-report-selector-wrap label, .EdgeTrace-dashboard-legend strong) {
+  font-weight: 620;
+}
+
+.EdgeTrace-dashboard-main :is(.EdgeTrace-report-selector, .EdgeTrace-report-edit-button, .EdgeTrace-results-walkthrough-button strong, .EdgeTrace-dashboard-link) {
+  font-weight: 600;
+}
+
+.EdgeTrace-dashboard-main :is(.EdgeTrace-kpi-value, .EdgeTrace-diagnosis-layout h2) {
+  font-weight: 600;
+}
+
+.EdgeTrace-dashboard-main :is(.EdgeTrace-kpi-value span, .EdgeTrace-impact-donut strong, .EdgeTrace-impact-list strong, .EdgeTrace-priority-list strong) {
+  font-weight: 580;
+}
+
 @media (max-width: 767px) {
   .EdgeTrace-hero-title {
     letter-spacing: -0.022em;
