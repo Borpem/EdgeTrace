@@ -2799,7 +2799,7 @@ function compactDetails(values: Array<string | undefined | false>) {
 
 function overviewStatus(score: number, diagnosis: ReturnType<typeof buildReportIntelligence>["primaryDiagnosis"]) {
   if (diagnosis === "Insufficient Data") return "Needs Data";
-  if (score >= 80) return hasMaterialOverviewRisk(diagnosis) ? "Review Risk" : "On Track";
+  if (score >= 80) return hasMaterialOverviewRisk(diagnosis) ? "Strong Overall" : "On Track";
   if (score >= 60) return "Watchlist";
   return "Needs Attention";
 }
@@ -2810,7 +2810,7 @@ function hasMaterialOverviewRisk(diagnosis: ReturnType<typeof buildReportIntelli
 
 function overviewDetail(status: string) {
   if (status === "On Track") return "Core metrics are above target. Monitor listed watch items separately.";
-  if (status === "Review Risk") return "Strong overall score, with one material risk still worth reviewing.";
+  if (status === "Strong Overall") return "Strategy health is strong. One smaller issue still deserves review.";
   if (status === "Watchlist") return "A few metrics need monitoring before adding size.";
   if (status === "Needs Data") return "Import more complete trade, cost, or risk data.";
   return "Primary issues are dragging performance.";
@@ -2822,7 +2822,7 @@ function overviewTone(
 ): "red" | "yellow" | "green" | "blue" | "gray" {
   const status = overviewStatus(score, diagnosis);
   if (status === "On Track") return "green";
-  if (status === "Review Risk") return "yellow";
+  if (status === "Strong Overall") return "green";
   if (status === "Watchlist") return "yellow";
   if (status === "Needs Data") return "gray";
   return "red";
