@@ -72,6 +72,7 @@ test.describe.serial("EdgeTrace happy path", () => {
     await expect(page.locator(".EdgeTrace-priority-list button > span")).toHaveCount(0);
     await expect(page.locator(".EdgeTrace-overview-insight-list > div > span")).toHaveCount(0);
     await expect(page.getByText("After-cost performance", { exact: true }).first()).toBeVisible();
+    await page.getByRole("button", { name: /Changes, Actions, and Context/i }).click();
     await expect(page.getByText("Execution friction", { exact: true }).first()).toBeVisible();
   });
 

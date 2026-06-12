@@ -19,6 +19,7 @@ import {
   BookOpen,
   CalendarDays,
   CheckCircle2,
+  ChevronDown,
   ChevronLeft,
   FileText,
   HelpCircle,
@@ -72,6 +73,7 @@ type BreakdownSortKey =
   | "averageRealizedR"
   | "costDragPct";
 type DashboardTab = "overview" | "breakdown" | "trades";
+type DashboardDisclosureId = "diagnosis" | "insights" | "benchmarks" | "pro" | "nextSteps" | "details";
 type GuideMetricTone = "red" | "yellow" | "green" | "blue" | "gray" | "white";
 type ProQuestionId = "fix-first" | "explain-report" | "next-risk";
 type GuideMetric = {
@@ -123,6 +125,15 @@ type SignedEquityCurvePoint = EquityCurvePoint & {
   positiveEquity: number | null;
   negativeEquity: number | null;
 };
+
+const dashboardDisclosureIds: DashboardDisclosureId[] = [
+  "diagnosis",
+  "insights",
+  "benchmarks",
+  "pro",
+  "nextSteps",
+  "details"
+];
 
 type DashboardPageProps = {
   result: DiagnosticsResult;
@@ -180,6 +191,7 @@ export function DashboardPage({
   const [availableReports, setAvailableReports] = useState<ReportSummary[]>([]);
   const [reportsLoading, setReportsLoading] = useState(false);
   const [reportSelectorError, setReportSelectorError] = useState("");
+  const [expandedDashboardSections, setExpandedDashboardSections] = useState<DashboardDisclosureId[]>([]);
 
   const trades = Array.isArray(result.trades) ? result.trades : [];
   const charts = result.charts ?? { equityCurve: [], pnlBySymbol: [], pnlByHour: [] };
@@ -468,11 +480,26 @@ export function DashboardPage({
   };
 
   const openDetailTab = (tab: DashboardTab) => {
+    setExpandedDashboardSections((current) => (current.includes("details") ? current : [...current, "details"]));
     setActiveTab(tab);
     trackEvent("report_tab_opened", { reportId: result.id, tab, source: "dashboard_action" });
     window.requestAnimationFrame(() => {
       document.getElementById("dashboard-detail-dock")?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
+  };
+
+  const toggleDashboardSection = (sectionId: DashboardDisclosureId) => {
+    setExpandedDashboardSections((current) =>
+      current.includes(sectionId) ? current.filter((id) => id !== sectionId) : [...current, sectionId]
+    );
+  };
+
+  const expandAllDashboardSections = () => {
+    setExpandedDashboardSections(dashboardDisclosureIds);
+  };
+
+  const collapseAllDashboardSections = () => {
+    setExpandedDashboardSections([]);
   };
 
   const handleAudit = () => {
@@ -718,122 +745,183 @@ export function DashboardPage({
           />
         </section>
 
-        <section className="EdgeTrace-dashboard-middle">
-          <DiagnosisPanel
-            intelligence={intelligence}
-            metrics={metrics}
-            impactBreakdown={impactBreakdown}
-            onBreakdown={() => openDetailTab("breakdown")}
-          />
+        <section className="EdgeTrace-dashboard-panel EdgeTrace-trend-panel EdgeTrace-trend-panel-primary">
+          <PanelHeader title="Key Performance Trend" info />
+          <div className="EdgeTrace-trend-select">Net PnL</div>
+          <ResponsiveContainer width="100%" height={330}>
+            <LineChart data={signedPerformanceData} margin={{ top: 14, right: 10, left: 2, bottom: 0 }}>
+              <CartesianGrid stroke="#1d3042" strokeOpacity={0.58} vertical={false} />
+              <XAxis
+                dataKey="trade"
+                type="number"
+                domain={["dataMin", "dataMax"]}
+                allowDecimals={false}
+                stroke="#8796a8"
+                tickLine={false}
+                axisLine={false}
+                tick={{ fontSize: 13 }}
+              />
+              <YAxis
+                stroke="#8796a8"
+                tickLine={false}
+                axisLine={false}
+                width={44}
+                tick={{ fontSize: 13 }}
+                tickFormatter={formatAxisCurrency}
+              />
+              <ReferenceLine y={0} stroke="#5b6a76" strokeOpacity={0.45} strokeDasharray="4 4" />
+              <Tooltip cursor={{ stroke: "#5b6a76", strokeOpacity: 0.36 }} content={<PerformanceTrendTooltip />} />
+              <Line
+                type="linear"
+                dataKey="positiveEquity"
+                stroke="#6fc78a"
+                strokeWidth={2.2}
+                dot={false}
+                activeDot={{ r: 4, fill: "#6fc78a", stroke: "#07111d", strokeWidth: 2 }}
+                isAnimationActive={false}
+                connectNulls={false}
+              />
+              <Line
+                type="linear"
+                dataKey="negativeEquity"
+                stroke="#f45b72"
+                strokeWidth={2.2}
+                dot={false}
+                activeDot={{ r: 4, fill: "#f45b72", stroke: "#07111d", strokeWidth: 2 }}
+                isAnimationActive={false}
+                connectNulls={false}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+          <button className="EdgeTrace-dashboard-link" onClick={() => openDetailTab("breakdown")}>
+            View breakdown analytics <ArrowRight size={14} aria-hidden="true" />
+          </button>
+        </section>
 
-          <div className="EdgeTrace-dashboard-panel EdgeTrace-trend-panel">
-            <PanelHeader title="Key Performance Trend" info />
-            <div className="EdgeTrace-trend-select">Net PnL</div>
-            <ResponsiveContainer width="100%" height={310}>
-              <LineChart data={signedPerformanceData} margin={{ top: 14, right: 10, left: 2, bottom: 0 }}>
-                <CartesianGrid stroke="#1d3042" strokeOpacity={0.58} vertical={false} />
-                <XAxis
-                  dataKey="trade"
-                  type="number"
-                  domain={["dataMin", "dataMax"]}
-                  allowDecimals={false}
-                  stroke="#8796a8"
-                  tickLine={false}
-                  axisLine={false}
-                  tick={{ fontSize: 13 }}
-                />
-                <YAxis
-                  stroke="#8796a8"
-                  tickLine={false}
-                  axisLine={false}
-                  width={44}
-                  tick={{ fontSize: 13 }}
-                  tickFormatter={formatAxisCurrency}
-                />
-                <ReferenceLine y={0} stroke="#5b6a76" strokeOpacity={0.45} strokeDasharray="4 4" />
-                <Tooltip
-                  cursor={{ stroke: "#5b6a76", strokeOpacity: 0.36 }}
-                  content={<PerformanceTrendTooltip />}
-                />
-                <Line
-                  type="linear"
-                  dataKey="positiveEquity"
-                  stroke="#6fc78a"
-                  strokeWidth={2.2}
-                  dot={false}
-                  activeDot={{ r: 4, fill: "#6fc78a", stroke: "#07111d", strokeWidth: 2 }}
-                  isAnimationActive={false}
-                  connectNulls={false}
-                />
-                <Line
-                  type="linear"
-                  dataKey="negativeEquity"
-                  stroke="#f45b72"
-                  strokeWidth={2.2}
-                  dot={false}
-                  activeDot={{ r: 4, fill: "#f45b72", stroke: "#07111d", strokeWidth: 2 }}
-                  isAnimationActive={false}
-                  connectNulls={false}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-            <button className="EdgeTrace-dashboard-link" onClick={() => openDetailTab("breakdown")}>
-              View breakdown analytics <ArrowRight size={14} aria-hidden="true" />
-            </button>
+        <section className="EdgeTrace-disclosure-section" aria-label="Additional dashboard details">
+          <div className="EdgeTrace-disclosure-toolbar">
+            <div>
+              <span>More report detail</span>
+              <p>Open only the sections you want to inspect.</p>
+            </div>
+            <div>
+              <button onClick={expandAllDashboardSections}>Open all</button>
+              <button onClick={collapseAllDashboardSections}>Collapse all</button>
+            </div>
           </div>
 
-          <PriorityInsights
-            insights={priorityInsights}
-            onOpenInsight={inspectPrimarySegment}
-            onViewAllInsights={() => openDetailTab("overview")}
-          />
-        </section>
+          <div className="EdgeTrace-disclosure-grid">
+            <DashboardDisclosureCard
+              title="Primary Diagnosis"
+              summary={humanDiagnosis(intelligence.primaryDiagnosis)}
+              detail={intelligence.primaryLeak.explanation}
+              tone="red"
+              isExpanded={expandedDashboardSections.includes("diagnosis")}
+              onToggle={() => toggleDashboardSection("diagnosis")}
+            >
+              <DiagnosisPanel
+                intelligence={intelligence}
+                metrics={metrics}
+                impactBreakdown={impactBreakdown}
+                onBreakdown={() => openDetailTab("breakdown")}
+              />
+            </DashboardDisclosureCard>
 
-        <BenchmarkIntelligencePanel
-          accessLevel={canViewAggregateBenchmarks ? "full" : "locked"}
-          snapshot={benchmarks}
-          isLoading={benchmarksLoading}
-          error={benchmarksError}
-        />
+            <DashboardDisclosureCard
+              title="Priority Insights"
+              summary={priorityInsights[0]?.title ?? "No dominant insight"}
+              detail={priorityInsights[0]?.detail ?? "Open this section for all report insights."}
+              tone="yellow"
+              isExpanded={expandedDashboardSections.includes("insights")}
+              onToggle={() => toggleDashboardSection("insights")}
+            >
+              <PriorityInsights
+                insights={priorityInsights}
+                onOpenInsight={inspectPrimarySegment}
+                onViewAllInsights={() => openDetailTab("overview")}
+              />
+            </DashboardDisclosureCard>
 
-        <PaywallGate
-          feature="ask_edge_trace"
-          accessLevel={canUseProIntelligence ? "full" : "preview"}
-          title="Upgrade to Pro to unlock the local intelligence workspace."
-          description="Pro adds local Ask EdgeTrace answers, What-If Simulator projections, Edge Score factors, review agenda, and regression watch on the dashboard."
-        >
-          <ProIntelligenceWorkspace
-            answers={proCoachAnswers}
-            edgeScore={edgeScore}
-            metrics={metrics}
-            regressionWatch={regressionWatch}
-            reviewAgenda={reviewAgenda}
-          />
-        </PaywallGate>
+            <DashboardDisclosureCard
+              title="EdgeTrace Benchmarks"
+              summary={canViewAggregateBenchmarks ? "Compare this report against cohort data" : "Pro benchmark context"}
+              detail="Percentiles, medians, and cohort context for the imported report."
+              tone="blue"
+              isExpanded={expandedDashboardSections.includes("benchmarks")}
+              onToggle={() => toggleDashboardSection("benchmarks")}
+            >
+              <BenchmarkIntelligencePanel
+                accessLevel={canViewAggregateBenchmarks ? "full" : "locked"}
+                snapshot={benchmarks}
+                isLoading={benchmarksLoading}
+                error={benchmarksError}
+              />
+            </DashboardDisclosureCard>
 
-        <section className="EdgeTrace-dashboard-bottom">
-          <SnapshotStats
-            metrics={metrics}
-            averageR={metrics.averageRealizedR}
-            normalizedTradeCount={normalizedTradeCount}
-            onCompare={onCompareReport ? () => onCompareReport(result.id) : undefined}
-          />
-          <TopActions
-            actionItems={actionItems}
-            workflowAction={workflowAction}
-            onInspect={inspectPrimarySegment}
-            onAddToStrategySet={() => setIsAddingToStrategySet(true)}
-          />
-          <ContextGlance
-            result={result}
-            metrics={metrics}
-            normalizedTradeCount={normalizedTradeCount}
-            hasReconstructionAudit={hasReconstructionAudit}
-            onAudit={handleAudit}
-          />
-        </section>
+            <DashboardDisclosureCard
+              title="Pro Intelligence Workspace"
+              summary="Local coaching, simulations, score, and review planning"
+              detail="Ask EdgeTrace, What-If Simulator, Edge Score, Regression Watch, and weekly review agenda."
+              tone="blue"
+              isExpanded={expandedDashboardSections.includes("pro")}
+              onToggle={() => toggleDashboardSection("pro")}
+            >
+              <PaywallGate
+                feature="ask_edge_trace"
+                accessLevel={canUseProIntelligence ? "full" : "preview"}
+                title="Upgrade to Pro to unlock the local intelligence workspace."
+                description="Pro adds local Ask EdgeTrace answers, What-If Simulator projections, Edge Score factors, review agenda, and regression watch on the dashboard."
+              >
+                <ProIntelligenceWorkspace
+                  answers={proCoachAnswers}
+                  edgeScore={edgeScore}
+                  metrics={metrics}
+                  regressionWatch={regressionWatch}
+                  reviewAgenda={reviewAgenda}
+                />
+              </PaywallGate>
+            </DashboardDisclosureCard>
 
-        <section id="dashboard-detail-dock" className="EdgeTrace-detail-dock" aria-label="Detailed report data">
+            <DashboardDisclosureCard
+              title="Changes, Actions, and Context"
+              summary={actionItems[0]?.title ?? "Review report context"}
+              detail="Prior-report changes, recommended actions, and import/data quality context."
+              tone="gray"
+              isExpanded={expandedDashboardSections.includes("nextSteps")}
+              onToggle={() => toggleDashboardSection("nextSteps")}
+            >
+              <section className="EdgeTrace-dashboard-bottom">
+                <SnapshotStats
+                  metrics={metrics}
+                  averageR={metrics.averageRealizedR}
+                  normalizedTradeCount={normalizedTradeCount}
+                  onCompare={onCompareReport ? () => onCompareReport(result.id) : undefined}
+                />
+                <TopActions
+                  actionItems={actionItems}
+                  workflowAction={workflowAction}
+                  onInspect={inspectPrimarySegment}
+                  onAddToStrategySet={() => setIsAddingToStrategySet(true)}
+                />
+                <ContextGlance
+                  result={result}
+                  metrics={metrics}
+                  normalizedTradeCount={normalizedTradeCount}
+                  hasReconstructionAudit={hasReconstructionAudit}
+                  onAudit={handleAudit}
+                />
+              </section>
+            </DashboardDisclosureCard>
+
+            <DashboardDisclosureCard
+              title="Detailed Report Data"
+              summary={`${activeTab.charAt(0).toUpperCase()}${activeTab.slice(1)} view`}
+              detail="Open the full report snapshot, attribution breakdowns, or normalized trades without leaving the page."
+              tone="gray"
+              isExpanded={expandedDashboardSections.includes("details")}
+              onToggle={() => toggleDashboardSection("details")}
+            >
+              <section id="dashboard-detail-dock" className="EdgeTrace-detail-dock" aria-label="Detailed report data">
           <div className="EdgeTrace-detail-tabs">
             {(["overview", "breakdown", "trades"] as DashboardTab[]).map((tab) => (
               <button
@@ -1039,6 +1127,9 @@ export function DashboardPage({
               </TableContainer>
             </PaywallGate>
           )}
+              </section>
+            </DashboardDisclosureCard>
+          </div>
         </section>
       </section>
 
@@ -1173,6 +1264,46 @@ function DashboardMetricCard({
           </div>
         </div>
       )}
+    </article>
+  );
+}
+
+function DashboardDisclosureCard({
+  title,
+  summary,
+  detail,
+  tone,
+  isExpanded,
+  onToggle,
+  children
+}: {
+  title: string;
+  summary: string;
+  detail: string;
+  tone: "red" | "yellow" | "green" | "blue" | "gray";
+  isExpanded: boolean;
+  onToggle: () => void;
+  children: ReactNode;
+}) {
+  return (
+    <article className={`EdgeTrace-dashboard-panel EdgeTrace-disclosure-card tone-${tone} ${isExpanded ? "is-open" : ""}`}>
+      <button
+        className="EdgeTrace-disclosure-trigger"
+        type="button"
+        aria-expanded={isExpanded}
+        onClick={onToggle}
+      >
+        <span className="EdgeTrace-disclosure-copy">
+          <span className="EdgeTrace-disclosure-kicker">{title}</span>
+          <strong>{summary}</strong>
+          <small>{detail}</small>
+        </span>
+        <span className="EdgeTrace-disclosure-action">
+          {isExpanded ? "Hide" : "Open"}
+          <ChevronDown size={17} aria-hidden="true" />
+        </span>
+      </button>
+      {isExpanded && <div className="EdgeTrace-disclosure-content">{children}</div>}
     </article>
   );
 }

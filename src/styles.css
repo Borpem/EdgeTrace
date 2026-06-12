@@ -2743,6 +2743,10 @@
     min-height: 23rem;
   }
 
+  .EdgeTrace-trend-panel-primary {
+    margin-top: 0.85rem;
+  }
+
   .EdgeTrace-trend-select {
     position: absolute;
     right: 1.2rem;
@@ -2785,6 +2789,168 @@
 
   .EdgeTrace-trend-tooltip.tone-negative strong {
     color: var(--dash-danger);
+  }
+
+  .EdgeTrace-disclosure-section {
+    margin-top: 0.9rem;
+  }
+
+  .EdgeTrace-disclosure-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+    border: 1px solid var(--dash-border);
+    border-radius: 6px;
+    background: rgba(11, 22, 33, 0.56);
+    padding: 0.82rem 0.95rem;
+  }
+
+  .EdgeTrace-disclosure-toolbar span {
+    display: block;
+    color: var(--dash-text);
+    font-size: 0.95rem;
+    font-weight: 620;
+  }
+
+  .EdgeTrace-disclosure-toolbar p {
+    margin: 0.12rem 0 0;
+    color: var(--dash-muted);
+    font-size: 0.88rem;
+  }
+
+  .EdgeTrace-disclosure-toolbar > div:last-child {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: flex-end;
+  }
+
+  .EdgeTrace-disclosure-toolbar button {
+    border: 1px solid var(--dash-border);
+    border-radius: 4px;
+    background: rgba(73, 183, 217, 0.06);
+    color: var(--dash-accent-strong);
+    padding: 0.5rem 0.7rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+  }
+
+  .EdgeTrace-disclosure-toolbar button:hover {
+    border-color: rgba(73, 183, 217, 0.35);
+    background: rgba(73, 183, 217, 0.11);
+  }
+
+  .EdgeTrace-disclosure-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .EdgeTrace-disclosure-card {
+    --disclosure-accent: var(--dash-muted);
+    padding: 0;
+  }
+
+  .EdgeTrace-disclosure-card.is-open {
+    grid-column: 1 / -1;
+  }
+
+  .EdgeTrace-disclosure-card.tone-red {
+    --disclosure-accent: var(--dash-danger);
+  }
+
+  .EdgeTrace-disclosure-card.tone-yellow {
+    --disclosure-accent: var(--dash-warning);
+  }
+
+  .EdgeTrace-disclosure-card.tone-green {
+    --disclosure-accent: var(--dash-success);
+  }
+
+  .EdgeTrace-disclosure-card.tone-blue {
+    --disclosure-accent: var(--dash-accent);
+  }
+
+  .EdgeTrace-disclosure-trigger {
+    display: grid;
+    width: 100%;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 1rem;
+    border: 0;
+    border-left: 3px solid var(--disclosure-accent);
+    background: transparent;
+    color: inherit;
+    padding: 1rem 1.05rem;
+    text-align: left;
+  }
+
+  .EdgeTrace-disclosure-copy {
+    display: grid;
+    gap: 0.22rem;
+    min-width: 0;
+  }
+
+  .EdgeTrace-disclosure-kicker {
+    color: var(--dash-muted);
+    font-size: 0.76rem;
+    font-weight: 620;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .EdgeTrace-disclosure-copy strong {
+    color: var(--dash-text);
+    font-size: 1.05rem;
+    font-weight: 620;
+    line-height: 1.25;
+  }
+
+  .EdgeTrace-disclosure-copy small {
+    max-width: 56rem;
+    color: var(--dash-muted);
+    font-size: 0.9rem;
+    line-height: 1.45;
+  }
+
+  .EdgeTrace-disclosure-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: var(--dash-accent-strong);
+    font-size: 0.82rem;
+    font-weight: 600;
+  }
+
+  .EdgeTrace-disclosure-card.is-open .EdgeTrace-disclosure-action svg {
+    transform: rotate(180deg);
+  }
+
+  .EdgeTrace-disclosure-content {
+    border-top: 1px solid var(--dash-border);
+    padding: 1rem;
+  }
+
+  .EdgeTrace-disclosure-content > .EdgeTrace-dashboard-panel,
+  .EdgeTrace-disclosure-content > .EdgeTrace-benchmark-panel,
+  .EdgeTrace-disclosure-content > .EdgeTrace-detail-dock,
+  .EdgeTrace-disclosure-content .EdgeTrace-paywall-gate > .EdgeTrace-dashboard-panel {
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .EdgeTrace-disclosure-content > .EdgeTrace-dashboard-panel,
+  .EdgeTrace-disclosure-content > .EdgeTrace-benchmark-panel {
+    padding: 0;
+  }
+
+  .EdgeTrace-disclosure-content .EdgeTrace-benchmark-panel,
+  .EdgeTrace-disclosure-content .EdgeTrace-dashboard-bottom,
+  .EdgeTrace-disclosure-content .EdgeTrace-detail-dock {
+    margin-top: 0;
   }
 
   .EdgeTrace-dashboard-link {
@@ -3380,8 +3546,18 @@
     .EdgeTrace-kpi-grid,
     .EdgeTrace-dashboard-middle,
     .EdgeTrace-dashboard-bottom,
+    .EdgeTrace-disclosure-grid,
     .EdgeTrace-priority-list {
       grid-template-columns: 1fr;
+    }
+
+    .EdgeTrace-disclosure-toolbar {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .EdgeTrace-disclosure-toolbar > div:last-child {
+      justify-content: flex-start;
     }
 
     .EdgeTrace-benchmark-panel,
