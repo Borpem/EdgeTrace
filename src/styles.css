@@ -2986,7 +2986,7 @@
 
   .EdgeTrace-dashboard-legend {
     display: grid;
-    grid-template-columns: 16rem repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 1rem;
     align-items: start;
     margin-top: 1rem;
@@ -2994,14 +2994,6 @@
     border-radius: 6px;
     background: var(--dash-surface);
     padding: 1.15rem;
-  }
-
-  .EdgeTrace-dashboard-legend p {
-    margin: 0;
-    color: var(--dash-muted);
-    font-size: 0.9rem;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
   }
 
   .EdgeTrace-dashboard-legend div {
@@ -3229,10 +3221,6 @@
 
     .EdgeTrace-dashboard-legend {
       grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .EdgeTrace-dashboard-legend p {
-      grid-column: 1 / -1;
     }
   }
 

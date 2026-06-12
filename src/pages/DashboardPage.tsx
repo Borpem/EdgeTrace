@@ -1817,7 +1817,6 @@ function DashboardLegend() {
 
   return (
     <section className="EdgeTrace-dashboard-legend">
-      <p>How to read this dashboard</p>
       {items.map(([label, title, detail, color]) => (
         <div key={label}>
           <span style={{ backgroundColor: color }} />
