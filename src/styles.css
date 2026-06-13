@@ -5018,6 +5018,7 @@ body {
 .EdgeTrace-command-grid {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
+  align-items: start;
   gap: 1rem;
   margin-top: 1rem;
 }
@@ -5028,7 +5029,6 @@ body {
 
 .EdgeTrace-command-health {
   grid-column: span 4;
-  min-height: 16.2rem;
   border-color: rgba(72, 104, 121, 0.7);
   background:
     linear-gradient(135deg, rgba(18, 34, 43, 0.98), rgba(9, 15, 22, 0.98)),
@@ -5037,7 +5037,6 @@ body {
 
 .EdgeTrace-command-diagnosis {
   grid-column: span 4;
-  min-height: 16.2rem;
   border-color: rgba(72, 104, 121, 0.7);
   background:
     linear-gradient(135deg, rgba(18, 31, 40, 0.98), rgba(9, 15, 22, 0.98)),
@@ -5046,7 +5045,6 @@ body {
 
 .EdgeTrace-command-metrics {
   grid-column: span 4;
-  min-height: 16.2rem;
   border-color: rgba(72, 104, 121, 0.7);
   background:
     linear-gradient(135deg, rgba(18, 31, 40, 0.98), rgba(9, 15, 22, 0.98)),
@@ -5081,7 +5079,7 @@ body {
   display: flex;
   align-items: baseline;
   gap: 0.55rem;
-  margin-top: 1.25rem;
+  margin-top: 0.95rem;
 }
 
 .EdgeTrace-command-health-score strong {
@@ -5113,7 +5111,7 @@ body {
 
 .EdgeTrace-command-mini-chart {
   height: 5rem;
-  margin-top: 1rem;
+  margin-top: 0.8rem;
 }
 
 .EdgeTrace-command-range {
@@ -5145,7 +5143,7 @@ body {
 }
 
 .EdgeTrace-command-diagnosis h2 {
-  margin: 1.45rem 0 0;
+  margin: 1.08rem 0 0;
   color: var(--command-text);
   font-size: 2rem;
   font-weight: 520;
@@ -5164,7 +5162,7 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.2rem;
-  margin: 1.8rem 0 1rem;
+  margin: 1.25rem 0 0.82rem;
   max-width: 19rem;
 }
 
@@ -5239,19 +5237,19 @@ body {
 
 .EdgeTrace-command-metric-groups {
   display: grid;
-  gap: 0.72rem;
-  margin-top: 1rem;
+  gap: 0.5rem;
+  margin-top: 0.78rem;
 }
 
 .EdgeTrace-command-metric-groups section {
   border: 1px solid rgba(36, 53, 66, 0.72);
   border-radius: 5px;
   background: rgba(5, 10, 15, 0.42);
-  padding: 0.78rem 0.82rem;
+  padding: 0.58rem 0.72rem;
 }
 
 .EdgeTrace-command-metric-groups h3 {
-  margin: 0 0 0.52rem;
+  margin: 0 0 0.34rem;
   color: var(--command-text-muted);
   font-size: 0.72rem;
   font-weight: 650;
@@ -5264,7 +5262,7 @@ body {
   align-items: baseline;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0.34rem 0;
+  padding: 0.22rem 0;
 }
 
 .EdgeTrace-command-metric-groups section > div + div {
@@ -5278,7 +5276,7 @@ body {
 
 .EdgeTrace-command-metric-groups strong {
   color: var(--command-text);
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 560;
 }
 
@@ -5329,6 +5327,7 @@ body {
 .EdgeTrace-command-action-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(12rem, 0.22fr);
+  align-items: start;
   gap: 1rem;
   margin-top: 1.05rem;
 }
@@ -5427,7 +5426,7 @@ body {
 .EdgeTrace-command-action-row aside {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   background: rgba(4, 9, 14, 0.42);
   padding: 1rem;
 }
