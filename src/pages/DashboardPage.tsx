@@ -672,7 +672,6 @@ export function DashboardPage({
 
           <section className="EdgeTrace-command-card EdgeTrace-command-card-1">
             <div className="EdgeTrace-command-card-heading">
-              <span className="EdgeTrace-command-number tone-blue">1</span>
               <span>Report Overview</span>
             </div>
             <div className="EdgeTrace-command-overview-main">
@@ -694,7 +693,6 @@ export function DashboardPage({
           <section className="EdgeTrace-command-grid" aria-label="Dashboard command center">
             <article className="EdgeTrace-command-card EdgeTrace-command-health" data-testid="dashboard-health-card">
               <div className="EdgeTrace-command-card-heading">
-                <span className="EdgeTrace-command-number tone-green">2</span>
                 <span>Strategy Health</span>
               </div>
               <div className="EdgeTrace-command-health-score">
@@ -716,7 +714,6 @@ export function DashboardPage({
 
             <article className="EdgeTrace-command-card EdgeTrace-command-diagnosis">
               <div className="EdgeTrace-command-card-heading">
-                <span className="EdgeTrace-command-number tone-red">3</span>
                 <span>Primary Diagnosis</span>
               </div>
               <h2>{humanDiagnosis(intelligence.primaryDiagnosis)}</h2>
@@ -730,7 +727,6 @@ export function DashboardPage({
 
             <article className="EdgeTrace-command-card EdgeTrace-command-metrics">
               <div className="EdgeTrace-command-card-heading">
-                <span className="EdgeTrace-command-number tone-blue">4</span>
                 <span>Decision Metrics</span>
               </div>
               <div className="EdgeTrace-command-metric-grid">
@@ -755,7 +751,6 @@ export function DashboardPage({
 
             <article className="EdgeTrace-command-card EdgeTrace-command-changed">
               <div className="EdgeTrace-command-card-heading">
-                <span className="EdgeTrace-command-number tone-purple">5</span>
                 <span>What Changed vs Prior Report</span>
               </div>
               <div className="EdgeTrace-command-change-grid">
@@ -776,7 +771,6 @@ export function DashboardPage({
 
             <article className="EdgeTrace-command-card EdgeTrace-command-drivers">
               <div className="EdgeTrace-command-card-heading">
-                <span className="EdgeTrace-command-number tone-gold">6</span>
                 <span>Top Drivers</span>
               </div>
               <div className="EdgeTrace-command-driver-columns">
@@ -797,7 +791,6 @@ export function DashboardPage({
 
             <article className="EdgeTrace-command-card EdgeTrace-command-actions">
               <div className="EdgeTrace-command-card-heading">
-                <span className="EdgeTrace-command-number tone-blue">7</span>
                 <span>Recommended Actions (Next Steps)</span>
               </div>
               <div className="EdgeTrace-command-action-row">
@@ -821,7 +814,6 @@ export function DashboardPage({
 
             <article className="EdgeTrace-command-card EdgeTrace-command-table-card">
               <div className="EdgeTrace-command-card-heading">
-                <span className="EdgeTrace-command-number tone-gray">8</span>
                 <span>Report Activity</span>
                 <button onClick={onViewReports}>View all reports <ArrowRight size={13} aria-hidden="true" /></button>
               </div>
@@ -840,7 +832,6 @@ export function DashboardPage({
 
             <article className="EdgeTrace-command-card EdgeTrace-command-table-card">
               <div className="EdgeTrace-command-card-heading">
-                <span className="EdgeTrace-command-number tone-purple">9</span>
                 <span>Strategy Set Monitoring</span>
                 <button onClick={onOpenCollections}>Open strategy sets <ArrowRight size={13} aria-hidden="true" /></button>
               </div>
@@ -859,7 +850,6 @@ export function DashboardPage({
 
             <article className="EdgeTrace-command-card EdgeTrace-command-context">
               <div className="EdgeTrace-command-card-heading">
-                <span className="EdgeTrace-command-number tone-gray">10</span>
                 <span>Supporting Context</span>
                 <button onClick={hasReconstructionAudit ? handleAudit : onViewReports}>View details <ArrowRight size={13} aria-hidden="true" /></button>
               </div>
