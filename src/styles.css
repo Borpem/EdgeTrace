@@ -5027,8 +5027,24 @@ body {
   padding: 1.05rem;
 }
 
+.EdgeTrace-command-top-left {
+  display: grid;
+  grid-column: span 8;
+  gap: 1rem;
+}
+
+.EdgeTrace-command-top-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.EdgeTrace-command-top-left > .EdgeTrace-command-card,
+.EdgeTrace-command-top-pair > .EdgeTrace-command-card {
+  padding: 1.05rem;
+}
+
 .EdgeTrace-command-health {
-  grid-column: span 4;
   border-color: rgba(72, 104, 121, 0.7);
   background:
     linear-gradient(135deg, rgba(18, 34, 43, 0.98), rgba(9, 15, 22, 0.98)),
@@ -5036,7 +5052,6 @@ body {
 }
 
 .EdgeTrace-command-diagnosis {
-  grid-column: span 4;
   border-color: rgba(72, 104, 121, 0.7);
   background:
     linear-gradient(135deg, rgba(18, 31, 40, 0.98), rgba(9, 15, 22, 0.98)),
@@ -5053,10 +5068,13 @@ body {
 
 .EdgeTrace-command-changed,
 .EdgeTrace-command-drivers {
-  grid-column: span 6;
   background:
     linear-gradient(135deg, rgba(13, 21, 28, 0.86), rgba(7, 12, 18, 0.96)),
     var(--command-bg-card);
+}
+
+.EdgeTrace-command-drivers {
+  grid-column: 1 / -1;
 }
 
 .EdgeTrace-command-actions {
@@ -5519,6 +5537,7 @@ body {
   .EdgeTrace-command-health,
   .EdgeTrace-command-diagnosis,
   .EdgeTrace-command-metrics,
+  .EdgeTrace-command-top-left,
   .EdgeTrace-command-changed,
   .EdgeTrace-command-drivers,
   .EdgeTrace-command-table-card,
@@ -5541,6 +5560,7 @@ body {
   }
 
   .EdgeTrace-command-driver-columns,
+  .EdgeTrace-command-top-pair,
   .EdgeTrace-command-action-row,
   .EdgeTrace-command-action-card,
   .EdgeTrace-command-metric-grid,

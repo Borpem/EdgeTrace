@@ -691,39 +691,63 @@ export function DashboardPage({
           </section>
 
           <section className="EdgeTrace-command-grid" aria-label="Dashboard command center">
-            <article className="EdgeTrace-command-card EdgeTrace-command-health" data-testid="dashboard-health-card">
-              <div className="EdgeTrace-command-card-heading">
-                <span>Strategy Health</span>
-              </div>
-              <div className="EdgeTrace-command-health-score">
-                <strong>{intelligence.strategyHealthScore}</strong>
-                <span>/100</span>
-                <em>{trendLabel} <TrendingUp size={16} aria-hidden="true" /></em>
-              </div>
-              <p>{number.format(healthPercentile)}st percentile</p>
-              <div className="EdgeTrace-command-mini-chart">
-                <ResponsiveContainer width="100%" height={82}>
-                  <LineChart data={performanceData}>
-                    <Line type="monotone" dataKey="equity" stroke="#73c98f" strokeWidth={2.2} dot={false} isAnimationActive={false} />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-              <div className="EdgeTrace-command-range" aria-hidden="true"><i /><b /></div>
-              <small><TrendingUp size={14} aria-hidden="true" /> Improved vs prior report</small>
-            </article>
+            <div className="EdgeTrace-command-top-left">
+              <div className="EdgeTrace-command-top-pair">
+                <article className="EdgeTrace-command-card EdgeTrace-command-health" data-testid="dashboard-health-card">
+                  <div className="EdgeTrace-command-card-heading">
+                    <span>Strategy Health</span>
+                  </div>
+                  <div className="EdgeTrace-command-health-score">
+                    <strong>{intelligence.strategyHealthScore}</strong>
+                    <span>/100</span>
+                    <em>{trendLabel} <TrendingUp size={16} aria-hidden="true" /></em>
+                  </div>
+                  <p>{number.format(healthPercentile)}st percentile</p>
+                  <div className="EdgeTrace-command-mini-chart">
+                    <ResponsiveContainer width="100%" height={82}>
+                      <LineChart data={performanceData}>
+                        <Line type="monotone" dataKey="equity" stroke="#73c98f" strokeWidth={2.2} dot={false} isAnimationActive={false} />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="EdgeTrace-command-range" aria-hidden="true"><i /><b /></div>
+                  <small><TrendingUp size={14} aria-hidden="true" /> Improved vs prior report</small>
+                </article>
 
-            <article className="EdgeTrace-command-card EdgeTrace-command-diagnosis">
-              <div className="EdgeTrace-command-card-heading">
-                <span>Primary Diagnosis</span>
+                <article className="EdgeTrace-command-card EdgeTrace-command-diagnosis">
+                  <div className="EdgeTrace-command-card-heading">
+                    <span>Primary Diagnosis</span>
+                  </div>
+                  <h2>{humanDiagnosis(intelligence.primaryDiagnosis)}</h2>
+                  <p>{intelligence.primaryLeak.explanation}</p>
+                  <div className="EdgeTrace-command-two-metrics">
+                    <div><span>Est. Impact</span><strong className="is-red">{currency.format(-Math.abs(driverImpact))}</strong></div>
+                    <div><span>Confidence</span><strong>{diagnosisConfidence(intelligence.strategyHealthScore)}</strong></div>
+                  </div>
+                  <button onClick={inspectPrimarySegment}>View breakdown <ArrowRight size={15} aria-hidden="true" /></button>
+                </article>
               </div>
-              <h2>{humanDiagnosis(intelligence.primaryDiagnosis)}</h2>
-              <p>{intelligence.primaryLeak.explanation}</p>
-              <div className="EdgeTrace-command-two-metrics">
-                <div><span>Est. Impact</span><strong className="is-red">{currency.format(-Math.abs(driverImpact))}</strong></div>
-                <div><span>Confidence</span><strong>{diagnosisConfidence(intelligence.strategyHealthScore)}</strong></div>
-              </div>
-              <button onClick={inspectPrimarySegment}>View breakdown <ArrowRight size={15} aria-hidden="true" /></button>
-            </article>
+
+              <article className="EdgeTrace-command-card EdgeTrace-command-changed">
+                <div className="EdgeTrace-command-card-heading">
+                  <span>What Changed vs Prior Report</span>
+                </div>
+                <div className="EdgeTrace-command-change-grid">
+                  {[
+                    ["Net PnL", currency.format(metrics.netPnl), "21.4%"],
+                    ["Expectancy", currency.format(metrics.expectancy), "105%"],
+                    ["Win Rate", percent.format(metrics.winRate), "12.7%"],
+                    ["Profit Factor", formatProfitFactor(metrics.profitFactor), "40%"]
+                  ].map(([label, value, delta]) => (
+                    <div key={label}>
+                      <span>{label}</span>
+                      <strong>{value}</strong>
+                      <small><TrendingUp size={13} aria-hidden="true" /> {delta}</small>
+                    </div>
+                  ))}
+                </div>
+              </article>
+            </div>
 
             <article className="EdgeTrace-command-card EdgeTrace-command-metrics">
               <div className="EdgeTrace-command-card-heading">
@@ -765,26 +789,6 @@ export function DashboardPage({
                       </div>
                     ))}
                   </section>
-                ))}
-              </div>
-            </article>
-
-            <article className="EdgeTrace-command-card EdgeTrace-command-changed">
-              <div className="EdgeTrace-command-card-heading">
-                <span>What Changed vs Prior Report</span>
-              </div>
-              <div className="EdgeTrace-command-change-grid">
-                {[
-                  ["Net PnL", currency.format(metrics.netPnl), "21.4%"],
-                  ["Expectancy", currency.format(metrics.expectancy), "105%"],
-                  ["Win Rate", percent.format(metrics.winRate), "12.7%"],
-                  ["Profit Factor", formatProfitFactor(metrics.profitFactor), "40%"]
-                ].map(([label, value, delta]) => (
-                  <div key={label}>
-                    <span>{label}</span>
-                    <strong>{value}</strong>
-                    <small><TrendingUp size={13} aria-hidden="true" /> {delta}</small>
-                  </div>
                 ))}
               </div>
             </article>
