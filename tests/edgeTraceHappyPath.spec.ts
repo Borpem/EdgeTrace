@@ -63,17 +63,13 @@ test.describe.serial("EdgeTrace happy path", () => {
     const healthCard = page.getByTestId("dashboard-health-card");
     await expect(healthCard).toBeVisible();
     await expect(page.locator(".EdgeTrace-sidebar-user")).toHaveCount(0);
-    await expect(page.locator(".EdgeTrace-dashboard-account-control .EdgeTrace-account-utility-profile")).toBeVisible();
-    await expect(page.locator(".EdgeTrace-dashboard-title-group .EdgeTrace-report-selector")).toBeVisible();
-    await expect(page.locator(".EdgeTrace-report-selector-head .EdgeTrace-report-edit-button")).toBeVisible();
-    await expect(page.locator(".EdgeTrace-dashboard-report-meta .EdgeTrace-report-selector")).toHaveCount(0);
-    await expect(page.locator(".EdgeTrace-dashboard-report-meta .EdgeTrace-report-edit-button")).toHaveCount(0);
-    await expect(page.locator(".EdgeTrace-kpi-card", { hasText: "Win Rate" }).locator(".EdgeTrace-kpi-progress")).toHaveCount(0);
-    await expect(page.locator(".EdgeTrace-priority-list button > span")).toHaveCount(0);
-    await expect(page.locator(".EdgeTrace-overview-insight-list > div > span")).toHaveCount(0);
-    await expect(page.getByText("After-cost performance", { exact: true }).first()).toBeVisible();
-    await page.getByRole("button", { name: /Changes, Actions, and Context/i }).click();
-    await expect(page.getByText("Execution friction", { exact: true }).first()).toBeVisible();
+    await expect(page.locator(".EdgeTrace-command-nav .EdgeTrace-account-utility-profile")).toBeVisible();
+    await expect(page.locator(".EdgeTrace-command-nav").getByRole("button", { name: "Dashboard", exact: true })).toHaveClass(/active/);
+    await expect(page.getByText("Report Overview", { exact: true })).toBeVisible();
+    await expect(page.getByText("Strategy Health", { exact: true }).first()).toBeVisible();
+    await expect(page.getByText("Decision Metrics", { exact: true })).toBeVisible();
+    await expect(page.getByText("Recommended Actions (Next Steps)", { exact: true })).toBeVisible();
+    await expect(page.getByText("Supporting Context", { exact: true })).toBeVisible();
   });
 
   test("Reports and Compare flow", async ({ page, request }) => {

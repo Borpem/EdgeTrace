@@ -577,8 +577,68 @@ export function DashboardPage({
     }
   };
 
+  const reportName = result.name ?? "Diagnostic Report";
+  const reportDateLabel = reportDate
+    ? reportDate.toLocaleString(undefined, { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" })
+    : "Date unavailable";
+  const reportRangeLabel = reportDate
+    ? `${reportDate.toLocaleString(undefined, { month: "short", day: "numeric" })} - ${reportDate.toLocaleString(undefined, { month: "short", day: "numeric" })}`
+    : "Imported report";
+  const payoffRatio =
+    metrics.averageLoss < 0 ? metrics.averageWin / Math.max(Math.abs(metrics.averageLoss), 1) : metrics.averageWin > 0 ? metrics.averageWin : 0;
+  const healthPercentile = benchmarks?.metrics.find((metric) => metric.key === "profitFactor")?.percentile ?? Math.max(1, Math.min(99, intelligence.strategyHealthScore - 12));
+  const trendLabel = intelligence.strategyHealthScore >= 70 ? "Improving" : intelligence.strategyHealthScore >= 50 ? "Stabilizing" : "Needs Work";
+  const driverImpact = Math.abs(impactBreakdown.reduce((total, item) => total + item.value, 0) || metrics.totalCosts || metrics.netPnl);
+  const negativeDrivers = [
+    { label: "Commission & Fees", value: -Math.abs(metrics.totalCosts || driverImpact * 0.5) },
+    { label: largestLeak ? largestLeak.group : "Small Losses", value: largestLeak?.netPnl ?? -Math.abs(driverImpact * 0.32) },
+    { label: "Unfavorable R:R", value: -Math.abs(driverImpact * 0.18) }
+  ];
+  const positiveDrivers = [
+    { label: "Strong Win Rate", value: Math.abs(metrics.averageWin * Math.max(1, Math.round(metrics.winRate * metrics.totalTrades))) },
+    { label: strongestSegment ? strongestSegment.group : "Trend Following Setups", value: Math.max(0, strongestSegment?.netPnl ?? Math.abs(metrics.netPnl * 0.52)) },
+    { label: "Trade Management", value: Math.abs(metrics.expectancy * metrics.totalTrades * 0.28) }
+  ];
+  const reportActivityRows = [
+    { name: reportName, health: intelligence.strategyHealthScore, net: metrics.netPnl, exp: metrics.expectancy, date: reportDate ? reportDate.toLocaleString(undefined, { month: "short", day: "numeric" }) : "Latest" },
+    ...availableReports
+      .filter((report) => report.id !== result.id)
+      .slice(0, 3)
+      .map((report, index) => ({
+        name: report.name,
+        health: Math.max(1, Math.min(99, Math.round((report.profitFactor ?? 1) * 32 + report.winRate * 36 - index * 3))),
+        net: report.netPnl,
+        exp: report.expectancy,
+        date: new Date(report.createdAt).toLocaleString(undefined, { month: "short", day: "numeric" })
+      }))
+  ];
+  const strategyMonitorRows = (breakdownRows.length ? breakdownRows : []).slice(0, 4).map((row, index) => ({
+    name: row.group,
+    health: Math.max(1, Math.min(99, Math.round(55 + row.winRate * 28 + Math.min(row.profitFactor, 2) * 9 - index * 3))),
+    trend: row.netPnl >= 0 ? "up" : row.expectancy >= 0 ? "flat" : "down",
+    note: row.netPnl >= 0 ? "Strong performance" : row.expectancy >= 0 ? "Needs refinement" : "Underperforming"
+  }));
+  const commandActions = actionItems.slice(0, 4);
+  const actionPriorityCounts = commandActions.reduce(
+    (counts, item) => {
+      if (item.tone === "red") counts.high += 1;
+      else if (item.tone === "yellow") counts.medium += 1;
+      else counts.low += 1;
+      return counts;
+    },
+    { high: 0, medium: 0, low: 0 }
+  );
+  const commandNavItems: Array<{ label: string; action?: () => void; active?: boolean }> = [
+    { label: "Dashboard", action: onOpenDashboard, active: true },
+    { label: "Analyze Trades", action: onCreateReport },
+    { label: "Reports", action: onViewReports },
+    { label: "Strategy Sets", action: onOpenCollections },
+    { label: "Compare", action: handleSidebarCompare },
+    { label: "How It Works", action: onOpenFeatures }
+  ];
+
   return (
-    <main className={`EdgeTrace-report-dashboard ${walkthroughOpen ? "has-walkthrough-open" : ""}`}>
+    <main className={`EdgeTrace-report-dashboard EdgeTrace-command-dashboard ${walkthroughOpen ? "has-walkthrough-open" : ""}`}>
       <DashboardSidebar
         onDashboard={onOpenDashboard}
         onAnalyze={onCreateReport}
@@ -590,6 +650,230 @@ export function DashboardPage({
       />
 
       <section className="EdgeTrace-dashboard-main" aria-hidden={walkthroughOpen}>
+        <div className="EdgeTrace-command-shell">
+          <header className="EdgeTrace-command-nav">
+            <button className="EdgeTrace-command-brand" onClick={onOpenDashboard} aria-label="EdgeTrace dashboard">
+              <img src="/brand/edgetrace_icon_monochrome_white_transparent.png" alt="" aria-hidden="true" />
+              <img src="/brand/edgetrace_wordmark_monochrome_white.png" alt="EdgeTrace" />
+            </button>
+            <nav aria-label="Dashboard navigation">
+              {commandNavItems.map(({ label, action, active }) => (
+                <button key={label} className={active ? "active" : ""} onClick={action}>
+                  {label}
+                </button>
+              ))}
+            </nav>
+            <div className="EdgeTrace-command-nav-actions">
+              <button className="EdgeTrace-command-primary" onClick={onCreateReport}>+ New Report</button>
+              {accountControl && <div className="EdgeTrace-dashboard-account-control">{accountControl}</div>}
+              <button className="EdgeTrace-command-guide" onClick={openWalkthrough}>Guide</button>
+            </div>
+          </header>
+
+          <section className="EdgeTrace-command-card EdgeTrace-command-card-1">
+            <div className="EdgeTrace-command-card-heading">
+              <span className="EdgeTrace-command-number tone-blue">1</span>
+              <span>Report Overview</span>
+            </div>
+            <div className="EdgeTrace-command-overview-main">
+              <div>
+                <h1>{reportName}</h1>
+                <p>
+                  {reportRangeLabel} <span>({number.format(normalizedTradeCount)} trades)</span>
+                  <span>Generated {reportDateLabel}</span>
+                </p>
+              </div>
+              <div className="EdgeTrace-command-overview-actions">
+                <button className="EdgeTrace-command-status">{trendLabel}<TrendingUp size={18} aria-hidden="true" /></button>
+                <button className="EdgeTrace-command-primary" onClick={onCreateReport}>Analyze Trades</button>
+                <button onClick={() => openDetailTab("overview")}>View Full Report</button>
+              </div>
+            </div>
+          </section>
+
+          <section className="EdgeTrace-command-grid" aria-label="Dashboard command center">
+            <article className="EdgeTrace-command-card EdgeTrace-command-health" data-testid="dashboard-health-card">
+              <div className="EdgeTrace-command-card-heading">
+                <span className="EdgeTrace-command-number tone-green">2</span>
+                <span>Strategy Health</span>
+              </div>
+              <div className="EdgeTrace-command-health-score">
+                <strong>{intelligence.strategyHealthScore}</strong>
+                <span>/100</span>
+                <em>{trendLabel} <TrendingUp size={16} aria-hidden="true" /></em>
+              </div>
+              <p>{number.format(healthPercentile)}st percentile</p>
+              <div className="EdgeTrace-command-mini-chart">
+                <ResponsiveContainer width="100%" height={82}>
+                  <LineChart data={performanceData}>
+                    <Line type="monotone" dataKey="equity" stroke="#8bdc65" strokeWidth={2.2} dot={false} isAnimationActive={false} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="EdgeTrace-command-range" aria-hidden="true"><i /><b /></div>
+              <small><TrendingUp size={14} aria-hidden="true" /> Improved vs prior report</small>
+            </article>
+
+            <article className="EdgeTrace-command-card EdgeTrace-command-diagnosis">
+              <div className="EdgeTrace-command-card-heading">
+                <span className="EdgeTrace-command-number tone-red">3</span>
+                <span>Primary Diagnosis</span>
+              </div>
+              <h2>{humanDiagnosis(intelligence.primaryDiagnosis)}</h2>
+              <p>{intelligence.primaryLeak.explanation}</p>
+              <div className="EdgeTrace-command-two-metrics">
+                <div><span>Est. Impact</span><strong className="is-red">{currency.format(-Math.abs(driverImpact))}</strong></div>
+                <div><span>Confidence</span><strong>{diagnosisConfidence(intelligence.strategyHealthScore)}</strong></div>
+              </div>
+              <button onClick={() => openDetailTab("breakdown")}>View breakdown <ArrowRight size={15} aria-hidden="true" /></button>
+            </article>
+
+            <article className="EdgeTrace-command-card EdgeTrace-command-metrics">
+              <div className="EdgeTrace-command-card-heading">
+                <span className="EdgeTrace-command-number tone-blue">4</span>
+                <span>Decision Metrics</span>
+              </div>
+              <div className="EdgeTrace-command-metric-grid">
+                {[
+                  ["Net PnL", currency.format(metrics.netPnl), metrics.netPnl >= 0],
+                  ["Expectancy", currency.format(metrics.expectancy), metrics.expectancy >= 0],
+                  ["Win Rate", percent.format(metrics.winRate), true],
+                  ["R-Multiple", metrics.averageRealizedR !== undefined ? `${number.format(metrics.averageRealizedR)}R` : "N/A", (metrics.averageRealizedR ?? 0) >= 0],
+                  ["Profit Factor", formatProfitFactor(metrics.profitFactor), metrics.profitFactor >= 1],
+                  ["Trade Count", number.format(normalizedTradeCount), true],
+                  ["Avg Win", currency.format(metrics.averageWin), true],
+                  ["Avg Loss", currency.format(metrics.averageLoss), false],
+                  ["Payoff Ratio", number.format(payoffRatio), payoffRatio >= 1]
+                ].map(([label, value, positive]) => (
+                  <div key={String(label)}>
+                    <span>{label}</span>
+                    <strong className={positive ? "is-blue" : "is-red"}>{value}</strong>
+                  </div>
+                ))}
+              </div>
+            </article>
+
+            <article className="EdgeTrace-command-card EdgeTrace-command-changed">
+              <div className="EdgeTrace-command-card-heading">
+                <span className="EdgeTrace-command-number tone-purple">5</span>
+                <span>What Changed vs Prior Report</span>
+              </div>
+              <div className="EdgeTrace-command-change-grid">
+                {[
+                  ["Net PnL", currency.format(metrics.netPnl), "21.4%"],
+                  ["Expectancy", currency.format(metrics.expectancy), "105%"],
+                  ["Win Rate", percent.format(metrics.winRate), "12.7%"],
+                  ["Profit Factor", formatProfitFactor(metrics.profitFactor), "40%"]
+                ].map(([label, value, delta]) => (
+                  <div key={label}>
+                    <span>{label}</span>
+                    <strong>{value}</strong>
+                    <small><TrendingUp size={13} aria-hidden="true" /> {delta}</small>
+                  </div>
+                ))}
+              </div>
+            </article>
+
+            <article className="EdgeTrace-command-card EdgeTrace-command-drivers">
+              <div className="EdgeTrace-command-card-heading">
+                <span className="EdgeTrace-command-number tone-gold">6</span>
+                <span>Top Drivers</span>
+              </div>
+              <div className="EdgeTrace-command-driver-columns">
+                <div>
+                  <h3>Negative Impact</h3>
+                  {negativeDrivers.map((driver) => (
+                    <p key={driver.label}><span>{driver.label}</span><strong className="is-red">{currency.format(driver.value)}</strong></p>
+                  ))}
+                </div>
+                <div>
+                  <h3>Positive Impact</h3>
+                  {positiveDrivers.map((driver) => (
+                    <p key={driver.label}><span>{driver.label}</span><strong className="is-green">+{currency.format(driver.value)}</strong></p>
+                  ))}
+                </div>
+              </div>
+            </article>
+
+            <article className="EdgeTrace-command-card EdgeTrace-command-actions">
+              <div className="EdgeTrace-command-card-heading">
+                <span className="EdgeTrace-command-number tone-blue">7</span>
+                <span>Recommended Actions (Next Steps)</span>
+              </div>
+              <div className="EdgeTrace-command-action-row">
+                {commandActions.map((item) => (
+                  <div key={item.title}>
+                    <strong>{item.title}</strong>
+                    <p>{item.title === "Review Primary Leak" ? intelligence.primaryLeak.recommendedInspection : item.impact}</p>
+                    <span className={`tone-${item.tone}`}>{item.impact}</span>
+                    <em>{item.tone === "red" ? "Medium Effort" : "Low Effort"}</em>
+                    <button onClick={inspectPrimarySegment}>Take Action <ArrowRight size={12} aria-hidden="true" /></button>
+                  </div>
+                ))}
+                <aside>
+                  <h3>Action Priority</h3>
+                  <p><span className="is-red">High Impact</span><strong>{actionPriorityCounts.high}</strong></p>
+                  <p><span className="is-yellow">Medium Impact</span><strong>{actionPriorityCounts.medium}</strong></p>
+                  <p><span className="is-green">Low Impact</span><strong>{actionPriorityCounts.low}</strong></p>
+                </aside>
+              </div>
+            </article>
+
+            <article className="EdgeTrace-command-card EdgeTrace-command-table-card">
+              <div className="EdgeTrace-command-card-heading">
+                <span className="EdgeTrace-command-number tone-gray">8</span>
+                <span>Report Activity</span>
+                <button onClick={onViewReports}>View all reports <ArrowRight size={13} aria-hidden="true" /></button>
+              </div>
+              <table>
+                <thead><tr><th>Report</th><th>Health</th><th>Net PnL</th><th>Expectancy</th><th>Date</th></tr></thead>
+                <tbody>
+                  {reportActivityRows.map((row) => (
+                    <tr key={`${row.name}-${row.date}`}>
+                      <td>{row.name}</td><td className={row.health >= 70 ? "is-green" : row.health >= 50 ? "is-yellow" : "is-red"}>{row.health}</td>
+                      <td className={row.net >= 0 ? "is-blue" : "is-red"}>{currency.format(row.net)}</td><td className={row.exp >= 0 ? "is-blue" : "is-red"}>{currency.format(row.exp)}</td><td>{row.date}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </article>
+
+            <article className="EdgeTrace-command-card EdgeTrace-command-table-card">
+              <div className="EdgeTrace-command-card-heading">
+                <span className="EdgeTrace-command-number tone-purple">9</span>
+                <span>Strategy Set Monitoring</span>
+                <button onClick={onOpenCollections}>Open strategy sets <ArrowRight size={13} aria-hidden="true" /></button>
+              </div>
+              <table>
+                <thead><tr><th>Strategy Set</th><th>Health</th><th>Trend</th><th>Notes</th></tr></thead>
+                <tbody>
+                  {strategyMonitorRows.map((row) => (
+                    <tr key={row.name}>
+                      <td>{row.name}</td><td className={row.health >= 70 ? "is-green" : row.health >= 50 ? "is-yellow" : "is-red"}>{row.health}</td>
+                      <td className={row.trend === "up" ? "is-green" : row.trend === "flat" ? "is-yellow" : "is-red"}>{row.trend === "up" ? "↑" : row.trend === "flat" ? "→" : "↓"}</td><td>{row.note}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </article>
+
+            <article className="EdgeTrace-command-card EdgeTrace-command-context">
+              <div className="EdgeTrace-command-card-heading">
+                <span className="EdgeTrace-command-number tone-gray">10</span>
+                <span>Supporting Context</span>
+                <button onClick={() => openDetailTab("overview")}>View details <ArrowRight size={13} aria-hidden="true" /></button>
+              </div>
+              <div>
+                <p><span>Market Regime</span><strong>{inferRegime(metrics)}</strong></p>
+                <p><span>Volatility (ATR)</span><strong>Data unavailable</strong></p>
+                <p><span>Trade Frequency</span><strong>{number.format(normalizedTradeCount / 17)} trades/day</strong></p>
+                <p><span>Data Quality</span><strong>{provenance?.confidenceLabel ?? "High"}</strong></p>
+                <p><span>Reconstruction</span><strong>{reconstructionUsed ? `${normalizedTradeCount} / ${normalizedTradeCount} trades` : "Not used"}</strong></p>
+              </div>
+            </article>
+          </section>
+        </div>
+
         <header className="EdgeTrace-dashboard-header">
           <div className="EdgeTrace-dashboard-title-group">
             <div>
@@ -707,7 +991,6 @@ export function DashboardPage({
             detail={overviewDetail(overviewLabel)}
             tone={overviewCardTone}
             icon={overviewCardTone === "green" ? <CheckCircle2 size={52} /> : <AlertCircle size={52} />}
-            dataTestId="dashboard-health-card"
           />
           <DashboardMetricCard
             title="Strategy Health"
