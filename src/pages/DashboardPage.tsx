@@ -683,12 +683,37 @@ export function DashboardPage({
               <span>Report Overview</span>
             </div>
             <div className="EdgeTrace-command-overview-main">
-              <div>
+              <div className="EdgeTrace-command-overview-copy">
                 <h1>{reportName}</h1>
                 <p>
                   {reportRangeLabel} <span>({number.format(normalizedTradeCount)} trades)</span>
                   <span>Generated {reportDateLabel}</span>
                 </p>
+                <div className="EdgeTrace-command-report-selector-wrap">
+                  <div className="EdgeTrace-command-report-selector-head">
+                    <label htmlFor="command-dashboard-report-select">Report</label>
+                    <button type="button" onClick={() => setIsEditingDetails(true)}>
+                      Edit details
+                    </button>
+                  </div>
+                  <select
+                    id="command-dashboard-report-select"
+                    value={result.id}
+                    disabled={reportsLoading}
+                    onChange={(event) => void handleReportSelect(event.target.value)}
+                    aria-label="Select dashboard report"
+                  >
+                    {!availableReports.some((report) => report.id === result.id) && (
+                      <option value={result.id}>{result.name ?? "Diagnostic Report"}</option>
+                    )}
+                    {availableReports.map((report) => (
+                      <option key={report.id} value={report.id}>
+                        {report.name}
+                      </option>
+                    ))}
+                  </select>
+                  {reportSelectorError && <small>{reportSelectorError}</small>}
+                </div>
               </div>
               <div className="EdgeTrace-command-overview-actions">
                 <button className="EdgeTrace-command-status">{trendLabel}<TrendingUp size={18} aria-hidden="true" /></button>

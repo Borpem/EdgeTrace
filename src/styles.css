@@ -4998,6 +4998,65 @@ body {
   font-size: 0.86rem;
 }
 
+.EdgeTrace-command-overview-copy {
+  min-width: 0;
+}
+
+.EdgeTrace-command-report-selector-wrap {
+  display: grid;
+  gap: 0.38rem;
+  width: min(100%, 30rem);
+  margin-top: 0.76rem;
+}
+
+.EdgeTrace-command-report-selector-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.EdgeTrace-command-report-selector-head label {
+  color: var(--command-text-muted);
+  font-size: 0.72rem;
+  font-weight: 760;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.EdgeTrace-command-report-selector-head button {
+  border: 0;
+  background: transparent;
+  color: var(--command-blue);
+  padding: 0;
+  font-size: 0.82rem;
+  font-weight: 680;
+}
+
+.EdgeTrace-command-report-selector-wrap select {
+  width: 100%;
+  min-height: 2.55rem;
+  border: 1px solid rgba(48, 91, 112, 0.8);
+  border-radius: 4px;
+  background: rgba(4, 12, 18, 0.9);
+  color: var(--command-text);
+  padding: 0 0.85rem;
+  font: inherit;
+  font-size: 0.94rem;
+  font-weight: 650;
+}
+
+.EdgeTrace-command-report-selector-wrap select:focus {
+  border-color: var(--command-blue);
+  box-shadow: 0 0 0 3px rgba(78, 196, 236, 0.16);
+  outline: none;
+}
+
+.EdgeTrace-command-report-selector-wrap small {
+  color: var(--command-red);
+  font-size: 0.78rem;
+}
+
 .EdgeTrace-command-overview-actions {
   display: flex;
   align-items: center;
