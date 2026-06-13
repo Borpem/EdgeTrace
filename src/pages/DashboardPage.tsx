@@ -586,14 +586,6 @@ export function DashboardPage({
   };
 
   const reportName = result.name ?? "Diagnostic Report";
-  const reportDateLabel = reportDate
-    ? reportDate.toLocaleString(undefined, { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" })
-    : "Date unavailable";
-  const reportRangeLabel = reportDate
-    ? `${reportDate.toLocaleString(undefined, { month: "short", day: "numeric" })} - ${reportDate.toLocaleString(undefined, { month: "short", day: "numeric" })}`
-    : "Imported report";
-  const payoffRatio =
-    metrics.averageLoss < 0 ? metrics.averageWin / Math.max(Math.abs(metrics.averageLoss), 1) : metrics.averageWin > 0 ? metrics.averageWin : 0;
   const healthTone = healthScoreTone(intelligence.strategyHealthScore);
   const healthTrendDelta =
     performanceData.length > 1
@@ -693,26 +685,12 @@ export function DashboardPage({
             </div>
           </header>
 
-          <aside className="EdgeTrace-command-side-note EdgeTrace-command-side-note-left" aria-hidden="true">
-            <span>Current Report</span>
-            <strong>{reportName}</strong>
-          </aside>
-          <aside className="EdgeTrace-command-side-note EdgeTrace-command-side-note-right" aria-hidden="true">
-            <span>Sample Size</span>
-            <strong>{number.format(normalizedTradeCount)} trades</strong>
-          </aside>
-
           <section className="EdgeTrace-command-card EdgeTrace-command-card-1">
             <div className="EdgeTrace-command-card-heading">
               <span>Report Overview</span>
             </div>
             <div className="EdgeTrace-command-overview-main">
               <div className="EdgeTrace-command-overview-copy">
-                <h1>{reportName}</h1>
-                <p>
-                  {reportRangeLabel} <span>({number.format(normalizedTradeCount)} trades)</span>
-                  <span>Generated {reportDateLabel}</span>
-                </p>
                 <div className="EdgeTrace-command-report-selector-wrap">
                   <div className="EdgeTrace-command-report-selector-head">
                     <label htmlFor="command-dashboard-report-select">Report</label>
@@ -741,105 +719,110 @@ export function DashboardPage({
               </div>
               <div className="EdgeTrace-command-overview-summary" aria-label="Report summary">
                 <div>
-                  <span>Edge Health</span>
-                  <strong className={`tone-${healthTone}`}>{intelligence.strategyHealthScore}/100</strong>
-                </div>
-                <div>
-                  <span>Primary Diagnosis</span>
-                  <strong>{humanDiagnosis(intelligence.primaryDiagnosis)}</strong>
-                </div>
-                <div>
                   <span>Net PnL</span>
                   <strong className={metrics.netPnl >= 0 ? "tone-green" : "tone-red"}>{currency.format(metrics.netPnl)}</strong>
                 </div>
                 <div>
-                  <span>Comparison</span>
-                  <strong>{priorReport ? priorReportName : "No prior report"}</strong>
+                  <span>Expectancy</span>
+                  <strong className={metrics.expectancy >= 0 ? "tone-green" : "tone-red"}>{currency.format(metrics.expectancy)}</strong>
+                </div>
+                <div>
+                  <span>Win Rate</span>
+                  <strong>{percent.format(metrics.winRate)}</strong>
+                </div>
+                <div>
+                  <span>Profit Factor</span>
+                  <strong>{formatProfitFactor(metrics.profitFactor)}</strong>
+                </div>
+                <div>
+                  <span>R-Multiple</span>
+                  <strong>{metrics.averageRealizedR !== undefined ? `${number.format(metrics.averageRealizedR)}R` : "N/A"}</strong>
+                </div>
+                <div>
+                  <span>Trades</span>
+                  <strong>{number.format(normalizedTradeCount)}</strong>
                 </div>
               </div>
             </div>
           </section>
 
           <section className="EdgeTrace-command-grid" aria-label="Dashboard command center">
-            <div className="EdgeTrace-command-top-left">
-              <div className="EdgeTrace-command-top-pair">
-                <article className="EdgeTrace-command-card EdgeTrace-command-health" data-testid="dashboard-health-card">
-                  <div className="EdgeTrace-command-card-heading">
-                    <span>Edge Health</span>
-                  </div>
-                  <div className={`EdgeTrace-command-health-score tone-${healthTone}`}>
-                    <strong>{intelligence.strategyHealthScore}</strong>
-                    <span>/100</span>
-                    <em>{trendLabel} {healthTrendDelta >= 0 ? <TrendingUp size={16} aria-hidden="true" /> : <TrendingDown size={16} aria-hidden="true" />}</em>
-                  </div>
-                  <p className="EdgeTrace-command-health-summary">{healthScoreCopy(intelligence.strategyHealthScore)}</p>
-                  <div className="EdgeTrace-command-mini-chart">
-                    <ResponsiveContainer width="100%" height={118}>
-                      <LineChart data={signedPerformanceData} margin={{ top: 8, right: 10, left: 6, bottom: 0 }}>
-                        <CartesianGrid stroke="#203241" strokeOpacity={0.42} vertical={false} />
-                        <XAxis
-                          dataKey="trade"
-                          type="number"
-                          domain={["dataMin", "dataMax"]}
-                          allowDecimals={false}
-                          interval="preserveStartEnd"
-                          stroke="#8393a4"
-                          tickLine={false}
-                          axisLine={{ stroke: "#243746", strokeOpacity: 0.72 }}
-                          tick={{ fontSize: 10 }}
-                        />
-                        <YAxis
-                          width={56}
-                          stroke="#8393a4"
-                          tickLine={false}
-                          axisLine={{ stroke: "#243746", strokeOpacity: 0.72 }}
-                          tick={{ fontSize: 10 }}
-                          tickFormatter={formatCompactAxisCurrency}
-                        />
-                        <ReferenceLine y={0} stroke="#6b7784" strokeOpacity={0.44} strokeDasharray="3 4" />
-                        <Tooltip cursor={{ stroke: "#5b6a76", strokeOpacity: 0.28 }} content={<PerformanceTrendTooltip />} />
-                        <Line
-                          type="linear"
-                          dataKey="positiveEquity"
-                          stroke="#73c98f"
-                          strokeWidth={2.2}
-                          dot={false}
-                          activeDot={{ r: 3, fill: "#73c98f", stroke: "#07111d", strokeWidth: 1.5 }}
-                          isAnimationActive={false}
-                          connectNulls={false}
-                        />
-                        <Line
-                          type="linear"
-                          dataKey="negativeEquity"
-                          stroke="#e65f73"
-                          strokeWidth={2.2}
-                          dot={false}
-                          activeDot={{ r: 3, fill: "#e65f73", stroke: "#07111d", strokeWidth: 1.5 }}
-                          isAnimationActive={false}
-                          connectNulls={false}
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                  <small className={`tone-${healthTrendDelta >= 0 ? "green" : "red"}`}>
-                    {healthTrendDelta >= 0 ? <TrendingUp size={14} aria-hidden="true" /> : <TrendingDown size={14} aria-hidden="true" />}
-                    {healthTrendLabel}
-                  </small>
-                </article>
-
-                <article className="EdgeTrace-command-card EdgeTrace-command-diagnosis">
-                  <div className="EdgeTrace-command-card-heading">
-                    <span>Primary Diagnosis</span>
-                  </div>
-                  <h2>{humanDiagnosis(intelligence.primaryDiagnosis)}</h2>
-                  <p>{intelligence.primaryLeak.explanation}</p>
-                  <div className="EdgeTrace-command-two-metrics">
-                    <div><span>Est. Impact</span><strong className="is-red">{currency.format(-Math.abs(driverImpact))}</strong></div>
-                    <div><span>Diagnosis Strength</span><strong>{diagnosisStrength(intelligence.strategyHealthScore)}</strong></div>
-                  </div>
-                  <button onClick={inspectPrimarySegment}>View breakdown <ArrowRight size={15} aria-hidden="true" /></button>
-                </article>
+            <article className="EdgeTrace-command-card EdgeTrace-command-health" data-testid="dashboard-health-card">
+              <div className="EdgeTrace-command-card-heading">
+                <span>Edge Health</span>
               </div>
+              <div className={`EdgeTrace-command-health-score tone-${healthTone}`}>
+                <strong>{intelligence.strategyHealthScore}</strong>
+                <span>/100</span>
+                <em>{trendLabel} {healthTrendDelta >= 0 ? <TrendingUp size={16} aria-hidden="true" /> : <TrendingDown size={16} aria-hidden="true" />}</em>
+              </div>
+              <p className="EdgeTrace-command-health-summary">{healthScoreCopy(intelligence.strategyHealthScore)}</p>
+              <div className="EdgeTrace-command-mini-chart">
+                <ResponsiveContainer width="100%" height={118}>
+                  <LineChart data={signedPerformanceData} margin={{ top: 8, right: 10, left: 6, bottom: 0 }}>
+                    <CartesianGrid stroke="#203241" strokeOpacity={0.42} vertical={false} />
+                    <XAxis
+                      dataKey="trade"
+                      type="number"
+                      domain={["dataMin", "dataMax"]}
+                      allowDecimals={false}
+                      interval="preserveStartEnd"
+                      stroke="#8393a4"
+                      tickLine={false}
+                      axisLine={{ stroke: "#243746", strokeOpacity: 0.72 }}
+                      tick={{ fontSize: 10 }}
+                    />
+                    <YAxis
+                      width={56}
+                      stroke="#8393a4"
+                      tickLine={false}
+                      axisLine={{ stroke: "#243746", strokeOpacity: 0.72 }}
+                      tick={{ fontSize: 10 }}
+                      tickFormatter={formatCompactAxisCurrency}
+                    />
+                    <ReferenceLine y={0} stroke="#6b7784" strokeOpacity={0.44} strokeDasharray="3 4" />
+                    <Tooltip cursor={{ stroke: "#5b6a76", strokeOpacity: 0.28 }} content={<PerformanceTrendTooltip />} />
+                    <Line
+                      type="linear"
+                      dataKey="positiveEquity"
+                      stroke="#73c98f"
+                      strokeWidth={2.2}
+                      dot={false}
+                      activeDot={{ r: 3, fill: "#73c98f", stroke: "#07111d", strokeWidth: 1.5 }}
+                      isAnimationActive={false}
+                      connectNulls={false}
+                    />
+                    <Line
+                      type="linear"
+                      dataKey="negativeEquity"
+                      stroke="#e65f73"
+                      strokeWidth={2.2}
+                      dot={false}
+                      activeDot={{ r: 3, fill: "#e65f73", stroke: "#07111d", strokeWidth: 1.5 }}
+                      isAnimationActive={false}
+                      connectNulls={false}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+              <small className={`tone-${healthTrendDelta >= 0 ? "green" : "red"}`}>
+                {healthTrendDelta >= 0 ? <TrendingUp size={14} aria-hidden="true" /> : <TrendingDown size={14} aria-hidden="true" />}
+                {healthTrendLabel}
+              </small>
+            </article>
+
+            <article className="EdgeTrace-command-card EdgeTrace-command-diagnosis">
+              <div className="EdgeTrace-command-card-heading">
+                <span>Primary Diagnosis</span>
+              </div>
+              <h2>{humanDiagnosis(intelligence.primaryDiagnosis)}</h2>
+              <p>{intelligence.primaryLeak.explanation}</p>
+              <div className="EdgeTrace-command-two-metrics">
+                <div><span>Est. Impact</span><strong className="is-red">{currency.format(-Math.abs(driverImpact))}</strong></div>
+                <div><span>Diagnosis Strength</span><strong>{diagnosisStrength(intelligence.strategyHealthScore)}</strong></div>
+              </div>
+              <button onClick={inspectPrimarySegment}>View breakdown <ArrowRight size={15} aria-hidden="true" /></button>
+            </article>
 
             <article className="EdgeTrace-command-card EdgeTrace-command-changed">
               <div className="EdgeTrace-command-card-heading">
@@ -869,51 +852,6 @@ export function DashboardPage({
                   <span>Import another report or add this report to a strategy set to track changes over time.</span>
                 </div>
               )}
-            </article>
-            </div>
-
-            <article className="EdgeTrace-command-card EdgeTrace-command-metrics">
-              <div className="EdgeTrace-command-card-heading">
-                <span>Decision Metrics</span>
-              </div>
-              <div className="EdgeTrace-command-metric-groups">
-                {[
-                  {
-                    group: "Performance",
-                    values: [
-                      ["Net PnL", currency.format(metrics.netPnl), metrics.netPnl >= 0],
-                      ["Expectancy", currency.format(metrics.expectancy), metrics.expectancy >= 0],
-                      ["Profit Factor", formatProfitFactor(metrics.profitFactor), metrics.profitFactor >= 1]
-                    ]
-                  },
-                  {
-                    group: "Execution",
-                    values: [
-                      ["Win Rate", percent.format(metrics.winRate), true],
-                      ["R-Multiple", metrics.averageRealizedR !== undefined ? `${number.format(metrics.averageRealizedR)}R` : "N/A", (metrics.averageRealizedR ?? 0) >= 0],
-                      ["Payoff Ratio", number.format(payoffRatio), payoffRatio >= 1]
-                    ]
-                  },
-                  {
-                    group: "Trade Profile",
-                    values: [
-                      ["Trade Count", number.format(normalizedTradeCount), true],
-                      ["Avg Win", currency.format(metrics.averageWin), true],
-                      ["Avg Loss", currency.format(metrics.averageLoss), false]
-                    ]
-                  }
-                ].map((section) => (
-                  <section key={section.group}>
-                    <h3>{section.group}</h3>
-                    {section.values.map(([label, value, positive]) => (
-                      <div key={String(label)}>
-                        <span>{label}</span>
-                        <strong className={positive ? "is-blue" : "is-red"}>{value}</strong>
-                      </div>
-                    ))}
-                  </section>
-                ))}
-              </div>
             </article>
 
             <article className="EdgeTrace-command-card EdgeTrace-command-drivers">

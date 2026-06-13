@@ -67,7 +67,8 @@ test.describe.serial("EdgeTrace happy path", () => {
     await expect(page.locator(".EdgeTrace-command-nav").getByRole("button", { name: "Dashboard", exact: true })).toHaveClass(/active/);
     await expect(page.getByText("Report Overview", { exact: true })).toBeVisible();
     await expect(page.getByText("Edge Health", { exact: true }).first()).toBeVisible();
-    await expect(page.getByText("Decision Metrics", { exact: true })).toBeVisible();
+    await expect(page.getByText("Net PnL", { exact: true }).first()).toBeVisible();
+    await expect(page.getByText("Profit Factor", { exact: true }).first()).toBeVisible();
     await expect(page.getByText("Recommended Actions (Next Steps)", { exact: true })).toBeVisible();
     await expect(page.getByText("Supporting Context", { exact: true })).toBeVisible();
   });
