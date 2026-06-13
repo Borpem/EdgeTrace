@@ -4758,9 +4758,9 @@ body {
   display: block;
   min-height: 100vh;
   background:
-    radial-gradient(circle at 78% 18%, rgba(73, 183, 217, 0.09), transparent 30rem),
+    radial-gradient(circle at 78% 18%, rgba(73, 183, 217, 0.13), transparent 32rem),
     linear-gradient(180deg, #040a0f 0%, #061018 48%, #040a0f 100%);
-  padding: 0.55rem;
+  padding: 0.4rem;
 }
 
 .EdgeTrace-command-dashboard > .EdgeTrace-dashboard-sidebar,
@@ -4774,19 +4774,19 @@ body {
 }
 
 .EdgeTrace-command-dashboard > .EdgeTrace-dashboard-main {
-  width: min(100%, 1720px);
+  width: min(100%, 1880px);
   margin: 0 auto;
   padding: 0;
 }
 
 .EdgeTrace-command-shell {
-  border: 1px solid rgba(136, 158, 180, 0.22);
+  border: 1px solid rgba(136, 158, 180, 0.28);
   border-radius: 10px;
   background:
-    radial-gradient(circle at 18% 0%, rgba(73, 183, 217, 0.055), transparent 25rem),
-    radial-gradient(circle at 88% 2%, rgba(111, 199, 138, 0.035), transparent 30rem),
-    rgba(6, 16, 24, 0.96);
-  box-shadow: 0 28px 80px -62px rgba(73, 183, 217, 0.34);
+    radial-gradient(circle at 18% 0%, rgba(73, 183, 217, 0.085), transparent 25rem),
+    radial-gradient(circle at 88% 2%, rgba(111, 199, 138, 0.055), transparent 30rem),
+    rgba(7, 18, 28, 0.98);
+  box-shadow: 0 28px 80px -58px rgba(73, 183, 217, 0.42);
   color: #f4f8fb;
   padding: 0.82rem;
 }
@@ -4845,7 +4845,7 @@ body {
   bottom: -0.58rem;
   height: 2px;
   border-radius: 999px;
-  background: #49b7d9;
+  background: #58c8e8;
 }
 
 .EdgeTrace-command-nav-actions {
@@ -4856,10 +4856,10 @@ body {
 }
 
 .EdgeTrace-command-primary {
-  border: 1px solid rgba(73, 183, 217, 0.45);
+  border: 1px solid rgba(88, 200, 232, 0.58);
   border-radius: 3px;
-  background: linear-gradient(135deg, #103247 0%, #163f58 100%);
-  color: #e8f7fb;
+  background: linear-gradient(135deg, #12445f 0%, #1a5f7b 100%);
+  color: #f2fbfd;
   padding: 0.72rem 1rem;
   font-size: 0.9rem;
   font-weight: 680;
@@ -4893,10 +4893,10 @@ body {
 .EdgeTrace-command-card {
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(136, 158, 180, 0.2);
+  border: 1px solid rgba(136, 158, 180, 0.27);
   border-radius: 8px;
   background:
-    linear-gradient(135deg, rgba(12, 26, 38, 0.9), rgba(6, 16, 24, 0.94)),
+    linear-gradient(135deg, rgba(13, 31, 45, 0.94), rgba(7, 18, 28, 0.96)),
     #07111a;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
 }
@@ -4906,7 +4906,7 @@ body {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(circle at 12% 0%, rgba(73, 183, 217, 0.045), transparent 19rem);
+  background: radial-gradient(circle at 12% 0%, rgba(73, 183, 217, 0.07), transparent 19rem);
 }
 
 .EdgeTrace-command-card > * {
@@ -4918,7 +4918,7 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #9fb7c9;
+  color: #71d1ec;
   font-size: 0.86rem;
   font-weight: 720;
   letter-spacing: 0.06em;
@@ -4974,7 +4974,7 @@ body {
 .EdgeTrace-command-overview-actions > button:not(.EdgeTrace-command-primary),
 .EdgeTrace-command-diagnosis > button,
 .EdgeTrace-command-action-row button {
-  border: 1px solid rgba(91, 126, 158, 0.45);
+  border: 1px solid rgba(136, 158, 180, 0.4);
   border-radius: 4px;
   background: rgba(9, 20, 31, 0.82);
   color: #f4f8fb;
@@ -4989,7 +4989,7 @@ body {
   gap: 0.7rem;
   min-width: 10.2rem;
   justify-content: center;
-  color: #8fcfe0 !important;
+  color: #7bdbf1 !important;
 }
 
 .EdgeTrace-command-grid {
@@ -5005,12 +5005,12 @@ body {
 
 .EdgeTrace-command-health {
   grid-column: span 4;
-  border-color: rgba(111, 199, 138, 0.22);
+  border-color: rgba(120, 217, 146, 0.34);
 }
 
 .EdgeTrace-command-diagnosis {
   grid-column: span 4;
-  border-color: rgba(244, 91, 114, 0.24);
+  border-color: rgba(255, 99, 120, 0.34);
 }
 
 .EdgeTrace-command-metrics {
@@ -5039,7 +5039,7 @@ body {
 }
 
 .EdgeTrace-command-health-score strong {
-  color: #6fc78a;
+  color: #78d992;
   font-size: 4rem;
   font-weight: 560;
   line-height: 1;
@@ -5055,7 +5055,7 @@ body {
   align-items: center;
   gap: 0.35rem;
   margin-left: auto;
-  color: #6fc78a;
+  color: #78d992;
   font-style: normal;
   font-size: 1rem;
 }
@@ -5094,7 +5094,7 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  color: rgba(244, 248, 251, 0.78);
+  color: rgba(244, 248, 251, 0.86);
   font-size: 0.83rem;
 }
 
@@ -5150,7 +5150,7 @@ body {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   margin-top: 1rem;
-  border: 1px solid rgba(91, 126, 158, 0.24);
+  border: 1px solid rgba(136, 158, 180, 0.28);
   border-radius: 4px;
 }
 
@@ -5184,7 +5184,7 @@ body {
 .EdgeTrace-command-change-grid strong {
   display: block;
   margin-top: 0.3rem;
-  color: #49b7d9;
+  color: #58d2ee;
   font-size: 1.2rem;
   font-weight: 560;
 }
@@ -5198,7 +5198,7 @@ body {
   align-items: center;
   gap: 0.25rem;
   margin-top: 0.35rem;
-  color: #6fc78a;
+  color: #78d992;
   font-size: 0.8rem;
 }
 
@@ -5218,8 +5218,8 @@ body {
   text-transform: uppercase;
 }
 
-.EdgeTrace-command-driver-columns > div:first-child h3 { color: #f45b72; }
-.EdgeTrace-command-driver-columns > div:last-child h3 { color: #6fc78a; }
+.EdgeTrace-command-driver-columns > div:first-child h3 { color: #ff6378; }
+.EdgeTrace-command-driver-columns > div:last-child h3 { color: #78d992; }
 
 .EdgeTrace-command-driver-columns p,
 .EdgeTrace-command-context p,
@@ -5242,7 +5242,7 @@ body {
 
 .EdgeTrace-command-action-row > div,
 .EdgeTrace-command-action-row aside {
-  border: 1px solid rgba(91, 126, 158, 0.28);
+  border: 1px solid rgba(136, 158, 180, 0.3);
   border-radius: 4px;
   background: rgba(5, 15, 24, 0.38);
   padding: 0.78rem;
@@ -5263,15 +5263,13 @@ body {
   line-height: 1.32;
 }
 
-.EdgeTrace-command-action-row span,
-.EdgeTrace-command-action-row em {
+.EdgeTrace-command-action-row span {
   display: inline-flex;
   margin-right: 0.35rem;
   border: 1px solid currentColor;
   border-radius: 3px;
   padding: 0.17rem 0.35rem;
   font-size: 0.72rem;
-  font-style: normal;
 }
 
 .EdgeTrace-command-action-row button {
@@ -5322,13 +5320,13 @@ body {
   font-weight: 560;
 }
 
-.EdgeTrace-command-dashboard .is-blue { color: #49b7d9 !important; }
-.EdgeTrace-command-dashboard .is-red { color: #f45b72 !important; }
-.EdgeTrace-command-dashboard .is-green { color: #6fc78a !important; }
-.EdgeTrace-command-dashboard .is-yellow { color: #e2b84f !important; }
-.EdgeTrace-command-dashboard .tone-red { color: #f45b72; }
-.EdgeTrace-command-dashboard .tone-yellow { color: #e2b84f; }
-.EdgeTrace-command-dashboard .tone-green { color: #6fc78a; }
+.EdgeTrace-command-dashboard .is-blue { color: #58d2ee !important; }
+.EdgeTrace-command-dashboard .is-red { color: #ff6378 !important; }
+.EdgeTrace-command-dashboard .is-green { color: #78d992 !important; }
+.EdgeTrace-command-dashboard .is-yellow { color: #ecc65a !important; }
+.EdgeTrace-command-dashboard .tone-red { color: #ff6378; }
+.EdgeTrace-command-dashboard .tone-yellow { color: #ecc65a; }
+.EdgeTrace-command-dashboard .tone-green { color: #78d992; }
 .EdgeTrace-command-dashboard .tone-gray { color: #9daab5; }
 
 @media (max-width: 1180px) {

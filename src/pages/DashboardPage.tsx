@@ -799,7 +799,6 @@ export function DashboardPage({
                     <strong>{item.title}</strong>
                     <p>{item.title === "Review Primary Leak" ? intelligence.primaryLeak.recommendedInspection : item.impact}</p>
                     <span className={`tone-${item.tone}`}>{item.impact}</span>
-                    <em>{item.tone === "red" ? "Medium Effort" : "Low Effort"}</em>
                     <button onClick={inspectPrimarySegment}>Take Action <ArrowRight size={12} aria-hidden="true" /></button>
                   </div>
                 ))}
