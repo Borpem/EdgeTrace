@@ -814,7 +814,7 @@ export function DashboardPage({
                   <p>{intelligence.primaryLeak.explanation}</p>
                   <div className="EdgeTrace-command-two-metrics">
                     <div><span>Est. Impact</span><strong className="is-red">{currency.format(-Math.abs(driverImpact))}</strong></div>
-                    <div><span>Confidence</span><strong>{diagnosisConfidence(intelligence.strategyHealthScore)}</strong></div>
+                    <div><span>Diagnosis Strength</span><strong>{diagnosisStrength(intelligence.strategyHealthScore)}</strong></div>
                   </div>
                   <button onClick={inspectPrimarySegment}>View breakdown <ArrowRight size={15} aria-hidden="true" /></button>
                 </article>
@@ -1755,7 +1755,7 @@ function DiagnosisPanel({
           <p>{intelligence.primaryLeak.explanation}</p>
           <div className="EdgeTrace-diagnosis-foot">
             <MetricMini label="Est. Impact" value={currency.format(-Math.abs(totalImpact || metrics.totalCosts))} tone="red" />
-            <MetricMini label="Confidence" value={diagnosisConfidence(intelligence.strategyHealthScore)} tone="white" />
+            <MetricMini label="Diagnosis Strength" value={diagnosisStrength(intelligence.strategyHealthScore)} tone="white" />
           </div>
         </div>
 
@@ -3422,10 +3422,10 @@ function diagnosisToneClass(diagnosis: ReturnType<typeof buildReportIntelligence
   return "text-loss";
 }
 
-function diagnosisConfidence(score: number) {
-  if (score < 40) return "High";
-  if (score < 70) return "Medium";
-  return "Stable";
+function diagnosisStrength(score: number) {
+  if (score < 40) return "Strong";
+  if (score < 70) return "Moderate";
+  return "Light";
 }
 
 function inferRegime(metrics: DiagnosticsResult["metrics"]) {
