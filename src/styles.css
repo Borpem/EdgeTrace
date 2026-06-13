@@ -5169,11 +5169,18 @@ body {
 }
 
 .EdgeTrace-command-diagnosis {
+  display: grid;
   grid-column: span 4;
+  grid-template-columns: minmax(0, 1fr) minmax(10.75rem, 0.55fr);
+  column-gap: 1.4rem;
   border-color: rgba(72, 104, 121, 0.7);
   background:
     linear-gradient(135deg, rgba(18, 31, 40, 0.98), rgba(9, 15, 22, 0.98)),
     var(--command-bg-card-elevated);
+}
+
+.EdgeTrace-command-diagnosis .EdgeTrace-command-card-heading {
+  grid-column: 1 / -1;
 }
 
 .EdgeTrace-command-changed {
@@ -5286,7 +5293,9 @@ body {
 }
 
 .EdgeTrace-command-diagnosis h2 {
-  margin: 1.08rem 0 0;
+  align-self: end;
+  grid-column: 1;
+  margin: 0.85rem 0 0;
   color: var(--command-text);
   font-size: 2rem;
   font-weight: 520;
@@ -5294,8 +5303,9 @@ body {
 }
 
 .EdgeTrace-command-diagnosis p {
+  grid-column: 1;
   max-width: 24rem;
-  margin: 0.85rem 0 0;
+  margin: 0.75rem 0 0;
   color: var(--command-text-secondary);
   text-align: left;
   line-height: 1.45;
@@ -5303,10 +5313,15 @@ body {
 
 .EdgeTrace-command-two-metrics {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.2rem;
-  margin: 1.35rem 0 0.9rem;
-  max-width: 19rem;
+  grid-column: 2;
+  grid-row: 2 / span 3;
+  grid-template-columns: 1fr;
+  align-self: center;
+  gap: 0.85rem;
+  margin: 0;
+  max-width: none;
+  border-left: 1px solid rgba(36, 53, 66, 0.72);
+  padding-left: 1.1rem;
 }
 
 .EdgeTrace-command-two-metrics span {
@@ -5325,11 +5340,12 @@ body {
 
 .EdgeTrace-command-diagnosis > button {
   display: flex;
+  grid-column: 1;
   width: min(100%, 17.5rem);
   align-items: center;
   justify-content: center;
   gap: 0.55rem;
-  margin: 0;
+  margin: 1.25rem 0 0;
 }
 
 .EdgeTrace-command-changed .EdgeTrace-command-change-grid,
@@ -5747,6 +5763,20 @@ body {
   .EdgeTrace-command-change-grid,
   .EdgeTrace-command-overview-summary {
     grid-template-columns: 1fr;
+  }
+
+  .EdgeTrace-command-diagnosis {
+    grid-template-columns: 1fr;
+  }
+
+  .EdgeTrace-command-two-metrics {
+    grid-column: 1;
+    grid-row: auto;
+    grid-template-columns: 1fr 1fr;
+    border-left: 0;
+    border-top: 1px solid rgba(36, 53, 66, 0.72);
+    padding-top: 0.9rem;
+    padding-left: 0;
   }
 
   .EdgeTrace-command-metric-grid div,
