@@ -5170,10 +5170,24 @@ body {
 }
 
 .EdgeTrace-command-health-score strong {
-  color: var(--command-green);
   font-size: 4.35rem;
   font-weight: 520;
   line-height: 1;
+}
+
+.EdgeTrace-command-health-score.tone-green strong,
+.EdgeTrace-command-health-score.tone-green em {
+  color: var(--command-green);
+}
+
+.EdgeTrace-command-health-score.tone-yellow strong,
+.EdgeTrace-command-health-score.tone-yellow em {
+  color: var(--command-yellow);
+}
+
+.EdgeTrace-command-health-score.tone-red strong,
+.EdgeTrace-command-health-score.tone-red em {
+  color: var(--command-red);
 }
 
 .EdgeTrace-command-health-score span {
@@ -5186,7 +5200,6 @@ body {
   align-items: center;
   gap: 0.35rem;
   margin-left: auto;
-  color: var(--command-green);
   font-style: normal;
   font-size: 1rem;
 }
@@ -5197,33 +5210,13 @@ body {
 }
 
 .EdgeTrace-command-mini-chart {
-  height: 5rem;
-  margin-top: 0.8rem;
+  height: 7.4rem;
+  margin-top: 0.85rem;
 }
 
 .EdgeTrace-command-mini-chart .recharts-tooltip-wrapper {
   z-index: 4;
 }
-
-.EdgeTrace-command-range {
-  position: relative;
-  height: 0.2rem;
-  margin: 0.35rem 0 0.7rem;
-  background: rgba(201, 215, 228, 0.28);
-}
-
-.EdgeTrace-command-range i,
-.EdgeTrace-command-range b {
-  position: absolute;
-  top: 50%;
-  width: 0.36rem;
-  height: 0.36rem;
-  border-radius: 999px;
-  transform: translateY(-50%);
-}
-
-.EdgeTrace-command-range i { left: 50%; background: var(--command-yellow); }
-.EdgeTrace-command-range b { right: 0; background: var(--command-neutral); }
 
 .EdgeTrace-command-health small {
   display: inline-flex;
@@ -5231,6 +5224,14 @@ body {
   gap: 0.35rem;
   color: var(--command-text-secondary);
   font-size: 0.83rem;
+}
+
+.EdgeTrace-command-health small.tone-green {
+  color: var(--command-green);
+}
+
+.EdgeTrace-command-health small.tone-red {
+  color: var(--command-red);
 }
 
 .EdgeTrace-command-diagnosis h2 {

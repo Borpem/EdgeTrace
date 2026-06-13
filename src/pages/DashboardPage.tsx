@@ -594,7 +594,12 @@ export function DashboardPage({
     : "Imported report";
   const payoffRatio =
     metrics.averageLoss < 0 ? metrics.averageWin / Math.max(Math.abs(metrics.averageLoss), 1) : metrics.averageWin > 0 ? metrics.averageWin : 0;
-  const healthPercentile = benchmarks?.metrics.find((metric) => metric.key === "profitFactor")?.percentile ?? Math.max(1, Math.min(99, intelligence.strategyHealthScore - 12));
+  const healthTone = healthScoreTone(intelligence.strategyHealthScore);
+  const healthTrendDelta =
+    performanceData.length > 1
+      ? (performanceData[performanceData.length - 1]?.equity ?? 0) - (performanceData[0]?.equity ?? 0)
+      : metrics.netPnl;
+  const healthTrendLabel = healthTrendDelta >= 0 ? "Equity curve rising" : "Equity curve falling";
   const trendLabel = intelligence.strategyHealthScore >= 70 ? "Improving" : intelligence.strategyHealthScore >= 50 ? "Stabilizing" : "Needs Work";
   const driverImpact = Math.abs(impactBreakdown.reduce((total, item) => total + item.value, 0) || metrics.totalCosts || metrics.netPnl);
   const negativeDrivers = [
@@ -730,16 +735,36 @@ export function DashboardPage({
                   <div className="EdgeTrace-command-card-heading">
                     <span>Strategy Health</span>
                   </div>
-                  <div className="EdgeTrace-command-health-score">
+                  <div className={`EdgeTrace-command-health-score tone-${healthTone}`}>
                     <strong>{intelligence.strategyHealthScore}</strong>
                     <span>/100</span>
-                    <em>{trendLabel} <TrendingUp size={16} aria-hidden="true" /></em>
+                    <em>{trendLabel} {healthTrendDelta >= 0 ? <TrendingUp size={16} aria-hidden="true" /> : <TrendingDown size={16} aria-hidden="true" />}</em>
                   </div>
-                  <p>{formatOrdinal(healthPercentile)} percentile</p>
+                  <p>Health band: {intelligence.healthBand}</p>
                   <div className="EdgeTrace-command-mini-chart">
-                    <ResponsiveContainer width="100%" height={82}>
-                      <LineChart data={signedPerformanceData}>
-                        <ReferenceLine y={0} stroke="#5b6a76" strokeOpacity={0.38} />
+                    <ResponsiveContainer width="100%" height={118}>
+                      <LineChart data={signedPerformanceData} margin={{ top: 8, right: 8, left: -6, bottom: 0 }}>
+                        <CartesianGrid stroke="#203241" strokeOpacity={0.42} vertical={false} />
+                        <XAxis
+                          dataKey="trade"
+                          type="number"
+                          domain={["dataMin", "dataMax"]}
+                          allowDecimals={false}
+                          interval="preserveStartEnd"
+                          stroke="#8393a4"
+                          tickLine={false}
+                          axisLine={{ stroke: "#243746", strokeOpacity: 0.72 }}
+                          tick={{ fontSize: 10 }}
+                        />
+                        <YAxis
+                          width={38}
+                          stroke="#8393a4"
+                          tickLine={false}
+                          axisLine={{ stroke: "#243746", strokeOpacity: 0.72 }}
+                          tick={{ fontSize: 10 }}
+                          tickFormatter={formatAxisCurrency}
+                        />
+                        <ReferenceLine y={0} stroke="#6b7784" strokeOpacity={0.44} strokeDasharray="3 4" />
                         <Tooltip cursor={{ stroke: "#5b6a76", strokeOpacity: 0.28 }} content={<PerformanceTrendTooltip />} />
                         <Line
                           type="linear"
@@ -764,8 +789,10 @@ export function DashboardPage({
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
-                  <div className="EdgeTrace-command-range" aria-hidden="true"><i /><b /></div>
-                  <small><TrendingUp size={14} aria-hidden="true" /> Improved vs prior report</small>
+                  <small className={`tone-${healthTrendDelta >= 0 ? "green" : "red"}`}>
+                    {healthTrendDelta >= 0 ? <TrendingUp size={14} aria-hidden="true" /> : <TrendingDown size={14} aria-hidden="true" />}
+                    {healthTrendLabel}
+                  </small>
                 </article>
 
                 <article className="EdgeTrace-command-card EdgeTrace-command-diagnosis">
