@@ -5206,7 +5206,9 @@ body {
 
 .EdgeTrace-command-health p {
   margin: 0.8rem 0 0;
-  color: var(--command-text);
+  max-width: 26rem;
+  color: var(--command-text-secondary);
+  line-height: 1.4;
 }
 
 .EdgeTrace-command-mini-chart {

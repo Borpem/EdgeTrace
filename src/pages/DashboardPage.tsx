@@ -740,10 +740,10 @@ export function DashboardPage({
                     <span>/100</span>
                     <em>{trendLabel} {healthTrendDelta >= 0 ? <TrendingUp size={16} aria-hidden="true" /> : <TrendingDown size={16} aria-hidden="true" />}</em>
                   </div>
-                  <p>Health band: {intelligence.healthBand}</p>
+                  <p className="EdgeTrace-command-health-summary">{healthScoreCopy(intelligence.strategyHealthScore)}</p>
                   <div className="EdgeTrace-command-mini-chart">
                     <ResponsiveContainer width="100%" height={118}>
-                      <LineChart data={signedPerformanceData} margin={{ top: 8, right: 8, left: -6, bottom: 0 }}>
+                      <LineChart data={signedPerformanceData} margin={{ top: 8, right: 10, left: 6, bottom: 0 }}>
                         <CartesianGrid stroke="#203241" strokeOpacity={0.42} vertical={false} />
                         <XAxis
                           dataKey="trade"
@@ -757,12 +757,12 @@ export function DashboardPage({
                           tick={{ fontSize: 10 }}
                         />
                         <YAxis
-                          width={38}
+                          width={56}
                           stroke="#8393a4"
                           tickLine={false}
                           axisLine={{ stroke: "#243746", strokeOpacity: 0.72 }}
                           tick={{ fontSize: 10 }}
-                          tickFormatter={formatAxisCurrency}
+                          tickFormatter={formatCompactAxisCurrency}
                         />
                         <ReferenceLine y={0} stroke="#6b7784" strokeOpacity={0.44} strokeDasharray="3 4" />
                         <Tooltip cursor={{ stroke: "#5b6a76", strokeOpacity: 0.28 }} content={<PerformanceTrendTooltip />} />
@@ -3498,6 +3498,15 @@ function formatAxisCurrency(value: unknown) {
   if (!Number.isFinite(numericValue)) return "";
   if (Math.abs(numericValue) >= 1000) return `$${number.format(numericValue / 1000)}K`;
   return currency.format(numericValue);
+}
+
+function formatCompactAxisCurrency(value: unknown) {
+  const numericValue = typeof value === "number" ? value : Number(value);
+  if (!Number.isFinite(numericValue)) return "";
+  const sign = numericValue < 0 ? "-" : "";
+  const absoluteValue = Math.abs(numericValue);
+  if (absoluteValue >= 1000) return `${sign}$${number.format(absoluteValue / 1000)}K`;
+  return `${sign}$${Math.round(absoluteValue)}`;
 }
 
 function formatTooltipCurrency(value: unknown) {
