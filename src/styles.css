@@ -4933,7 +4933,7 @@ body {
   z-index: 0;
   pointer-events: none;
   opacity: 0;
-  background-size: auto, 14px 14px;
+  background-size: auto, auto, 13px 13px, 13px 13px;
   mix-blend-mode: screen;
   transform: translate3d(-1%, -1%, 0);
   will-change: opacity, transform;
@@ -5044,14 +5044,19 @@ body {
 
 .EdgeTrace-command-diagnosis {
   grid-column: span 4;
-  border-color: rgba(56, 82, 100, 0.82);
+  border-color: rgba(230, 95, 115, 0.42);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.035),
+    inset 0 0 0 1px rgba(230, 95, 115, 0.04);
 }
 
 .EdgeTrace-command-diagnosis::after {
-  opacity: 0.34;
+  opacity: 0.58;
   background:
-    radial-gradient(circle at 22% 18%, rgba(230, 95, 115, 0.42), transparent 17rem),
-    radial-gradient(rgba(230, 95, 115, 0.2) 1px, transparent 1.5px);
+    linear-gradient(135deg, rgba(230, 95, 115, 0.34), rgba(230, 95, 115, 0.14) 38%, rgba(230, 95, 115, 0.04) 68%, transparent 82%),
+    radial-gradient(circle at 20% 24%, rgba(230, 95, 115, 0.7), transparent 16rem),
+    repeating-linear-gradient(90deg, rgba(230, 95, 115, 0.18) 0 2px, transparent 2px 13px),
+    repeating-linear-gradient(0deg, rgba(230, 95, 115, 0.12) 0 2px, transparent 2px 13px);
   animation: EdgeTraceSignalFloat 14s ease-in-out infinite, EdgeTraceSignalFade 6s ease-in-out infinite;
 }
 
@@ -5466,10 +5471,10 @@ body {
 
 @keyframes EdgeTraceSignalFade {
   0%, 100% {
-    opacity: 0.26;
+    opacity: 0.48;
   }
   50% {
-    opacity: 0.38;
+    opacity: 0.62;
   }
 }
 
