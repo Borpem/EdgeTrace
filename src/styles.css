@@ -5156,7 +5156,7 @@ body {
 .EdgeTrace-command-diagnosis,
 .EdgeTrace-command-changed {
   display: flex;
-  min-height: 23rem;
+  min-height: 17.25rem;
   flex-direction: column;
 }
 
@@ -5260,8 +5260,7 @@ body {
 }
 
 .EdgeTrace-command-mini-chart {
-  flex: 1;
-  min-height: 8.8rem;
+  height: 7.15rem;
   margin-top: 1.1rem;
 }
 
@@ -5273,7 +5272,7 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  margin-top: 0.9rem;
+  margin-top: 0.7rem;
   color: var(--command-text-secondary);
   font-size: 0.83rem;
 }
@@ -5306,7 +5305,7 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.2rem;
-  margin: auto 0 0.9rem;
+  margin: 1.35rem 0 0.9rem;
   max-width: 19rem;
 }
 
@@ -5335,7 +5334,7 @@ body {
 
 .EdgeTrace-command-changed .EdgeTrace-command-change-grid,
 .EdgeTrace-command-changed .EdgeTrace-command-empty-compare {
-  flex: 1;
+  flex: 0 0 auto;
 }
 
 .EdgeTrace-command-metric-grid,
@@ -5347,6 +5346,10 @@ body {
   gap: 0.55rem;
   border: 0;
   border-radius: 0;
+}
+
+.EdgeTrace-command-change-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .EdgeTrace-command-compare-source {
@@ -5371,6 +5374,13 @@ body {
   background: rgba(6, 12, 18, 0.46);
   padding: 0.82rem 0.65rem;
   text-align: center;
+}
+
+.EdgeTrace-command-change-grid div {
+  min-height: 5.1rem;
+  justify-content: flex-start;
+  padding: 0.8rem 0.9rem;
+  text-align: left;
 }
 
 .EdgeTrace-command-metric-grid div:nth-child(3n),
@@ -5402,7 +5412,7 @@ body {
 .EdgeTrace-command-change-grid small {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 0.25rem;
   margin-top: 0.4rem;
   color: var(--command-text-muted);
@@ -5438,7 +5448,7 @@ body {
 }
 
 .EdgeTrace-command-change-grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .EdgeTrace-command-change-grid small {
