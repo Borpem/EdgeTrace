@@ -690,9 +690,17 @@ export function DashboardPage({
             <div className="EdgeTrace-command-nav-actions">
               <button className="EdgeTrace-command-primary" onClick={onCreateReport}>+ New Report</button>
               {accountControl && <div className="EdgeTrace-dashboard-account-control">{accountControl}</div>}
-              <button className="EdgeTrace-command-guide" onClick={openWalkthrough}>Guide</button>
             </div>
           </header>
+
+          <aside className="EdgeTrace-command-side-note EdgeTrace-command-side-note-left" aria-hidden="true">
+            <span>Current Report</span>
+            <strong>{reportName}</strong>
+          </aside>
+          <aside className="EdgeTrace-command-side-note EdgeTrace-command-side-note-right" aria-hidden="true">
+            <span>Sample Size</span>
+            <strong>{number.format(normalizedTradeCount)} trades</strong>
+          </aside>
 
           <section className="EdgeTrace-command-card EdgeTrace-command-card-1">
             <div className="EdgeTrace-command-card-heading">
@@ -731,10 +739,23 @@ export function DashboardPage({
                   {reportSelectorError && <small>{reportSelectorError}</small>}
                 </div>
               </div>
-              <div className="EdgeTrace-command-overview-actions">
-                <button className="EdgeTrace-command-status">{trendLabel}<TrendingUp size={18} aria-hidden="true" /></button>
-                <button className="EdgeTrace-command-primary" onClick={onCreateReport}>Analyze Trades</button>
-                <button onClick={onViewReports}>View Full Report</button>
+              <div className="EdgeTrace-command-overview-summary" aria-label="Report summary">
+                <div>
+                  <span>Edge Health</span>
+                  <strong className={`tone-${healthTone}`}>{intelligence.strategyHealthScore}/100</strong>
+                </div>
+                <div>
+                  <span>Primary Diagnosis</span>
+                  <strong>{humanDiagnosis(intelligence.primaryDiagnosis)}</strong>
+                </div>
+                <div>
+                  <span>Net PnL</span>
+                  <strong className={metrics.netPnl >= 0 ? "tone-green" : "tone-red"}>{currency.format(metrics.netPnl)}</strong>
+                </div>
+                <div>
+                  <span>Comparison</span>
+                  <strong>{priorReport ? priorReportName : "No prior report"}</strong>
+                </div>
               </div>
             </div>
           </section>

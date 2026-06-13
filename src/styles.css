@@ -4797,15 +4797,16 @@ body {
 }
 
 .EdgeTrace-command-shell {
-  border: 1px solid rgba(56, 82, 100, 0.62);
-  border-radius: 8px;
+  position: relative;
+  border: 0;
+  border-radius: 0;
   background:
     radial-gradient(circle at 18% 0%, rgba(97, 184, 211, 0.022), transparent 25rem),
     radial-gradient(circle at 88% 2%, rgba(122, 140, 255, 0.022), transparent 30rem),
     var(--command-bg-shell);
-  box-shadow: 0 30px 90px -72px rgba(97, 184, 211, 0.2);
+  box-shadow: none;
   color: var(--command-text);
-  padding: 0.82rem;
+  padding: 0.82rem 1.05rem;
 }
 
 .EdgeTrace-command-nav {
@@ -4873,38 +4874,115 @@ body {
 }
 
 .EdgeTrace-command-primary {
-  border: 1px solid rgba(79, 182, 216, 0.58);
-  border-radius: 3px;
-  background: linear-gradient(135deg, #153446 0%, var(--command-blue-soft) 100%);
-  color: var(--command-text);
-  padding: 0.72rem 1rem;
+  border: 1px solid rgba(88, 214, 255, 0.38);
+  border-radius: 5px;
+  background:
+    linear-gradient(180deg, rgba(88, 214, 255, 0.13), rgba(88, 214, 255, 0.06)),
+    rgba(5, 16, 24, 0.92);
+  color: #e9fbff;
+  padding: 0.78rem 1.08rem;
   font-size: 0.9rem;
-  font-weight: 680;
-  box-shadow: none;
+  font-weight: 720;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 14px 30px -28px rgba(88, 214, 255, 0.85);
 }
 
-.EdgeTrace-command-guide {
-  color: var(--command-text-secondary);
-  font-size: 0.9rem;
-  font-weight: 560;
+.EdgeTrace-command-primary:hover {
+  border-color: rgba(88, 214, 255, 0.64);
+  background:
+    linear-gradient(180deg, rgba(88, 214, 255, 0.18), rgba(88, 214, 255, 0.08)),
+    rgba(7, 20, 30, 0.96);
 }
 
 .EdgeTrace-command-dashboard .EdgeTrace-dashboard-account-control .EdgeTrace-account-utility {
-  border: 0;
-  background: transparent;
-  padding: 0;
+  gap: 0.42rem;
 }
 
 .EdgeTrace-command-dashboard .EdgeTrace-dashboard-account-control .EdgeTrace-account-utility-profile {
-  min-width: auto;
-  border: 0;
-  background: transparent;
-  padding: 0;
+  min-height: 2.55rem;
+  max-width: 15.5rem;
+  border: 1px solid rgba(90, 132, 158, 0.28);
+  border-radius: 6px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.055), rgba(88, 214, 255, 0.035)),
+    rgba(5, 14, 21, 0.92);
+  padding: 0.22rem 0.58rem 0.22rem 0.26rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 .EdgeTrace-command-dashboard .EdgeTrace-dashboard-account-control .EdgeTrace-account-utility-email,
 .EdgeTrace-command-dashboard .EdgeTrace-dashboard-account-control .EdgeTrace-account-utility-profile small {
   display: none;
+}
+
+.EdgeTrace-command-dashboard .EdgeTrace-dashboard-account-control .EdgeTrace-account-utility-avatar {
+  width: 1.95rem;
+  height: 1.95rem;
+  border-color: rgba(88, 214, 255, 0.34);
+  border-radius: 6px;
+  background:
+    linear-gradient(135deg, rgba(88, 214, 255, 0.28), rgba(19, 42, 58, 0.92));
+  font-size: 0.66rem;
+}
+
+.EdgeTrace-command-dashboard .EdgeTrace-dashboard-account-control .EdgeTrace-account-utility-profile strong {
+  font-size: 0.82rem;
+  font-weight: 720;
+}
+
+.EdgeTrace-command-dashboard .EdgeTrace-dashboard-account-control .EdgeTrace-account-utility-profile em {
+  border-color: rgba(88, 214, 255, 0.22);
+  background: rgba(88, 214, 255, 0.11);
+  color: #6fdfff;
+}
+
+.EdgeTrace-command-dashboard .EdgeTrace-dashboard-account-control .cl-avatarBox {
+  border-radius: 6px !important;
+}
+
+.EdgeTrace-command-side-note {
+  position: absolute;
+  top: 5.9rem;
+  display: grid;
+  gap: 0.28rem;
+  width: 8.5rem;
+  color: rgba(166, 190, 208, 0.56);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.EdgeTrace-command-side-note strong {
+  overflow: hidden;
+  color: rgba(226, 240, 248, 0.86);
+  font-size: 0.82rem;
+  font-weight: 620;
+  letter-spacing: 0;
+  text-overflow: ellipsis;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+.EdgeTrace-command-side-note::before {
+  content: "";
+  width: 2.2rem;
+  height: 1px;
+  background: rgba(88, 214, 255, 0.28);
+}
+
+.EdgeTrace-command-side-note-left {
+  left: -9.7rem;
+}
+
+.EdgeTrace-command-side-note-right {
+  right: -9.7rem;
+  text-align: right;
+}
+
+.EdgeTrace-command-side-note-right::before {
+  justify-self: end;
 }
 
 .EdgeTrace-command-card {
@@ -4968,18 +5046,18 @@ body {
 
 .EdgeTrace-command-card-1 {
   margin-top: 0.72rem;
-  padding: 0.78rem 0.9rem;
+  padding: 1.05rem;
   background:
-    linear-gradient(90deg, rgba(18, 30, 39, 0.92), rgba(8, 13, 19, 0.98)),
+    linear-gradient(135deg, rgba(18, 31, 40, 0.92), rgba(8, 13, 19, 0.98)),
     var(--command-bg-card);
 }
 
 .EdgeTrace-command-overview-main {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) minmax(22rem, 0.72fr);
   align-items: center;
   gap: 1.5rem;
-  margin-top: 0.25rem;
+  margin-top: 0.55rem;
 }
 
 .EdgeTrace-command-overview-main h1 {
@@ -5057,13 +5135,6 @@ body {
   font-size: 0.78rem;
 }
 
-.EdgeTrace-command-overview-actions {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.EdgeTrace-command-overview-actions > button:not(.EdgeTrace-command-primary),
 .EdgeTrace-command-diagnosis > button,
 .EdgeTrace-command-action-row button {
   border: 1px solid rgba(40, 80, 102, 0.72);
@@ -5075,14 +5146,42 @@ body {
   font-weight: 640;
 }
 
-.EdgeTrace-command-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.7rem;
-  min-width: 10.2rem;
-  justify-content: center;
-  color: var(--command-blue) !important;
+.EdgeTrace-command-overview-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.58rem;
 }
+
+.EdgeTrace-command-overview-summary div {
+  min-height: 4.2rem;
+  border: 1px solid rgba(36, 53, 66, 0.72);
+  border-radius: 5px;
+  background: rgba(5, 11, 17, 0.5);
+  padding: 0.72rem;
+}
+
+.EdgeTrace-command-overview-summary span {
+  display: block;
+  color: var(--command-text-muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.EdgeTrace-command-overview-summary strong {
+  display: block;
+  overflow: hidden;
+  margin-top: 0.32rem;
+  color: var(--command-text);
+  font-size: 1rem;
+  font-weight: 620;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.EdgeTrace-command-overview-summary .tone-green { color: var(--command-green); }
+.EdgeTrace-command-overview-summary .tone-yellow { color: var(--command-yellow); }
+.EdgeTrace-command-overview-summary .tone-red { color: var(--command-red); }
 
 .EdgeTrace-command-grid {
   display: grid;
@@ -5687,8 +5786,7 @@ body {
   }
 
   .EdgeTrace-command-nav nav,
-  .EdgeTrace-command-nav-actions,
-  .EdgeTrace-command-overview-actions {
+  .EdgeTrace-command-nav-actions {
     flex-wrap: wrap;
     justify-content: flex-start;
   }
@@ -5709,6 +5807,12 @@ body {
   }
 }
 
+@media (max-width: 1650px) {
+  .EdgeTrace-command-side-note {
+    display: none;
+  }
+}
+
 @media (max-width: 720px) {
   .EdgeTrace-command-dashboard {
     padding: 0;
@@ -5716,6 +5820,7 @@ body {
 
   .EdgeTrace-command-shell {
     border-radius: 0;
+    padding: 0.82rem;
   }
 
   .EdgeTrace-command-driver-columns,
@@ -5724,7 +5829,8 @@ body {
   .EdgeTrace-command-action-card,
   .EdgeTrace-command-metric-grid,
   .EdgeTrace-command-metric-groups section > div,
-  .EdgeTrace-command-change-grid {
+  .EdgeTrace-command-change-grid,
+  .EdgeTrace-command-overview-summary {
     grid-template-columns: 1fr;
   }
 
