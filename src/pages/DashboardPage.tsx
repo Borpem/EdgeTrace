@@ -704,7 +704,7 @@ export function DashboardPage({
               <div className="EdgeTrace-command-mini-chart">
                 <ResponsiveContainer width="100%" height={82}>
                   <LineChart data={performanceData}>
-                    <Line type="monotone" dataKey="equity" stroke="#8bdc65" strokeWidth={2.2} dot={false} isAnimationActive={false} />
+                    <Line type="monotone" dataKey="equity" stroke="#73c98f" strokeWidth={2.2} dot={false} isAnimationActive={false} />
                   </LineChart>
                 </ResponsiveContainer>
               </div>

@@ -4755,11 +4755,27 @@ body {
 }
 
 .EdgeTrace-command-dashboard {
+  --command-bg-page: #05080c;
+  --command-bg-shell: #071018;
+  --command-bg-card: #0b1721;
+  --command-bg-card-soft: #0e1d29;
+  --command-border-soft: #1b3444;
+  --command-border-strong: #285066;
+  --command-text: #f2f6f8;
+  --command-text-secondary: #a9bac6;
+  --command-text-muted: #6f8492;
+  --command-blue: #4fb6d8;
+  --command-blue-soft: #183545;
+  --command-green: #73c98f;
+  --command-yellow: #d6ad4f;
+  --command-red: #e65f73;
+  --command-neutral: #8fa0ad;
+  --command-pro: #7a8cff;
   display: block;
   min-height: 100vh;
   background:
-    radial-gradient(circle at 78% 18%, rgba(73, 183, 217, 0.13), transparent 32rem),
-    linear-gradient(180deg, #040a0f 0%, #061018 48%, #040a0f 100%);
+    radial-gradient(circle at 78% 18%, rgba(79, 182, 216, 0.08), transparent 32rem),
+    linear-gradient(180deg, var(--command-bg-page) 0%, #061018 48%, var(--command-bg-page) 100%);
   padding: 0.4rem;
 }
 
@@ -4780,14 +4796,14 @@ body {
 }
 
 .EdgeTrace-command-shell {
-  border: 1px solid rgba(136, 158, 180, 0.28);
+  border: 1px solid rgba(40, 80, 102, 0.82);
   border-radius: 10px;
   background:
-    radial-gradient(circle at 18% 0%, rgba(73, 183, 217, 0.085), transparent 25rem),
-    radial-gradient(circle at 88% 2%, rgba(111, 199, 138, 0.055), transparent 30rem),
-    rgba(7, 18, 28, 0.98);
-  box-shadow: 0 28px 80px -58px rgba(73, 183, 217, 0.42);
-  color: #f4f8fb;
+    radial-gradient(circle at 18% 0%, rgba(79, 182, 216, 0.055), transparent 25rem),
+    radial-gradient(circle at 88% 2%, rgba(122, 140, 255, 0.035), transparent 30rem),
+    var(--command-bg-shell);
+  box-shadow: 0 28px 80px -62px rgba(79, 182, 216, 0.28);
+  color: var(--command-text);
   padding: 0.82rem;
 }
 
@@ -4796,7 +4812,7 @@ body {
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 1.35rem;
-  border-bottom: 1px solid rgba(116, 151, 184, 0.18);
+  border-bottom: 1px solid rgba(27, 52, 68, 0.95);
   padding: 0.15rem 0.25rem 0.72rem;
 }
 
@@ -4827,14 +4843,14 @@ body {
 
 .EdgeTrace-command-nav nav button {
   position: relative;
-  color: rgba(244, 248, 251, 0.82);
+  color: var(--command-text-secondary);
   font-size: 0.92rem;
   font-weight: 560;
   white-space: nowrap;
 }
 
 .EdgeTrace-command-nav nav button.active {
-  color: #ffffff;
+  color: var(--command-text);
 }
 
 .EdgeTrace-command-nav nav button.active::after {
@@ -4845,7 +4861,7 @@ body {
   bottom: -0.58rem;
   height: 2px;
   border-radius: 999px;
-  background: #58c8e8;
+  background: var(--command-blue);
 }
 
 .EdgeTrace-command-nav-actions {
@@ -4856,10 +4872,10 @@ body {
 }
 
 .EdgeTrace-command-primary {
-  border: 1px solid rgba(88, 200, 232, 0.58);
+  border: 1px solid rgba(79, 182, 216, 0.58);
   border-radius: 3px;
-  background: linear-gradient(135deg, #12445f 0%, #1a5f7b 100%);
-  color: #f2fbfd;
+  background: linear-gradient(135deg, #153446 0%, var(--command-blue-soft) 100%);
+  color: var(--command-text);
   padding: 0.72rem 1rem;
   font-size: 0.9rem;
   font-weight: 680;
@@ -4867,7 +4883,7 @@ body {
 }
 
 .EdgeTrace-command-guide {
-  color: rgba(244, 248, 251, 0.78);
+  color: var(--command-text-secondary);
   font-size: 0.9rem;
   font-weight: 560;
 }
@@ -4893,11 +4909,11 @@ body {
 .EdgeTrace-command-card {
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(136, 158, 180, 0.27);
+  border: 1px solid rgba(27, 52, 68, 0.95);
   border-radius: 8px;
   background:
-    linear-gradient(135deg, rgba(13, 31, 45, 0.94), rgba(7, 18, 28, 0.96)),
-    #07111a;
+    linear-gradient(135deg, rgba(14, 29, 41, 0.86), rgba(7, 16, 24, 0.95)),
+    var(--command-bg-card);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
 }
 
@@ -4906,7 +4922,7 @@ body {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(circle at 12% 0%, rgba(73, 183, 217, 0.07), transparent 19rem);
+  background: radial-gradient(circle at 12% 0%, rgba(79, 182, 216, 0.035), transparent 19rem);
 }
 
 .EdgeTrace-command-card > * {
@@ -4918,7 +4934,7 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #71d1ec;
+  color: var(--command-blue);
   font-size: 0.86rem;
   font-weight: 720;
   letter-spacing: 0.06em;
@@ -4927,10 +4943,10 @@ body {
 
 .EdgeTrace-command-card-heading button {
   margin-left: auto;
-  border: 1px solid rgba(116, 151, 184, 0.18);
+  border: 1px solid rgba(40, 80, 102, 0.55);
   border-radius: 4px;
   background: rgba(11, 23, 35, 0.72);
-  color: rgba(244, 248, 251, 0.82);
+  color: var(--command-text-secondary);
   padding: 0.36rem 0.58rem;
   font-size: 0.73rem;
   font-weight: 620;
@@ -4961,7 +4977,7 @@ body {
   flex-wrap: wrap;
   gap: 0.55rem;
   margin: 0.38rem 0 0;
-  color: rgba(210, 222, 233, 0.74);
+  color: var(--command-text-secondary);
   font-size: 0.86rem;
 }
 
@@ -4974,10 +4990,10 @@ body {
 .EdgeTrace-command-overview-actions > button:not(.EdgeTrace-command-primary),
 .EdgeTrace-command-diagnosis > button,
 .EdgeTrace-command-action-row button {
-  border: 1px solid rgba(136, 158, 180, 0.4);
+  border: 1px solid rgba(40, 80, 102, 0.72);
   border-radius: 4px;
-  background: rgba(9, 20, 31, 0.82);
-  color: #f4f8fb;
+  background: rgba(8, 18, 27, 0.86);
+  color: var(--command-text);
   padding: 0.72rem 1rem;
   font-size: 0.9rem;
   font-weight: 640;
@@ -4989,7 +5005,7 @@ body {
   gap: 0.7rem;
   min-width: 10.2rem;
   justify-content: center;
-  color: #7bdbf1 !important;
+  color: var(--command-blue) !important;
 }
 
 .EdgeTrace-command-grid {
@@ -5005,12 +5021,12 @@ body {
 
 .EdgeTrace-command-health {
   grid-column: span 4;
-  border-color: rgba(120, 217, 146, 0.34);
+  border-color: rgba(115, 201, 143, 0.3);
 }
 
 .EdgeTrace-command-diagnosis {
   grid-column: span 4;
-  border-color: rgba(255, 99, 120, 0.34);
+  border-color: rgba(230, 95, 115, 0.3);
 }
 
 .EdgeTrace-command-metrics {
@@ -5039,14 +5055,14 @@ body {
 }
 
 .EdgeTrace-command-health-score strong {
-  color: #78d992;
+  color: var(--command-green);
   font-size: 4rem;
   font-weight: 560;
   line-height: 1;
 }
 
 .EdgeTrace-command-health-score span {
-  color: rgba(244, 248, 251, 0.75);
+  color: var(--command-text-secondary);
   font-size: 1.1rem;
 }
 
@@ -5055,14 +5071,14 @@ body {
   align-items: center;
   gap: 0.35rem;
   margin-left: auto;
-  color: #78d992;
+  color: var(--command-green);
   font-style: normal;
   font-size: 1rem;
 }
 
 .EdgeTrace-command-health p {
   margin: 0.8rem 0 0;
-  color: #f4f8fb;
+  color: var(--command-text);
 }
 
 .EdgeTrace-command-mini-chart {
@@ -5087,20 +5103,20 @@ body {
   transform: translateY(-50%);
 }
 
-.EdgeTrace-command-range i { left: 50%; background: #e2b84f; }
-.EdgeTrace-command-range b { right: 0; background: #9daab5; }
+.EdgeTrace-command-range i { left: 50%; background: var(--command-yellow); }
+.EdgeTrace-command-range b { right: 0; background: var(--command-neutral); }
 
 .EdgeTrace-command-health small {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  color: rgba(244, 248, 251, 0.86);
+  color: var(--command-text-secondary);
   font-size: 0.83rem;
 }
 
 .EdgeTrace-command-diagnosis h2 {
   margin: 1.6rem 0 0;
-  color: #ffffff;
+  color: var(--command-text);
   font-size: 1.82rem;
   font-weight: 520;
   text-align: center;
@@ -5109,7 +5125,7 @@ body {
 .EdgeTrace-command-diagnosis p {
   max-width: 19rem;
   margin: 0.85rem auto 0;
-  color: rgba(217, 227, 237, 0.76);
+  color: var(--command-text-secondary);
   text-align: center;
   line-height: 1.45;
 }
@@ -5124,14 +5140,14 @@ body {
 
 .EdgeTrace-command-two-metrics span {
   display: block;
-  color: rgba(210, 222, 233, 0.63);
+  color: var(--command-text-muted);
   font-size: 0.78rem;
 }
 
 .EdgeTrace-command-two-metrics strong {
   display: block;
   margin-top: 0.22rem;
-  color: #ffffff;
+  color: var(--command-text);
   font-size: 1.35rem;
   font-weight: 560;
 }
@@ -5150,15 +5166,15 @@ body {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   margin-top: 1rem;
-  border: 1px solid rgba(136, 158, 180, 0.28);
+  border: 1px solid rgba(27, 52, 68, 0.95);
   border-radius: 4px;
 }
 
 .EdgeTrace-command-metric-grid div,
 .EdgeTrace-command-change-grid div {
   min-height: 5.1rem;
-  border-right: 1px solid rgba(91, 126, 158, 0.18);
-  border-bottom: 1px solid rgba(91, 126, 158, 0.18);
+  border-right: 1px solid rgba(27, 52, 68, 0.82);
+  border-bottom: 1px solid rgba(27, 52, 68, 0.82);
   padding: 0.92rem 0.7rem;
   text-align: center;
 }
@@ -5176,7 +5192,7 @@ body {
 .EdgeTrace-command-metric-grid span,
 .EdgeTrace-command-change-grid span {
   display: block;
-  color: rgba(210, 222, 233, 0.68);
+  color: var(--command-text-muted);
   font-size: 0.82rem;
 }
 
@@ -5184,7 +5200,7 @@ body {
 .EdgeTrace-command-change-grid strong {
   display: block;
   margin-top: 0.3rem;
-  color: #58d2ee;
+  color: var(--command-blue);
   font-size: 1.2rem;
   font-weight: 560;
 }
@@ -5198,7 +5214,7 @@ body {
   align-items: center;
   gap: 0.25rem;
   margin-top: 0.35rem;
-  color: #78d992;
+  color: var(--command-green);
   font-size: 0.8rem;
 }
 
@@ -5218,8 +5234,8 @@ body {
   text-transform: uppercase;
 }
 
-.EdgeTrace-command-driver-columns > div:first-child h3 { color: #ff6378; }
-.EdgeTrace-command-driver-columns > div:last-child h3 { color: #78d992; }
+.EdgeTrace-command-driver-columns > div:first-child h3 { color: var(--command-red); }
+.EdgeTrace-command-driver-columns > div:last-child h3 { color: var(--command-green); }
 
 .EdgeTrace-command-driver-columns p,
 .EdgeTrace-command-context p,
@@ -5229,7 +5245,7 @@ body {
   justify-content: space-between;
   gap: 1rem;
   margin: 0.55rem 0;
-  color: rgba(244, 248, 251, 0.82);
+  color: var(--command-text-secondary);
   font-size: 0.9rem;
 }
 
@@ -5242,11 +5258,11 @@ body {
 
 .EdgeTrace-command-action-row > div,
 .EdgeTrace-command-action-row aside {
-  border: 1px solid rgba(96, 128, 154, 0.25);
+  border: 1px solid rgba(27, 52, 68, 0.92);
   border-radius: 6px;
   background:
-    linear-gradient(180deg, rgba(11, 28, 41, 0.74), rgba(6, 16, 24, 0.74)),
-    rgba(5, 15, 24, 0.48);
+    linear-gradient(180deg, rgba(14, 29, 41, 0.8), rgba(7, 16, 24, 0.86)),
+    var(--command-bg-card);
   padding: 0.95rem;
 }
 
@@ -5259,15 +5275,15 @@ body {
 }
 
 .EdgeTrace-command-action-row > div:hover {
-  border-color: rgba(88, 200, 232, 0.36);
+  border-color: rgba(79, 182, 216, 0.44);
   background:
-    linear-gradient(180deg, rgba(13, 34, 50, 0.88), rgba(6, 17, 26, 0.84)),
-    rgba(5, 15, 24, 0.58);
+    linear-gradient(180deg, rgba(14, 34, 48, 0.88), rgba(7, 18, 28, 0.9)),
+    var(--command-bg-card-soft);
 }
 
 .EdgeTrace-command-action-row strong {
   display: block;
-  color: #ffffff;
+  color: var(--command-text);
   font-size: 1rem;
   font-weight: 620;
 }
@@ -5275,7 +5291,7 @@ body {
 .EdgeTrace-command-action-row > div p {
   min-height: 2.55rem;
   margin: 0.42rem 0 0;
-  color: rgba(210, 222, 233, 0.7);
+  color: var(--command-text-muted);
   font-size: 0.82rem;
   line-height: 1.32;
 }
@@ -5300,7 +5316,7 @@ body {
   min-height: 2.55rem;
   margin-top: 1rem;
   padding: 0.55rem 0.8rem;
-  color: #dff7ff;
+  color: var(--command-text);
   font-size: 0.83rem;
 }
 
@@ -5311,8 +5327,8 @@ body {
 }
 
 .EdgeTrace-command-action-row button:hover {
-  border-color: rgba(88, 200, 232, 0.58);
-  background: rgba(16, 45, 63, 0.82);
+  border-color: rgba(79, 182, 216, 0.58);
+  background: rgba(24, 53, 69, 0.88);
 }
 
 .EdgeTrace-command-action-row button:hover svg {
@@ -5324,8 +5340,8 @@ body {
   flex-direction: column;
   justify-content: center;
   background:
-    linear-gradient(180deg, rgba(8, 20, 30, 0.78), rgba(5, 13, 21, 0.82)),
-    rgba(5, 15, 24, 0.5);
+    linear-gradient(180deg, rgba(8, 20, 30, 0.8), rgba(5, 13, 21, 0.86)),
+    var(--command-bg-card);
 }
 
 .EdgeTrace-command-action-row aside p {
@@ -5346,19 +5362,19 @@ body {
 }
 
 .EdgeTrace-command-table-card th {
-  color: rgba(210, 222, 233, 0.56);
+  color: var(--command-text-muted);
   font-weight: 520;
   text-align: left;
 }
 
 .EdgeTrace-command-table-card td,
 .EdgeTrace-command-table-card th {
-  border-bottom: 1px solid rgba(91, 126, 158, 0.14);
+  border-bottom: 1px solid rgba(27, 52, 68, 0.72);
   padding: 0.42rem 0.2rem;
 }
 
 .EdgeTrace-command-table-card td {
-  color: rgba(244, 248, 251, 0.82);
+  color: var(--command-text-secondary);
 }
 
 .EdgeTrace-command-context > div {
@@ -5366,27 +5382,27 @@ body {
 }
 
 .EdgeTrace-command-context p {
-  border-bottom: 1px solid rgba(91, 126, 158, 0.14);
+  border-bottom: 1px solid rgba(27, 52, 68, 0.72);
   padding-bottom: 0.5rem;
 }
 
 .EdgeTrace-command-context span {
-  color: rgba(210, 222, 233, 0.62);
+  color: var(--command-text-muted);
 }
 
 .EdgeTrace-command-context strong {
-  color: #f4f8fb;
+  color: var(--command-text);
   font-weight: 560;
 }
 
-.EdgeTrace-command-dashboard .is-blue { color: #58d2ee !important; }
-.EdgeTrace-command-dashboard .is-red { color: #ff6378 !important; }
-.EdgeTrace-command-dashboard .is-green { color: #78d992 !important; }
-.EdgeTrace-command-dashboard .is-yellow { color: #ecc65a !important; }
-.EdgeTrace-command-dashboard .tone-red { color: #ff6378; }
-.EdgeTrace-command-dashboard .tone-yellow { color: #ecc65a; }
-.EdgeTrace-command-dashboard .tone-green { color: #78d992; }
-.EdgeTrace-command-dashboard .tone-gray { color: #9daab5; }
+.EdgeTrace-command-dashboard .is-blue { color: var(--command-blue) !important; }
+.EdgeTrace-command-dashboard .is-red { color: var(--command-red) !important; }
+.EdgeTrace-command-dashboard .is-green { color: var(--command-green) !important; }
+.EdgeTrace-command-dashboard .is-yellow { color: var(--command-yellow) !important; }
+.EdgeTrace-command-dashboard .tone-red { color: var(--command-red); }
+.EdgeTrace-command-dashboard .tone-yellow { color: var(--command-yellow); }
+.EdgeTrace-command-dashboard .tone-green { color: var(--command-green); }
+.EdgeTrace-command-dashboard .tone-gray { color: var(--command-neutral); }
 
 @media (max-width: 1180px) {
   .EdgeTrace-command-nav,
