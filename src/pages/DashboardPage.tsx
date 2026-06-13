@@ -612,6 +612,17 @@ export function DashboardPage({
     { label: strongestSegment ? strongestSegment.group : "Trend Following Setups", value: Math.max(0, strongestSegment?.netPnl ?? Math.abs(metrics.netPnl * 0.52)) },
     { label: "Trade Management", value: Math.abs(metrics.expectancy * metrics.totalTrades * 0.28) }
   ];
+  const priorReport = findPriorReport(result, availableReports);
+  const priorReportDate = formatShortDate(priorReport?.createdAt);
+  const priorReportName = priorReport?.name ?? "prior report";
+  const comparisonRows = priorReport
+    ? [
+        buildComparisonRow("Net PnL", metrics.netPnl, priorReport.netPnl, currency.format),
+        buildComparisonRow("Expectancy", metrics.expectancy, priorReport.expectancy, currency.format),
+        buildComparisonRow("Win Rate", metrics.winRate, priorReport.winRate, percent.format),
+        buildComparisonRow("Profit Factor", metrics.profitFactor, priorReport.profitFactor, formatProfitFactor)
+      ]
+    : [];
   const reportActivityRows = [
     { name: reportName, health: intelligence.strategyHealthScore, net: metrics.netPnl, exp: metrics.expectancy, date: reportDate ? reportDate.toLocaleString(undefined, { month: "short", day: "numeric" }) : "Latest" },
     ...availableReports
@@ -809,25 +820,35 @@ export function DashboardPage({
                 </article>
               </div>
 
-              <article className="EdgeTrace-command-card EdgeTrace-command-changed">
-                <div className="EdgeTrace-command-card-heading">
-                  <span>What Changed vs Prior Report</span>
+            <article className="EdgeTrace-command-card EdgeTrace-command-changed">
+              <div className="EdgeTrace-command-card-heading">
+                <span>What Changed vs Prior Report</span>
+              </div>
+              {priorReport ? (
+                <>
+                  <p className="EdgeTrace-command-compare-source">
+                    Compared with <strong>{priorReportName}</strong>{priorReportDate ? ` from ${priorReportDate}` : ""}.
+                  </p>
+                  <div className="EdgeTrace-command-change-grid">
+                    {comparisonRows.map((row) => (
+                      <div key={row.label}>
+                        <span>{row.label}</span>
+                        <strong>{row.current}</strong>
+                        <small className={`tone-${row.tone}`}>
+                          {row.tone === "green" ? <TrendingUp size={13} aria-hidden="true" /> : row.tone === "red" ? <TrendingDown size={13} aria-hidden="true" /> : null}
+                          {row.delta}
+                        </small>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <div className="EdgeTrace-command-empty-compare">
+                  <strong>No earlier report to compare.</strong>
+                  <span>Import another report or add this report to a strategy set to track changes over time.</span>
                 </div>
-                <div className="EdgeTrace-command-change-grid">
-                  {[
-                    ["Net PnL", currency.format(metrics.netPnl), "21.4%"],
-                    ["Expectancy", currency.format(metrics.expectancy), "105%"],
-                    ["Win Rate", percent.format(metrics.winRate), "12.7%"],
-                    ["Profit Factor", formatProfitFactor(metrics.profitFactor), "40%"]
-                  ].map(([label, value, delta]) => (
-                    <div key={label}>
-                      <span>{label}</span>
-                      <strong>{value}</strong>
-                      <small><TrendingUp size={13} aria-hidden="true" /> {delta}</small>
-                    </div>
-                  ))}
-                </div>
-              </article>
+              )}
+            </article>
             </div>
 
             <article className="EdgeTrace-command-card EdgeTrace-command-metrics">
@@ -3491,6 +3512,58 @@ function formatGuideDate(value: string | undefined) {
 function formatPercent(value: number | undefined) {
   if (value === undefined || !Number.isFinite(value)) return "N/A";
   return percent.format(value);
+}
+
+function findPriorReport(currentReport: DiagnosticsResult, reports: ReportSummary[]) {
+  const currentTime = Date.parse(currentReport.createdAt ?? "");
+  if (!Number.isFinite(currentTime)) return undefined;
+
+  return reports
+    .filter((report) => report.id !== currentReport.id)
+    .map((report) => ({ report, createdTime: Date.parse(report.createdAt) }))
+    .filter(({ createdTime }) => Number.isFinite(createdTime) && createdTime < currentTime)
+    .sort((left, right) => right.createdTime - left.createdTime)[0]?.report;
+}
+
+function buildComparisonRow(
+  label: string,
+  currentValue: number,
+  previousValue: number | undefined,
+  formatValue: (value: number) => string
+) {
+  if (previousValue === undefined || !Number.isFinite(previousValue)) {
+    return { label, current: formatValue(currentValue), delta: "No prior value", tone: "gray" as const };
+  }
+
+  const difference = currentValue - previousValue;
+  const percentChange = previousValue !== 0 ? difference / Math.abs(previousValue) : undefined;
+  const formattedDifference = formatSignedValue(difference, formatValue);
+  const formattedPercent = percentChange === undefined ? "" : ` (${formatSignedPercent(percentChange)})`;
+
+  return {
+    label,
+    current: formatValue(currentValue),
+    delta: `${formattedDifference}${formattedPercent}`,
+    tone: difference > 0 ? ("green" as const) : difference < 0 ? ("red" as const) : ("gray" as const)
+  };
+}
+
+function formatSignedValue(value: number, formatValue: (value: number) => string) {
+  if (value === 0) return "No change";
+  const formatted = formatValue(Math.abs(value));
+  return `${value > 0 ? "+" : "-"}${formatted}`;
+}
+
+function formatSignedPercent(value: number) {
+  if (value === 0) return "0%";
+  return `${value > 0 ? "+" : "-"}${percent.format(Math.abs(value))}`;
+}
+
+function formatShortDate(value: string | undefined) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return date.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
 }
 
 function formatAxisCurrency(value: unknown) {
