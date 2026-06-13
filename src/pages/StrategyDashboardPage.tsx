@@ -382,7 +382,7 @@ export function StrategyDashboardPage({
 
               <aside className="EdgeTrace-dashboard-cell flex flex-col p-5">
                 <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">Strategy health</p>
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">Edge Health</p>
                   <div className="mt-4 flex items-end gap-4">
                     <p className={`text-7xl font-semibold leading-none tracking-[-0.065em] ${scoreClass(intelligence.strategyHealthScore)}`}>
                       {intelligence.strategyHealthScore}

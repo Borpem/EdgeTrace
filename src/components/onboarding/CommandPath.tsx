@@ -38,7 +38,7 @@ const commandSteps: Array<{
     id: "review_diagnosis",
     number: "02",
     title: "Review Diagnosis",
-    description: "See strategy health, cost drag, expectancy, R capture, and the primary leak.",
+    description: "See Edge Health, cost drag, expectancy, R capture, and the primary leak.",
     cta: "Open Dashboard"
   },
   {

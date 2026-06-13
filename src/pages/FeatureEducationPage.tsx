@@ -39,10 +39,10 @@ const insightGroups: Array<{
   {
     title: "Diagnostics",
     body:
-      "Understand strategy health, expectancy, cost drag, and R capture from completed trade history before you inspect individual segments.",
+      "Understand Edge Health, expectancy, cost drag, and R capture from completed trade history before you inspect individual segments.",
     tone: "cyan",
     icon: Gauge,
-    bullets: ["Strategy health", "Cost drag analysis", "Expectancy breakdowns", "R-multiple analysis"],
+    bullets: ["Edge Health", "Cost drag analysis", "Expectancy breakdowns", "R-multiple analysis"],
     anchorIds: ["diagnostic-reports", "import-provenance", "broker-imports", "full-report-access"]
   },
   {

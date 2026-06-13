@@ -30,7 +30,7 @@ export function buildStrategyReviewDigest(collection: ReportCollectionDetail): S
   const recommendedActions: string[] = [];
 
   if (analytics.trendDirection === "improving") {
-    highlights.push("Recent reports show improving strategy health across core metrics.");
+    highlights.push("Recent reports show improving Edge Health across core metrics.");
   }
   if ((latest.expectancy ?? 0) > 0) highlights.push("Latest expectancy is positive after available costs.");
   if ((latest.netPnl ?? 0) > 0) highlights.push("Latest report is net profitable.");

@@ -66,7 +66,7 @@ test.describe.serial("EdgeTrace happy path", () => {
     await expect(page.locator(".EdgeTrace-command-nav .EdgeTrace-account-utility-profile")).toBeVisible();
     await expect(page.locator(".EdgeTrace-command-nav").getByRole("button", { name: "Dashboard", exact: true })).toHaveClass(/active/);
     await expect(page.getByText("Report Overview", { exact: true })).toBeVisible();
-    await expect(page.getByText("Strategy Health", { exact: true }).first()).toBeVisible();
+    await expect(page.getByText("Edge Health", { exact: true }).first()).toBeVisible();
     await expect(page.getByText("Decision Metrics", { exact: true })).toBeVisible();
     await expect(page.getByText("Recommended Actions (Next Steps)", { exact: true })).toBeVisible();
     await expect(page.getByText("Supporting Context", { exact: true })).toBeVisible();
@@ -137,7 +137,7 @@ test.describe.serial("EdgeTrace happy path", () => {
     await expect(page.getByText("Interactive Demo", { exact: true })).toBeVisible();
     await expect(page.getByText(/Sample data - no account required/i)).toBeVisible();
     await expect(page.getByText("Start with the primary diagnosis.")).toBeVisible();
-    await expect(page.getByText("Strategy Health", { exact: true }).first()).toBeVisible();
+    await expect(page.getByText("Edge Health", { exact: true }).first()).toBeVisible();
     await expect(page.getByText("Primary Diagnosis", { exact: true }).first()).toBeVisible();
 
     await page.getByRole("button", { name: "Inspect the Leak" }).first().click();

@@ -79,7 +79,7 @@ const guidedSteps: StepConfig[] = [
     title: "Start with the primary diagnosis.",
     shortTitle: "Diagnose",
     body:
-      "EdgeTrace turns sample trade history into a diagnostic report showing strategy health, cost drag, expectancy, and the main leak.",
+      "EdgeTrace turns sample trade history into a diagnostic report showing Edge Health, cost drag, expectancy, and the main leak.",
     why: "The first screen should tell a trader what matters before they inspect detail.",
     cta: "Inspect the Leak"
   },
@@ -104,7 +104,7 @@ const guidedSteps: StepConfig[] = [
   {
     id: "monitor",
     number: "04",
-    title: "Monitor strategy health over time.",
+    title: "Monitor Edge Health over time.",
     shortTitle: "Monitor",
     body: "Strategy sets track whether a strategy is improving, degrading, or becoming unstable across multiple reports.",
     why: "Ongoing monitoring is where the workflow becomes recurring strategy intelligence.",
@@ -426,7 +426,7 @@ function DiagnoseStep({
         <div className="relative overflow-hidden border border-white/[0.12] bg-white/[0.035] p-6">
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_86%_28%,rgba(88,214,255,0.12),transparent_16rem)]" />
           <div className="relative">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-cyan">Strategy Health</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-cyan">Edge Health</p>
             <p className="mt-6 text-8xl font-semibold leading-none tracking-[-0.08em] text-ink">
               {intelligence.strategyHealthScore}
             </p>
@@ -906,8 +906,8 @@ function buildStrategyTrend(reports: DemoReport[]) {
         : "The latest sample iteration does not clearly outperform the baseline. EdgeTrace would flag this for deeper review.",
     currentVsBest:
       scoreGap <= 2
-        ? "The current sample iteration is near the best observed health score."
-        : `The current sample iteration is ${decimal.format(scoreGap)} points below the best observed health score.`
+        ? "The current sample iteration is near the best observed Edge Health score."
+        : `The current sample iteration is ${decimal.format(scoreGap)} points below the best observed Edge Health score.`
   };
 }
 

@@ -107,17 +107,170 @@ export function buildReportIntelligence(report: DiagnosticsResult): ReportIntell
 }
 
 function scoreReport(report: DiagnosticsResult, costDragPct: number | undefined, largestLossRatio: number) {
-  let score = 100;
-  if (report.metrics.netPnl < 0) score -= 30;
-  if (report.metrics.expectancy < 0) score -= 25;
-  if (report.metrics.grossPnl > 0 && report.metrics.netPnl < 0) score -= 20;
-  if (costDragPct !== undefined && costDragPct > 0.4) score -= 15;
-  if ((report.metrics.averageRealizedR ?? 1) < 0.2) score -= 15;
-  if (report.metrics.profitFactor < 1) score -= 15;
-  if (report.metrics.winRate < 0.45) score -= 10;
-  if (largestLossRatio > 3) score -= 10;
-  if (report.metrics.totalTrades < 20) score -= 10;
-  return Math.max(0, Math.min(100, score));
+  const weightedScore =
+    scoreExpectancyQuality(report.metrics) * 0.3 +
+    scorePayoffQuality(report.metrics) * 0.2 +
+    scoreEquityStability(report, largestLossRatio) * 0.15 +
+    scoreCostDrag(costDragPct, report.metrics) * 0.15 +
+    scoreWinRate(report.metrics.winRate) * 0.1 +
+    scoreRiskCapture(report.metrics.averageRealizedR) * 0.1;
+  const confidence = scoreConfidence(report.metrics);
+
+  return Math.round(clamp(weightedScore * confidence + 50 * (1 - confidence), 0, 100));
+}
+
+function scoreExpectancyQuality(metrics: DiagnosticsResult["metrics"]) {
+  const averageWin = Math.max(0, metrics.averageWin);
+  const averageLoss = Math.abs(Math.min(0, metrics.averageLoss));
+  const averageTradeMagnitude = averageWin || averageLoss ? (averageWin + averageLoss) / [averageWin, averageLoss].filter(Boolean).length : 0;
+  if (!averageTradeMagnitude) return metrics.expectancy > 0 ? 70 : 35;
+
+  const expectancyRatio = metrics.expectancy / averageTradeMagnitude;
+  return smoothScore(expectancyRatio, [
+    [-0.35, 0],
+    [-0.15, 25],
+    [0, 55],
+    [0.15, 80],
+    [0.35, 100]
+  ]);
+}
+
+function scorePayoffQuality(metrics: DiagnosticsResult["metrics"]) {
+  const profitFactorScore =
+    metrics.profitFactor >= 99
+      ? 100
+      : smoothScore(metrics.profitFactor, [
+          [0.5, 0],
+          [1, 50],
+          [1.5, 75],
+          [2.5, 92],
+          [3.5, 100]
+        ]);
+  const averageLoss = Math.abs(Math.min(0, metrics.averageLoss));
+  const payoffRatio = averageLoss > 0 ? metrics.averageWin / averageLoss : metrics.averageWin > 0 ? 2 : 0;
+  const payoffScore = smoothScore(payoffRatio, [
+    [0.35, 0],
+    [0.75, 45],
+    [1, 62],
+    [1.5, 85],
+    [2.25, 100]
+  ]);
+
+  return profitFactorScore * 0.7 + payoffScore * 0.3;
+}
+
+function scoreEquityStability(report: DiagnosticsResult, largestLossRatio: number) {
+  const equityCurve = report.charts?.equityCurve?.length ? report.charts.equityCurve : buildEquityCurveFromTrades(report.trades);
+  const maxDrawdown = calculateMaxDrawdown(equityCurve.map((point) => point.equity));
+  const grossProfit = Math.max(0, report.metrics.averageWin * report.metrics.totalTrades * report.metrics.winRate);
+  const drawdownBase = Math.max(grossProfit, Math.abs(report.metrics.netPnl), 1);
+  const drawdownScore = smoothScore(maxDrawdown / drawdownBase, [
+    [0.05, 100],
+    [0.15, 85],
+    [0.35, 55],
+    [0.65, 20],
+    [1, 0]
+  ]);
+  const lossConcentrationScore = smoothScore(largestLossRatio, [
+    [1.25, 100],
+    [2, 80],
+    [3, 55],
+    [5, 20],
+    [7, 0]
+  ]);
+
+  return drawdownScore * 0.65 + lossConcentrationScore * 0.35;
+}
+
+function scoreCostDrag(costDragPct: number | undefined, metrics: DiagnosticsResult["metrics"]) {
+  if (costDragPct === undefined) {
+    if (metrics.grossPnl > 0 && metrics.netPnl < 0) return 10;
+    if (metrics.totalCosts > 0) return 58;
+    return 65;
+  }
+
+  return smoothScore(costDragPct, [
+    [0.03, 100],
+    [0.12, 82],
+    [0.25, 62],
+    [0.4, 38],
+    [0.75, 0]
+  ]);
+}
+
+function scoreWinRate(winRate: number) {
+  return smoothScore(winRate, [
+    [0.32, 0],
+    [0.42, 35],
+    [0.5, 62],
+    [0.58, 82],
+    [0.68, 100]
+  ]);
+}
+
+function scoreRiskCapture(averageRealizedR: number | undefined) {
+  if (averageRealizedR === undefined) return 62;
+  return smoothScore(averageRealizedR, [
+    [0, 15],
+    [0.25, 45],
+    [0.5, 68],
+    [1, 92],
+    [1.5, 100]
+  ]);
+}
+
+function scoreConfidence(metrics: DiagnosticsResult["metrics"]) {
+  const sampleConfidence = smoothScore(metrics.totalTrades, [
+    [5, 0.55],
+    [20, 0.78],
+    [50, 0.9],
+    [100, 0.96],
+    [200, 1]
+  ]);
+  const rDataAdjustment = metrics.averageRealizedR === undefined ? 0.94 : 1;
+
+  return clamp(sampleConfidence * rDataAdjustment, 0.5, 1);
+}
+
+function calculateMaxDrawdown(equityValues: number[]) {
+  let peak = equityValues[0] ?? 0;
+  let maxDrawdown = 0;
+
+  equityValues.forEach((value) => {
+    peak = Math.max(peak, value);
+    maxDrawdown = Math.max(maxDrawdown, peak - value);
+  });
+
+  return maxDrawdown;
+}
+
+function buildEquityCurveFromTrades(trades: DiagnosticsResult["trades"]) {
+  let equity = 0;
+  return trades.map((trade, index) => {
+    equity += trade.netPnl;
+    return { trade: index + 1, equity };
+  });
+}
+
+function smoothScore(value: number, points: Array<[number, number]>) {
+  if (!Number.isFinite(value)) return points[0]?.[1] ?? 0;
+  const sorted = [...points].sort((a, b) => a[0] - b[0]);
+  if (value <= sorted[0][0]) return sorted[0][1];
+
+  for (let index = 1; index < sorted.length; index += 1) {
+    const [rightValue, rightScore] = sorted[index];
+    const [leftValue, leftScore] = sorted[index - 1];
+    if (value <= rightValue) {
+      const progress = (value - leftValue) / (rightValue - leftValue || 1);
+      return leftScore + (rightScore - leftScore) * progress;
+    }
+  }
+
+  return sorted[sorted.length - 1][1];
+}
+
+function clamp(value: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, value));
 }
 
 function scoreBand(score: number): ReportIntelligence["healthBand"] {

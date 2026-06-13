@@ -485,13 +485,13 @@ function StrategyMonitoringSection({
       <PaywallGate
         feature="strategy_health_monitoring"
         accessLevel={strategyMonitoringAccess}
-        title="Upgrade to Pro to unlock strategy health monitoring."
+        title="Upgrade to Pro to unlock Edge Health monitoring."
         description="Pro compares the latest iteration against prior reports, cost drag, expectancy, and R capture trends."
       >
         <div className="border border-white/[0.1] bg-white/[0.025] p-6">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan">Strategy Health Monitoring</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan">Edge Health Monitoring</p>
               <h2 className="mt-3 text-2xl font-semibold capitalize tracking-[-0.045em] text-ink">
                 {monitoring.healthStatus.replace(/_/g, " ")}
               </h2>

@@ -733,7 +733,7 @@ export function DashboardPage({
               <div className="EdgeTrace-command-top-pair">
                 <article className="EdgeTrace-command-card EdgeTrace-command-health" data-testid="dashboard-health-card">
                   <div className="EdgeTrace-command-card-heading">
-                    <span>Strategy Health</span>
+                    <span>Edge Health</span>
                   </div>
                   <div className={`EdgeTrace-command-health-score tone-${healthTone}`}>
                     <strong>{intelligence.strategyHealthScore}</strong>
@@ -1094,7 +1094,7 @@ export function DashboardPage({
             icon={overviewCardTone === "green" ? <CheckCircle2 size={52} /> : <AlertCircle size={52} />}
           />
           <DashboardMetricCard
-            title="Strategy Health"
+            title="Edge Health"
             value={`${intelligence.strategyHealthScore}`}
             suffix="/100"
             detail={healthScoreCopy(intelligence.strategyHealthScore)}
@@ -2387,8 +2387,8 @@ function PanelHeader({ title, info }: { title: string; info?: boolean | string }
 
 function panelInfoText(title: string) {
   const descriptions: Record<string, string> = {
-    Overview: "Overall read of the imported report based on health score and primary diagnosis.",
-    "Strategy Health": "Composite 0-100 score from profitability, expectancy, costs, R capture, win rate, and trade count.",
+    Overview: "Overall read of the imported report based on Edge Health and primary diagnosis.",
+    "Edge Health": "Composite 0-100 score from expectancy, payoff quality, equity stability, costs, win rate, R capture, and sample confidence.",
     Expectancy: "Average after-cost profit or loss per completed trade.",
     "Net PnL": "Total after-cost profit or loss across the imported trades.",
     "Win Rate": "Percentage of imported trades that closed profitably.",
@@ -2561,8 +2561,8 @@ function buildGuidedReportSteps({
       title: `The headline is ${humanDiagnosis(intelligence.primaryDiagnosis)}.`,
       body: intelligence.primaryExplanation,
       metrics: [
-        { label: "Health score", value: `${intelligence.strategyHealthScore}/100`, tone: guideToneForScore(intelligence.strategyHealthScore) },
-        { label: "Band", value: intelligence.healthBand, tone: guideToneForScore(intelligence.strategyHealthScore) },
+        { label: "Edge Health", value: `${intelligence.strategyHealthScore}/100`, tone: guideToneForScore(intelligence.strategyHealthScore) },
+        { label: "Status", value: intelligence.healthBand, tone: guideToneForScore(intelligence.strategyHealthScore) },
         { label: "Primary leak", value: intelligence.primaryLeak.title.replace("Primary Leak: ", ""), tone: intelligence.primaryDiagnosis === "Healthy" ? "green" : "red" }
       ],
       details: compactDetails([
@@ -3345,10 +3345,10 @@ function healthScoreTone(score: number): "red" | "yellow" | "green" | "blue" | "
 }
 
 function healthScoreCopy(score: number) {
-  if (score >= 80) return "Healthy score. At or above target.";
-  if (score >= 60) return "Watchlist score. Monitor before adding size.";
-  if (score >= 40) return "Unstable score. Review weak metrics before the next iteration.";
-  return "High-risk score. Fix the primary leak before adding trades.";
+  if (score >= 80) return "Strong edge profile across expectancy, payoff, stability, costs, and sample quality.";
+  if (score >= 60) return "Positive edge profile with one or two areas still worth reviewing.";
+  if (score >= 40) return "Mixed edge profile. Review weak components before adding size.";
+  return "Fragile edge profile. Fix the primary leak before adding trades.";
 }
 
 function winRateCopy(winRate: number) {

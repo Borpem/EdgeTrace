@@ -162,7 +162,7 @@ function DashboardMockup() {
 
           <div className="relative mt-5 grid gap-4 lg:grid-cols-[1fr_1.05fr]">
             <div className="border border-white/[0.12] bg-[#0b111c]/80 p-5">
-              <p className="text-[0.65rem] font-semibold uppercase tracking-[0.24em] text-cyan">Strategy Health</p>
+              <p className="text-[0.65rem] font-semibold uppercase tracking-[0.24em] text-cyan">Edge Health</p>
               <div className="mt-6 flex items-start gap-5">
                 <p className="text-6xl font-semibold tracking-[-0.08em] text-ink">82</p>
                 <div className="pt-2">
