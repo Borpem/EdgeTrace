@@ -842,16 +842,6 @@ export function DashboardPage({
               </div>
             </article>
 
-            <article className="EdgeTrace-command-card EdgeTrace-command-payoff">
-              <div className="EdgeTrace-command-card-heading">
-                <span>Payoff Ratio</span>
-              </div>
-              <strong>{number.format(payoffRatio)}</strong>
-              <p>
-                Average winning trade divided by average losing trade. A {number.format(payoffRatio)} payoff ratio means the average win is {number.format(payoffRatio)}x the average loss.
-              </p>
-            </article>
-
             <article className="EdgeTrace-command-card EdgeTrace-command-actions">
               <div className="EdgeTrace-command-card-heading">
                 <span>Recommended Actions (Next Steps)</span>

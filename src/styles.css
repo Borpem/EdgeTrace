@@ -5074,15 +5074,7 @@ body {
 }
 
 .EdgeTrace-command-drivers {
-  grid-column: span 8;
-}
-
-.EdgeTrace-command-payoff {
-  grid-column: span 4;
-  border-color: rgba(36, 53, 66, 0.58);
-  background:
-    linear-gradient(135deg, rgba(10, 16, 22, 0.82), rgba(5, 9, 14, 0.96)),
-    #080d13;
+  grid-column: 1 / -1;
 }
 
 .EdgeTrace-command-actions {
@@ -5326,8 +5318,15 @@ body {
 .EdgeTrace-command-driver-columns {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1.2rem;
+  gap: 0.85rem;
   margin-top: 1.05rem;
+}
+
+.EdgeTrace-command-driver-columns > div {
+  border: 1px solid rgba(36, 53, 66, 0.72);
+  border-radius: 5px;
+  background: rgba(5, 10, 15, 0.42);
+  padding: 0.82rem;
 }
 
 .EdgeTrace-command-driver-columns h3,
@@ -5337,6 +5336,14 @@ body {
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
+}
+
+.EdgeTrace-command-driver-columns > div:first-child {
+  border-left: 3px solid var(--command-red);
+}
+
+.EdgeTrace-command-driver-columns > div:last-child {
+  border-left: 3px solid var(--command-green);
 }
 
 .EdgeTrace-command-driver-columns > div:first-child h3 { color: #f09aaa; }
@@ -5354,20 +5361,23 @@ body {
   font-size: 0.9rem;
 }
 
-.EdgeTrace-command-payoff strong {
-  display: block;
-  margin-top: 1rem;
-  color: var(--command-blue);
-  font-size: 2.1rem;
-  font-weight: 540;
-  line-height: 1;
+.EdgeTrace-command-driver-columns p {
+  margin: 0;
+  border-top: 1px solid rgba(36, 53, 66, 0.56);
+  padding: 0.62rem 0;
 }
 
-.EdgeTrace-command-payoff p {
-  margin: 0.8rem 0 0;
+.EdgeTrace-command-driver-columns p:last-child {
+  padding-bottom: 0;
+}
+
+.EdgeTrace-command-driver-columns p span {
   color: var(--command-text-secondary);
-  font-size: 0.9rem;
-  line-height: 1.45;
+}
+
+.EdgeTrace-command-driver-columns p strong {
+  min-width: 7.5rem;
+  text-align: right;
 }
 
 .EdgeTrace-command-action-row {
@@ -5568,7 +5578,6 @@ body {
   .EdgeTrace-command-top-left,
   .EdgeTrace-command-changed,
   .EdgeTrace-command-drivers,
-  .EdgeTrace-command-payoff,
   .EdgeTrace-command-table-card,
   .EdgeTrace-command-context {
     grid-column: 1 / -1;
