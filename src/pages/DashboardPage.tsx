@@ -796,10 +796,15 @@ export function DashboardPage({
               <div className="EdgeTrace-command-action-row">
                 {commandActions.map((item) => (
                   <div key={item.title}>
-                    <strong>{item.title}</strong>
-                    <p>{item.title === "Review Primary Leak" ? intelligence.primaryLeak.recommendedInspection : item.impact}</p>
-                    <span className={`tone-${item.tone}`}>{item.impact}</span>
-                    <button onClick={inspectPrimarySegment}>Take Action <ArrowRight size={12} aria-hidden="true" /></button>
+                    <div className="EdgeTrace-command-action-copy">
+                      <span className={`tone-${item.tone}`}>{item.impact}</span>
+                      <strong>{item.title}</strong>
+                      <p>{item.title === "Review Primary Leak" ? intelligence.primaryLeak.recommendedInspection : item.impact}</p>
+                    </div>
+                    <button onClick={inspectPrimarySegment}>
+                      <span>Take Action</span>
+                      <ArrowRight size={14} aria-hidden="true" />
+                    </button>
                   </div>
                 ))}
                 <aside>

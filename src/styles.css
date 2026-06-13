@@ -5235,17 +5235,34 @@ body {
 
 .EdgeTrace-command-action-row {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(10rem, 0.78fr);
-  gap: 0.85rem;
-  margin-top: 0.85rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(12rem, 0.7fr);
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
 .EdgeTrace-command-action-row > div,
 .EdgeTrace-command-action-row aside {
-  border: 1px solid rgba(136, 158, 180, 0.3);
-  border-radius: 4px;
-  background: rgba(5, 15, 24, 0.38);
-  padding: 0.78rem;
+  border: 1px solid rgba(96, 128, 154, 0.25);
+  border-radius: 6px;
+  background:
+    linear-gradient(180deg, rgba(11, 28, 41, 0.74), rgba(6, 16, 24, 0.74)),
+    rgba(5, 15, 24, 0.48);
+  padding: 0.95rem;
+}
+
+.EdgeTrace-command-action-row > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 10.4rem;
+  transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+}
+
+.EdgeTrace-command-action-row > div:hover {
+  border-color: rgba(88, 200, 232, 0.36);
+  background:
+    linear-gradient(180deg, rgba(13, 34, 50, 0.88), rgba(6, 17, 26, 0.84)),
+    rgba(5, 15, 24, 0.58);
 }
 
 .EdgeTrace-command-action-row strong {
@@ -5255,17 +5272,19 @@ body {
   font-weight: 620;
 }
 
-.EdgeTrace-command-action-row p {
-  min-height: 2.35rem;
-  margin: 0.28rem 0 0.7rem;
+.EdgeTrace-command-action-row > div p {
+  min-height: 2.55rem;
+  margin: 0.42rem 0 0;
   color: rgba(210, 222, 233, 0.7);
   font-size: 0.82rem;
   line-height: 1.32;
 }
 
-.EdgeTrace-command-action-row span {
+.EdgeTrace-command-action-copy > span,
+.EdgeTrace-command-action-row aside p span {
   display: inline-flex;
-  margin-right: 0.35rem;
+  width: fit-content;
+  margin: 0 0 0.65rem;
   border: 1px solid currentColor;
   border-radius: 3px;
   padding: 0.17rem 0.35rem;
@@ -5273,10 +5292,50 @@ body {
 }
 
 .EdgeTrace-command-action-row button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.42rem;
   width: 100%;
-  margin-top: 0.65rem;
-  padding: 0.45rem 0.6rem;
-  font-size: 0.8rem;
+  min-height: 2.55rem;
+  margin-top: 1rem;
+  padding: 0.55rem 0.8rem;
+  color: #dff7ff;
+  font-size: 0.83rem;
+}
+
+.EdgeTrace-command-action-row button svg {
+  flex: 0 0 auto;
+  transform: translateY(0.5px);
+  transition: transform 140ms ease;
+}
+
+.EdgeTrace-command-action-row button:hover {
+  border-color: rgba(88, 200, 232, 0.58);
+  background: rgba(16, 45, 63, 0.82);
+}
+
+.EdgeTrace-command-action-row button:hover svg {
+  transform: translate(2px, 0.5px);
+}
+
+.EdgeTrace-command-action-row aside {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background:
+    linear-gradient(180deg, rgba(8, 20, 30, 0.78), rgba(5, 13, 21, 0.82)),
+    rgba(5, 15, 24, 0.5);
+}
+
+.EdgeTrace-command-action-row aside p {
+  margin: 0.45rem 0;
+  padding: 0.18rem 0;
+}
+
+.EdgeTrace-command-action-row aside p span {
+  margin: 0;
+  background: rgba(255, 255, 255, 0.025);
 }
 
 .EdgeTrace-command-table-card table {
