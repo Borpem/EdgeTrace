@@ -4946,6 +4946,10 @@ body {
 }
 
 .EdgeTrace-command-card-heading button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
   margin-left: auto;
   border: 1px solid rgba(40, 80, 102, 0.55);
   border-radius: 4px;
@@ -4954,6 +4958,12 @@ body {
   padding: 0.36rem 0.58rem;
   font-size: 0.73rem;
   font-weight: 620;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.EdgeTrace-command-card-heading button svg {
+  flex: 0 0 auto;
 }
 
 .EdgeTrace-command-card-1 {
