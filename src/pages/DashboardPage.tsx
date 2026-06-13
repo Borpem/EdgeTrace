@@ -729,22 +729,42 @@ export function DashboardPage({
               <div className="EdgeTrace-command-card-heading">
                 <span>Decision Metrics</span>
               </div>
-              <div className="EdgeTrace-command-metric-grid">
+              <div className="EdgeTrace-command-metric-groups">
                 {[
-                  ["Net PnL", currency.format(metrics.netPnl), metrics.netPnl >= 0],
-                  ["Expectancy", currency.format(metrics.expectancy), metrics.expectancy >= 0],
-                  ["Win Rate", percent.format(metrics.winRate), true],
-                  ["R-Multiple", metrics.averageRealizedR !== undefined ? `${number.format(metrics.averageRealizedR)}R` : "N/A", (metrics.averageRealizedR ?? 0) >= 0],
-                  ["Profit Factor", formatProfitFactor(metrics.profitFactor), metrics.profitFactor >= 1],
-                  ["Trade Count", number.format(normalizedTradeCount), true],
-                  ["Avg Win", currency.format(metrics.averageWin), true],
-                  ["Avg Loss", currency.format(metrics.averageLoss), false],
-                  ["Payoff Ratio", number.format(payoffRatio), payoffRatio >= 1]
-                ].map(([label, value, positive]) => (
-                  <div key={String(label)}>
-                    <span>{label}</span>
-                    <strong className={positive ? "is-blue" : "is-red"}>{value}</strong>
-                  </div>
+                  {
+                    group: "Performance",
+                    values: [
+                      ["Net PnL", currency.format(metrics.netPnl), metrics.netPnl >= 0],
+                      ["Expectancy", currency.format(metrics.expectancy), metrics.expectancy >= 0],
+                      ["Profit Factor", formatProfitFactor(metrics.profitFactor), metrics.profitFactor >= 1]
+                    ]
+                  },
+                  {
+                    group: "Execution",
+                    values: [
+                      ["Win Rate", percent.format(metrics.winRate), true],
+                      ["R-Multiple", metrics.averageRealizedR !== undefined ? `${number.format(metrics.averageRealizedR)}R` : "N/A", (metrics.averageRealizedR ?? 0) >= 0],
+                      ["Payoff Ratio", number.format(payoffRatio), payoffRatio >= 1]
+                    ]
+                  },
+                  {
+                    group: "Trade Profile",
+                    values: [
+                      ["Trade Count", number.format(normalizedTradeCount), true],
+                      ["Avg Win", currency.format(metrics.averageWin), true],
+                      ["Avg Loss", currency.format(metrics.averageLoss), false]
+                    ]
+                  }
+                ].map((section) => (
+                  <section key={section.group}>
+                    <h3>{section.group}</h3>
+                    {section.values.map(([label, value, positive]) => (
+                      <div key={String(label)}>
+                        <span>{label}</span>
+                        <strong className={positive ? "is-blue" : "is-red"}>{value}</strong>
+                      </div>
+                    ))}
+                  </section>
                 ))}
               </div>
             </article>
@@ -794,19 +814,21 @@ export function DashboardPage({
                 <span>Recommended Actions (Next Steps)</span>
               </div>
               <div className="EdgeTrace-command-action-row">
-                {commandActions.map((item) => (
-                  <div key={item.title} className={`EdgeTrace-command-action-card is-action-${item.tone}`}>
-                    <div className="EdgeTrace-command-action-copy">
+                <div className="EdgeTrace-command-action-list">
+                  {commandActions.map((item) => (
+                    <div key={item.title} className={`EdgeTrace-command-action-card is-action-${item.tone}`}>
                       <span className={`tone-${item.tone}`}>{item.impact}</span>
-                      <strong>{item.title}</strong>
-                      <p>{item.title === "Review Primary Leak" ? intelligence.primaryLeak.recommendedInspection : item.impact}</p>
+                      <div className="EdgeTrace-command-action-copy">
+                        <strong>{item.title}</strong>
+                        <p>{item.title === "Review Primary Leak" ? intelligence.primaryLeak.recommendedInspection : item.impact}</p>
+                      </div>
+                      <button onClick={inspectPrimarySegment}>
+                        <span>Take Action</span>
+                        <ArrowRight size={14} aria-hidden="true" />
+                      </button>
                     </div>
-                    <button onClick={inspectPrimarySegment}>
-                      <span>Take Action</span>
-                      <ArrowRight size={14} aria-hidden="true" />
-                    </button>
-                  </div>
-                ))}
+                  ))}
+                </div>
                 <aside>
                   <h3>Action Priority</h3>
                   <p><span className="is-red">High Impact</span><strong>{actionPriorityCounts.high}</strong></p>

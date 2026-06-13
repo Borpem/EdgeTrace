@@ -5056,15 +5056,25 @@ body {
 .EdgeTrace-command-changed,
 .EdgeTrace-command-drivers {
   grid-column: span 6;
+  background:
+    linear-gradient(135deg, rgba(13, 21, 28, 0.86), rgba(7, 12, 18, 0.96)),
+    var(--command-bg-card);
 }
 
 .EdgeTrace-command-actions {
   grid-column: 1 / -1;
+  background:
+    linear-gradient(135deg, rgba(13, 21, 28, 0.86), rgba(7, 12, 18, 0.96)),
+    var(--command-bg-card);
 }
 
 .EdgeTrace-command-table-card,
 .EdgeTrace-command-context {
   grid-column: span 4;
+  border-color: rgba(36, 53, 66, 0.58);
+  background:
+    linear-gradient(135deg, rgba(10, 16, 22, 0.82), rgba(5, 9, 14, 0.96)),
+    #080d13;
 }
 
 .EdgeTrace-command-health-score {
@@ -5227,6 +5237,51 @@ body {
   font-weight: 540;
 }
 
+.EdgeTrace-command-metric-groups {
+  display: grid;
+  gap: 0.72rem;
+  margin-top: 1rem;
+}
+
+.EdgeTrace-command-metric-groups section {
+  border: 1px solid rgba(36, 53, 66, 0.72);
+  border-radius: 5px;
+  background: rgba(5, 10, 15, 0.42);
+  padding: 0.78rem 0.82rem;
+}
+
+.EdgeTrace-command-metric-groups h3 {
+  margin: 0 0 0.52rem;
+  color: var(--command-text-muted);
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.EdgeTrace-command-metric-groups section > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.34rem 0;
+}
+
+.EdgeTrace-command-metric-groups section > div + div {
+  border-top: 1px solid rgba(36, 53, 66, 0.56);
+}
+
+.EdgeTrace-command-metric-groups span {
+  color: var(--command-text-muted);
+  font-size: 0.8rem;
+}
+
+.EdgeTrace-command-metric-groups strong {
+  color: var(--command-text);
+  font-size: 1.05rem;
+  font-weight: 560;
+}
+
 .EdgeTrace-command-change-grid {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
@@ -5273,12 +5328,17 @@ body {
 
 .EdgeTrace-command-action-row {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(12rem, 0.7fr);
-  gap: 0.75rem;
+  grid-template-columns: minmax(0, 1fr) minmax(12rem, 0.22fr);
+  gap: 1rem;
   margin-top: 1.05rem;
 }
 
-.EdgeTrace-command-action-row > div,
+.EdgeTrace-command-action-list {
+  display: grid;
+  gap: 0.62rem;
+}
+
+.EdgeTrace-command-action-card,
 .EdgeTrace-command-action-row aside {
   border: 1px solid rgba(36, 53, 66, 0.72);
   border-radius: 5px;
@@ -5286,16 +5346,17 @@ body {
   padding: 0.92rem;
 }
 
-.EdgeTrace-command-action-row > div {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-height: 9.6rem;
+.EdgeTrace-command-action-card {
+  display: grid;
+  grid-template-columns: minmax(7rem, 0.32fr) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  min-height: 4.25rem;
   border-left-width: 3px;
   transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
 }
 
-.EdgeTrace-command-action-row > div:hover {
+.EdgeTrace-command-action-card:hover {
   border-color: rgba(70, 96, 112, 0.86);
   background: rgba(12, 22, 30, 0.6);
 }
@@ -5312,19 +5373,18 @@ body {
   font-weight: 620;
 }
 
-.EdgeTrace-command-action-row > div p {
-  min-height: 2.55rem;
-  margin: 0.42rem 0 0;
+.EdgeTrace-command-action-card p {
+  margin: 0.18rem 0 0;
   color: var(--command-text-muted);
   font-size: 0.82rem;
   line-height: 1.32;
 }
 
-.EdgeTrace-command-action-copy > span,
+.EdgeTrace-command-action-card > span,
 .EdgeTrace-command-action-row aside p span {
   display: inline-flex;
   width: fit-content;
-  margin: 0 0 0.72rem;
+  margin: 0;
   border: 0;
   border-radius: 3px;
   padding: 0;
@@ -5340,7 +5400,7 @@ body {
   gap: 0.42rem;
   width: fit-content;
   min-height: 2rem;
-  margin-top: 1rem;
+  margin-top: 0;
   padding: 0;
   border: 0;
   background: transparent;
@@ -5369,6 +5429,7 @@ body {
   flex-direction: column;
   justify-content: center;
   background: rgba(4, 9, 14, 0.42);
+  padding: 1rem;
 }
 
 .EdgeTrace-command-action-row aside p {
@@ -5467,7 +5528,7 @@ body {
   }
 
   .EdgeTrace-command-action-row {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
   }
 }
 
@@ -5482,7 +5543,9 @@ body {
 
   .EdgeTrace-command-driver-columns,
   .EdgeTrace-command-action-row,
+  .EdgeTrace-command-action-card,
   .EdgeTrace-command-metric-grid,
+  .EdgeTrace-command-metric-groups section > div,
   .EdgeTrace-command-change-grid {
     grid-template-columns: 1fr;
   }
