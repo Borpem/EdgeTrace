@@ -713,8 +713,29 @@ export function DashboardPage({
                   <p>{formatOrdinal(healthPercentile)} percentile</p>
                   <div className="EdgeTrace-command-mini-chart">
                     <ResponsiveContainer width="100%" height={82}>
-                      <LineChart data={performanceData}>
-                        <Line type="monotone" dataKey="equity" stroke="#73c98f" strokeWidth={2.2} dot={false} isAnimationActive={false} />
+                      <LineChart data={signedPerformanceData}>
+                        <ReferenceLine y={0} stroke="#5b6a76" strokeOpacity={0.38} />
+                        <Tooltip cursor={{ stroke: "#5b6a76", strokeOpacity: 0.28 }} content={<PerformanceTrendTooltip />} />
+                        <Line
+                          type="linear"
+                          dataKey="positiveEquity"
+                          stroke="#73c98f"
+                          strokeWidth={2.2}
+                          dot={false}
+                          activeDot={{ r: 3, fill: "#73c98f", stroke: "#07111d", strokeWidth: 1.5 }}
+                          isAnimationActive={false}
+                          connectNulls={false}
+                        />
+                        <Line
+                          type="linear"
+                          dataKey="negativeEquity"
+                          stroke="#e65f73"
+                          strokeWidth={2.2}
+                          dot={false}
+                          activeDot={{ r: 3, fill: "#e65f73", stroke: "#07111d", strokeWidth: 1.5 }}
+                          isAnimationActive={false}
+                          connectNulls={false}
+                        />
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
@@ -819,6 +840,16 @@ export function DashboardPage({
                   ))}
                 </div>
               </div>
+            </article>
+
+            <article className="EdgeTrace-command-card EdgeTrace-command-payoff">
+              <div className="EdgeTrace-command-card-heading">
+                <span>Payoff Ratio</span>
+              </div>
+              <strong>{number.format(payoffRatio)}</strong>
+              <p>
+                Average winning trade divided by average losing trade. A {number.format(payoffRatio)} payoff ratio means the average win is {number.format(payoffRatio)}x the average loss.
+              </p>
             </article>
 
             <article className="EdgeTrace-command-card EdgeTrace-command-actions">

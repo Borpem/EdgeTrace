@@ -5074,7 +5074,15 @@ body {
 }
 
 .EdgeTrace-command-drivers {
-  grid-column: 1 / -1;
+  grid-column: span 8;
+}
+
+.EdgeTrace-command-payoff {
+  grid-column: span 4;
+  border-color: rgba(36, 53, 66, 0.58);
+  background:
+    linear-gradient(135deg, rgba(10, 16, 22, 0.82), rgba(5, 9, 14, 0.96)),
+    #080d13;
 }
 
 .EdgeTrace-command-actions {
@@ -5130,6 +5138,10 @@ body {
 .EdgeTrace-command-mini-chart {
   height: 5rem;
   margin-top: 0.8rem;
+}
+
+.EdgeTrace-command-mini-chart .recharts-tooltip-wrapper {
+  z-index: 4;
 }
 
 .EdgeTrace-command-range {
@@ -5314,7 +5326,7 @@ body {
 .EdgeTrace-command-driver-columns {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 2rem;
+  gap: 1.2rem;
   margin-top: 1.05rem;
 }
 
@@ -5340,6 +5352,22 @@ body {
   margin: 0.55rem 0;
   color: var(--command-text-secondary);
   font-size: 0.9rem;
+}
+
+.EdgeTrace-command-payoff strong {
+  display: block;
+  margin-top: 1rem;
+  color: var(--command-blue);
+  font-size: 2.1rem;
+  font-weight: 540;
+  line-height: 1;
+}
+
+.EdgeTrace-command-payoff p {
+  margin: 0.8rem 0 0;
+  color: var(--command-text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.45;
 }
 
 .EdgeTrace-command-action-row {
@@ -5540,6 +5568,7 @@ body {
   .EdgeTrace-command-top-left,
   .EdgeTrace-command-changed,
   .EdgeTrace-command-drivers,
+  .EdgeTrace-command-payoff,
   .EdgeTrace-command-table-card,
   .EdgeTrace-command-context {
     grid-column: 1 / -1;
