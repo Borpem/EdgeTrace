@@ -64,6 +64,14 @@ const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "
 const percent = new Intl.NumberFormat("en-US", { style: "percent", maximumFractionDigits: 1 });
 const number = new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 });
 
+function formatOrdinal(value: number) {
+  const rounded = Math.round(value);
+  const mod100 = rounded % 100;
+  if (mod100 >= 11 && mod100 <= 13) return `${number.format(rounded)}th`;
+  const suffix = rounded % 10 === 1 ? "st" : rounded % 10 === 2 ? "nd" : rounded % 10 === 3 ? "rd" : "th";
+  return `${number.format(rounded)}${suffix}`;
+}
+
 type SortKey = keyof Pick<NormalizedTrade, "symbol" | "side" | "entryTime" | "grossPnl" | "netPnl" | "realizedR">;
 type BreakdownSortKey =
   | "totalTrades"
@@ -702,7 +710,7 @@ export function DashboardPage({
                     <span>/100</span>
                     <em>{trendLabel} <TrendingUp size={16} aria-hidden="true" /></em>
                   </div>
-                  <p>{number.format(healthPercentile)}st percentile</p>
+                  <p>{formatOrdinal(healthPercentile)} percentile</p>
                   <div className="EdgeTrace-command-mini-chart">
                     <ResponsiveContainer width="100%" height={82}>
                       <LineChart data={performanceData}>
@@ -1815,7 +1823,7 @@ function BenchmarkMetricRow({ metric }: { metric: AggregateBenchmarkMetric }) {
         <small>Median {formatBenchmarkValue(metric.populationMedian, metric.unit)}</small>
       </div>
       <div className="EdgeTrace-benchmark-percentile" aria-label={`${metric.label} percentile`}>
-        <span>{metric.percentile ? `${metric.percentile}th` : "N/A"}</span>
+        <span>{metric.percentile ? formatOrdinal(metric.percentile) : "N/A"}</span>
         <i>
           <b style={{ width: `${Math.max(0, Math.min(100, percentileValue))}%` }} />
         </i>
