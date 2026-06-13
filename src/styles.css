@@ -4760,7 +4760,7 @@ body {
   background:
     radial-gradient(circle at 78% 18%, rgba(73, 183, 217, 0.09), transparent 30rem),
     linear-gradient(180deg, #040a0f 0%, #061018 48%, #040a0f 100%);
-  padding: 0.65rem;
+  padding: 0.55rem;
 }
 
 .EdgeTrace-command-dashboard > .EdgeTrace-dashboard-sidebar,
@@ -4774,7 +4774,7 @@ body {
 }
 
 .EdgeTrace-command-dashboard > .EdgeTrace-dashboard-main {
-  width: min(100%, 1450px);
+  width: min(100%, 1720px);
   margin: 0 auto;
   padding: 0;
 }
@@ -4788,7 +4788,7 @@ body {
     rgba(6, 16, 24, 0.96);
   box-shadow: 0 28px 80px -62px rgba(73, 183, 217, 0.34);
   color: #f4f8fb;
-  padding: 0.72rem;
+  padding: 0.82rem;
 }
 
 .EdgeTrace-command-nav {
