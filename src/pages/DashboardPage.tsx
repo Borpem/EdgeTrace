@@ -795,7 +795,7 @@ export function DashboardPage({
               </div>
               <div className="EdgeTrace-command-action-row">
                 {commandActions.map((item) => (
-                  <div key={item.title}>
+                  <div key={item.title} className={`EdgeTrace-command-action-card is-action-${item.tone}`}>
                     <div className="EdgeTrace-command-action-copy">
                       <span className={`tone-${item.tone}`}>{item.impact}</span>
                       <strong>{item.title}</strong>

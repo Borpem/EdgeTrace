@@ -4755,10 +4755,11 @@ body {
 }
 
 .EdgeTrace-command-dashboard {
-  --command-bg-page: #03070a;
-  --command-bg-shell: #070d12;
-  --command-bg-card: #0d151d;
-  --command-bg-card-soft: #121d26;
+  --command-bg-page: #020609;
+  --command-bg-shell: #060b10;
+  --command-bg-card: #0c141c;
+  --command-bg-card-soft: #121c25;
+  --command-bg-card-elevated: #111d27;
   --command-border-soft: #243542;
   --command-border-strong: #385264;
   --command-text: #f2f6f8;
@@ -4774,8 +4775,8 @@ body {
   display: block;
   min-height: 100vh;
   background:
-    radial-gradient(circle at 78% 18%, rgba(97, 184, 211, 0.045), transparent 34rem),
-    linear-gradient(180deg, var(--command-bg-page) 0%, #050c11 48%, var(--command-bg-page) 100%);
+    radial-gradient(circle at 72% 12%, rgba(97, 184, 211, 0.035), transparent 34rem),
+    linear-gradient(180deg, var(--command-bg-page) 0%, #050a0e 48%, var(--command-bg-page) 100%);
   padding: 0.4rem;
 }
 
@@ -4796,13 +4797,13 @@ body {
 }
 
 .EdgeTrace-command-shell {
-  border: 1px solid rgba(56, 82, 100, 0.7);
-  border-radius: 10px;
+  border: 1px solid rgba(56, 82, 100, 0.62);
+  border-radius: 8px;
   background:
-    radial-gradient(circle at 18% 0%, rgba(97, 184, 211, 0.03), transparent 25rem),
+    radial-gradient(circle at 18% 0%, rgba(97, 184, 211, 0.022), transparent 25rem),
     radial-gradient(circle at 88% 2%, rgba(122, 140, 255, 0.022), transparent 30rem),
     var(--command-bg-shell);
-  box-shadow: 0 28px 80px -66px rgba(97, 184, 211, 0.22);
+  box-shadow: 0 30px 90px -72px rgba(97, 184, 211, 0.2);
   color: var(--command-text);
   padding: 0.82rem;
 }
@@ -4909,12 +4910,14 @@ body {
 .EdgeTrace-command-card {
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(36, 53, 66, 0.95);
-  border-radius: 8px;
+  border: 1px solid rgba(36, 53, 66, 0.82);
+  border-radius: 7px;
   background:
-    linear-gradient(135deg, rgba(18, 29, 38, 0.86), rgba(9, 15, 22, 0.96)),
+    linear-gradient(135deg, rgba(16, 25, 33, 0.88), rgba(8, 13, 19, 0.97)),
     var(--command-bg-card);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.028),
+    0 16px 44px -42px rgba(0, 0, 0, 0.95);
 }
 
 .EdgeTrace-command-card::before {
@@ -4936,8 +4939,8 @@ body {
   align-items: center;
   gap: 0.5rem;
   color: var(--command-text-secondary);
-  font-size: 0.86rem;
-  font-weight: 680;
+  font-size: 0.78rem;
+  font-weight: 650;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -4955,7 +4958,10 @@ body {
 
 .EdgeTrace-command-card-1 {
   margin-top: 0.72rem;
-  padding: 0.9rem 1.05rem 1rem;
+  padding: 0.78rem 0.9rem;
+  background:
+    linear-gradient(90deg, rgba(18, 30, 39, 0.92), rgba(8, 13, 19, 0.98)),
+    var(--command-bg-card);
 }
 
 .EdgeTrace-command-overview-main {
@@ -4968,8 +4974,8 @@ body {
 
 .EdgeTrace-command-overview-main h1 {
   margin: 0;
-  font-size: 1.38rem;
-  font-weight: 650;
+  font-size: 1.28rem;
+  font-weight: 620;
   letter-spacing: 0;
 }
 
@@ -5012,26 +5018,39 @@ body {
 .EdgeTrace-command-grid {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: 0.82rem;
-  margin-top: 0.82rem;
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
 .EdgeTrace-command-grid > .EdgeTrace-command-card {
-  padding: 1rem;
+  padding: 1.05rem;
 }
 
 .EdgeTrace-command-health {
   grid-column: span 4;
-  border-color: rgba(56, 82, 100, 0.82);
+  min-height: 16.2rem;
+  border-color: rgba(72, 104, 121, 0.7);
+  background:
+    linear-gradient(135deg, rgba(18, 34, 43, 0.98), rgba(9, 15, 22, 0.98)),
+    var(--command-bg-card-elevated);
 }
 
 .EdgeTrace-command-diagnosis {
   grid-column: span 4;
-  border-color: rgba(56, 82, 100, 0.82);
+  min-height: 16.2rem;
+  border-color: rgba(72, 104, 121, 0.7);
+  background:
+    linear-gradient(135deg, rgba(18, 31, 40, 0.98), rgba(9, 15, 22, 0.98)),
+    var(--command-bg-card-elevated);
 }
 
 .EdgeTrace-command-metrics {
   grid-column: span 4;
+  min-height: 16.2rem;
+  border-color: rgba(72, 104, 121, 0.7);
+  background:
+    linear-gradient(135deg, rgba(18, 31, 40, 0.98), rgba(9, 15, 22, 0.98)),
+    var(--command-bg-card-elevated);
 }
 
 .EdgeTrace-command-changed,
@@ -5052,13 +5071,13 @@ body {
   display: flex;
   align-items: baseline;
   gap: 0.55rem;
-  margin-top: 1.1rem;
+  margin-top: 1.25rem;
 }
 
 .EdgeTrace-command-health-score strong {
   color: var(--command-green);
-  font-size: 4rem;
-  font-weight: 560;
+  font-size: 4.35rem;
+  font-weight: 520;
   line-height: 1;
 }
 
@@ -5116,18 +5135,18 @@ body {
 }
 
 .EdgeTrace-command-diagnosis h2 {
-  margin: 1.6rem 0 0;
+  margin: 1.45rem 0 0;
   color: var(--command-text);
-  font-size: 1.82rem;
+  font-size: 2rem;
   font-weight: 520;
-  text-align: center;
+  text-align: left;
 }
 
 .EdgeTrace-command-diagnosis p {
-  max-width: 19rem;
-  margin: 0.85rem auto 0;
+  max-width: 24rem;
+  margin: 0.85rem 0 0;
   color: var(--command-text-secondary);
-  text-align: center;
+  text-align: left;
   line-height: 1.45;
 }
 
@@ -5135,8 +5154,8 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.2rem;
-  margin: 2rem auto 1rem;
-  max-width: 17.5rem;
+  margin: 1.8rem 0 1rem;
+  max-width: 19rem;
 }
 
 .EdgeTrace-command-two-metrics span {
@@ -5159,7 +5178,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 0.55rem;
-  margin: 0 auto;
+  margin: 0;
 }
 
 .EdgeTrace-command-metric-grid,
@@ -5167,27 +5186,29 @@ body {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   margin-top: 1rem;
-  border: 1px solid rgba(27, 52, 68, 0.95);
-  border-radius: 4px;
+  gap: 0.55rem;
+  border: 0;
+  border-radius: 0;
 }
 
 .EdgeTrace-command-metric-grid div,
 .EdgeTrace-command-change-grid div {
-  min-height: 5.1rem;
-  border-right: 1px solid rgba(27, 52, 68, 0.82);
-  border-bottom: 1px solid rgba(27, 52, 68, 0.82);
-  padding: 0.92rem 0.7rem;
+  min-height: 4.55rem;
+  border: 1px solid rgba(36, 53, 66, 0.76);
+  border-radius: 5px;
+  background: rgba(6, 12, 18, 0.46);
+  padding: 0.82rem 0.65rem;
   text-align: center;
 }
 
 .EdgeTrace-command-metric-grid div:nth-child(3n),
 .EdgeTrace-command-change-grid div:nth-child(4n) {
-  border-right: 0;
+  border-right: 1px solid rgba(36, 53, 66, 0.76);
 }
 
 .EdgeTrace-command-metric-grid div:nth-last-child(-n + 3),
 .EdgeTrace-command-change-grid div {
-  border-bottom: 0;
+  border-bottom: 1px solid rgba(36, 53, 66, 0.76);
 }
 
 .EdgeTrace-command-metric-grid span,
@@ -5202,8 +5223,8 @@ body {
   display: block;
   margin-top: 0.3rem;
   color: var(--command-blue);
-  font-size: 1.2rem;
-  font-weight: 560;
+  font-size: 1.18rem;
+  font-weight: 540;
 }
 
 .EdgeTrace-command-change-grid {
@@ -5253,34 +5274,36 @@ body {
 .EdgeTrace-command-action-row {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(12rem, 0.7fr);
-  gap: 1rem;
-  margin-top: 1rem;
+  gap: 0.75rem;
+  margin-top: 1.05rem;
 }
 
 .EdgeTrace-command-action-row > div,
 .EdgeTrace-command-action-row aside {
-  border: 1px solid rgba(36, 53, 66, 0.9);
-  border-radius: 6px;
-  background:
-    linear-gradient(180deg, rgba(18, 29, 38, 0.82), rgba(8, 14, 21, 0.9)),
-    var(--command-bg-card);
-  padding: 0.95rem;
+  border: 1px solid rgba(36, 53, 66, 0.72);
+  border-radius: 5px;
+  background: rgba(6, 12, 18, 0.38);
+  padding: 0.92rem;
 }
 
 .EdgeTrace-command-action-row > div {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 10.4rem;
+  min-height: 9.6rem;
+  border-left-width: 3px;
   transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
 }
 
 .EdgeTrace-command-action-row > div:hover {
-  border-color: rgba(97, 184, 211, 0.42);
-  background:
-    linear-gradient(180deg, rgba(22, 36, 47, 0.92), rgba(10, 17, 25, 0.94)),
-    var(--command-bg-card-soft);
+  border-color: rgba(70, 96, 112, 0.86);
+  background: rgba(12, 22, 30, 0.6);
 }
+
+.EdgeTrace-command-action-card.is-action-red { border-left-color: var(--command-red); }
+.EdgeTrace-command-action-card.is-action-yellow { border-left-color: var(--command-yellow); }
+.EdgeTrace-command-action-card.is-action-green { border-left-color: var(--command-green); }
+.EdgeTrace-command-action-card.is-action-gray { border-left-color: var(--command-neutral); }
 
 .EdgeTrace-command-action-row strong {
   display: block;
@@ -5301,25 +5324,28 @@ body {
 .EdgeTrace-command-action-row aside p span {
   display: inline-flex;
   width: fit-content;
-  margin: 0 0 0.65rem;
-  border: 1px solid color-mix(in srgb, currentColor 66%, transparent);
+  margin: 0 0 0.72rem;
+  border: 0;
   border-radius: 3px;
-  padding: 0.18rem 0.42rem;
-  font-size: 0.72rem;
-  font-weight: 620;
+  padding: 0;
+  background: transparent;
+  font-size: 0.76rem;
+  font-weight: 650;
 }
 
 .EdgeTrace-command-action-row button {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 0.42rem;
-  width: 100%;
-  min-height: 2.55rem;
+  width: fit-content;
+  min-height: 2rem;
   margin-top: 1rem;
-  padding: 0.55rem 0.8rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
   color: var(--command-text-secondary);
-  font-size: 0.83rem;
+  font-size: 0.82rem;
 }
 
 .EdgeTrace-command-action-row button svg {
@@ -5329,8 +5355,8 @@ body {
 }
 
 .EdgeTrace-command-action-row button:hover {
-  border-color: rgba(97, 184, 211, 0.52);
-  background: rgba(26, 58, 74, 0.72);
+  border-color: transparent;
+  background: transparent;
   color: var(--command-text);
 }
 
@@ -5342,9 +5368,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background:
-    linear-gradient(180deg, rgba(12, 20, 28, 0.86), rgba(7, 12, 18, 0.9)),
-    var(--command-bg-card);
+  background: rgba(4, 9, 14, 0.42);
 }
 
 .EdgeTrace-command-action-row aside p {
@@ -5354,19 +5378,19 @@ body {
 
 .EdgeTrace-command-action-row aside p span {
   margin: 0;
-  background: rgba(255, 255, 255, 0.03);
+  background: transparent;
 }
 
 .EdgeTrace-command-action-row .tone-red {
-  background: rgba(230, 95, 115, 0.1);
+  background: transparent;
 }
 
 .EdgeTrace-command-action-row .tone-yellow {
-  background: rgba(214, 173, 79, 0.1);
+  background: transparent;
 }
 
 .EdgeTrace-command-action-row .tone-green {
-  background: rgba(115, 201, 143, 0.1);
+  background: transparent;
 }
 
 .EdgeTrace-command-table-card table {
