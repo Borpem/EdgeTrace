@@ -5351,6 +5351,102 @@ body {
 .EdgeTrace-command-dashboard .tone-green { color: #8ad56c; }
 .EdgeTrace-command-dashboard .tone-gray { color: #9daab5; }
 
+.EdgeTrace-command-dashboard {
+  background:
+    radial-gradient(circle at 78% 18%, rgba(73, 183, 217, 0.09), transparent 30rem),
+    linear-gradient(180deg, #040a0f 0%, #061018 48%, #040a0f 100%);
+}
+
+.EdgeTrace-command-shell {
+  border-color: rgba(136, 158, 180, 0.22);
+  background:
+    radial-gradient(circle at 18% 0%, rgba(73, 183, 217, 0.055), transparent 25rem),
+    radial-gradient(circle at 88% 2%, rgba(111, 199, 138, 0.035), transparent 30rem),
+    rgba(6, 16, 24, 0.96);
+  box-shadow: 0 28px 80px -62px rgba(73, 183, 217, 0.34);
+}
+
+.EdgeTrace-command-card {
+  border-color: rgba(136, 158, 180, 0.2);
+  background:
+    linear-gradient(135deg, rgba(12, 26, 38, 0.9), rgba(6, 16, 24, 0.94)),
+    #07111a;
+}
+
+.EdgeTrace-command-card::before {
+  background: radial-gradient(circle at 12% 0%, rgba(73, 183, 217, 0.045), transparent 19rem);
+}
+
+.EdgeTrace-command-number {
+  display: none;
+}
+
+.EdgeTrace-command-card-heading {
+  color: #9fb7c9;
+  gap: 0.5rem;
+}
+
+.EdgeTrace-command-primary {
+  border-color: rgba(73, 183, 217, 0.45);
+  background: linear-gradient(135deg, #103247 0%, #163f58 100%);
+  color: #e8f7fb;
+  box-shadow: none;
+}
+
+.EdgeTrace-command-primary:hover,
+.EdgeTrace-command-overview-actions > button:not(.EdgeTrace-command-primary):hover,
+.EdgeTrace-command-diagnosis > button:hover,
+.EdgeTrace-command-action-row button:hover,
+.EdgeTrace-command-card-heading button:hover {
+  border-color: rgba(73, 183, 217, 0.58);
+  background: rgba(16, 50, 71, 0.9);
+}
+
+.EdgeTrace-command-nav nav button.active::after {
+  background: #49b7d9;
+}
+
+.EdgeTrace-command-status {
+  color: #8fcfe0 !important;
+}
+
+.EdgeTrace-command-health {
+  border-color: rgba(111, 199, 138, 0.22);
+}
+
+.EdgeTrace-command-diagnosis {
+  border-color: rgba(244, 91, 114, 0.24);
+}
+
+.EdgeTrace-command-health-score strong,
+.EdgeTrace-command-health-score em,
+.EdgeTrace-command-health small,
+.EdgeTrace-command-change-grid small,
+.EdgeTrace-command-driver-columns > div:last-child h3 {
+  color: #6fc78a;
+}
+
+.EdgeTrace-command-metric-grid strong,
+.EdgeTrace-command-change-grid strong {
+  color: #49b7d9;
+}
+
+.EdgeTrace-command-driver-columns > div:first-child h3 {
+  color: #f45b72;
+}
+
+.EdgeTrace-command-range i {
+  background: #e2b84f;
+}
+
+.EdgeTrace-command-dashboard .is-blue { color: #49b7d9 !important; }
+.EdgeTrace-command-dashboard .is-red { color: #f45b72 !important; }
+.EdgeTrace-command-dashboard .is-green { color: #6fc78a !important; }
+.EdgeTrace-command-dashboard .is-yellow { color: #e2b84f !important; }
+.EdgeTrace-command-dashboard .tone-red { color: #f45b72; }
+.EdgeTrace-command-dashboard .tone-yellow { color: #e2b84f; }
+.EdgeTrace-command-dashboard .tone-green { color: #6fc78a; }
+
 @media (max-width: 1180px) {
   .EdgeTrace-command-nav,
   .EdgeTrace-command-overview-main {

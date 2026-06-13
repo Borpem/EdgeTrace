@@ -686,7 +686,7 @@ export function DashboardPage({
               <div className="EdgeTrace-command-overview-actions">
                 <button className="EdgeTrace-command-status">{trendLabel}<TrendingUp size={18} aria-hidden="true" /></button>
                 <button className="EdgeTrace-command-primary" onClick={onCreateReport}>Analyze Trades</button>
-                <button onClick={() => openDetailTab("overview")}>View Full Report</button>
+                <button onClick={onViewReports}>View Full Report</button>
               </div>
             </div>
           </section>
@@ -725,7 +725,7 @@ export function DashboardPage({
                 <div><span>Est. Impact</span><strong className="is-red">{currency.format(-Math.abs(driverImpact))}</strong></div>
                 <div><span>Confidence</span><strong>{diagnosisConfidence(intelligence.strategyHealthScore)}</strong></div>
               </div>
-              <button onClick={() => openDetailTab("breakdown")}>View breakdown <ArrowRight size={15} aria-hidden="true" /></button>
+              <button onClick={inspectPrimarySegment}>View breakdown <ArrowRight size={15} aria-hidden="true" /></button>
             </article>
 
             <article className="EdgeTrace-command-card EdgeTrace-command-metrics">
@@ -861,7 +861,7 @@ export function DashboardPage({
               <div className="EdgeTrace-command-card-heading">
                 <span className="EdgeTrace-command-number tone-gray">10</span>
                 <span>Supporting Context</span>
-                <button onClick={() => openDetailTab("overview")}>View details <ArrowRight size={13} aria-hidden="true" /></button>
+                <button onClick={hasReconstructionAudit ? handleAudit : onViewReports}>View details <ArrowRight size={13} aria-hidden="true" /></button>
               </div>
               <div>
                 <p><span>Market Regime</span><strong>{inferRegime(metrics)}</strong></p>
