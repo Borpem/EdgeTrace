@@ -442,7 +442,7 @@ app.post("/api/billing/create-checkout-session", async (req, res) => {
       res.status(400).json({
         error: "INVALID_PLAN",
         stage,
-        message: "Checkout is currently available for the Pro benchmark plan."
+        message: "Checkout is currently available for the Pro review plan."
       });
       return;
     }

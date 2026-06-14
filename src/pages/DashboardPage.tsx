@@ -100,6 +100,26 @@ type SignedEquityCurvePoint = EquityCurvePoint & {
   positiveEquity: number | null;
   negativeEquity: number | null;
 };
+type ReviewLoopTone = "red" | "yellow" | "green" | "blue" | "gray";
+type ReviewLoopItem = {
+  label: string;
+  title: string;
+  detail: string;
+  tone: ReviewLoopTone;
+};
+type ReviewLoopOutput = {
+  processScore: number;
+  processStatus: string;
+  cadenceLabel: string;
+  cadenceDetail: string;
+  comparisonSummary: string;
+  reportsInLoop: number;
+  openAlertCount: number;
+  benchmarkSummary: string;
+  alerts: ReviewLoopItem[];
+  benchmarkDrift: ReviewLoopItem[];
+  checklist: ReviewLoopItem[];
+};
 
 const dashboardDisclosureIds: DashboardDisclosureId[] = ["diagnosis", "insights", "nextSteps", "details"];
 
@@ -195,6 +215,7 @@ export function DashboardPage({
     result
   );
   const canViewAggregateBenchmarks = canUseFeature(plan, "aggregate_benchmarks");
+  const canUseReviewLoop = canUseFeature(plan, "review_cadence");
   const canInspectFullDrilldown = reportAccessLevel === "full" && canViewFullDrilldown(plan);
   const fullAttributionAccess =
     canInspectFullDrilldown &&
@@ -543,6 +564,18 @@ export function DashboardPage({
     note: row.netPnl >= 0 ? "Strong performance" : row.expectancy >= 0 ? "Needs refinement" : "Underperforming"
   }));
   const commandActions = actionItems.slice(0, 4);
+  const reviewLoop = buildReviewLoop({
+    result: safeResult,
+    metrics,
+    intelligence,
+    currentReportName: reportName,
+    normalizedTradeCount,
+    availableReports,
+    priorReport,
+    benchmarks,
+    actionItems,
+    largestLeak
+  });
   const actionPriorityCounts = commandActions.reduce(
     (counts, item) => {
       if (item.tone === "red") counts.high += 1;
@@ -781,6 +814,20 @@ export function DashboardPage({
                 </div>
               </div>
             </article>
+
+            <PaywallGate
+              feature="review_cadence"
+              accessLevel={canUseReviewLoop ? "full" : "preview"}
+              title="Upgrade to Pro to unlock the review loop."
+              description="Pro turns repeated imports into weekly edge reviews, regression alerts, benchmark drift, process scoring, and a checklist for the next upload."
+              className="EdgeTrace-command-pro-loop-gate"
+            >
+              <ProReviewLoopPanel
+                review={reviewLoop}
+                onCreateReport={onCreateReport}
+                onOpenCollections={onOpenCollections}
+              />
+            </PaywallGate>
 
             <article className="EdgeTrace-command-card EdgeTrace-command-actions">
               <div className="EdgeTrace-command-card-heading">
@@ -1760,6 +1807,86 @@ function BenchmarkMetricRow({ metric }: { metric: AggregateBenchmarkMetric }) {
   );
 }
 
+function ProReviewLoopPanel({
+  review,
+  onCreateReport,
+  onOpenCollections
+}: {
+  review: ReviewLoopOutput;
+  onCreateReport?: () => void;
+  onOpenCollections?: () => void;
+}) {
+  return (
+    <article className="EdgeTrace-command-card EdgeTrace-command-pro-loop">
+      <div className="EdgeTrace-command-card-heading">
+        <span>Pro Review Loop</span>
+        <em>Built for 2x weekly check-ins</em>
+      </div>
+
+      <div className="EdgeTrace-review-loop-top">
+        <div className="EdgeTrace-review-loop-score">
+          <span>Process Score</span>
+          <strong>{review.processScore}</strong>
+          <small>{review.processStatus}</small>
+        </div>
+        <div className="EdgeTrace-review-loop-cadence">
+          <span>{review.cadenceLabel}</span>
+          <strong>{review.cadenceDetail}</strong>
+          <p>{review.comparisonSummary}</p>
+        </div>
+        <div className="EdgeTrace-review-loop-stats">
+          <div>
+            <span>Reports in loop</span>
+            <strong>{number.format(review.reportsInLoop)}</strong>
+          </div>
+          <div>
+            <span>Open alerts</span>
+            <strong className={review.openAlertCount ? "is-red" : "is-green"}>{number.format(review.openAlertCount)}</strong>
+          </div>
+          <div>
+            <span>Benchmark read</span>
+            <strong>{review.benchmarkSummary}</strong>
+          </div>
+        </div>
+      </div>
+
+      <div className="EdgeTrace-review-loop-grid">
+        <ReviewLoopColumn title="Weekly Edge Review" items={review.alerts} />
+        <ReviewLoopColumn title="Benchmark Drift" items={review.benchmarkDrift} />
+        <ReviewLoopColumn title="Next Review Checklist" items={review.checklist} />
+      </div>
+
+      <div className="EdgeTrace-review-loop-actions">
+        <button type="button" onClick={onCreateReport}>
+          Import next report <ArrowRight size={14} aria-hidden="true" />
+        </button>
+        <button type="button" onClick={onOpenCollections}>
+          Open strategy sets <ArrowRight size={14} aria-hidden="true" />
+        </button>
+      </div>
+    </article>
+  );
+}
+
+function ReviewLoopColumn({ title, items }: { title: string; items: ReviewLoopItem[] }) {
+  return (
+    <section>
+      <h3>{title}</h3>
+      <div className="EdgeTrace-review-loop-items">
+        {items.map((item) => (
+          <div key={`${title}-${item.label}-${item.title}`} className={`tone-${item.tone}`}>
+            <span>{item.label}</span>
+            <p>
+              <strong>{item.title}</strong>
+              <small>{item.detail}</small>
+            </p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function SnapshotStats({
   metrics,
   averageR,
@@ -2415,8 +2542,330 @@ function buildActionItems(
   ] satisfies Array<{ title: string; impact: string; tone: "red" | "yellow" | "green" | "gray" }>;
 }
 
-function compactDetails(values: Array<string | undefined | false>) {
-  return values.filter((value): value is string => Boolean(value));
+function buildReviewLoop({
+  result,
+  metrics,
+  intelligence,
+  currentReportName,
+  normalizedTradeCount,
+  availableReports,
+  priorReport,
+  benchmarks,
+  actionItems,
+  largestLeak
+}: {
+  result: DiagnosticsResult;
+  metrics: DiagnosticsResult["metrics"];
+  intelligence: ReturnType<typeof buildReportIntelligence>;
+  currentReportName: string;
+  normalizedTradeCount: number;
+  availableReports: ReportSummary[];
+  priorReport?: ReportSummary;
+  benchmarks: AggregateBenchmarkSnapshot | null;
+  actionItems: Array<{ title: string; impact: string; tone: "red" | "yellow" | "green" | "gray" }>;
+  largestLeak: BreakdownRow | undefined;
+}): ReviewLoopOutput {
+  const currentReport = summaryFromResult(result, metrics, currentReportName, normalizedTradeCount);
+  const loopReports = uniqueReports([currentReport, ...availableReports])
+    .sort((a, b) => safeTime(a.createdAt) - safeTime(b.createdAt))
+    .slice(-8);
+  const latestDate = safeTime(result.createdAt);
+  const daysSinceLatest = latestDate ? Math.max(0, Math.floor((Date.now() - latestDate) / 86_400_000)) : undefined;
+  const cadence = reviewCadence(daysSinceLatest, loopReports.length);
+  const alerts = buildReviewAlerts(metrics, intelligence, priorReport, largestLeak);
+  const benchmarkDrift = buildBenchmarkDrift(benchmarks);
+  const checklist = buildNextReviewChecklist(actionItems, metrics, largestLeak, priorReport);
+  const improvingMetrics = priorReport
+    ? [
+        metrics.expectancy > priorReport.expectancy,
+        metrics.netPnl > priorReport.netPnl,
+        metrics.winRate > priorReport.winRate,
+        metrics.profitFactor > (priorReport.profitFactor ?? 0)
+      ].filter(Boolean).length
+    : 0;
+  const alertPenalty = alerts.filter((item) => item.tone === "red").length * 12 + alerts.filter((item) => item.tone === "yellow").length * 6;
+  const benchmarkPenalty = benchmarkDrift.filter((item) => item.tone === "red").length * 8;
+  const cadenceScore = cadence.tone === "green" ? 18 : cadence.tone === "yellow" ? 10 : 2;
+  const processScore = Math.max(
+    1,
+    Math.min(99, Math.round(intelligence.strategyHealthScore * 0.48 + improvingMetrics * 5 + cadenceScore - alertPenalty - benchmarkPenalty))
+  );
+
+  return {
+    processScore,
+    processStatus:
+      processScore >= 80
+        ? "Review rhythm is strong"
+        : processScore >= 60
+          ? "Useful, but needs follow-through"
+          : processScore >= 40
+            ? "Check in before adding risk"
+            : "Needs another focused review",
+    cadenceLabel: cadence.label,
+    cadenceDetail: cadence.detail,
+    comparisonSummary: priorReport
+      ? `${currentReportName} is being checked against ${priorReport.name}.`
+      : "Add a second report to turn this into a recurring review loop.",
+    reportsInLoop: loopReports.length,
+    openAlertCount: alerts.filter((item) => item.tone === "red" || item.tone === "yellow").length,
+    benchmarkSummary: benchmarkSummary(benchmarks),
+    alerts,
+    benchmarkDrift,
+    checklist
+  };
+}
+
+function summaryFromResult(
+  result: DiagnosticsResult,
+  metrics: DiagnosticsResult["metrics"],
+  name: string,
+  normalizedTradeCount: number
+): ReportSummary {
+  return {
+    id: result.id,
+    name,
+    createdAt: result.createdAt ?? new Date().toISOString(),
+    updatedAt: result.updatedAt ?? result.createdAt ?? new Date().toISOString(),
+    notes: result.notes,
+    notesPreview: result.notes,
+    tags: result.tags ?? [],
+    strategyLabel: result.strategyLabel,
+    reportType: result.reportType ?? "unknown",
+    totalTrades: normalizedTradeCount,
+    winRate: metrics.winRate,
+    grossPnl: metrics.grossPnl,
+    totalCosts: metrics.totalCosts,
+    netPnl: metrics.netPnl,
+    expectancy: metrics.expectancy,
+    averageRealizedR: metrics.averageRealizedR,
+    profitFactor: metrics.profitFactor,
+    importProvenance: result.importProvenance
+  };
+}
+
+function uniqueReports(reports: ReportSummary[]) {
+  const byId = new Map<string, ReportSummary>();
+  for (const report of reports) byId.set(report.id, report);
+  return [...byId.values()];
+}
+
+function safeTime(value: string | undefined) {
+  const time = value ? Date.parse(value) : Number.NaN;
+  return Number.isFinite(time) ? time : 0;
+}
+
+function reviewCadence(daysSinceLatest: number | undefined, reportCount: number): { label: string; detail: string; tone: ReviewLoopTone } {
+  if (reportCount < 2) {
+    return {
+      label: "Setup needed",
+      detail: "Import one more report",
+      tone: "yellow"
+    };
+  }
+  if (daysSinceLatest === undefined) {
+    return {
+      label: "Cadence unknown",
+      detail: "Report date unavailable",
+      tone: "gray"
+    };
+  }
+  if (daysSinceLatest <= 2) {
+    return {
+      label: "Cadence on track",
+      detail: "Next check in 1-2 days",
+      tone: "green"
+    };
+  }
+  if (daysSinceLatest <= 4) {
+    return {
+      label: "Review window open",
+      detail: "Upload after next session",
+      tone: "blue"
+    };
+  }
+  return {
+    label: "Review overdue",
+    detail: `${number.format(daysSinceLatest)} days since import`,
+    tone: "red"
+  };
+}
+
+function buildReviewAlerts(
+  metrics: DiagnosticsResult["metrics"],
+  intelligence: ReturnType<typeof buildReportIntelligence>,
+  priorReport: ReportSummary | undefined,
+  largestLeak: BreakdownRow | undefined
+): ReviewLoopItem[] {
+  const alerts: ReviewLoopItem[] = [];
+
+  if (!priorReport) {
+    return [
+      {
+        label: "Baseline",
+        title: "No prior report yet",
+        detail: "Import again after the next trading block so Pro can grade what changed.",
+        tone: "yellow"
+      },
+      {
+        label: "Focus",
+        title: humanDiagnosis(intelligence.primaryDiagnosis),
+        detail: intelligence.primaryLeak.recommendedInspection,
+        tone: intelligence.strategyHealthScore >= 70 ? "blue" : "red"
+      }
+    ];
+  }
+
+  const expectancyDelta = metrics.expectancy - priorReport.expectancy;
+  const costDelta = metrics.totalCosts - priorReport.totalCosts;
+  const profitFactorDelta = metrics.profitFactor - (priorReport.profitFactor ?? 0);
+  const winRateDelta = metrics.winRate - priorReport.winRate;
+
+  if (expectancyDelta < -Math.max(Math.abs(priorReport.expectancy) * 0.15, 0.05)) {
+    alerts.push({
+      label: "Regression",
+      title: "Expectancy slipped",
+      detail: `${currency.format(priorReport.expectancy)} to ${currency.format(metrics.expectancy)} per trade.`,
+      tone: metrics.expectancy < 0 ? "red" : "yellow"
+    });
+  }
+  if (costDelta > Math.max(Math.abs(priorReport.totalCosts) * 0.12, 10)) {
+    alerts.push({
+      label: "Cost",
+      title: "Execution friction rose",
+      detail: `Detected costs increased by ${currency.format(costDelta)} since the prior report.`,
+      tone: "yellow"
+    });
+  }
+  if (profitFactorDelta < -0.2) {
+    alerts.push({
+      label: "Quality",
+      title: "Profit factor weakened",
+      detail: `${formatProfitFactor(priorReport.profitFactor)} to ${formatProfitFactor(metrics.profitFactor)}.`,
+      tone: metrics.profitFactor < 1 ? "red" : "yellow"
+    });
+  }
+  if (winRateDelta < -0.05) {
+    alerts.push({
+      label: "Hit rate",
+      title: "Win rate is falling",
+      detail: `${percent.format(priorReport.winRate)} to ${percent.format(metrics.winRate)}.`,
+      tone: "yellow"
+    });
+  }
+  if (largestLeak && largestLeak.netPnl < 0) {
+    alerts.push({
+      label: "Leak",
+      title: `${largestLeak.group} still needs review`,
+      detail: `${currency.format(largestLeak.netPnl)} net PnL is the first segment to inspect.`,
+      tone: largestLeak.expectancy < 0 ? "red" : "yellow"
+    });
+  }
+
+  if (!alerts.length) {
+    alerts.push({
+      label: "Clear",
+      title: "No major regression signal",
+      detail: "The latest report is not showing a material deterioration versus the prior report.",
+      tone: "green"
+    });
+  }
+
+  return alerts.slice(0, 3);
+}
+
+function buildBenchmarkDrift(snapshot: AggregateBenchmarkSnapshot | null): ReviewLoopItem[] {
+  if (!snapshot) {
+    return [
+      {
+        label: "Locked",
+        title: "Benchmark drift needs Pro data",
+        detail: "Upgrade to compare each new report against the aggregate cohort.",
+        tone: "blue"
+      },
+      {
+        label: "Loop",
+        title: "Track percentile movement",
+        detail: "Each import should move weak metrics closer to the cohort median.",
+        tone: "gray"
+      }
+    ];
+  }
+
+  const ranked = [...snapshot.metrics]
+    .filter((metric) => metric.status !== "unavailable")
+    .sort((a, b) => statusPriority(a.status) - statusPriority(b.status));
+
+  const items = ranked.slice(0, 3).map((metric) => ({
+    label: metric.status === "lagging" ? "Lagging" : metric.status === "leading" ? "Leading" : "In line",
+    title: metric.label,
+    detail: `${metric.percentile ? `${formatOrdinal(metric.percentile)} percentile. ` : ""}${metric.insight}`,
+    tone: metric.status === "lagging" ? "red" : metric.status === "leading" ? "green" : "blue"
+  })) satisfies ReviewLoopItem[];
+
+  return items.length
+    ? items
+    : [
+        {
+          label: "Cohort",
+          title: "No benchmark issue found",
+          detail: snapshot.topInsight,
+          tone: "green"
+        }
+      ];
+}
+
+function buildNextReviewChecklist(
+  actionItems: Array<{ title: string; impact: string; tone: "red" | "yellow" | "green" | "gray" }>,
+  metrics: DiagnosticsResult["metrics"],
+  largestLeak: BreakdownRow | undefined,
+  priorReport: ReportSummary | undefined
+): ReviewLoopItem[] {
+  const primaryAction = actionItems[0];
+  const targetExpectancy = priorReport ? Math.max(metrics.expectancy, priorReport.expectancy) : Math.max(0, metrics.expectancy);
+
+  return compactDetails<ReviewLoopItem>([
+    primaryAction
+      ? {
+          label: "1",
+          title: primaryAction.title,
+          detail: "Next upload should show whether this fix improved the report.",
+          tone: primaryAction.tone
+        }
+      : undefined,
+    largestLeak
+      ? {
+          label: "2",
+          title: `Recheck ${largestLeak.group}`,
+          detail: `Target less than ${currency.format(Math.abs(largestLeak.netPnl))} of downside from this segment.`,
+          tone: largestLeak.netPnl < 0 ? "yellow" : "green"
+        }
+      : undefined,
+    {
+      label: "3",
+      title: "Protect expectancy",
+      detail: `Next report target: ${currency.format(targetExpectancy)} per trade or better.`,
+      tone: metrics.expectancy >= 0 ? "green" : "red"
+    }
+  ]).slice(0, 3);
+}
+
+function statusPriority(status: AggregateBenchmarkMetric["status"]) {
+  if (status === "lagging") return 0;
+  if (status === "in_line") return 1;
+  if (status === "leading") return 2;
+  return 3;
+}
+
+function benchmarkSummary(snapshot: AggregateBenchmarkSnapshot | null) {
+  if (!snapshot) return "Pending";
+  const lagging = snapshot.metrics.filter((metric) => metric.status === "lagging").length;
+  if (lagging > 1) return `${number.format(lagging)} weak metrics`;
+  if (lagging === 1) return "1 weak metric";
+  return "In line";
+}
+
+function compactDetails<T>(values: Array<T | undefined | false | null>) {
+  return values.filter((value): value is T => Boolean(value));
 }
 
 function overviewStatus(score: number, diagnosis: ReturnType<typeof buildReportIntelligence>["primaryDiagnosis"]) {

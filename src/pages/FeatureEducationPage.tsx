@@ -73,6 +73,11 @@ const featureRows: Array<{ label: string; feature?: FeatureKey; access: Record<P
   { label: "Reconstruction audit", feature: "reconstruction_audit", access: { free: "Included", pro: "Included", advanced: "Included" } },
   { label: "Exports", feature: "audit_exports", access: { free: "Included", pro: "Included", advanced: "Included" } },
   { label: "Strategy monitoring", feature: "strategy_health_monitoring", access: { free: "Included", pro: "Included", advanced: "Included" } },
+  { label: "Weekly Edge Review loop", feature: "review_cadence", access: { free: "-", pro: "Included", advanced: "Included" } },
+  { label: "Regression alerts", feature: "review_cadence", access: { free: "-", pro: "Included", advanced: "Included" } },
+  { label: "Benchmark drift tracking", feature: "review_cadence", access: { free: "-", pro: "Included", advanced: "Included" } },
+  { label: "Next-review checklist", feature: "review_cadence", access: { free: "-", pro: "Included", advanced: "Included" } },
+  { label: "Process score", feature: "review_cadence", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Aggregate benchmark intelligence", feature: "aggregate_benchmarks", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Cost-drag cohort percentiles", feature: "aggregate_benchmarks", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "R-capture comparisons", feature: "aggregate_benchmarks", access: { free: "-", pro: "Included", advanced: "Included" } },
@@ -590,10 +595,10 @@ function PlansSection({
     <section className="EdgeTrace-education-plans-section">
       <div className="EdgeTrace-education-plans-head">
         <p>Free vs Pro</p>
-        <h2>Core analytics are free. Pro adds benchmark context.</h2>
+        <h2>Core analytics are free. Pro adds the review loop.</h2>
         <span>
           EdgeTrace gives every trader the complete reporting workflow. The paid tier is reserved for aggregate
-          aggregate benchmarks, cost-drag percentiles, R-capture comparisons, expectancy benchmarks, and profit-factor context.
+          weekly Edge Reviews, regression alerts, benchmark drift, next-review checklists, process scoring, and aggregate benchmark context.
         </span>
         {isAuthenticated && (
           <em className={currentPlanPillClass(currentPlan)}>

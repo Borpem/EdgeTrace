@@ -31,7 +31,7 @@ const pricingPlans: PricingPlan[] = [
   {
     id: "pro",
     eyebrow: "Most Popular",
-    summary: "For traders who want aggregate benchmarks, cohort percentiles, R-capture comparisons, and profit-factor context.",
+    summary: "For traders who want twice-weekly review loops, regression alerts, benchmark drift, and a next-upload checklist.",
     accent: "purple",
     recommended: true
   }
@@ -46,6 +46,11 @@ const featureRows: Array<{ label: string; access: Record<PlanId, string> }> = [
   { label: "Reconstruction audit", access: { free: "Included", pro: "Included", advanced: "Included" } },
   { label: "Exports", access: { free: "Included", pro: "Included", advanced: "Included" } },
   { label: "Strategy health monitoring", access: { free: "Included", pro: "Included", advanced: "Included" } },
+  { label: "Weekly Edge Review loop", access: { free: "-", pro: "Included", advanced: "Included" } },
+  { label: "Regression alerts", access: { free: "-", pro: "Included", advanced: "Included" } },
+  { label: "Benchmark drift tracking", access: { free: "-", pro: "Included", advanced: "Included" } },
+  { label: "Next-review checklist", access: { free: "-", pro: "Included", advanced: "Included" } },
+  { label: "Process score", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Aggregate benchmark intelligence", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Cost-drag cohort percentiles", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "R-capture comparisons", access: { free: "-", pro: "Included", advanced: "Included" } },
@@ -61,7 +66,7 @@ const faqs = [
   {
     question: "What does Pro unlock?",
     answer:
-      "Pro is the $9.99/month benchmark layer: aggregate cohort intelligence, cost-drag percentiles, R-capture comparisons, expectancy benchmarks, and profit-factor context."
+      "Pro is the $9.99/month review loop: weekly Edge Reviews, regression alerts, benchmark drift, next-review checklists, process scoring, and aggregate cohort context."
   },
   {
     question: "Can I use Free long term?",
@@ -331,7 +336,7 @@ export function PricingPage({
 
       <div className="EdgeTrace-pricing-footnote">
         <ShieldCheck size={18} aria-hidden="true" />
-        <span>Core analytics are free. Pro adds aggregate benchmarks and cohort context for $9.99/month.</span>
+        <span>Core analytics are free. Pro adds the recurring review loop and aggregate benchmark context for $9.99/month.</span>
       </div>
 
       <FeatureComparison currentPlanId={highlightedPlanId} />
@@ -502,7 +507,7 @@ function FinalCta({
       </div>
       <div>
         <h2>Ready to gain the edge?</h2>
-        <p>Start with the free workflow, then upgrade to Pro when you want aggregate benchmarks, cohort percentiles, R-capture comparisons, and profit-factor context.</p>
+        <p>Start with the free workflow, then upgrade to Pro when you want EdgeTrace to check your process twice a week and flag what changed.</p>
       </div>
       <div>
         <button className="EdgeTrace-pricing-primary" onClick={onPro}>

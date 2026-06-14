@@ -16,6 +16,7 @@ export type FeatureKey =
   | "strategy_sets"
   | "audit_exports"
   | "strategy_health_monitoring"
+  | "review_cadence"
   | "aggregate_benchmarks";
 
 export type PlanLimits = {
@@ -65,6 +66,7 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
       strategy_sets: true,
       audit_exports: true,
       strategy_health_monitoring: true,
+      review_cadence: false,
       aggregate_benchmarks: false
     },
     featureBullets: [
@@ -79,7 +81,7 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
     id: "pro",
     displayName: "Pro",
     monthlyPriceLabel: "$9.99/month",
-    description: "Aggregate benchmarks and cohort context.",
+    description: "Recurring reviews, alerts, and benchmark drift.",
     limits: {
       maxReports: "unlimited",
       maxFullReports: "unlimited",
@@ -103,21 +105,23 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
       strategy_sets: true,
       audit_exports: true,
       strategy_health_monitoring: true,
+      review_cadence: true,
       aggregate_benchmarks: true
     },
     featureBullets: [
       "Everything in Free",
-      "Aggregate benchmark intelligence",
-      "Cost-drag cohort percentiles",
-      "R-capture comparisons",
-      "Expectancy and profit-factor context"
+      "Weekly Edge Review loop",
+      "Regression alerts",
+      "Benchmark drift tracking",
+      "Next-review checklist",
+      "Process score"
     ]
   },
   advanced: {
     id: "advanced",
     displayName: "Advanced",
     monthlyPriceLabel: "Legacy",
-    description: "Legacy access with every paid benchmark feature.",
+    description: "Legacy access with every paid review feature.",
     limits: {
       maxReports: "unlimited",
       maxFullReports: "unlimited",
@@ -141,14 +145,16 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
       strategy_sets: true,
       audit_exports: true,
       strategy_health_monitoring: true,
+      review_cadence: true,
       aggregate_benchmarks: true
     },
     featureBullets: [
       "Everything in Free",
-      "Aggregate benchmark intelligence",
-      "Cost-drag cohort percentiles",
-      "R-capture comparisons",
-      "Expectancy and profit-factor context"
+      "Weekly Edge Review loop",
+      "Regression alerts",
+      "Benchmark drift tracking",
+      "Next-review checklist",
+      "Process score"
     ]
   }
 };
