@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type CSSProperties, type ReactNode } from "react";
 import {
   Bar,
   BarChart,
@@ -1845,7 +1845,13 @@ function ProReviewLoopPanel({
         {review.benchmarkTiles.map((tile) => (
           <div key={tile.label} className={`tone-${tile.tone}`}>
             <span>{tile.label}</span>
-            <strong>{tile.value}</strong>
+            <div
+              className="EdgeTrace-review-percentile-gauge"
+              style={{ "--percentile": `${Math.max(0, Math.min(100, tile.percentile ?? 0)) * 3.6}deg` } as CSSProperties}
+            >
+              <strong>{tile.value}</strong>
+              <em>{tile.percentile === undefined ? "Benchmark" : "Percentile"}</em>
+            </div>
             <small>{tile.detail}</small>
             <i aria-hidden="true">
               <b style={{ width: `${Math.max(0, Math.min(100, tile.percentile ?? 0))}%` }} />
@@ -2861,7 +2867,7 @@ function buildBenchmarkTiles(snapshot: AggregateBenchmarkSnapshot | null): Revie
       value: metric.percentile ? formatOrdinal(metric.percentile) : "N/A",
       detail: metric.percentile ? `Better than ${number.format(percentileValue)}% of cohort` : metric.insight,
       percentile: percentileValue,
-      tone: metric.status === "lagging" ? "red" : metric.status === "leading" ? "green" : "blue"
+      tone: toneFromPercentile(metric.percentile)
     };
   }) satisfies ReviewBenchmarkTile[];
 
@@ -2923,6 +2929,14 @@ function statusPriority(status: AggregateBenchmarkMetric["status"]) {
   if (status === "in_line") return 1;
   if (status === "leading") return 2;
   return 3;
+}
+
+function toneFromPercentile(percentileValue: number | undefined): ReviewLoopTone {
+  if (percentileValue === undefined) return "gray";
+  if (percentileValue < 30) return "red";
+  if (percentileValue < 55) return "yellow";
+  if (percentileValue < 70) return "blue";
+  return "green";
 }
 
 function compactDetails<T>(values: Array<T | undefined | false | null>) {

@@ -5446,26 +5446,74 @@ body {
 }
 
 .EdgeTrace-review-benchmark-tiles > div {
+  --tile-tone: var(--command-blue);
   border: 1px solid rgba(36, 53, 66, 0.74);
+  border-top-color: color-mix(in srgb, var(--tile-tone) 58%, rgba(36, 53, 66, 0.74));
   border-radius: 5px;
-  background: rgba(5, 10, 15, 0.48);
-  padding: 0.85rem;
+  background:
+    radial-gradient(circle at 85% 18%, color-mix(in srgb, var(--tile-tone) 14%, transparent), transparent 38%),
+    rgba(5, 10, 15, 0.48);
+  padding: 0.9rem;
 }
 
-.EdgeTrace-review-benchmark-tiles strong {
-  display: block;
-  margin-top: 0.42rem;
-  color: var(--command-blue);
-  font-size: clamp(2rem, 2.6vw, 2.8rem);
-  font-weight: 520;
-  letter-spacing: -0.035em;
-  line-height: 1;
+.EdgeTrace-review-percentile-gauge {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 5.6rem;
+  aspect-ratio: 1;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.55rem;
+}
+
+.EdgeTrace-review-percentile-gauge::before,
+.EdgeTrace-review-percentile-gauge::after {
+  position: absolute;
+  content: "";
+  border-radius: 999px;
+}
+
+.EdgeTrace-review-percentile-gauge::before {
+  inset: 0;
+  background: conic-gradient(var(--tile-tone) var(--percentile), rgba(55, 76, 92, 0.34) 0deg);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--tile-tone) 16%, transparent);
+}
+
+.EdgeTrace-review-percentile-gauge::after {
+  inset: 0.42rem;
+  border: 1px solid rgba(36, 53, 66, 0.68);
+  background: #050a0f;
+}
+
+.EdgeTrace-review-percentile-gauge strong,
+.EdgeTrace-review-percentile-gauge em {
+  position: relative;
+  z-index: 1;
+}
+
+.EdgeTrace-review-percentile-gauge strong {
+  color: var(--tile-tone);
+  font-size: clamp(1.5rem, 1.8vw, 2rem);
+  font-weight: 560;
+  letter-spacing: -0.04em;
+  line-height: 0.92;
+}
+
+.EdgeTrace-review-percentile-gauge em {
+  margin-top: 0.18rem;
+  color: var(--command-text-muted);
+  font-size: 0.58rem;
+  font-style: normal;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .EdgeTrace-review-benchmark-tiles small {
   display: block;
-  min-height: 2.1rem;
-  margin-top: 0.35rem;
+  min-height: 2rem;
+  margin-top: 0.58rem;
   color: var(--command-text-secondary);
   font-size: 0.8rem;
   line-height: 1.32;
@@ -5484,34 +5532,34 @@ body {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: var(--command-blue);
+  background: var(--tile-tone);
 }
 
-.EdgeTrace-review-benchmark-tiles .tone-red strong,
-.EdgeTrace-review-benchmark-tiles .tone-red span {
-  color: var(--command-red);
+.EdgeTrace-review-benchmark-tiles .tone-red {
+  --tile-tone: var(--command-red);
 }
 
-.EdgeTrace-review-benchmark-tiles .tone-red b {
-  background: var(--command-red);
+.EdgeTrace-review-benchmark-tiles .tone-yellow {
+  --tile-tone: var(--command-yellow);
 }
 
-.EdgeTrace-review-benchmark-tiles .tone-yellow strong,
-.EdgeTrace-review-benchmark-tiles .tone-yellow span {
-  color: var(--command-yellow);
+.EdgeTrace-review-benchmark-tiles .tone-green {
+  --tile-tone: var(--command-green);
 }
 
-.EdgeTrace-review-benchmark-tiles .tone-yellow b {
-  background: var(--command-yellow);
+.EdgeTrace-review-benchmark-tiles .tone-blue {
+  --tile-tone: var(--command-blue);
 }
 
-.EdgeTrace-review-benchmark-tiles .tone-green strong,
-.EdgeTrace-review-benchmark-tiles .tone-green span {
-  color: var(--command-green);
+.EdgeTrace-review-benchmark-tiles .tone-gray {
+  --tile-tone: var(--command-neutral);
 }
 
-.EdgeTrace-review-benchmark-tiles .tone-green b {
-  background: var(--command-green);
+.EdgeTrace-review-benchmark-tiles .tone-red span,
+.EdgeTrace-review-benchmark-tiles .tone-yellow span,
+.EdgeTrace-review-benchmark-tiles .tone-green span,
+.EdgeTrace-review-benchmark-tiles .tone-blue span {
+  color: var(--tile-tone);
 }
 
 .EdgeTrace-review-loop-grid {
@@ -5545,21 +5593,29 @@ body {
 }
 
 .EdgeTrace-review-loop-items > div {
-  display: grid;
-  grid-template-columns: 4.6rem minmax(0, 1fr);
-  gap: 0.8rem;
-  border-top: 1px solid rgba(36, 53, 66, 0.55);
-  padding-top: 0.62rem;
+  --item-tone: var(--command-blue);
+  display: block;
+  border: 1px solid rgba(36, 53, 66, 0.62);
+  border-left: 3px solid var(--item-tone);
+  border-radius: 5px;
+  background: rgba(3, 8, 12, 0.38);
+  padding: 0.68rem 0.78rem;
 }
 
 .EdgeTrace-review-loop-items > div:first-child {
-  border-top: 0;
-  padding-top: 0;
+  border-top: 1px solid rgba(36, 53, 66, 0.62);
+  padding-top: 0.68rem;
 }
 
 .EdgeTrace-review-loop-items > div > span {
-  color: var(--command-text-muted);
-  font-size: 0.72rem;
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.32rem;
+  border: 1px solid color-mix(in srgb, var(--item-tone) 52%, rgba(36, 53, 66, 0.64));
+  border-radius: 999px;
+  color: var(--item-tone);
+  padding: 0 0.42rem;
+  font-size: 0.64rem;
   font-weight: 680;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -5572,6 +5628,7 @@ body {
 
 .EdgeTrace-review-loop-items strong {
   display: block;
+  margin-top: 0.45rem;
   color: var(--command-text);
   font-size: 0.92rem;
   font-weight: 560;
@@ -5585,24 +5642,24 @@ body {
   line-height: 1.35;
 }
 
-.EdgeTrace-review-loop-items .tone-red > span,
-.EdgeTrace-review-loop-items .tone-red strong {
-  color: var(--command-red);
+.EdgeTrace-review-loop-items .tone-red {
+  --item-tone: var(--command-red);
 }
 
-.EdgeTrace-review-loop-items .tone-yellow > span,
-.EdgeTrace-review-loop-items .tone-yellow strong {
-  color: var(--command-yellow);
+.EdgeTrace-review-loop-items .tone-yellow {
+  --item-tone: var(--command-yellow);
 }
 
-.EdgeTrace-review-loop-items .tone-green > span,
-.EdgeTrace-review-loop-items .tone-green strong {
-  color: var(--command-green);
+.EdgeTrace-review-loop-items .tone-green {
+  --item-tone: var(--command-green);
 }
 
-.EdgeTrace-review-loop-items .tone-blue > span,
-.EdgeTrace-review-loop-items .tone-blue strong {
-  color: var(--command-blue);
+.EdgeTrace-review-loop-items .tone-blue {
+  --item-tone: var(--command-blue);
+}
+
+.EdgeTrace-review-loop-items .tone-gray {
+  --item-tone: var(--command-neutral);
 }
 
 .EdgeTrace-review-loop-actions {
