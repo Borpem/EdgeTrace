@@ -203,8 +203,11 @@ export function DrilldownPage({
               <CartesianGrid stroke="#243B64" strokeOpacity={0.45} />
               <XAxis dataKey="trade" stroke="#9CA8C7" />
               <YAxis stroke="#9CA8C7" />
-              <Tooltip contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }} />
-              <Bar dataKey="costDragPct" fill="#FFB84D" />
+              <Tooltip
+                formatter={(value) => [formatTooltipPercent(value), "Cost drag"]}
+                contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }}
+              />
+              <Bar dataKey="costDragPct" name="Cost drag" fill="#FFB84D" />
             </BarChart>
           </ResponsiveContainer>
         </ChartPanel>
@@ -323,4 +326,10 @@ function formatProfitFactor(value: number | undefined) {
 function formatPercent(value: number | undefined) {
   if (value === undefined || !Number.isFinite(value)) return "N/A";
   return percent.format(value);
+}
+
+function formatTooltipPercent(value: unknown) {
+  const numericValue = typeof value === "number" ? value : Number(value);
+  if (!Number.isFinite(numericValue)) return "N/A";
+  return `${number.format(numericValue)}%`;
 }
