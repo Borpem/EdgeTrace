@@ -12,7 +12,7 @@ import { TableContainer } from "../components/ui/Primitives";
 import type { DiagnosticsResult, NormalizedTrade } from "../types";
 
 const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
-const number = new Intl.NumberFormat("en-US", { maximumFractionDigits: 4 });
+const number = new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 });
 
 export function ReconstructionAuditPage({
   result,

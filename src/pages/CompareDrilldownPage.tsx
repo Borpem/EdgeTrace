@@ -275,7 +275,10 @@ export function CompareDrilldownPage({
               <CartesianGrid stroke="#243B64" strokeOpacity={0.45} />
               <XAxis dataKey="report" stroke="#9CA8C7" />
               <YAxis stroke="#9CA8C7" />
-              <Tooltip contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }} />
+              <Tooltip
+                formatter={(value) => formatChartTooltipValue(value, "currency")}
+                contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }}
+              />
               <Bar dataKey="netPnl" fill="#3DDC97" />
             </BarChart>
           </ResponsiveContainer>
@@ -286,7 +289,10 @@ export function CompareDrilldownPage({
               <CartesianGrid stroke="#243B64" strokeOpacity={0.45} />
               <XAxis dataKey="report" stroke="#9CA8C7" />
               <YAxis stroke="#9CA8C7" />
-              <Tooltip contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }} />
+              <Tooltip
+                formatter={(value) => formatChartTooltipValue(value, "percentPoints")}
+                contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }}
+              />
               <Bar dataKey="costDrag" fill="#FFB84D" />
             </BarChart>
           </ResponsiveContainer>
@@ -297,7 +303,10 @@ export function CompareDrilldownPage({
               <CartesianGrid stroke="#243B64" strokeOpacity={0.45} />
               <XAxis dataKey="bucket" stroke="#9CA8C7" />
               <YAxis stroke="#9CA8C7" />
-              <Tooltip contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }} />
+              <Tooltip
+                formatter={(value) => formatChartTooltipValue(value, "count")}
+                contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }}
+              />
               <Bar dataKey="Report A" fill="#3E8BFF" />
               <Bar dataKey="Report B" fill="#45D5FF" />
             </BarChart>
@@ -309,7 +318,10 @@ export function CompareDrilldownPage({
               <CartesianGrid stroke="#243B64" strokeOpacity={0.45} />
               <XAxis dataKey="trade" stroke="#9CA8C7" />
               <YAxis stroke="#9CA8C7" />
-              <Tooltip contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }} />
+              <Tooltip
+                formatter={(value) => formatChartTooltipValue(value, "currency")}
+                contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }}
+              />
               <Line type="monotone" dataKey="Report A" stroke="#3E8BFF" strokeWidth={2} dot={false} />
               <Line type="monotone" dataKey="Report B" stroke="#45D5FF" strokeWidth={2} dot={false} />
             </LineChart>
@@ -795,6 +807,15 @@ function signedNumber(value: number) {
 
 function signedCurrency(value: number) {
   return `${value > 0 ? "+" : ""}${currency.format(value)}`;
+}
+
+function formatChartTooltipValue(value: unknown, format: "currency" | "percentPoints" | "count" | "number") {
+  const numericValue = typeof value === "number" ? value : Number(value);
+  if (!Number.isFinite(numericValue)) return "N/A";
+  if (format === "currency") return currency.format(numericValue);
+  if (format === "percentPoints") return `${number.format(numericValue)}%`;
+  if (format === "count") return number.format(numericValue);
+  return number.format(numericValue);
 }
 
 function buildFilterOptions(trades: NormalizedTrade[]) {

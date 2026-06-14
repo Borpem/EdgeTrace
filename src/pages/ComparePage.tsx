@@ -402,7 +402,10 @@ export function ComparePage({
                   <CartesianGrid stroke="#243B64" strokeOpacity={0.45} />
                   <XAxis dataKey="metric" stroke="#9CA8C7" />
                   <YAxis stroke="#9CA8C7" />
-                  <Tooltip contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }} />
+                  <Tooltip
+                    formatter={(value) => formatChartTooltipValue(value, "currency")}
+                    contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }}
+                  />
                   <Bar dataKey="Report A" fill="#3E8BFF" />
                   <Bar dataKey="Report B" fill="#45D5FF" />
                 </BarChart>
@@ -414,7 +417,10 @@ export function ComparePage({
                   <CartesianGrid stroke="#243B64" strokeOpacity={0.45} />
                   <XAxis dataKey="report" stroke="#9CA8C7" />
                   <YAxis stroke="#9CA8C7" />
-                  <Tooltip contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }} />
+                  <Tooltip
+                    formatter={(value) => formatChartTooltipValue(value, "percentPoints")}
+                    contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }}
+                  />
                   <Bar dataKey="Cost Drag" fill="#FFB84D" />
                 </BarChart>
               </ResponsiveContainer>
@@ -716,6 +722,14 @@ function formatOptional(value: number | undefined, format: ComparisonMetric["for
   if (format === "currency") return `${prefix}${currency.format(value)}`;
   if (format === "percent") return `${prefix}${percent.format(value)}`;
   return `${prefix}${number.format(value)}`;
+}
+
+function formatChartTooltipValue(value: unknown, format: "currency" | "percentPoints" | "number") {
+  const numericValue = typeof value === "number" ? value : Number(value);
+  if (!Number.isFinite(numericValue)) return "N/A";
+  if (format === "currency") return currency.format(numericValue);
+  if (format === "percentPoints") return `${number.format(numericValue)}%`;
+  return number.format(numericValue);
 }
 
 function statusClass(status: ComparisonMetric["status"]) {

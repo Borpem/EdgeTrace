@@ -189,7 +189,10 @@ export function DrilldownPage({
               <CartesianGrid stroke="#243B64" strokeOpacity={0.45} />
               <XAxis dataKey="trade" stroke="#9CA8C7" />
               <YAxis stroke="#9CA8C7" />
-              <Tooltip contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }} />
+              <Tooltip
+                formatter={(value) => [formatTooltipCurrency(value), "Equity"]}
+                contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }}
+              />
               <Line type="monotone" dataKey="equity" stroke="#45D5FF" strokeWidth={2} dot={false} />
             </LineChart>
           </ResponsiveContainer>
@@ -332,4 +335,10 @@ function formatTooltipPercent(value: unknown) {
   const numericValue = typeof value === "number" ? value : Number(value);
   if (!Number.isFinite(numericValue)) return "N/A";
   return `${number.format(numericValue)}%`;
+}
+
+function formatTooltipCurrency(value: unknown) {
+  const numericValue = typeof value === "number" ? value : Number(value);
+  if (!Number.isFinite(numericValue)) return "N/A";
+  return currency.format(numericValue);
 }
