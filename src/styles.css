@@ -5384,6 +5384,10 @@ body {
   color: #b7c4cc !important;
 }
 
+.recharts-tooltip-cursor {
+  fill: rgba(97, 184, 211, 0.055) !important;
+}
+
 .EdgeTrace-command-health small {
   display: inline-flex;
   align-items: center;
