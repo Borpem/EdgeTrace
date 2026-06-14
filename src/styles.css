@@ -329,11 +329,62 @@
 
   .EdgeTrace-auth-topbar-actions,
   .EdgeTrace-account-utility {
+    position: relative;
     display: flex;
     min-width: 0;
     align-items: center;
     justify-content: flex-end;
     gap: 0.6rem;
+  }
+
+  .EdgeTrace-account-utility-menu-button {
+    display: inline-flex;
+    width: 2.55rem;
+    height: 2.55rem;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(90, 132, 158, 0.3);
+    border-radius: 6px;
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.055), rgba(88, 214, 255, 0.035)),
+      rgba(5, 14, 21, 0.92);
+    color: #d9edf7;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+
+  .EdgeTrace-account-utility-menu-button:hover,
+  .EdgeTrace-account-utility[data-open="true"] .EdgeTrace-account-utility-menu-button {
+    border-color: rgba(88, 214, 255, 0.44);
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.075), rgba(88, 214, 255, 0.06)),
+      rgba(7, 18, 26, 0.96);
+    color: #f2fbff;
+  }
+
+  .EdgeTrace-account-utility-menu {
+    position: absolute;
+    top: calc(100% + 0.55rem);
+    right: 0;
+    z-index: 40;
+    width: 14.5rem;
+    border: 1px solid rgba(90, 132, 158, 0.34);
+    border-radius: 7px;
+    background:
+      linear-gradient(135deg, rgba(11, 22, 31, 0.98), rgba(5, 10, 16, 0.98)),
+      #071019;
+    padding: 0.45rem;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.06),
+      0 18px 44px -28px rgba(0, 0, 0, 0.95);
+  }
+
+  .EdgeTrace-account-utility-menu-head {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 0.62rem;
+    border-bottom: 1px solid rgba(90, 132, 158, 0.18);
+    padding: 0.52rem 0.5rem 0.68rem;
   }
 
   .EdgeTrace-auth-topbar-primary {
@@ -454,16 +505,18 @@
   .EdgeTrace-account-utility-link {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     gap: 0.34rem;
-    min-height: 2.22rem;
-    border: 1px solid rgba(130, 161, 190, 0.16);
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.025);
+    width: 100%;
+    min-height: 2.3rem;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    background: transparent;
     color: rgba(214, 224, 235, 0.72);
-    padding: 0 0.7rem;
+    padding: 0 0.55rem;
     font-size: 0.74rem;
     font-weight: 690;
+    text-align: left;
   }
 
   .EdgeTrace-account-utility-link:hover {

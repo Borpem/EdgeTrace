@@ -63,7 +63,11 @@ test.describe.serial("EdgeTrace happy path", () => {
     const healthCard = page.getByTestId("dashboard-health-card");
     await expect(healthCard).toBeVisible();
     await expect(page.locator(".EdgeTrace-sidebar-user")).toHaveCount(0);
-    await expect(page.locator(".EdgeTrace-command-nav .EdgeTrace-account-utility-profile")).toBeVisible();
+    const commandAccountMenu = page.locator(".EdgeTrace-command-nav .EdgeTrace-account-utility-menu-button");
+    await expect(commandAccountMenu).toBeVisible();
+    await commandAccountMenu.click();
+    await expect(page.getByRole("menuitem", { name: /Account/i })).toBeVisible();
+    await expect(page.getByRole("menuitem", { name: /Log out/i })).toBeVisible();
     await expect(page.locator(".EdgeTrace-command-nav").getByRole("button", { name: "Dashboard", exact: true })).toHaveClass(/active/);
     await expect(page.getByText("Report Overview", { exact: true })).toBeVisible();
     await expect(page.getByText("Edge Health", { exact: true }).first()).toBeVisible();
@@ -116,7 +120,7 @@ test.describe.serial("EdgeTrace happy path", () => {
       await expect(topbar).toBeVisible();
       await expect(content).toBeVisible();
       await expect(page.locator(".EdgeTrace-sidebar-user")).toHaveCount(0);
-      await expect(page.locator(".EdgeTrace-account-utility-profile")).toBeVisible();
+      await expect(page.locator(".EdgeTrace-account-utility-menu-button")).toBeVisible();
       await expect(topbar.getByRole("button", { name: "Guide" })).toHaveCount(0);
       if (route === "/app/collections") {
         await expect(page.getByText("Guided Command Path")).toHaveCount(0);

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { UserButton } from "@clerk/clerk-react";
 import {
   FileText,
@@ -6,6 +6,7 @@ import {
   Home,
   Layers3,
   LogOut,
+  Menu,
   Scale,
   TrendingUp,
   UserCircle
@@ -1190,7 +1191,6 @@ function AuthenticatedTopbar({
 function AccountUtility({
   userName,
   profile,
-  authMode,
   onAccount,
   onSignOut
 }: {
@@ -1201,35 +1201,73 @@ function AccountUtility({
   onSignOut: () => void;
 }) {
   const planLabel = profile?.planId ? profile.planId.toUpperCase() : "FREE";
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+  const accountLabel = userName ?? "Account";
+  const openAccount = () => {
+    setMenuOpen(false);
+    onAccount();
+  };
+  const signOut = () => {
+    setMenuOpen(false);
+    onSignOut();
+  };
+
+  useEffect(() => {
+    if (!menuOpen) {
+      return;
+    }
+
+    const closeOnPointerDown = (event: PointerEvent) => {
+      if (!menuRef.current?.contains(event.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("pointerdown", closeOnPointerDown);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("pointerdown", closeOnPointerDown);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [menuOpen]);
 
   return (
-    <div className="EdgeTrace-account-utility">
-      <button className="EdgeTrace-account-utility-profile" type="button" onClick={onAccount}>
-        <span className="EdgeTrace-account-utility-avatar">
-          {userName ? initials(userName) : <UserCircle size={16} aria-hidden="true" />}
-        </span>
-        <span className="EdgeTrace-account-utility-copy">
-          <strong>{userName ?? "Account"}</strong>
-          <small>Account settings</small>
-        </span>
-        <em>{planLabel}</em>
+    <div className="EdgeTrace-account-utility" data-open={menuOpen ? "true" : "false"} ref={menuRef}>
+      <button
+        className="EdgeTrace-account-utility-menu-button"
+        type="button"
+        aria-haspopup="menu"
+        aria-expanded={menuOpen}
+        aria-label="Open account menu"
+        onClick={() => setMenuOpen((open) => !open)}
+      >
+        <Menu size={18} aria-hidden="true" />
       </button>
-      <div className="EdgeTrace-account-utility-actions">
-        {authMode === "clerk" ? (
-          <UserButton
-            afterSignOutUrl="/"
-            appearance={{
-              elements: {
-                avatarBox: "h-9 w-9 border border-cyan/35 shadow-[0_0_24px_-14px_rgba(98,200,255,0.9)]"
-              }
-            }}
-          />
-        ) : (
-          <button className="EdgeTrace-account-utility-link" type="button" onClick={onSignOut}>
-            Sign out <LogOut size={14} aria-hidden="true" />
+      {menuOpen && (
+        <div className="EdgeTrace-account-utility-menu" role="menu">
+          <div className="EdgeTrace-account-utility-menu-head">
+            <span className="EdgeTrace-account-utility-avatar">
+              {userName ? initials(userName) : <UserCircle size={16} aria-hidden="true" />}
+            </span>
+            <span className="EdgeTrace-account-utility-copy">
+              <strong>{accountLabel}</strong>
+              <small>{planLabel} plan</small>
+            </span>
+          </div>
+          <button className="EdgeTrace-account-utility-link" type="button" role="menuitem" onClick={openAccount}>
+            Account <UserCircle size={14} aria-hidden="true" />
           </button>
-        )}
-      </div>
+          <button className="EdgeTrace-account-utility-link" type="button" role="menuitem" onClick={signOut}>
+            Log out <LogOut size={14} aria-hidden="true" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }
