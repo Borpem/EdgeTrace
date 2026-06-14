@@ -251,8 +251,8 @@
     --EdgeTrace-auth-danger: #ff485c;
     --EdgeTrace-auth-success: #74c476;
     --EdgeTrace-auth-muted: rgba(214, 224, 235, 0.68);
-    --EdgeTrace-auth-surface: rgba(11, 26, 42, 0.92);
-    --EdgeTrace-auth-surface-deep: rgba(8, 20, 32, 0.92);
+    --EdgeTrace-auth-surface: rgba(12, 20, 28, 0.94);
+    --EdgeTrace-auth-surface-deep: rgba(6, 11, 16, 0.96);
     --command-bg-page: #020609;
     --command-bg-shell: #060b10;
     --command-bg-card: #0c141c;
@@ -275,10 +275,10 @@
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto minmax(0, 1fr);
     align-items: stretch;
-    color: #f6f8fb;
+    color: var(--command-text);
     background:
-      radial-gradient(circle at 18% 0%, rgba(97, 184, 211, 0.022), transparent 25rem),
-      radial-gradient(circle at 88% 2%, rgba(122, 140, 255, 0.022), transparent 30rem),
+      radial-gradient(circle at 18% 0%, rgba(97, 184, 211, 0.018), transparent 25rem),
+      radial-gradient(circle at 88% 2%, rgba(122, 140, 255, 0.016), transparent 30rem),
       linear-gradient(180deg, var(--command-bg-page) 0%, #050a0e 48%, var(--command-bg-page) 100%);
   }
 
@@ -604,14 +604,14 @@
   .EdgeTrace-auth-framed .EdgeTrace-table-container,
   .EdgeTrace-auth-framed main :is(section, article, div):not(.fixed)[class*="border"][class*="bg-panel"],
   .EdgeTrace-auth-framed main :is(section, article, div):not(.fixed)[class*="border"][class*="bg-graphite"] {
-    border-color: rgba(130, 161, 190, 0.15);
-    border-radius: 8px;
+    border-color: rgba(36, 53, 66, 0.82);
+    border-radius: 7px;
     background:
-      radial-gradient(circle at 100% 0%, rgba(69, 183, 244, 0.055), transparent 14rem),
-      linear-gradient(180deg, rgba(11, 26, 42, 0.92), rgba(8, 20, 32, 0.92));
+      linear-gradient(135deg, rgba(16, 25, 33, 0.88), rgba(8, 13, 19, 0.97)),
+      var(--command-bg-card);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.035),
-      0 20px 50px -46px rgba(69, 183, 244, 0.5);
+      0 18px 48px -46px rgba(0, 0, 0, 0.9);
   }
 
   .EdgeTrace-auth-framed .EdgeTrace-card,
@@ -636,7 +636,7 @@
   .EdgeTrace-auth-framed .EdgeTrace-title,
   .EdgeTrace-auth-framed .EdgeTrace-page-header h1 {
     margin: 0;
-    color: #ffffff;
+    color: var(--command-text);
     font-size: 1.48rem;
     font-weight: 680;
     line-height: 1.2;
@@ -647,13 +647,13 @@
   .EdgeTrace-auth-framed .EdgeTrace-page-header p {
     margin-top: 0.5rem;
     max-width: 52rem;
-    color: rgba(214, 224, 235, 0.66);
+    color: var(--command-text-secondary);
     font-size: 0.84rem;
     line-height: 1.55;
   }
 
   .EdgeTrace-auth-framed main h2 {
-    color: #ffffff;
+    color: var(--command-text);
     font-size: 1.15rem;
     font-weight: 650;
     letter-spacing: 0;
@@ -661,14 +661,14 @@
   }
 
   .EdgeTrace-auth-framed main h3 {
-    color: #ffffff;
+    color: var(--command-text);
     font-size: 0.98rem;
     font-weight: 650;
     letter-spacing: 0;
   }
 
   .EdgeTrace-auth-framed main :is(label, th, .EdgeTrace-eyebrow, .EdgeTrace-panel-header, [class*="uppercase"]) {
-    color: rgba(214, 224, 235, 0.72);
+    color: var(--command-text-muted);
   }
 
   .EdgeTrace-auth-framed .EdgeTrace-page-header .EdgeTrace-card-soft {
@@ -682,14 +682,14 @@
 
   .EdgeTrace-auth-framed .EdgeTrace-workflow-step {
     min-height: 5.4rem;
-    border-color: rgba(130, 161, 190, 0.15);
+    border-color: rgba(36, 53, 66, 0.76);
     border-radius: 7px;
-    background: rgba(3, 6, 12, 0.38);
+    background: rgba(6, 12, 18, 0.46);
   }
 
   .EdgeTrace-auth-framed .EdgeTrace-workflow-step-active {
-    border-color: rgba(69, 183, 244, 0.68);
-    background: rgba(69, 183, 244, 0.1);
+    border-color: rgba(97, 184, 211, 0.66);
+    background: rgba(97, 184, 211, 0.08);
   }
 
   .EdgeTrace-auth-framed .EdgeTrace-workflow-step-complete {
@@ -700,17 +700,17 @@
   .EdgeTrace-auth-framed input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
   .EdgeTrace-auth-framed select,
   .EdgeTrace-auth-framed textarea {
-    border-color: rgba(130, 161, 190, 0.22);
+    border-color: rgba(36, 53, 66, 0.76);
     border-radius: 7px;
-    background: rgba(3, 6, 12, 0.42);
-    color: #f6f8fb;
+    background: rgba(2, 6, 9, 0.62);
+    color: var(--command-text);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025);
   }
 
   .EdgeTrace-auth-framed input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):focus,
   .EdgeTrace-auth-framed select:focus,
   .EdgeTrace-auth-framed textarea:focus {
-    border-color: rgba(69, 183, 244, 0.68);
+    border-color: rgba(97, 184, 211, 0.68);
     outline: none;
   }
 
@@ -720,9 +720,11 @@
   .EdgeTrace-auth-framed .EdgeTrace-account-page .EdgeTrace-pricing-primary {
     min-height: 2.6rem;
     border-radius: 7px;
-    border-color: rgba(69, 183, 244, 0.82);
-    background: rgba(69, 183, 244, 0.12);
-    color: #62c8ff;
+    border-color: rgba(97, 184, 211, 0.62);
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.055), rgba(97, 184, 211, 0.045)),
+      rgba(5, 14, 21, 0.92);
+    color: var(--command-text);
     font-size: 0.85rem;
     font-weight: 650;
     text-shadow: none;
@@ -735,9 +737,9 @@
   .EdgeTrace-auth-framed .EdgeTrace-account-page .EdgeTrace-pricing-secondary {
     min-height: 2.6rem;
     border-radius: 7px;
-    border-color: rgba(130, 161, 190, 0.24);
-    background: rgba(255, 255, 255, 0.02);
-    color: #f7fbff;
+    border-color: rgba(36, 53, 66, 0.82);
+    background: rgba(6, 12, 18, 0.46);
+    color: var(--command-text);
     font-size: 0.85rem;
     font-weight: 650;
     box-shadow: none;
@@ -748,8 +750,10 @@
   .EdgeTrace-auth-framed .EdgeTrace-command-button:hover,
   .EdgeTrace-auth-framed .EdgeTrace-compact-primary:hover,
   .EdgeTrace-auth-framed .EdgeTrace-account-page .EdgeTrace-pricing-primary:hover:not(:disabled) {
-    border-color: #62c8ff;
-    background: rgba(69, 183, 244, 0.18);
+    border-color: rgba(97, 184, 211, 0.72);
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.075), rgba(97, 184, 211, 0.065)),
+      rgba(7, 18, 26, 0.96);
     filter: none;
     transform: none;
   }
@@ -757,8 +761,8 @@
   .EdgeTrace-auth-framed .EdgeTrace-secondary-button:hover,
   .EdgeTrace-auth-framed .EdgeTrace-compact-secondary:hover,
   .EdgeTrace-auth-framed .EdgeTrace-account-page .EdgeTrace-pricing-secondary:hover:not(:disabled) {
-    border-color: rgba(130, 161, 190, 0.42);
-    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(97, 184, 211, 0.36);
+    background: rgba(12, 20, 28, 0.66);
     transform: none;
   }
 
@@ -769,14 +773,14 @@
   .EdgeTrace-auth-framed .EdgeTrace-account-plan-card.advanced,
   .EdgeTrace-auth-framed .EdgeTrace-account-billing-card,
   .EdgeTrace-auth-framed .EdgeTrace-account-summary-card {
-    border-color: rgba(130, 161, 190, 0.15) !important;
-    border-radius: 6px;
+    border-color: rgba(36, 53, 66, 0.82) !important;
+    border-radius: 7px;
     background:
-      radial-gradient(circle at 100% 0%, rgba(69, 183, 244, 0.055), transparent 14rem),
-      linear-gradient(180deg, rgba(11, 26, 42, 0.92), rgba(8, 20, 32, 0.92)) !important;
+      linear-gradient(135deg, rgba(16, 25, 33, 0.88), rgba(8, 13, 19, 0.97)),
+      var(--command-bg-card) !important;
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.035),
-      0 20px 50px -46px rgba(69, 183, 244, 0.5) !important;
+      0 18px 48px -46px rgba(0, 0, 0, 0.9) !important;
   }
 
   .EdgeTrace-auth-framed .EdgeTrace-account-hero {
@@ -799,7 +803,7 @@
   .EdgeTrace-auth-framed .EdgeTrace-account-summary-card p,
   .EdgeTrace-auth-framed .EdgeTrace-account-plan-ribbon,
   .EdgeTrace-auth-framed .EdgeTrace-account-billing-card p {
-    color: rgba(214, 224, 235, 0.84);
+    color: var(--command-text-secondary);
     font-size: 0.72rem;
     font-weight: 650;
     letter-spacing: 0.04em;
@@ -807,7 +811,7 @@
 
   .EdgeTrace-auth-framed .EdgeTrace-account-summary-card h2,
   .EdgeTrace-auth-framed .EdgeTrace-account-plan-price strong {
-    color: #ffffff;
+    color: var(--command-text);
     font-size: clamp(1.58rem, 2.2vw, 2.05rem);
     font-weight: 520;
     line-height: 1.08;
@@ -825,18 +829,18 @@
 
   .EdgeTrace-auth-framed .EdgeTrace-account-plan-ribbon {
     min-height: 1.8rem;
-    border-bottom-color: rgba(130, 161, 190, 0.14);
-    background: rgba(3, 6, 12, 0.28);
+    border-bottom-color: rgba(36, 53, 66, 0.78);
+    background: rgba(2, 6, 9, 0.46);
   }
 
   .EdgeTrace-auth-framed .EdgeTrace-account-eyebrow {
     margin-bottom: 0.55rem;
-    color: rgba(214, 224, 235, 0.68);
+    color: var(--command-text-muted);
     font-size: 0.72rem;
   }
 
   .EdgeTrace-auth-framed .EdgeTrace-account-hero h1 {
-    color: #ffffff;
+    color: var(--command-text);
     font-size: 1.48rem;
     font-weight: 680;
     letter-spacing: 0;
@@ -845,7 +849,7 @@
 
   .EdgeTrace-auth-framed .EdgeTrace-account-hero p:not(.EdgeTrace-account-eyebrow) {
     margin-top: 0.5rem;
-    color: rgba(214, 224, 235, 0.66);
+    color: var(--command-text-secondary);
     font-size: 0.84rem;
     line-height: 1.55;
   }
@@ -858,7 +862,7 @@
   .EdgeTrace-auth-framed .EdgeTrace-auth-education > section {
     padding-top: 1.5rem;
     padding-bottom: 1.5rem;
-    border-color: rgba(130, 161, 190, 0.14);
+    border-color: rgba(36, 53, 66, 0.74);
     background: transparent;
   }
 
@@ -873,7 +877,7 @@
 
   .EdgeTrace-auth-framed .EdgeTrace-auth-education h1,
   .EdgeTrace-auth-framed .EdgeTrace-auth-education h2 {
-    color: #ffffff;
+    color: var(--command-text);
     letter-spacing: 0;
     text-wrap: balance;
   }
@@ -890,7 +894,7 @@
   }
 
   .EdgeTrace-auth-framed .EdgeTrace-auth-education p {
-    color: rgba(214, 224, 235, 0.68);
+    color: var(--command-text-secondary);
   }
 
   .EdgeTrace-auth-framed :is(.text-cyan, [class*="text-cyan"], .text-accent, [class*="text-accent"], .text-violet, [class*="text-violet"]) {
@@ -948,7 +952,7 @@
   }
 
   .EdgeTrace-auth-framed :is([class*="120,97,255"], [class*="124,92,255"]) {
-    background-image: radial-gradient(circle at 100% 0%, rgba(69, 183, 244, 0.07), transparent 16rem) !important;
+    background-image: radial-gradient(circle at 100% 0%, rgba(97, 184, 211, 0.035), transparent 16rem) !important;
   }
 
   .EdgeTrace-auth-framed .EdgeTrace-summary-panel > .pointer-events-none,
@@ -959,13 +963,13 @@
   }
 
   .EdgeTrace-auth-framed .EdgeTrace-account-plan-card.featured {
-    border-color: rgba(69, 183, 244, 0.48) !important;
+    border-color: rgba(97, 184, 211, 0.42) !important;
     background:
-      radial-gradient(circle at 100% 0%, rgba(69, 183, 244, 0.07), transparent 14rem),
-      linear-gradient(180deg, rgba(11, 26, 42, 0.94), rgba(8, 20, 32, 0.94)) !important;
+      linear-gradient(135deg, rgba(16, 25, 33, 0.9), rgba(8, 13, 19, 0.98)),
+      var(--command-bg-card) !important;
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.04),
-      0 22px 54px -48px rgba(69, 183, 244, 0.72) !important;
+      0 20px 52px -48px rgba(0, 0, 0, 0.92) !important;
     transform: none !important;
   }
 
@@ -989,14 +993,14 @@
   .EdgeTrace-auth-framed .EdgeTrace-auth-education :is(article, section, div):not(.fixed):not(.absolute):not(.pointer-events-none)[class*="border"][class*="bg-black"],
   .EdgeTrace-auth-framed .EdgeTrace-auth-education :is(article, section, div):not(.fixed):not(.absolute):not(.pointer-events-none)[class*="border"][class*="bg-white"],
   .EdgeTrace-auth-framed .EdgeTrace-auth-education :is(article, section, div):not(.fixed):not(.absolute):not(.pointer-events-none)[class*="border"][class*="bg-[linear-gradient"] {
-    border-color: var(--EdgeTrace-auth-border);
-    border-radius: 6px;
+    border-color: rgba(36, 53, 66, 0.82);
+    border-radius: 7px;
     background:
-      radial-gradient(circle at 100% 0%, rgba(69, 183, 244, 0.055), transparent 14rem),
-      linear-gradient(180deg, var(--EdgeTrace-auth-surface), var(--EdgeTrace-auth-surface-deep)) !important;
+      linear-gradient(135deg, rgba(16, 25, 33, 0.88), rgba(8, 13, 19, 0.97)),
+      var(--command-bg-card) !important;
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.035),
-      0 20px 50px -46px rgba(69, 183, 244, 0.5);
+      0 18px 48px -46px rgba(0, 0, 0, 0.9);
   }
 
   @media (max-width: 560px) {
@@ -4759,8 +4763,8 @@ body {
 .EdgeTrace-contours.EdgeTrace-auth-framed {
   background-color: var(--command-bg-page, #020609);
   background-image:
-    radial-gradient(circle at 18% 0%, rgba(97, 184, 211, 0.022), transparent 25rem),
-    radial-gradient(circle at 88% 2%, rgba(122, 140, 255, 0.022), transparent 30rem),
+    radial-gradient(circle at 18% 0%, rgba(97, 184, 211, 0.018), transparent 25rem),
+    radial-gradient(circle at 88% 2%, rgba(122, 140, 255, 0.016), transparent 30rem),
     linear-gradient(180deg, var(--command-bg-page, #020609) 0%, #050a0e 48%, var(--command-bg-page, #020609) 100%);
   background-position: center top, center top, center top;
   background-size: auto, auto, auto;
@@ -4771,27 +4775,27 @@ body {
 .EdgeTrace-contours.EdgeTrace-auth-framed .bg-graphite,
 .EdgeTrace-contours.EdgeTrace-auth-framed .border.border-line.bg-panel,
 .EdgeTrace-contours.EdgeTrace-auth-framed .border.border-line.bg-graphite {
-  border-color: rgba(130, 161, 190, 0.15);
+  border-color: rgba(36, 53, 66, 0.82);
   background:
-    radial-gradient(circle at 100% 0%, rgba(69, 183, 244, 0.055), transparent 14rem),
-    linear-gradient(180deg, rgba(11, 26, 42, 0.92), rgba(8, 20, 32, 0.92));
+    linear-gradient(135deg, rgba(16, 25, 33, 0.88), rgba(8, 13, 19, 0.97)),
+    var(--command-bg-card, #0c141c);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.035),
-    0 20px 50px -46px rgba(69, 183, 244, 0.5);
+    0 18px 48px -46px rgba(0, 0, 0, 0.9);
 }
 
 .EdgeTrace-contours.EdgeTrace-auth-framed .border-line {
-  border-color: rgba(130, 161, 190, 0.14);
+  border-color: rgba(36, 53, 66, 0.72);
 }
 
 .EdgeTrace-contours.EdgeTrace-auth-framed thead {
-  background-color: rgba(69, 183, 244, 0.055);
+  background-color: rgba(12, 20, 28, 0.92);
 }
 
 .EdgeTrace-contours.EdgeTrace-auth-framed tbody tr,
 .EdgeTrace-contours.EdgeTrace-auth-framed th,
 .EdgeTrace-contours.EdgeTrace-auth-framed td {
-  border-color: rgba(130, 161, 190, 0.12);
+  border-color: rgba(36, 53, 66, 0.62);
 }
 
 .EdgeTrace-hero-logo {
@@ -7028,15 +7032,15 @@ textarea:focus-visible {
 }
 
 .EdgeTrace-account-summary-card {
-  border: 1px solid rgba(130, 161, 190, 0.15);
-  border-radius: 6px;
+  border: 1px solid rgba(36, 53, 66, 0.82);
+  border-radius: 7px;
   background:
-    radial-gradient(circle at 100% 0%, rgba(69, 183, 244, 0.055), transparent 14rem),
-    linear-gradient(180deg, rgba(11, 26, 42, 0.88), rgba(8, 20, 32, 0.88));
+    linear-gradient(135deg, rgba(16, 25, 33, 0.88), rgba(8, 13, 19, 0.97)),
+    var(--command-bg-card, #0c141c);
   padding: 1.05rem;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.035),
-    0 18px 44px -42px rgba(69, 183, 244, 0.42);
+    0 18px 48px -46px rgba(0, 0, 0, 0.9);
 }
 
 .EdgeTrace-account-summary-card > div:first-child span {
