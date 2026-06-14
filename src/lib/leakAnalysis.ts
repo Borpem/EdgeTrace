@@ -7,6 +7,8 @@ import {
 } from "./breakdowns";
 import type { DiagnosticsResult, NormalizedTrade } from "../types";
 
+const R_BUCKET_ORDER = ["< -1R", "-1R to 0", "0 to 0.5R", "0.5R to 1R", "> 1R", "N/A"];
+
 export type LeakInsight = {
   id: string;
   title: string;
@@ -169,7 +171,10 @@ export function buildSegmentCharts(segmentTrades: NormalizedTrade[]) {
 
   return {
     equityCurve,
-    rDistribution: [...rDistribution.entries()].map(([bucket, count]) => ({ bucket, count })),
+    rDistribution: R_BUCKET_ORDER.filter((bucket) => rDistribution.has(bucket)).map((bucket) => ({
+      bucket,
+      count: rDistribution.get(bucket) ?? 0
+    })),
     costDrag
   };
 }
