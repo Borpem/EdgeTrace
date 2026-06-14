@@ -4,6 +4,7 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
+  Cell,
   Line,
   LineChart,
   ResponsiveContainer,
@@ -194,15 +195,7 @@ export function DrilldownPage({
           </ResponsiveContainer>
         </ChartPanel>
         <ChartPanel title="Realized R Distribution">
-          <ResponsiveContainer width="100%" height={260}>
-            <BarChart data={charts.rDistribution}>
-              <CartesianGrid stroke="#243B64" strokeOpacity={0.45} />
-              <XAxis dataKey="bucket" stroke="#9CA8C7" />
-              <YAxis stroke="#9CA8C7" />
-              <Tooltip contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }} />
-              <Bar dataKey="count" fill="#3E8BFF" />
-            </BarChart>
-          </ResponsiveContainer>
+          <RealizedRDistributionChart data={charts.rDistribution} />
         </ChartPanel>
         <ChartPanel title="Trade Cost Drag %">
           <ResponsiveContainer width="100%" height={260}>
@@ -268,6 +261,51 @@ function ChartPanel({ title, children }: { title: string; children: React.ReactN
       {children}
     </div>
   );
+}
+
+function RealizedRDistributionChart({ data }: { data: Array<{ bucket: string; count: number }> }) {
+  const hasOnlyUnavailableR = data.length === 1 && data[0]?.bucket === "N/A";
+
+  if (!data.length || hasOnlyUnavailableR) {
+    const tradeCount = data[0]?.count ?? 0;
+    return (
+      <div className="grid h-[260px] place-items-center border border-line bg-black/20 px-6 text-center">
+        <div>
+          <p className="text-sm font-semibold text-ink">R data unavailable</p>
+          <p className="mt-2 max-w-xs text-sm leading-6 text-muted">
+            {tradeCount > 0
+              ? `${tradeCount} trade${tradeCount === 1 ? "" : "s"} did not include realized R values.`
+              : "This segment does not include realized R values."}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <ResponsiveContainer width="100%" height={260}>
+      <BarChart data={data} barCategoryGap="42%" margin={{ top: 8, right: 18, bottom: 4, left: 0 }}>
+        <CartesianGrid stroke="#243B64" strokeOpacity={0.35} vertical={false} />
+        <XAxis dataKey="bucket" stroke="#9CA8C7" tickLine={false} axisLine={{ stroke: "#385264" }} />
+        <YAxis allowDecimals={false} stroke="#9CA8C7" tickLine={false} axisLine={{ stroke: "#385264" }} />
+        <Tooltip
+          cursor={{ fill: "rgba(255,255,255,0.035)" }}
+          contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }}
+        />
+        <Bar dataKey="count" radius={[3, 3, 0, 0]} maxBarSize={54}>
+          {data.map((entry) => (
+            <Cell key={entry.bucket} fill={getRBucketFill(entry.bucket)} />
+          ))}
+        </Bar>
+      </BarChart>
+    </ResponsiveContainer>
+  );
+}
+
+function getRBucketFill(bucket: string) {
+  if (bucket === "N/A") return "#8fa0ad";
+  if (bucket.includes("-") || bucket.includes("<")) return "#e65f73";
+  return "#73c98f";
 }
 
 function formatNumber(value: number | undefined) {
