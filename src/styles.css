@@ -5169,18 +5169,26 @@ body {
 }
 
 .EdgeTrace-command-diagnosis {
-  display: grid;
+  position: relative;
+  display: flex;
   grid-column: span 4;
-  grid-template-columns: minmax(0, 1fr) minmax(10.75rem, 0.55fr);
-  column-gap: 1.4rem;
+  flex-direction: column;
+  overflow: hidden;
   border-color: rgba(72, 104, 121, 0.7);
   background:
     linear-gradient(135deg, rgba(18, 31, 40, 0.98), rgba(9, 15, 22, 0.98)),
     var(--command-bg-card-elevated);
 }
 
-.EdgeTrace-command-diagnosis .EdgeTrace-command-card-heading {
-  grid-column: 1 / -1;
+.EdgeTrace-command-diagnosis::before {
+  position: absolute;
+  top: 1rem;
+  bottom: 1rem;
+  left: 0;
+  width: 2px;
+  background: linear-gradient(180deg, rgba(230, 95, 115, 0.72), rgba(78, 196, 236, 0.16));
+  content: "";
+  pointer-events: none;
 }
 
 .EdgeTrace-command-changed {
@@ -5293,19 +5301,16 @@ body {
 }
 
 .EdgeTrace-command-diagnosis h2 {
-  align-self: end;
-  grid-column: 1;
-  margin: 0.85rem 0 0;
+  margin: 1.35rem 0 0;
   color: var(--command-text);
-  font-size: 2rem;
+  font-size: clamp(1.75rem, 1.45vw, 2.08rem);
   font-weight: 520;
   text-align: left;
 }
 
 .EdgeTrace-command-diagnosis p {
-  grid-column: 1;
-  max-width: 24rem;
-  margin: 0.75rem 0 0;
+  max-width: 27rem;
+  margin: 0.7rem 0 0;
   color: var(--command-text-secondary);
   text-align: left;
   line-height: 1.45;
@@ -5313,15 +5318,19 @@ body {
 
 .EdgeTrace-command-two-metrics {
   display: grid;
-  grid-column: 2;
-  grid-row: 2 / span 3;
-  grid-template-columns: 1fr;
-  align-self: center;
-  gap: 0.85rem;
-  margin: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+  margin: 1.25rem 0 0;
   max-width: none;
-  border-left: 1px solid rgba(36, 53, 66, 0.72);
-  padding-left: 1.1rem;
+  border-left: 0;
+  padding-left: 0;
+}
+
+.EdgeTrace-command-two-metrics > div {
+  border: 1px solid rgba(36, 53, 66, 0.74);
+  border-radius: 5px;
+  background: rgba(5, 11, 17, 0.42);
+  padding: 0.72rem 0.78rem;
 }
 
 .EdgeTrace-command-two-metrics span {
@@ -5340,12 +5349,12 @@ body {
 
 .EdgeTrace-command-diagnosis > button {
   display: flex;
-  grid-column: 1;
-  width: min(100%, 17.5rem);
+  width: 100%;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: 0.55rem;
-  margin: 1.25rem 0 0;
+  margin: auto 0 0.35rem;
+  padding-inline: 0.95rem;
 }
 
 .EdgeTrace-command-changed .EdgeTrace-command-change-grid,
