@@ -65,7 +65,7 @@ export async function createCheckoutSession(userId: string, planId: PlanId, orig
   }
 
   if (planId !== "pro") {
-    throw new Error("Pro is the current self-serve automation plan.");
+    throw new Error("Pro is the current self-serve benchmark plan.");
   }
 
   const stripe = getStripe();

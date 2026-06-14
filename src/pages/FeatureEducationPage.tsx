@@ -74,11 +74,9 @@ const featureRows: Array<{ label: string; feature?: FeatureKey; access: Record<P
   { label: "Exports", feature: "audit_exports", access: { free: "Included", pro: "Included", advanced: "Included" } },
   { label: "Strategy monitoring", feature: "strategy_health_monitoring", access: { free: "Included", pro: "Included", advanced: "Included" } },
   { label: "Aggregate benchmark intelligence", feature: "aggregate_benchmarks", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Weekly review agenda", feature: "recurring_reviews", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Regression watch alerts", feature: "regression_alerts", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Ask EdgeTrace local coach", feature: "ask_edge_trace", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "What-If Simulator", feature: "what_if_simulator", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Edge Score factor breakdown", feature: "edge_stability_score", access: { free: "-", pro: "Included", advanced: "Included" } }
+  { label: "Cost-drag cohort percentiles", feature: "aggregate_benchmarks", access: { free: "-", pro: "Included", advanced: "Included" } },
+  { label: "R-capture comparisons", feature: "aggregate_benchmarks", access: { free: "-", pro: "Included", advanced: "Included" } },
+  { label: "Expectancy and profit-factor context", feature: "aggregate_benchmarks", access: { free: "-", pro: "Included", advanced: "Included" } }
 ];
 
 export function FeatureEducationPage({
@@ -592,10 +590,10 @@ function PlansSection({
     <section className="EdgeTrace-education-plans-section">
       <div className="EdgeTrace-education-plans-head">
         <p>Free vs Pro</p>
-        <h2>Core analytics are free. Pro adds benchmarks and coaching.</h2>
+        <h2>Core analytics are free. Pro adds benchmark context.</h2>
         <span>
           EdgeTrace gives every trader the complete reporting workflow. The paid tier is reserved for aggregate
-          benchmarks, local Ask EdgeTrace coaching, What-If Simulator, Edge Score factors, weekly review agendas, and regression watch alerts.
+          aggregate benchmarks, cost-drag percentiles, R-capture comparisons, expectancy benchmarks, and profit-factor context.
         </span>
         {isAuthenticated && (
           <em className={currentPlanPillClass(currentPlan)}>
@@ -615,7 +613,7 @@ function PlansSection({
                   ? "Complete workflow"
                   : planId === "pro"
                     ? "$9.99/month intelligence"
-                    : "Legacy automation"}
+                    : "Legacy benchmark access"}
               </small>
             </strong>
           ))}

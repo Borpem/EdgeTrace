@@ -16,12 +16,7 @@ export type FeatureKey =
   | "strategy_sets"
   | "audit_exports"
   | "strategy_health_monitoring"
-  | "recurring_reviews"
-  | "regression_alerts"
-  | "aggregate_benchmarks"
-  | "edge_stability_score"
-  | "ask_edge_trace"
-  | "what_if_simulator";
+  | "aggregate_benchmarks";
 
 export type PlanLimits = {
   maxReports: number | "unlimited";
@@ -70,12 +65,7 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
       strategy_sets: true,
       audit_exports: true,
       strategy_health_monitoring: true,
-      recurring_reviews: false,
-      regression_alerts: false,
-      aggregate_benchmarks: false,
-      edge_stability_score: false,
-      ask_edge_trace: false,
-      what_if_simulator: false
+      aggregate_benchmarks: false
     },
     featureBullets: [
       "Unlimited full diagnostic reports",
@@ -89,7 +79,7 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
     id: "pro",
     displayName: "Pro",
     monthlyPriceLabel: "$9.99/month",
-    description: "Local coaching, benchmarks, and automation.",
+    description: "Aggregate benchmarks and cohort context.",
     limits: {
       maxReports: "unlimited",
       maxFullReports: "unlimited",
@@ -113,28 +103,21 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
       strategy_sets: true,
       audit_exports: true,
       strategy_health_monitoring: true,
-      recurring_reviews: true,
-      regression_alerts: true,
-      aggregate_benchmarks: true,
-      edge_stability_score: true,
-      ask_edge_trace: true,
-      what_if_simulator: true
+      aggregate_benchmarks: true
     },
     featureBullets: [
       "Everything in Free",
       "Aggregate benchmark intelligence",
-      "Weekly review agenda",
-      "Regression watch alerts",
-      "Ask EdgeTrace local coach",
-      "What-If Simulator",
-      "Edge Score factor breakdown"
+      "Cost-drag cohort percentiles",
+      "R-capture comparisons",
+      "Expectancy and profit-factor context"
     ]
   },
   advanced: {
     id: "advanced",
     displayName: "Advanced",
     monthlyPriceLabel: "Legacy",
-    description: "Legacy access with every paid automation feature.",
+    description: "Legacy access with every paid benchmark feature.",
     limits: {
       maxReports: "unlimited",
       maxFullReports: "unlimited",
@@ -158,21 +141,14 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
       strategy_sets: true,
       audit_exports: true,
       strategy_health_monitoring: true,
-      recurring_reviews: true,
-      regression_alerts: true,
-      aggregate_benchmarks: true,
-      edge_stability_score: true,
-      ask_edge_trace: true,
-      what_if_simulator: true
+      aggregate_benchmarks: true
     },
     featureBullets: [
       "Everything in Free",
       "Aggregate benchmark intelligence",
-      "Weekly review agenda",
-      "Regression watch alerts",
-      "Ask EdgeTrace local coach",
-      "What-If Simulator",
-      "Edge Score factor breakdown"
+      "Cost-drag cohort percentiles",
+      "R-capture comparisons",
+      "Expectancy and profit-factor context"
     ]
   }
 };

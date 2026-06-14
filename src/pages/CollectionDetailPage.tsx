@@ -32,7 +32,6 @@ import {
 } from "../lib/iterationReviewQueue";
 import { canUseFeature, canUseStrategyMonitoring, getPlanConfig } from "../lib/entitlements";
 import { buildStrategyMonitoring, type StrategyMonitoringOutput } from "../lib/strategyMonitoring";
-import { buildStrategyReviewDigest, type StrategyReviewDigest } from "../lib/strategyReviewDigest";
 import {
   deleteCollectionReviewState,
   getCollection,
@@ -89,7 +88,6 @@ export function CollectionDetailPage({
   const reviewQueue = useMemo(() => buildIterationReviewQueue(iterationChanges), [iterationChanges]);
   const plan = getPlanConfig(profile?.planId);
   const monitoring = useMemo(() => (collection ? buildStrategyMonitoring(collection) : null), [collection]);
-  const reviewDigest = useMemo(() => (collection ? buildStrategyReviewDigest(collection) : null), [collection]);
 
   const load = async () => {
     try {
@@ -254,14 +252,10 @@ export function CollectionDetailPage({
             </PaywallGate>
           )}
 
-          {monitoring && reviewDigest && (
+          {monitoring && (
             <StrategyMonitoringSection
               monitoring={monitoring}
-              digest={reviewDigest}
               strategyMonitoringAccess={canUseStrategyMonitoring(plan) ? "full" : "locked"}
-              reviewAccess={canUseFeature(plan, "recurring_reviews") ? "full" : plan.id === "pro" ? "preview" : "locked"}
-              regressionAccess={canUseFeature(plan, "regression_alerts") ? "full" : plan.id === "pro" ? "full" : "locked"}
-              stabilityAccess={canUseFeature(plan, "edge_stability_score") ? "full" : "locked"}
             />
           )}
 
@@ -391,21 +385,13 @@ export function CollectionDetailPage({
 
 function StrategyMonitoringSection({
   monitoring,
-  digest,
-  strategyMonitoringAccess,
-  reviewAccess,
-  regressionAccess,
-  stabilityAccess
+  strategyMonitoringAccess
 }: {
   monitoring: StrategyMonitoringOutput;
-  digest: StrategyReviewDigest;
   strategyMonitoringAccess: "full" | "preview" | "locked";
-  reviewAccess: "full" | "preview" | "locked";
-  regressionAccess: "full" | "preview" | "locked";
-  stabilityAccess: "full" | "preview" | "locked";
 }) {
   return (
-    <section className="mb-6 grid gap-5 xl:grid-cols-[1.25fr_0.75fr]">
+    <section className="mb-6">
       <PaywallGate
         feature="strategy_health_monitoring"
         accessLevel={strategyMonitoringAccess}
@@ -438,74 +424,7 @@ function StrategyMonitoringSection({
           </div>
         </div>
       </PaywallGate>
-
-      <PaywallGate
-        feature="edge_stability_score"
-        accessLevel={stabilityAccess}
-        title="Upgrade to Pro to unlock Edge Score factors."
-        description="Pro breaks the score into expectancy, friction, payoff quality, consistency, and report-history confidence."
-      >
-        <div className="border border-white/[0.1] bg-white/[0.025] p-6">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted">Edge Score</p>
-          <p className="mt-3 text-4xl font-semibold tracking-[-0.055em] text-ink">
-            {monitoring.edgeStabilityScore ?? "Insufficient"}
-          </p>
-          <p className="mt-2 text-sm text-muted">{monitoring.edgeStabilityBand}</p>
-        </div>
-      </PaywallGate>
-
-      <PaywallGate
-        feature="regression_alerts"
-        accessLevel={regressionAccess}
-        title="Upgrade to Pro to unlock regression watch alerts."
-        description="Pro flags expectancy deterioration, rising cost drag, weakening R capture, and large-loss concentration across reports."
-      >
-        <div className="border border-white/[0.1] bg-white/[0.025] p-6">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-warning">Regression Alerts</p>
-          <div className="mt-4 grid gap-3">
-            {monitoring.regressionFlags.length ? (
-              monitoring.regressionFlags.map((flag) => (
-                <div key={flag.title} className="border border-white/[0.08] bg-black/25 p-3">
-                  <p className="text-sm font-semibold text-ink">{flag.title}</p>
-                  <p className="mt-1 text-xs leading-5 text-muted">{flag.explanation}</p>
-                </div>
-              ))
-            ) : (
-              <p className="text-sm text-muted">No major regression flags detected from the current strategy set history.</p>
-            )}
-          </div>
-        </div>
-      </PaywallGate>
-
-      <PaywallGate
-        feature="recurring_reviews"
-        accessLevel={reviewAccess}
-        title="Upgrade to Pro to unlock weekly review agendas."
-        description="Pro summarizes what changed, what improved, what deteriorated, and what deserves the next inspection."
-      >
-        <div className="border border-white/[0.1] bg-white/[0.025] p-6">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan">{digest.periodLabel}</p>
-          <p className="mt-3 text-sm leading-6 text-ink">{digest.summary}</p>
-          <div className="mt-4 grid gap-3 md:grid-cols-2">
-            <DigestList title="Highlights" items={digest.highlights} fallback="No positive review highlights yet." />
-            <DigestList title="Recommended Actions" items={digest.recommendedActions} fallback="Add more reports to generate actions." />
-          </div>
-        </div>
-      </PaywallGate>
     </section>
-  );
-}
-
-function DigestList({ title, items, fallback }: { title: string; items: string[]; fallback: string }) {
-  return (
-    <div>
-      <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted">{title}</p>
-      <ul className="mt-2 space-y-2 text-xs leading-5 text-muted">
-        {(items.length ? items : [fallback]).map((item) => (
-          <li key={item}>{item}</li>
-        ))}
-      </ul>
-    </div>
   );
 }
 

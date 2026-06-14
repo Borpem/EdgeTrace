@@ -53,7 +53,7 @@ export async function sanitizeReportForUser(userId: string, report: DiagnosticsR
       ...sanitized,
       trades: [],
       lockedSections: [...new Set([...(sanitized.lockedSections ?? []), ...previewLockedSections()])],
-      upgradeMessage: "Upgrade to Pro to unlock EdgeTrace automation features."
+      upgradeMessage: "Upgrade to Pro to unlock EdgeTrace benchmark features."
     };
   }
   return sanitized;
@@ -96,7 +96,7 @@ export function sanitizeReportForAccess(report: DiagnosticsResult, accessLevel: 
       charts: emptyCharts(),
       accessLevel,
       lockedSections,
-      upgradeMessage: "Upgrade to Pro to unlock EdgeTrace automation features."
+      upgradeMessage: "Upgrade to Pro to unlock EdgeTrace benchmark features."
     };
   }
 
@@ -111,7 +111,7 @@ export function sanitizeReportForAccess(report: DiagnosticsResult, accessLevel: 
     },
     accessLevel,
     lockedSections,
-    upgradeMessage: "Preview unlocked. Upgrade to Pro to unlock EdgeTrace automation features."
+    upgradeMessage: "Preview unlocked. Upgrade to Pro to unlock EdgeTrace benchmark features."
   };
 }
 
@@ -131,12 +131,7 @@ export function upgradeMessageForFeature(feature: EntitlementFeature, _requiredP
     audit_exports: "Audit exports are included on Free.",
     full_compare: "Report compare is included on Free.",
     strategy_health_monitoring: "Strategy health monitoring is included on Free.",
-    recurring_reviews: "Upgrade to Pro to unlock weekly strategy reviews.",
-    regression_alerts: "Upgrade to Pro to unlock regression alerts.",
-    aggregate_benchmarks: "Upgrade to Pro to unlock aggregate benchmark intelligence.",
-    edge_stability_score: "Upgrade to Pro to unlock Edge Score.",
-    ask_edge_trace: "Upgrade to Pro to unlock Ask EdgeTrace.",
-    what_if_simulator: "Upgrade to Pro to unlock the What-If Simulator."
+    aggregate_benchmarks: "Upgrade to Pro to unlock aggregate benchmark intelligence."
   };
   return messages[feature] ?? "Upgrade to Pro to unlock this feature.";
 }

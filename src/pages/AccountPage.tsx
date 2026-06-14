@@ -173,8 +173,8 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
               <h2>Choose the workflow depth your strategy needs.</h2>
             </div>
             <p>
-              Free includes the full core workflow. Pro adds aggregate benchmarks, local coaching, simulations,
-              Edge Score factors, review agendas, and regression watch for $9.99/month.
+              Free includes the full core workflow. Pro adds aggregate benchmarks, cost-drag percentiles,
+              R-capture comparisons, expectancy benchmarks, and profit-factor context for $9.99/month.
             </p>
           </div>
           <div className="EdgeTrace-account-billing-card">
@@ -183,7 +183,7 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
             <span>
               {isPaid
                 ? "Open Stripe for payment methods, invoices, and cancellation settings."
-                : "Activate aggregate benchmarks, local Ask EdgeTrace coaching, What-If Simulator, Edge Score factors, review agendas, and regression watch."}
+                : "Activate aggregate benchmark intelligence, cohort percentiles, R-capture comparisons, and profit-factor context."}
             </span>
             {isPaid && !hasStripeCustomer ? (
               <button className="EdgeTrace-pricing-secondary mt-5 w-full" disabled={activeAction === "refresh"} onClick={() => void refreshProfile()}>
@@ -294,8 +294,8 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
         />
         <InfoTile
           icon={Sparkles}
-          title="Pro automation"
-          body="Pro adds aggregate benchmarks, local coaching, What-If projections, Edge Score factors, review agendas, and regression watch."
+          title="Pro benchmarks"
+          body="Pro adds aggregate benchmark intelligence, cost-drag percentiles, R-capture comparisons, and profit-factor context."
           accent="purple"
         />
       </section>
@@ -484,18 +484,13 @@ function accessItems(planId: PlanId) {
       enabled: true
     },
     {
-      title: "Weekly reviews and alerts",
-      body: pro ? "Pro automation is active." : "Upgrade for review agendas and regression watch.",
-      enabled: pro
-    },
-    {
       title: "Aggregate benchmarks",
       body: pro ? "Cohort benchmark intelligence is active." : "Upgrade for cost drag, R-capture, and expectancy benchmarks.",
       enabled: pro
     },
     {
-      title: "Ask, simulate, and score",
-      body: pro ? "Ask EdgeTrace, What-If Simulator, and Edge Score factors are active." : "Upgrade for local coaching, simulations, and Edge Score factors.",
+      title: "Cohort context",
+      body: pro ? "Cost-drag percentiles, R-capture comparisons, and profit-factor context are active." : "Upgrade for deeper cohort context.",
       enabled: pro
     }
   ];

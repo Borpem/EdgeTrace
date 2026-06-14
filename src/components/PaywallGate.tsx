@@ -100,11 +100,6 @@ function featureParam(feature: FeatureKey | string) {
     audit_exports: "exports",
     strategy_health_monitoring: "strategy-monitoring",
     aggregate_benchmarks: "aggregate-benchmarks",
-    edge_stability_score: "strategy-monitoring",
-    recurring_reviews: "strategy-monitoring",
-    regression_alerts: "strategy-monitoring",
-    ask_edge_trace: "ask-edge-trace",
-    what_if_simulator: "what-if-simulator",
     broker_imports: "broker-imports"
   };
   return aliases[value] ?? value.replace(/_/g, "-");
