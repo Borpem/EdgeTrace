@@ -174,7 +174,7 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
             </div>
             <p>
               Free includes the full core workflow. Pro adds weekly Edge Reviews, regression alerts,
-              benchmark drift, next-review checklists, process scoring, and aggregate context for $9.99/month.
+              benchmark context, next-review checklists, review status, and aggregate context for $9.99/month.
             </p>
           </div>
           <div className="EdgeTrace-account-billing-card">
@@ -295,7 +295,7 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
         <InfoTile
           icon={Sparkles}
           title="Pro review loop"
-          body="Pro adds weekly Edge Reviews, regression alerts, benchmark drift, process scoring, and next-review checklists."
+          body="Pro adds weekly Edge Reviews, regression alerts, benchmark context, review status, and next-review checklists."
           accent="purple"
         />
       </section>

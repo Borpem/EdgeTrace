@@ -598,7 +598,7 @@ function PlansSection({
         <h2>Core analytics are free. Pro adds the review loop.</h2>
         <span>
           EdgeTrace gives every trader the complete reporting workflow. The paid tier is reserved for aggregate
-          weekly Edge Reviews, regression alerts, benchmark drift, next-review checklists, process scoring, and aggregate benchmark context.
+          weekly Edge Reviews, regression alerts, benchmark context, next-review checklists, review status, and aggregate benchmark context.
         </span>
         {isAuthenticated && (
           <em className={currentPlanPillClass(currentPlan)}>

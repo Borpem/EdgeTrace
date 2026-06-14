@@ -48,9 +48,9 @@ const featureRows: Array<{ label: string; access: Record<PlanId, string> }> = [
   { label: "Strategy health monitoring", access: { free: "Included", pro: "Included", advanced: "Included" } },
   { label: "Weekly Edge Review loop", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Regression alerts", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Benchmark drift tracking", access: { free: "-", pro: "Included", advanced: "Included" } },
+  { label: "Benchmark context", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Next-review checklist", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Process score", access: { free: "-", pro: "Included", advanced: "Included" } },
+  { label: "Review status", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Aggregate benchmark intelligence", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Cost-drag cohort percentiles", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "R-capture comparisons", access: { free: "-", pro: "Included", advanced: "Included" } },
@@ -66,7 +66,7 @@ const faqs = [
   {
     question: "What does Pro unlock?",
     answer:
-      "Pro is the $9.99/month review loop: weekly Edge Reviews, regression alerts, benchmark drift, next-review checklists, process scoring, and aggregate cohort context."
+      "Pro is the $9.99/month review loop: weekly Edge Reviews, regression alerts, benchmark context, next-review checklists, review status, and aggregate cohort context."
   },
   {
     question: "Can I use Free long term?",

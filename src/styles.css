@@ -5352,25 +5352,25 @@ body {
   text-transform: none;
 }
 
-.EdgeTrace-review-loop-top {
+.EdgeTrace-review-loop-hero {
   display: grid;
-  grid-template-columns: minmax(10rem, 0.22fr) minmax(0, 0.42fr) minmax(0, 0.36fr);
-  gap: 0.8rem;
-  margin-top: 0.9rem;
-}
-
-.EdgeTrace-review-loop-score,
-.EdgeTrace-review-loop-cadence,
-.EdgeTrace-review-loop-stats {
-  border: 1px solid rgba(36, 53, 66, 0.74);
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: stretch;
+  border: 1px solid rgba(36, 53, 66, 0.78);
+  border-left-width: 3px;
   border-radius: 5px;
-  background: rgba(5, 11, 17, 0.44);
-  padding: 0.9rem;
+  background:
+    linear-gradient(135deg, rgba(8, 15, 21, 0.82), rgba(4, 8, 12, 0.72)),
+    rgba(6, 12, 18, 0.58);
+  margin-top: 0.9rem;
+  padding: 0.95rem;
 }
 
-.EdgeTrace-review-loop-score span,
-.EdgeTrace-review-loop-cadence span,
-.EdgeTrace-review-loop-stats span {
+.EdgeTrace-review-loop-hero > div:first-child span,
+.EdgeTrace-review-benchmark-tiles span,
+.EdgeTrace-review-story > span,
+.EdgeTrace-review-targets > span {
   display: block;
   color: var(--command-text-muted);
   font-size: 0.72rem;
@@ -5379,57 +5379,144 @@ body {
   text-transform: uppercase;
 }
 
-.EdgeTrace-review-loop-score strong {
+.EdgeTrace-review-loop-hero > div:first-child strong {
   display: block;
-  margin-top: 0.35rem;
-  color: var(--command-green);
-  font-size: clamp(2.4rem, 3.1vw, 3.4rem);
+  margin-top: 0.32rem;
+  color: var(--command-text);
+  font-size: clamp(1.6rem, 2.1vw, 2.3rem);
+  font-weight: 540;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+}
+
+.EdgeTrace-review-loop-hero p,
+.EdgeTrace-review-targets > p,
+.EdgeTrace-review-story > p {
+  margin: 0.45rem 0 0;
+  color: var(--command-text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.42;
+}
+
+.EdgeTrace-review-loop-issue-count {
+  display: grid;
+  min-width: 8.8rem;
+  place-items: center;
+  border: 1px solid rgba(36, 53, 66, 0.72);
+  border-radius: 5px;
+  background: rgba(2, 6, 10, 0.42);
+  padding: 0.8rem;
+  text-align: center;
+}
+
+.EdgeTrace-review-loop-issue-count strong {
+  color: var(--command-text);
+  font-size: clamp(2rem, 2.7vw, 3rem);
   font-weight: 520;
+  line-height: 0.95;
+}
+
+.EdgeTrace-review-loop-issue-count span {
+  margin-top: 0.25rem;
+  color: var(--command-text-muted);
+  font-size: 0.78rem;
+}
+
+.EdgeTrace-review-loop-hero.tone-red {
+  border-left-color: var(--command-red);
+}
+
+.EdgeTrace-review-loop-hero.tone-yellow {
+  border-left-color: var(--command-yellow);
+}
+
+.EdgeTrace-review-loop-hero.tone-green {
+  border-left-color: var(--command-green);
+}
+
+.EdgeTrace-review-loop-hero.tone-blue {
+  border-left-color: var(--command-blue);
+}
+
+.EdgeTrace-review-benchmark-tiles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.72rem;
+  margin-top: 0.75rem;
+}
+
+.EdgeTrace-review-benchmark-tiles > div {
+  border: 1px solid rgba(36, 53, 66, 0.74);
+  border-radius: 5px;
+  background: rgba(5, 10, 15, 0.48);
+  padding: 0.85rem;
+}
+
+.EdgeTrace-review-benchmark-tiles strong {
+  display: block;
+  margin-top: 0.42rem;
+  color: var(--command-blue);
+  font-size: clamp(2rem, 2.6vw, 2.8rem);
+  font-weight: 520;
+  letter-spacing: -0.035em;
   line-height: 1;
 }
 
-.EdgeTrace-review-loop-score small,
-.EdgeTrace-review-loop-cadence p {
+.EdgeTrace-review-benchmark-tiles small {
   display: block;
-  margin-top: 0.45rem;
+  min-height: 2.1rem;
+  margin-top: 0.35rem;
   color: var(--command-text-secondary);
-  font-size: 0.84rem;
-  line-height: 1.35;
+  font-size: 0.8rem;
+  line-height: 1.32;
 }
 
-.EdgeTrace-review-loop-cadence strong {
-  display: block;
-  margin-top: 0.45rem;
-  color: var(--command-text);
-  font-size: clamp(1.25rem, 1.4vw, 1.65rem);
-  font-weight: 560;
-  letter-spacing: -0.02em;
-}
-
-.EdgeTrace-review-loop-stats {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.65rem;
-}
-
-.EdgeTrace-review-loop-stats div {
-  min-width: 0;
-}
-
-.EdgeTrace-review-loop-stats strong {
+.EdgeTrace-review-benchmark-tiles i {
   display: block;
   overflow: hidden;
-  margin-top: 0.38rem;
-  color: var(--command-blue);
-  font-size: 1.06rem;
-  font-weight: 560;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  height: 0.28rem;
+  margin-top: 0.65rem;
+  border-radius: 999px;
+  background: rgba(78, 196, 236, 0.12);
+}
+
+.EdgeTrace-review-benchmark-tiles b {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--command-blue);
+}
+
+.EdgeTrace-review-benchmark-tiles .tone-red strong,
+.EdgeTrace-review-benchmark-tiles .tone-red span {
+  color: var(--command-red);
+}
+
+.EdgeTrace-review-benchmark-tiles .tone-red b {
+  background: var(--command-red);
+}
+
+.EdgeTrace-review-benchmark-tiles .tone-yellow strong,
+.EdgeTrace-review-benchmark-tiles .tone-yellow span {
+  color: var(--command-yellow);
+}
+
+.EdgeTrace-review-benchmark-tiles .tone-yellow b {
+  background: var(--command-yellow);
+}
+
+.EdgeTrace-review-benchmark-tiles .tone-green strong,
+.EdgeTrace-review-benchmark-tiles .tone-green span {
+  color: var(--command-green);
+}
+
+.EdgeTrace-review-benchmark-tiles .tone-green b {
+  background: var(--command-green);
 }
 
 .EdgeTrace-review-loop-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
   gap: 0.8rem;
   margin-top: 0.8rem;
 }
@@ -5440,27 +5527,27 @@ body {
   background:
     linear-gradient(135deg, rgba(8, 16, 23, 0.56), rgba(4, 9, 14, 0.5)),
     rgba(6, 12, 18, 0.38);
-  padding: 0.88rem;
+  padding: 0.92rem;
 }
 
-.EdgeTrace-review-loop-grid h3 {
-  margin: 0 0 0.65rem;
+.EdgeTrace-review-story h3 {
+  margin: 0.42rem 0 0;
   color: var(--command-text);
-  font-size: 0.84rem;
-  font-weight: 650;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  font-size: clamp(1.25rem, 1.45vw, 1.65rem);
+  font-weight: 560;
+  letter-spacing: -0.025em;
 }
 
 .EdgeTrace-review-loop-items {
   display: grid;
   gap: 0.55rem;
+  margin-top: 0.8rem;
 }
 
 .EdgeTrace-review-loop-items > div {
   display: grid;
-  grid-template-columns: 4.7rem minmax(0, 1fr);
-  gap: 0.75rem;
+  grid-template-columns: 4.6rem minmax(0, 1fr);
+  gap: 0.8rem;
   border-top: 1px solid rgba(36, 53, 66, 0.55);
   padding-top: 0.62rem;
 }
@@ -5486,7 +5573,7 @@ body {
 .EdgeTrace-review-loop-items strong {
   display: block;
   color: var(--command-text);
-  font-size: 0.91rem;
+  font-size: 0.92rem;
   font-weight: 560;
 }
 
@@ -5494,7 +5581,7 @@ body {
   display: block;
   margin-top: 0.18rem;
   color: var(--command-text-secondary);
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   line-height: 1.35;
 }
 
@@ -6166,7 +6253,8 @@ body {
     grid-column: 1 / -1;
   }
 
-  .EdgeTrace-review-loop-top,
+  .EdgeTrace-review-loop-hero,
+  .EdgeTrace-review-benchmark-tiles,
   .EdgeTrace-review-loop-grid {
     grid-template-columns: 1fr;
   }
@@ -6191,7 +6279,6 @@ body {
   .EdgeTrace-command-action-card,
   .EdgeTrace-command-metric-grid,
   .EdgeTrace-command-change-grid,
-  .EdgeTrace-review-loop-stats,
   .EdgeTrace-command-overview-summary {
     grid-template-columns: 1fr;
   }
