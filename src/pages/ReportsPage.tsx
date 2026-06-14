@@ -26,14 +26,12 @@ export function ReportsPage({
   profile,
   onOpen,
   onAnalyze,
-  onCompare,
-  onExploreDemo
+  onCompare
 }: {
   profile: UserProfile | null;
   onOpen: (result: DiagnosticsResult) => void;
   onAnalyze: () => void;
   onCompare?: (reportId?: string) => void;
-  onExploreDemo?: () => void;
 }) {
   const { user, isLoading: authLoading, isAuthenticated } = useAuth();
   const [reports, setReports] = useState<ReportSummary[]>([]);
@@ -326,11 +324,6 @@ export function ReportsPage({
             <button className="EdgeTrace-primary-button" onClick={onAnalyze}>
               Import Trades
             </button>
-            {onExploreDemo && (
-              <button className="EdgeTrace-secondary-button" onClick={onExploreDemo}>
-                Load Demo Workspace
-              </button>
-            )}
             <button className="EdgeTrace-secondary-button" onClick={openFeatureGuide}>
               Learn how this works
             </button>

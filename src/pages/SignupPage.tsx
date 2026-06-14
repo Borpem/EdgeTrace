@@ -62,7 +62,7 @@ export function SignupPage({
                 ) : (
                   <div className="flex flex-wrap gap-3">
                     <button className="EdgeTrace-primary-button" onClick={onCreateAccount}>
-                      Create Demo Account
+                      Create Account
                     </button>
                     <button className="EdgeTrace-secondary-button" onClick={onLogin}>
                       Already have access

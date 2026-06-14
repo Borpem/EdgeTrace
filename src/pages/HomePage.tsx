@@ -41,20 +41,10 @@ const trustItems: Array<{ icon: LucideIcon; title: string; body: string }> = [
 ];
 
 export function HomePage({
-  onStart,
-  onFullDemo,
-  onCleanupDemo,
-  showDemoCleanup = false,
-  fullDemoLoading,
-  fullDemoStatus
+  onStart
 }: {
   onStart: () => void;
-  onFullDemo: () => void;
   onLearn: () => void;
-  onCleanupDemo: () => void;
-  showDemoCleanup?: boolean;
-  fullDemoLoading?: boolean;
-  fullDemoStatus?: string;
 }) {
   return (
     <main className="relative isolate overflow-hidden bg-graphite">
@@ -84,14 +74,6 @@ export function HomePage({
               >
                 Import My Trades <ArrowRight size={17} />
               </button>
-              <button
-                className="EdgeTrace-secondary-button min-h-12 px-6"
-                data-testid="launch-full-demo-button"
-                onClick={onFullDemo}
-                disabled={fullDemoLoading}
-              >
-                {fullDemoLoading ? fullDemoStatus || "Building demo..." : "Explore Demo"}
-              </button>
             </div>
           </div>
 
@@ -116,15 +98,7 @@ export function HomePage({
       <ImportCompatibilitySection />
       <TrustBar />
 
-      <section className="EdgeTrace-shell pb-10">
-        {showDemoCleanup && (
-          <div className="border-t border-white/[0.08] pt-8 text-center">
-            <button className="text-xs font-semibold text-muted hover:text-ink" onClick={onCleanupDemo} disabled={fullDemoLoading}>
-              Clean up demo data
-            </button>
-          </div>
-        )}
-      </section>
+      <section className="EdgeTrace-shell pb-10" />
     </main>
   );
 }

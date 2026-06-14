@@ -125,8 +125,8 @@ export function useAuth() {
 function createMockUser(): AuthUser {
   return {
     id: MOCK_USER_ID,
-    name: "Demo Analyst",
-    email: "demo@edgetrace.local",
+    name: "EdgeTrace User",
+    email: "user@edgetrace.local",
     createdAt: new Date().toISOString()
   };
 }

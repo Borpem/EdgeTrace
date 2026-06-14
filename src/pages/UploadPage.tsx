@@ -1347,7 +1347,7 @@ function buildImportProvenance({
 function formatUploadError(error: unknown, context: "csv_parse" | "html_parse" | "normalize" | "diagnostics") {
   const message = error instanceof Error ? error.message : "";
   if (/PLAN_LIMIT_REACHED|free report limit|reached the Free report limit/i.test(message)) {
-    return "This workspace has reached its report limit. Delete an older non-demo report or contact support.";
+    return "This workspace has reached its report limit. Delete an older saved report or contact support.";
   }
   if (/broker-specific|import source is not available/i.test(message)) {
     return "This import source could not be used. Try auto-detect, choose Generic CSV, or review the uploaded file format.";

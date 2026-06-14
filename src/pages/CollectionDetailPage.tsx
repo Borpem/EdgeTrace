@@ -61,9 +61,7 @@ export function CollectionDetailPage({
   onCompare,
   onAttribution,
   onReviewWorkspace,
-  profile,
-  demoMode,
-  onExitDemo
+  profile
 }: {
   collectionId: string;
   onBack: () => void;
@@ -72,8 +70,6 @@ export function CollectionDetailPage({
   onAttribution: (selection: { dimension: BreakdownDimension; group: string }) => void;
   onReviewWorkspace: () => void;
   profile?: UserProfile | null;
-  demoMode?: boolean;
-  onExitDemo?: () => void;
 }) {
   const [collection, setCollection] = useState<ReportCollectionDetail | null>(null);
   const [selected, setSelected] = useState<string[]>([]);
@@ -86,7 +82,6 @@ export function CollectionDetailPage({
   const [statusFilter, setStatusFilter] = useState<"all" | CollectionReviewStatus>("all");
   const [reviewStates, setReviewStates] = useState<CollectionReviewState[]>([]);
   const [noteTarget, setNoteTarget] = useState<IterationReviewItem | null>(null);
-  const [demoStep, setDemoStep] = useState(0);
   const [isReordering, setIsReordering] = useState(false);
   const analytics = useMemo(() => (collection ? buildCollectionAnalytics(collection) : null), [collection]);
   const attribution = useMemo(() => (collection ? buildCollectionAttribution(collection) : null), [collection]);
@@ -390,78 +385,7 @@ export function CollectionDetailPage({
           }}
         />
       )}
-      {demoMode && (
-        <CollectionDemoTour
-          step={demoStep}
-          onNext={() => setDemoStep((current) => Math.min(current + 1, collectionDemoSteps.length - 1))}
-          onBack={() => setDemoStep((current) => Math.max(current - 1, 0))}
-          onExit={onExitDemo}
-        />
-      )}
     </main>
-  );
-}
-
-const collectionDemoSteps = [
-  {
-    title: "This strategy set shows multiple iterations of the same strategy.",
-    text: "Each report is a version of the ORB demo strategy, ordered like a research timeline."
-  },
-  {
-    title: "Trend cards show whether the strategy improved over time.",
-    text: "Expectancy, net PnL, cost drag, and R capture are tracked across reports."
-  },
-  {
-    title: "What Changed identifies the segments driving movement.",
-    text: "Use symbol, strategy, and time-of-day attribution to find what helped or hurt."
-  },
-  {
-    title: "Review Queue ranks transitions worth inspecting first.",
-    text: "The queue prioritizes degradations, mixed signals, and high-confidence changes."
-  },
-  {
-    title: "Use Compare These Reports for exact report-to-report differences.",
-    text: "Compare opens the selected pair so you can inspect metric deltas, breakdowns, and drilldowns."
-  }
-];
-
-function CollectionDemoTour({
-  step,
-  onNext,
-  onBack,
-  onExit
-}: {
-  step: number;
-  onNext: () => void;
-  onBack: () => void;
-  onExit?: () => void;
-}) {
-  const current = collectionDemoSteps[step];
-  return (
-    <div className="fixed bottom-6 right-6 z-50 max-w-sm rounded-lg border border-accent/70 bg-panel p-5 shadow-2xl">
-      <p className="text-xs uppercase tracking-[0.18em] text-accent">Full Demo Guide {step + 1} / {collectionDemoSteps.length}</p>
-      <h2 className="mt-2 text-lg font-semibold">{current.title}</h2>
-      <p className="mt-3 text-sm leading-6 text-muted">{current.text}</p>
-      <div className="mt-5 flex flex-wrap justify-between gap-2">
-        <button className="rounded-md border border-line px-3 py-1.5 text-xs text-muted hover:border-accent" onClick={onExit}>
-          Exit Demo
-        </button>
-        <div className="flex gap-2">
-          <button className="rounded-md border border-line px-3 py-1.5 text-xs hover:border-accent disabled:opacity-40" disabled={step === 0} onClick={onBack}>
-            Back
-          </button>
-          {step === collectionDemoSteps.length - 1 ? (
-            <button className="EdgeTrace-compact-primary px-3 py-1.5 text-xs" onClick={onExit}>
-              Finish
-            </button>
-          ) : (
-            <button className="EdgeTrace-compact-primary px-3 py-1.5 text-xs" onClick={onNext}>
-              Next
-            </button>
-          )}
-        </div>
-      </div>
-    </div>
   );
 }
 

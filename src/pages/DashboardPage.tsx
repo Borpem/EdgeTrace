@@ -159,8 +159,6 @@ type DashboardPageProps = {
   accountControl?: ReactNode;
   reportJustCreated?: boolean;
   onDismissCreatedBanner?: () => void;
-  demoMode?: boolean;
-  onExitDemo?: () => void;
 };
 
 export function DashboardPage({
@@ -178,9 +176,7 @@ export function DashboardPage({
   onOpenFeatures,
   accountControl,
   reportJustCreated,
-  onDismissCreatedBanner,
-  demoMode,
-  onExitDemo
+  onDismissCreatedBanner
 }: DashboardPageProps) {
   const [sortKey, setSortKey] = useState<SortKey>("entryTime");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
@@ -338,7 +334,7 @@ export function DashboardPage({
       strongestSegment
     ]
   );
-  const walkthroughOpen = isGuideOpen || Boolean(demoMode);
+  const walkthroughOpen = isGuideOpen;
   const activeGuideStep = Math.min(guideStep, Math.max(guideSteps.length - 1, 0));
 
   useEffect(() => {
@@ -421,11 +417,7 @@ export function DashboardPage({
     const previousOverflow = document.body.style.overflow;
     const handleKeyDown = (event: globalThis.KeyboardEvent) => {
       if (event.key !== "Escape") return;
-      if (demoMode && onExitDemo) {
-        onExitDemo();
-      } else {
-        setIsGuideOpen(false);
-      }
+      setIsGuideOpen(false);
     };
     document.body.style.overflow = "hidden";
     window.addEventListener("keydown", handleKeyDown);
@@ -433,7 +425,7 @@ export function DashboardPage({
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [demoMode, onExitDemo, walkthroughOpen]);
+  }, [walkthroughOpen]);
 
   const openWalkthrough = () => {
     setGuideStep(0);
@@ -442,19 +434,11 @@ export function DashboardPage({
   };
 
   const closeWalkthrough = () => {
-    if (demoMode && onExitDemo) {
-      onExitDemo();
-    } else {
-      setIsGuideOpen(false);
-    }
+    setIsGuideOpen(false);
   };
 
   const finishWalkthrough = () => {
-    if (demoMode && onExitDemo) {
-      onExitDemo();
-    } else {
-      setIsGuideOpen(false);
-    }
+    setIsGuideOpen(false);
     trackEvent("dashboard_walkthrough_completed", { reportId: result.id });
   };
 

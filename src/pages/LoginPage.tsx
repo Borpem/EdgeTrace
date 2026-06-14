@@ -72,7 +72,7 @@ export function LoginPage({
                       Continue to App
                     </button>
                     <button className="EdgeTrace-secondary-button" onClick={onSignup}>
-                      Create Demo Account
+                      Create Account
                     </button>
                   </div>
                 )}

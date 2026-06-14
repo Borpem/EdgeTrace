@@ -23,11 +23,20 @@ test.describe.serial("EdgeTrace happy path", () => {
     await expect(page.getByRole("button", { name: "How It Works" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Pricing" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Login" })).toBeVisible();
+    await expect(page.getByRole("button", { name: /demo/i })).toHaveCount(0);
     await page.getByRole("button", { name: "Import My Trades", exact: true }).click();
 
     await expect(page.getByText("Create a strategy diagnostics workspace.")).toBeVisible();
-    await page.getByRole("button", { name: "Create Demo Account" }).click();
+    await page.getByRole("button", { name: "Create Account" }).click();
     await expect(page.getByRole("heading", { name: "Create a Diagnostic Report" })).toBeVisible();
+  });
+
+  test("Public demo route is removed", async ({ page }) => {
+    await page.goto("/demo");
+
+    await expect(page).toHaveURL(/\/$/);
+    await expect(page.getByText("Interactive Demo", { exact: true })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: /demo/i })).toHaveCount(0);
   });
 
   test("Public pricing keeps the shared site header", async ({ page }) => {
@@ -144,35 +153,6 @@ test.describe.serial("EdgeTrace happy path", () => {
       expect(contentBox).not.toBeNull();
       expect(contentBox!.y).toBeLessThanOrEqual(topbarBox!.y + topbarBox!.height + 24);
     }
-  });
-
-  test("Public interactive demo flow", async ({ page }) => {
-    await page.goto("/");
-    await page.getByTestId("launch-full-demo-button").click();
-
-    await expect(page).toHaveURL(/\/demo/);
-    await expect(page.getByText("Interactive Demo", { exact: true })).toBeVisible();
-    await expect(page.getByText(/Sample data - no account required/i)).toBeVisible();
-    await expect(page.getByText("Start with the primary diagnosis.")).toBeVisible();
-    await expect(page.getByText("Edge Health", { exact: true }).first()).toBeVisible();
-    await expect(page.getByText("Primary Diagnosis", { exact: true }).first()).toBeVisible();
-
-    await page.getByRole("button", { name: "Inspect the Leak" }).first().click();
-    await expect(page.getByText("Inspect the segment causing the leak.")).toBeVisible();
-    await page.getByRole("button", { name: /Opening Session/ }).first().click();
-    await expect(page.getByText("Attribution detail")).toBeVisible();
-
-    await page.getByRole("button", { name: "Compare Iterations" }).first().click();
-    await expect(page.getByText("V1 Baseline vs V2 Lower Costs")).toBeVisible();
-    await expect(page.getByText("V2 improved because cost drag fell and R capture increased.")).toBeVisible();
-
-    await page.getByRole("button", { name: "View Strategy Trend" }).first().click();
-    await expect(page.getByText("One strategy, three iterations.")).toBeVisible();
-
-    await page.getByRole("button", { name: "Start With Your Trades" }).first().click();
-    await expect(page.getByRole("heading", { name: "Ready to analyze your own trades?" }).last()).toBeVisible();
-    await page.getByRole("button", { name: "Create Free Account" }).first().click();
-    await expect(page).toHaveURL(/\/signup\?next=/);
   });
 });
 

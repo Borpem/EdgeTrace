@@ -11,22 +11,14 @@ import {
   TrendingUp,
   UserCircle
 } from "lucide-react";
-import Papa from "papaparse";
 import { useAuth } from "./context/AuthContext";
 import { trackEvent } from "./lib/analytics";
 import type { BreakdownDimension } from "./lib/breakdowns";
 import {
-  addReportToCollection,
-  cleanupDemoData,
-  createCollection,
-  createSavedComparison,
   getMe,
   getReport,
   listReports,
-  runTradeDiagnostics,
-  setApiAuth,
-  updateReportDetails,
-  uploadTrades
+  setApiAuth
 } from "./lib/api";
 import { AccountPage } from "./pages/AccountPage";
 import { ComparePage } from "./pages/ComparePage";
@@ -41,7 +33,6 @@ import { FeatureEducationPage } from "./pages/FeatureEducationPage";
 import { HomePage } from "./pages/HomePage";
 import { LoginPage } from "./pages/LoginPage";
 import { PricingPage } from "./pages/PricingPage";
-import { PublicDemoPage } from "./pages/PublicDemoPage";
 import { ReconstructionAuditPage } from "./pages/ReconstructionAuditPage";
 import { ReportsPage } from "./pages/ReportsPage";
 import { SignupPage } from "./pages/SignupPage";
@@ -49,7 +40,7 @@ import { StrategyDashboardPage } from "./pages/StrategyDashboardPage";
 import { UploadPage } from "./pages/UploadPage";
 import type { DiagnosticsResult, ReportSummary, UserProfile } from "./types";
 
-type Page = "home" | "pricing" | "login" | "signup" | "demo" | "strategyDashboard" | "upload" | "reports" | "collections" | "collectionDetail" | "collectionAttribution" | "collectionReviewWorkspace" | "compare" | "features" | "account" | "dashboard" | "drilldown" | "compareDrilldown" | "reconstructionAudit";
+type Page = "home" | "pricing" | "login" | "signup" | "strategyDashboard" | "upload" | "reports" | "collections" | "collectionDetail" | "collectionAttribution" | "collectionReviewWorkspace" | "compare" | "features" | "account" | "dashboard" | "drilldown" | "compareDrilldown" | "reconstructionAudit";
 type DrilldownSelection = { dimension: BreakdownDimension; group: string };
 type CompareDrilldownSelection = {
   reportA: DiagnosticsResult;
@@ -70,13 +61,6 @@ export function App() {
   const [collectionAttributionSelection, setCollectionAttributionSelection] =
     useState<CollectionAttributionSelection | null>(null);
   const [initialComparePair, setInitialComparePair] = useState<{ reportAId?: string; reportBId?: string } | null>(null);
-  const [demoMode, setDemoMode] = useState(false);
-  const [demoLoading, setDemoLoading] = useState(false);
-  const [fullDemoLoading, setFullDemoLoading] = useState(false);
-  const [fullDemoStatus, setFullDemoStatus] = useState("");
-  const [demoError, setDemoError] = useState("");
-  const [demoCleanupMessage, setDemoCleanupMessage] = useState("");
-  const [collectionDemoMode, setCollectionDemoMode] = useState(false);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [createdReportId, setCreatedReportId] = useState<string | null>(null);
 
@@ -113,8 +97,6 @@ export function App() {
         return "/login";
       case "signup":
         return "/signup";
-      case "demo":
-        return "/demo";
       case "strategyDashboard":
         return "/app/dashboard";
       case "upload":
@@ -194,148 +176,6 @@ export function App() {
     );
   };
 
-  const launchDemo = async () => {
-    setDemoLoading(true);
-    setDemoError("");
-    try {
-      const response = await fetch("/sample-trades-breakdown.csv");
-      if (!response.ok) throw new Error("Unable to load bundled demo dataset");
-      const csv = await response.text();
-      const parsed = Papa.parse<unknown[]>(csv, { header: false, skipEmptyLines: true });
-      const upload = await uploadTrades(parsed.data);
-      const diagnostics = await runTradeDiagnostics(upload.normalizedTrades, "Demo Report - Cost Drag Breakdown", {
-        brokerId: "generic_csv",
-        isDemo: true
-      });
-      setResult({
-        ...diagnostics,
-        strategyLabel: diagnostics.strategyLabel || "Demo Strategy",
-        tags: [...(diagnostics.tags ?? []), "demo"]
-      });
-      setCreatedReportId(null);
-      setDemoMode(true);
-      if (authMode === "mock") login();
-      navigate("dashboard", `/app/dashboard/report/${diagnostics.id}`);
-    } catch (err) {
-      setDemoError(err instanceof Error ? err.message : "Unable to launch demo");
-    } finally {
-      setDemoLoading(false);
-    }
-  };
-
-  const launchFullDemo = async () => {
-    setFullDemoLoading(true);
-    setFullDemoStatus("Creating demo reports");
-    setDemoError("");
-    try {
-      const specs: Array<{ name: string; file: string; tags: string[]; transform?: "regression" }> = [
-        {
-          name: "ORB Demo V1 - Baseline",
-          file: "/sample-trades-breakdown.csv",
-          tags: ["demo", "ORB", "baseline"]
-        },
-        {
-          name: "ORB Demo V2 - Lower Costs",
-          file: "/sample-trades-improved.csv",
-          tags: ["demo", "ORB", "cost-reduction"]
-        },
-        {
-          name: "ORB Demo V3 - Higher Selectivity",
-          file: "/sample-trades.csv",
-          tags: ["demo", "ORB", "selectivity"]
-        },
-        {
-          name: "ORB Demo V4 - Regression Test",
-          file: "/sample-trades-improved.csv",
-          tags: ["demo", "ORB", "regression"],
-          transform: "regression"
-        }
-      ];
-
-      const reports: DiagnosticsResult[] = [];
-      for (const spec of specs) {
-        const response = await fetch(spec.file);
-        if (!response.ok) throw new Error(`Unable to load ${spec.file}`);
-        const parsed = Papa.parse<unknown[]>(await response.text(), { header: false, skipEmptyLines: true });
-        const upload = await uploadTrades(parsed.data);
-        const trades =
-          spec.transform === "regression"
-            ? upload.normalizedTrades.map((trade, index) => ({
-                ...trade,
-                grossPnl: index % 3 === 0 ? trade.grossPnl - 180 : trade.grossPnl - 45,
-                estimatedCosts: trade.estimatedCosts + 8,
-                netPnl: index % 3 === 0 ? trade.netPnl - 188 : trade.netPnl - 53
-              }))
-            : upload.normalizedTrades;
-        const report = await runTradeDiagnostics(trades, spec.name, { brokerId: "generic_csv", isDemo: true });
-        await updateReportDetails(report.id, {
-          name: spec.name,
-          strategyLabel: "ORB Demo Strategy",
-          reportType: "backtest",
-          tags: [...spec.tags]
-        });
-        reports.push({
-          ...report,
-          name: spec.name,
-          strategyLabel: "ORB Demo Strategy",
-          reportType: "backtest",
-          tags: [...spec.tags]
-        });
-      }
-
-      setFullDemoStatus("Building collection");
-      const timestamp = new Date().toISOString().slice(0, 16).replace("T", " ");
-      const collection = await createCollection({
-        name: `ORB Demo Strategy Iterations - ${timestamp}`,
-        description: "A curated demo collection showing how EdgeTrace tracks strategy changes across iterations.",
-        tags: ["demo", "ORB", "strategy-iteration"]
-      });
-      for (const report of reports) {
-        await addReportToCollection(collection.id, report.id);
-      }
-
-      setFullDemoStatus("Saving comparison");
-      if (reports[0] && reports[2]) {
-        await createSavedComparison({
-          name: "ORB Demo V1 vs V3",
-          description: "Shows how the improved iteration changed expectancy, costs, and R capture.",
-          reportAId: reports[0].id,
-          reportBId: reports[2].id
-        });
-      }
-
-      setFullDemoStatus("Opening demo workspace");
-      if (authMode === "mock") login();
-      setCollectionId(collection.id);
-      setCollectionDemoMode(true);
-      navigate("collectionDetail", `/app/collections/${collection.id}`);
-    } catch (err) {
-      setDemoError(err instanceof Error ? err.message : "Unable to launch full demo");
-    } finally {
-      setFullDemoLoading(false);
-      setFullDemoStatus("");
-    }
-  };
-
-  const cleanUpDemoData = async () => {
-    const confirmed = window.confirm(
-      "This will delete generated demo reports, demo collections, and demo comparisons. Your non-demo reports will not be affected."
-    );
-    if (!confirmed) return;
-    setDemoError("");
-    setDemoCleanupMessage("");
-    try {
-      const result = await cleanupDemoData();
-      setDemoCleanupMessage(
-        `Deleted ${result.deletedReports} demo reports, ${result.deletedCollections} demo collections, and ${result.deletedSavedComparisons} demo comparisons.`
-      );
-      if (demoMode) setDemoMode(false);
-      if (collectionDemoMode) setCollectionDemoMode(false);
-    } catch (err) {
-      setDemoError(err instanceof Error ? err.message : "Unable to clean up demo data");
-    }
-  };
-
   const openCompare = (reportAId?: string, reportBId?: string) => {
     const pair = reportAId || reportBId ? { reportAId, reportBId } : null;
     setInitialComparePair(pair);
@@ -361,7 +201,6 @@ export function App() {
         const report = await getReport(latest.id);
         setResult(report);
         setCreatedReportId(null);
-        setDemoMode(false);
         navigate("dashboard", `/app/dashboard/report/${report.id}`, replace);
         return true;
       }
@@ -432,7 +271,7 @@ export function App() {
       return;
     }
     if (pathname === "/demo") {
-      setPage("demo");
+      navigate("home", "/", true);
       return;
     }
     if (pathname === "/login") {
@@ -540,7 +379,6 @@ export function App() {
     const collectionDetailMatch = pathname.match(/^\/app\/collections\/([^/]+)$/);
     if (collectionDetailMatch) {
       setCollectionId(collectionDetailMatch[1]);
-      setCollectionDemoMode(false);
       setPage("collectionDetail");
       return;
     }
@@ -757,7 +595,7 @@ export function App() {
               )}
               <div className="hidden items-center gap-2 text-xs text-muted xl:flex">
                 <UserCircle size={16} />
-                <span>{user?.name ?? "Demo Account"}</span>
+                <span>{user?.name ?? "Account"}</span>
                 {userProfile && <span className="text-cyan">{userProfile.planId.toUpperCase()}</span>}
               </div>
               <button
@@ -792,27 +630,10 @@ export function App() {
       )}
 
       {page === "home" && (
-        <>
-          <HomePage
-            onStart={() => navigate(isAuthenticated ? "upload" : "signup", isAuthenticated ? "/app/upload" : "/signup?next=/app/upload")}
-            onLearn={() => navigate("features", "/how-it-works")}
-            onFullDemo={() => navigate("demo", "/demo")}
-            onCleanupDemo={() => void cleanUpDemoData()}
-            showDemoCleanup={isAuthenticated}
-            fullDemoLoading={fullDemoLoading}
-            fullDemoStatus={fullDemoStatus}
-          />
-          {demoError && (
-              <div className="EdgeTrace-shell">
-              <div className="rounded-md border border-loss/60 bg-loss/10 p-4 text-loss">{demoError}</div>
-            </div>
-          )}
-          {demoCleanupMessage && (
-              <div className="EdgeTrace-shell">
-              <div className="rounded-md border border-accent/60 bg-accent/10 p-4 text-accent">{demoCleanupMessage}</div>
-            </div>
-          )}
-        </>
+        <HomePage
+          onStart={() => navigate(isAuthenticated ? "upload" : "signup", isAuthenticated ? "/app/upload" : "/signup?next=/app/upload")}
+          onLearn={() => navigate("features", "/how-it-works")}
+        />
       )}
       {page === "pricing" && (
         <PricingPage
@@ -829,15 +650,6 @@ export function App() {
           onPlanChanged={setUserProfile}
           onAnalyze={() => navigate("upload")}
           onPricing={() => navigate("pricing", "/pricing")}
-        />
-      )}
-      {page === "demo" && (
-        <PublicDemoPage
-          isAuthenticated={isAuthenticated}
-          onAnalyze={() => navigate(isAuthenticated ? "upload" : "signup", isAuthenticated ? "/app/upload" : "/signup?next=/app/upload")}
-          onSignup={() => navigate("signup", "/signup?next=/app/upload")}
-          onPricing={() => navigate("pricing", "/pricing")}
-          onHowItWorks={() => navigate("features", "/how-it-works")}
         />
       )}
       {page === "login" && (
@@ -858,13 +670,11 @@ export function App() {
           selectedReport={result}
           onOpenReport={(diagnostics) => {
             setResult(diagnostics);
-            setDemoMode(false);
             setCreatedReportId(null);
             navigate("dashboard", `/app/dashboard/report/${diagnostics.id}`);
           }}
           onDrillDown={(diagnostics, selection) => {
             setResult(diagnostics);
-            setDemoMode(false);
             setCreatedReportId(null);
             setDrilldownSelection(selection);
             const params = new URLSearchParams({
@@ -883,7 +693,6 @@ export function App() {
           onViewPricing={() => navigate("pricing", "/pricing")}
           onComplete={(diagnostics) => {
             setResult(diagnostics);
-            setDemoMode(false);
             setCreatedReportId(diagnostics.id);
             navigate("dashboard", `/app/dashboard/report/${diagnostics.id}`);
           }}
@@ -894,13 +703,11 @@ export function App() {
           profile={userProfile}
           onOpen={(diagnostics) => {
             setResult(diagnostics);
-            setDemoMode(false);
             setCreatedReportId(null);
             navigate("dashboard", `/app/dashboard/report/${diagnostics.id}`);
           }}
           onAnalyze={() => navigate("upload")}
           onCompare={(reportId) => openCompare(reportId)}
-          onExploreDemo={() => void launchFullDemo()}
         />
       )}
       {page === "collections" && (
@@ -908,7 +715,6 @@ export function App() {
           profile={userProfile}
           onOpen={(collection) => {
             setCollectionId(collection.id);
-            setCollectionDemoMode(false);
             navigate("collectionDetail", `/app/collections/${collection.id}`);
           }}
           onAnalyze={() => navigate("upload")}
@@ -921,7 +727,6 @@ export function App() {
           onBack={() => navigate("collections")}
           onOpenReport={(diagnostics) => {
             setResult(diagnostics);
-            setDemoMode(false);
             setCreatedReportId(null);
             navigate("dashboard", `/app/dashboard/report/${diagnostics.id}`);
           }}
@@ -938,8 +743,6 @@ export function App() {
           onReviewWorkspace={() => {
             if (collectionId) navigate("collectionReviewWorkspace", `/app/collections/${collectionId}/review-workspace`);
           }}
-          demoMode={collectionDemoMode}
-          onExitDemo={() => setCollectionDemoMode(false)}
         />
       )}
       {page === "collectionReviewWorkspace" && collectionId && (
@@ -953,7 +756,6 @@ export function App() {
           }}
           onOpenReport={(diagnostics) => {
             setResult(diagnostics);
-            setDemoMode(false);
             setCreatedReportId(null);
             navigate("dashboard", `/app/dashboard/report/${diagnostics.id}`);
           }}
@@ -998,13 +800,11 @@ export function App() {
           isAuthenticated={isAuthenticated}
           onAnalyze={() => navigate(isAuthenticated ? "upload" : "signup", isAuthenticated ? "/app/upload" : "/signup?next=/app/upload")}
           onPricing={() => navigate("pricing", "/pricing")}
-          onDemo={() => navigate("demo", "/demo")}
           onSignup={() => navigate("signup", "/signup?next=/app/upload")}
           onOpenReport={async (reportId) => {
             try {
               const report = await getReport(reportId);
               setResult(report);
-              setDemoMode(false);
               setCreatedReportId(null);
               navigate("dashboard", `/app/dashboard/report/${report.id}`);
             } catch {
@@ -1020,8 +820,6 @@ export function App() {
           profile={userProfile}
           reportJustCreated={createdReportId === result.id}
           onDismissCreatedBanner={() => setCreatedReportId(null)}
-          demoMode={demoMode}
-          onExitDemo={() => setDemoMode(false)}
           onDrillDown={(selection) => {
             setDrilldownSelection(selection);
             const params = new URLSearchParams({
@@ -1038,7 +836,6 @@ export function App() {
           onSelectReport={async (reportId) => {
             const report = await getReport(reportId);
             setResult(report);
-            setDemoMode(false);
             setCreatedReportId(null);
             navigate("dashboard", `/app/dashboard/report/${report.id}`);
           }}

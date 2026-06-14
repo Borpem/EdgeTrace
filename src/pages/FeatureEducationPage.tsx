@@ -20,7 +20,6 @@ type FeatureEducationPageProps = {
   isAuthenticated?: boolean;
   onAnalyze: () => void;
   onPricing: () => void;
-  onDemo?: () => void;
   onSignup?: () => void;
   onOpenReport?: (reportId: string) => void;
   onCreateStrategySet?: () => void;
@@ -87,7 +86,6 @@ export function FeatureEducationPage({
   isAuthenticated = Boolean(profile),
   onAnalyze,
   onPricing,
-  onDemo,
   onSignup
 }: FeatureEducationPageProps) {
   const plan = getPlanConfig(profile?.planId);
@@ -109,12 +107,12 @@ export function FeatureEducationPage({
 
   return (
     <PageShell className={`${isAuthenticated ? "EdgeTrace-auth-education" : ""} relative z-10 pb-16`}>
-      <HeroSection accountAction={accountAction} accountLabel={accountLabel} onDemo={onDemo ?? onAnalyze} onPricing={onPricing} />
+      <HeroSection accountAction={accountAction} accountLabel={accountLabel} onPricing={onPricing} />
       <WorkflowWalkthrough />
       <DiagnosticInsight />
       <StrategyEvolution />
       <PlansSection currentPlan={plan.id} isAuthenticated={isAuthenticated} onPricing={onPricing} />
-      <FinalCta accountAction={accountAction} accountLabel={accountLabel} onDemo={onDemo ?? onAnalyze} />
+      <FinalCta accountAction={accountAction} accountLabel={accountLabel} />
     </PageShell>
   );
 }
@@ -122,12 +120,10 @@ export function FeatureEducationPage({
 function HeroSection({
   accountAction,
   accountLabel,
-  onDemo,
   onPricing
 }: {
   accountAction: () => void;
   accountLabel: string;
-  onDemo: () => void;
   onPricing: () => void;
 }) {
   return (
@@ -143,11 +139,9 @@ function HeroSection({
             so traders can understand what actually drives performance.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
-            <button className="EdgeTrace-primary-button" onClick={onDemo}>
-              Try Interactive Demo <ArrowRight size={16} />
-            </button>
-            <button className="EdgeTrace-secondary-button" onClick={accountAction}>
+            <button className="EdgeTrace-primary-button" onClick={accountAction}>
               {accountLabel}
+              <ArrowRight size={16} />
             </button>
             <button className="EdgeTrace-secondary-button" onClick={onPricing}>
               View Pricing
@@ -650,12 +644,10 @@ function PlansSection({
 
 function FinalCta({
   accountAction,
-  accountLabel,
-  onDemo
+  accountLabel
 }: {
   accountAction: () => void;
   accountLabel: string;
-  onDemo: () => void;
 }) {
   return (
     <section className="relative z-10 pt-11 md:pt-14">
@@ -664,14 +656,12 @@ function FinalCta({
           See how EdgeTrace evaluates completed trades.
         </h2>
         <p className="mt-4 max-w-2xl text-base leading-7 text-muted">
-          Explore the interactive demo or create an account to start analyzing trade history.
+          Create an account to start analyzing completed trade history.
         </p>
         <div className="mt-7 flex flex-wrap gap-3">
-          <button className="EdgeTrace-primary-button" onClick={onDemo}>
-            Try Interactive Demo <ArrowRight size={16} />
-          </button>
-          <button className="EdgeTrace-secondary-button" onClick={accountAction}>
+          <button className="EdgeTrace-primary-button" onClick={accountAction}>
             {accountLabel}
+            <ArrowRight size={16} />
           </button>
         </div>
       </div>
