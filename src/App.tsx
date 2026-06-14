@@ -633,8 +633,12 @@ export function App() {
   return (
     <div className={`EdgeTrace-contours min-h-screen text-ink ${useAuthenticatedAppShell ? "EdgeTrace-auth-framed" : ""}`}>
       {useAuthenticatedAppShell && (
-        <AuthenticatedSidebar
+        <AuthenticatedTopbar
           activeNavPage={activeNavPage}
+          activeLabel={labelForPage(activeNavPage)}
+          userName={user?.name}
+          profile={userProfile}
+          authMode={authMode}
           onDashboard={() => void openLatestReportDashboard()}
           onAnalyze={() => navigate("upload")}
           onReports={() => navigate("reports")}
@@ -644,15 +648,6 @@ export function App() {
             navigate("compare");
           }}
           onFeatures={() => navigate("features", "/app/how-it-works")}
-        />
-      )}
-      {useAuthenticatedAppShell && (
-        <AuthenticatedTopbar
-          activeLabel={labelForPage(activeNavPage)}
-          userName={user?.name}
-          profile={userProfile}
-          authMode={authMode}
-          onAnalyze={() => navigate("upload")}
           onAccount={() => navigate("account")}
           onSignOut={handleSignOut}
         />
@@ -1150,31 +1145,59 @@ function AuthenticatedSidebar({
 }
 
 function AuthenticatedTopbar({
+  activeNavPage,
   activeLabel,
   userName,
   profile,
   authMode,
+  onDashboard,
   onAnalyze,
+  onReports,
+  onCollections,
+  onCompare,
+  onFeatures,
   onAccount,
   onSignOut
 }: {
+  activeNavPage: Page;
   activeLabel: string;
   userName?: string;
   profile?: UserProfile | null;
   authMode: "clerk" | "mock";
+  onDashboard: () => void;
   onAnalyze: () => void;
+  onReports: () => void;
+  onCollections: () => void;
+  onCompare: () => void;
+  onFeatures: () => void;
   onAccount: () => void;
   onSignOut: () => void;
 }) {
+  const navItems: Array<{ target: Page; label: string; action: () => void }> = [
+    { target: "strategyDashboard", label: "Dashboard", action: onDashboard },
+    { target: "upload", label: "Import Trades", action: onAnalyze },
+    { target: "reports", label: "Reports", action: onReports },
+    { target: "collections", label: "Strategy Sets", action: onCollections },
+    { target: "compare", label: "Compare", action: onCompare },
+    { target: "features", label: "How It Works", action: onFeatures }
+  ];
+
   return (
     <header className="EdgeTrace-auth-topbar">
-      <div className="EdgeTrace-auth-topbar-context">
-        <p>{activeLabel}</p>
-        <span>{profile?.planId ? `${profile.planId.toUpperCase()} plan` : "Workspace"}</span>
-      </div>
+      <button className="EdgeTrace-command-brand" onClick={onDashboard} aria-label="EdgeTrace dashboard">
+        <img src="/brand/edgetrace_icon_monochrome_white_transparent.png" alt="" aria-hidden="true" />
+        <img src="/brand/edgetrace_wordmark_monochrome_white.png" alt="EdgeTrace" />
+      </button>
+      <nav aria-label="Application navigation" className="EdgeTrace-auth-command-nav">
+        {navItems.map(({ target, label, action }) => (
+          <button key={label} className={activeNavPage === target ? "active" : ""} onClick={action}>
+            {label}
+          </button>
+        ))}
+      </nav>
       <div className="EdgeTrace-auth-topbar-actions">
         <button className="EdgeTrace-auth-topbar-primary" onClick={onAnalyze}>
-          Import Trades
+          + New Report
         </button>
         <AccountUtility
           userName={userName}
@@ -1183,6 +1206,10 @@ function AuthenticatedTopbar({
           onAccount={onAccount}
           onSignOut={onSignOut}
         />
+      </div>
+      <div className="EdgeTrace-auth-topbar-context" aria-hidden="true">
+        <p>{activeLabel}</p>
+        <span>{profile?.planId ? `${profile.planId.toUpperCase()} plan` : "Workspace"}</span>
       </div>
     </header>
   );
