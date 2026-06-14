@@ -630,8 +630,16 @@ export function App() {
   const useReportDashboardShell = page === "dashboard" && Boolean(result);
   const useAuthenticatedAppShell = isAuthenticated && !useReportDashboardShell && isAuthenticatedAppPage(page);
 
+  const rootClassName = [
+    "EdgeTrace-contours min-h-screen text-ink",
+    useAuthenticatedAppShell ? "EdgeTrace-auth-framed" : "",
+    !useAuthenticatedAppShell && !useReportDashboardShell ? "EdgeTrace-public-framed" : ""
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    <div className={`EdgeTrace-contours min-h-screen text-ink ${useAuthenticatedAppShell ? "EdgeTrace-auth-framed" : ""}`}>
+    <div className={rootClassName}>
       {useAuthenticatedAppShell && (
         <AuthenticatedTopbar
           activeNavPage={activeNavPage}

@@ -79,13 +79,13 @@ export function HomePage({
 
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
               <button
-                className="inline-flex min-h-12 items-center justify-center gap-3 border border-accent/70 bg-gradient-to-r from-cyan to-violet px-6 text-sm font-bold text-white shadow-[0_18px_58px_-34px_rgba(88,214,255,0.9)] transition hover:border-cyan hover:brightness-110"
+                className="EdgeTrace-primary-button min-h-12 px-6"
                 onClick={onStart}
               >
                 Import My Trades <ArrowRight size={17} />
               </button>
               <button
-                className="inline-flex min-h-12 items-center justify-center border border-white/20 bg-white/[0.035] px-6 text-sm font-bold text-ink transition hover:border-cyan/50 hover:bg-cyan/[0.06]"
+                className="EdgeTrace-secondary-button min-h-12 px-6"
                 data-testid="launch-full-demo-button"
                 onClick={onFullDemo}
                 disabled={fullDemoLoading}
