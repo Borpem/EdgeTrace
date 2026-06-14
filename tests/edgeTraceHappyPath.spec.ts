@@ -120,7 +120,19 @@ test.describe.serial("EdgeTrace happy path", () => {
       await expect(topbar).toBeVisible();
       await expect(content).toBeVisible();
       await expect(page.locator(".EdgeTrace-sidebar-user")).toHaveCount(0);
-      await expect(page.locator(".EdgeTrace-account-utility-menu-button")).toBeVisible();
+      const accountMenuButton = topbar.locator(".EdgeTrace-account-utility-menu-button");
+      await expect(accountMenuButton).toBeVisible();
+      await accountMenuButton.click();
+      await expect(page.getByRole("menuitem", { name: /Account/i })).toBeVisible();
+      await page.getByRole("menuitem", { name: /Account/i }).click();
+      await expect(page).toHaveURL(/\/app\/account/);
+      await login(page, route);
+      await accountMenuButton.click();
+      await expect(page.getByRole("menuitem", { name: /Log out/i })).toBeVisible();
+      await page.getByRole("menuitem", { name: /Log out/i }).click();
+      await expect(page).toHaveURL(/\/$/);
+      await expect(page.getByRole("button", { name: "Login" })).toBeVisible();
+      await login(page, route);
       await expect(topbar.getByRole("button", { name: "Guide" })).toHaveCount(0);
       if (route === "/app/collections") {
         await expect(page.getByText("Guided Command Path")).toHaveCount(0);

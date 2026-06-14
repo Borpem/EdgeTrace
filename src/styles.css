@@ -294,6 +294,7 @@
     grid-row: 2;
     min-width: 0;
     width: 100%;
+    z-index: 0;
   }
 
   .EdgeTrace-auth-framed > main.EdgeTrace-shell {
@@ -306,7 +307,8 @@
   .EdgeTrace-auth-topbar {
     position: sticky;
     top: 0;
-    z-index: 35;
+    z-index: 120;
+    isolation: isolate;
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) auto;
     grid-column: 1;
@@ -413,7 +415,7 @@
     position: absolute;
     top: calc(100% + 0.55rem);
     right: 0;
-    z-index: 40;
+    z-index: 140;
     width: 14.5rem;
     border: 1px solid rgba(90, 132, 158, 0.34);
     border-radius: 7px;
