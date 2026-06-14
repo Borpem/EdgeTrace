@@ -5367,6 +5367,23 @@ body {
   z-index: 4;
 }
 
+.recharts-default-tooltip {
+  border-color: rgba(56, 82, 100, 0.95) !important;
+  background: #0d1424 !important;
+}
+
+.recharts-tooltip-label {
+  color: #f2f6f8 !important;
+}
+
+.recharts-tooltip-item,
+.recharts-tooltip-item-name,
+.recharts-tooltip-item-separator,
+.recharts-tooltip-item-value,
+.recharts-tooltip-item-unit {
+  color: #b7c4cc !important;
+}
+
 .EdgeTrace-command-health small {
   display: inline-flex;
   align-items: center;
