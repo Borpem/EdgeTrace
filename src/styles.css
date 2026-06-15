@@ -5225,6 +5225,8 @@ body {
 .EdgeTrace-command-overview-summary .tone-green { color: var(--command-green); }
 .EdgeTrace-command-overview-summary .tone-yellow { color: var(--command-yellow); }
 .EdgeTrace-command-overview-summary .tone-red { color: var(--command-red); }
+.EdgeTrace-command-overview-summary .tone-blue { color: var(--command-blue); }
+.EdgeTrace-command-overview-summary .tone-gray { color: var(--command-neutral); }
 
 .EdgeTrace-command-grid {
   display: grid;

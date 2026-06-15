@@ -675,19 +675,21 @@ export function DashboardPage({
                 </div>
                 <div>
                   <span>Win Rate</span>
-                  <strong>{percent.format(metrics.winRate)}</strong>
+                  <strong className={`tone-${winRateTone(metrics.winRate)}`}>{percent.format(metrics.winRate)}</strong>
                 </div>
                 <div>
                   <span>Profit Factor</span>
-                  <strong>{formatProfitFactor(metrics.profitFactor)}</strong>
+                  <strong className={`tone-${profitFactorTone(metrics.profitFactor)}`}>{formatProfitFactor(metrics.profitFactor)}</strong>
                 </div>
                 <div>
                   <span>R-Multiple</span>
-                  <strong>{metrics.averageRealizedR !== undefined ? `${number.format(metrics.averageRealizedR)}R` : "N/A"}</strong>
+                  <strong className={`tone-${rMultipleTone(metrics.averageRealizedR)}`}>
+                    {metrics.averageRealizedR !== undefined ? `${number.format(metrics.averageRealizedR)}R` : "N/A"}
+                  </strong>
                 </div>
                 <div>
                   <span>Trades</span>
-                  <strong>{number.format(normalizedTradeCount)}</strong>
+                  <strong className={`tone-${sampleSizeTone(normalizedTradeCount)}`}>{number.format(normalizedTradeCount)}</strong>
                 </div>
               </div>
             </div>
@@ -2978,6 +2980,33 @@ function overviewTone(
 function healthScoreTone(score: number): "red" | "yellow" | "green" | "blue" | "gray" {
   if (score >= 80) return "green";
   if (score >= 40) return "yellow";
+  return "red";
+}
+
+function winRateTone(winRate: number): "red" | "yellow" | "green" {
+  if (winRate >= 0.5) return "green";
+  if (winRate >= 0.45) return "yellow";
+  return "red";
+}
+
+function profitFactorTone(value: number | undefined): "red" | "yellow" | "green" | "gray" {
+  if (typeof value !== "number" || Number.isNaN(value)) return "gray";
+  if (value === Infinity || value >= NO_LOSS_PROFIT_FACTOR || value >= 1.5) return "green";
+  if (value >= 1) return "yellow";
+  return "red";
+}
+
+function rMultipleTone(value: number | undefined): "red" | "yellow" | "green" | "gray" {
+  if (value === undefined || !Number.isFinite(value)) return "gray";
+  if (value >= 1) return "green";
+  if (value >= 0.5) return "yellow";
+  return "red";
+}
+
+function sampleSizeTone(value: number): "red" | "yellow" | "green" | "blue" {
+  if (value >= 100) return "green";
+  if (value >= 30) return "blue";
+  if (value >= 10) return "yellow";
   return "red";
 }
 
