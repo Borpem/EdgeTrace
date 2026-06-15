@@ -5488,12 +5488,7 @@ body {
 
 .EdgeTrace-review-percentile-gauge::before {
   inset: 0;
-  background:
-    conic-gradient(var(--tile-tone) var(--percentile), rgba(55, 76, 92, 0.28) 0deg),
-    radial-gradient(circle, color-mix(in srgb, var(--tile-tone) 20%, transparent), transparent 66%);
-  box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--tile-tone) 18%, transparent),
-    0 0 34px color-mix(in srgb, var(--tile-tone) 22%, transparent);
+  background: conic-gradient(var(--tile-tone) var(--percentile), rgba(55, 76, 92, 0.28) 0deg);
 }
 
 .EdgeTrace-review-percentile-gauge::after {
@@ -5512,7 +5507,6 @@ body {
 
 .EdgeTrace-review-percentile-gauge strong {
   color: var(--tile-tone);
-  text-shadow: 0 0 18px color-mix(in srgb, var(--tile-tone) 22%, transparent);
   font-size: clamp(2.1rem, 2.8vw, 3.25rem);
   font-weight: 620;
   letter-spacing: -0.07em;
