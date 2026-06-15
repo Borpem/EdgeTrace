@@ -5456,10 +5456,7 @@ body {
   border: 1px solid rgba(36, 53, 66, 0.74);
   border-top-color: color-mix(in srgb, var(--tile-tone) 58%, rgba(36, 53, 66, 0.74));
   border-radius: 5px;
-  background:
-    radial-gradient(circle at 28% 46%, color-mix(in srgb, var(--tile-tone) 18%, transparent), transparent 35%),
-    radial-gradient(circle at 92% 12%, color-mix(in srgb, var(--tile-tone) 11%, transparent), transparent 34%),
-    rgba(5, 10, 15, 0.48);
+  background: rgba(5, 10, 15, 0.48);
   padding: 1rem;
 }
 
