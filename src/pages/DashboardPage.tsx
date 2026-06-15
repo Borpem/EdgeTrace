@@ -722,6 +722,19 @@ export function DashboardPage({
           </section>
 
           <section className="EdgeTrace-command-grid" aria-label="Dashboard command center">
+            <article className="EdgeTrace-command-card EdgeTrace-command-diagnosis">
+              <div className="EdgeTrace-command-card-heading">
+                <span>Primary Diagnosis</span>
+              </div>
+              <h2>{humanDiagnosis(intelligence.primaryDiagnosis)}</h2>
+              <p>{intelligence.primaryLeak.explanation}</p>
+              <div className="EdgeTrace-command-two-metrics">
+                <div><span>Est. Impact</span><strong className="is-red">{currency.format(-Math.abs(driverImpact))}</strong></div>
+                <div><span>Diagnosis Strength</span><strong>{diagnosisStrength(intelligence.strategyHealthScore)}</strong></div>
+              </div>
+              <button onClick={inspectPrimarySegment}>View breakdown <ArrowRight size={15} aria-hidden="true" /></button>
+            </article>
+
             <article className="EdgeTrace-command-card EdgeTrace-command-health" data-testid="dashboard-health-card">
               <div className="EdgeTrace-command-card-heading">
                 <span>Edge Health</span>
@@ -786,17 +799,19 @@ export function DashboardPage({
               </small>
             </article>
 
-            <article className="EdgeTrace-command-card EdgeTrace-command-diagnosis">
+            <article className="EdgeTrace-command-card EdgeTrace-command-drivers">
               <div className="EdgeTrace-command-card-heading">
-                <span>Primary Diagnosis</span>
+                <span>Top Drivers</span>
               </div>
-              <h2>{humanDiagnosis(intelligence.primaryDiagnosis)}</h2>
-              <p>{intelligence.primaryLeak.explanation}</p>
-              <div className="EdgeTrace-command-two-metrics">
-                <div><span>Est. Impact</span><strong className="is-red">{currency.format(-Math.abs(driverImpact))}</strong></div>
-                <div><span>Diagnosis Strength</span><strong>{diagnosisStrength(intelligence.strategyHealthScore)}</strong></div>
+              <div className="EdgeTrace-command-driver-signal-grid">
+                {driverSignals.map((driver) => (
+                  <div key={driver.label} className={`tone-${driver.tone}`}>
+                    <span>{driver.label}</span>
+                    <strong>{driver.value}</strong>
+                    <small>{driver.detail}</small>
+                  </div>
+                ))}
               </div>
-              <button onClick={inspectPrimarySegment}>View breakdown <ArrowRight size={15} aria-hidden="true" /></button>
             </article>
 
             <article className="EdgeTrace-command-card EdgeTrace-command-changed">
@@ -827,21 +842,6 @@ export function DashboardPage({
                   <span>Import another report or add this report to a strategy set to track changes over time.</span>
                 </div>
               )}
-            </article>
-
-            <article className="EdgeTrace-command-card EdgeTrace-command-drivers">
-              <div className="EdgeTrace-command-card-heading">
-                <span>Top Drivers</span>
-              </div>
-              <div className="EdgeTrace-command-driver-signal-grid">
-                {driverSignals.map((driver) => (
-                  <div key={driver.label} className={`tone-${driver.tone}`}>
-                    <span>{driver.label}</span>
-                    <strong>{driver.value}</strong>
-                    <small>{driver.detail}</small>
-                  </div>
-                ))}
-              </div>
             </article>
 
             <PaywallGate

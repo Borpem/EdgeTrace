@@ -5241,15 +5241,14 @@ body {
 }
 
 .EdgeTrace-command-health,
-.EdgeTrace-command-diagnosis,
-.EdgeTrace-command-changed {
+.EdgeTrace-command-diagnosis {
   display: flex;
   min-height: 17.25rem;
   flex-direction: column;
 }
 
 .EdgeTrace-command-health {
-  grid-column: span 4;
+  grid-column: span 6;
   border-color: rgba(72, 104, 121, 0.7);
   background:
     linear-gradient(135deg, rgba(18, 34, 43, 0.98), rgba(9, 15, 22, 0.98)),
@@ -5259,7 +5258,7 @@ body {
 .EdgeTrace-command-diagnosis {
   position: relative;
   display: flex;
-  grid-column: span 4;
+  grid-column: span 6;
   flex-direction: column;
   overflow: hidden;
   border-color: rgba(72, 104, 121, 0.7);
@@ -5280,7 +5279,9 @@ body {
 }
 
 .EdgeTrace-command-changed {
-  grid-column: span 4;
+  display: flex;
+  grid-column: 1 / -1;
+  flex-direction: column;
   border-color: rgba(72, 104, 121, 0.7);
   background:
     linear-gradient(135deg, rgba(13, 21, 28, 0.86), rgba(7, 12, 18, 0.96)),
