@@ -1880,6 +1880,7 @@ function ProReviewLoopPanel({
 
         <section className="EdgeTrace-review-targets">
           <span>Next Review Targets</span>
+          <h3>Prove these fixes next</h3>
           <p>{review.comparisonSummary}</p>
           <div className="EdgeTrace-review-loop-items">
             {review.checklist.map((item) => (

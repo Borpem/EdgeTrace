@@ -5603,7 +5603,8 @@ body {
   padding: 0.92rem;
 }
 
-.EdgeTrace-review-story h3 {
+.EdgeTrace-review-story h3,
+.EdgeTrace-review-targets h3 {
   margin: 0.42rem 0 0;
   color: var(--command-text);
   font-size: 1.02rem;
