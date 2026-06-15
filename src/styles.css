@@ -5966,6 +5966,18 @@ body {
   font-weight: 540;
 }
 
+.EdgeTrace-command-change-grid strong.tone-green {
+  color: var(--command-green);
+}
+
+.EdgeTrace-command-change-grid strong.tone-red {
+  color: var(--command-red);
+}
+
+.EdgeTrace-command-change-grid strong.tone-gray {
+  color: var(--command-neutral);
+}
+
 .EdgeTrace-command-change-grid small {
   display: inline-flex;
   align-items: center;
@@ -6135,14 +6147,14 @@ body {
 
 .EdgeTrace-command-driver-signal-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(11.5rem, 1fr));
   gap: 0.72rem;
   margin-top: 0.7rem;
 }
 
 .EdgeTrace-command-driver-signal-grid > div {
   --driver-tone: var(--command-blue);
-  min-height: 6.7rem;
+  min-height: 6.15rem;
   border: 1px solid rgba(36, 53, 66, 0.68);
   border-left: 3px solid var(--driver-tone);
   border-radius: 5px;
@@ -6164,7 +6176,7 @@ body {
 
 .EdgeTrace-command-driver-signal-grid strong {
   display: block;
-  margin-top: 0.55rem;
+  margin-top: 0.45rem;
   color: var(--driver-tone);
   font-size: clamp(1.35rem, 1.65vw, 1.9rem);
   font-variant-numeric: tabular-nums;
@@ -6175,7 +6187,7 @@ body {
 
 .EdgeTrace-command-driver-signal-grid small {
   display: block;
-  margin-top: 0.48rem;
+  margin-top: 0.4rem;
   color: var(--command-text-secondary);
   font-size: 0.78rem;
   line-height: 1.32;

@@ -538,30 +538,32 @@ export function DashboardPage({
     },
     largestLeak
       ? {
-          label: `${largestLeak.group} leak`,
+          label: "Weakest segment",
           value: currency.format(largestLeak.netPnl),
-          detail: "Weakest segment by net PnL.",
+          detail: `${largestLeak.group} by net PnL.`,
           tone: largestLeak.netPnl < 0 ? "red" : "green"
         }
       : undefined,
     {
-      label: "Win rate",
-      value: percent.format(metrics.winRate),
-      detail: winRateCopy(metrics.winRate),
-      tone: winRateTone(metrics.winRate)
+      label: "Average loss",
+      value: currency.format(metrics.averageLoss),
+      detail: "Typical losing trade size.",
+      tone: metrics.averageLoss < 0 ? "red" : "gray"
     },
     {
-      label: "Profit factor",
-      value: formatProfitFactor(metrics.profitFactor),
-      detail: profitFactorCopy(metrics.profitFactor),
-      tone: profitFactorTone(metrics.profitFactor)
+      label: "Average win",
+      value: currency.format(metrics.averageWin),
+      detail: "Typical winning trade size.",
+      tone: metrics.averageWin > 0 ? "green" : "gray"
     },
-    {
-      label: "R capture",
-      value: metrics.averageRealizedR !== undefined ? `${number.format(metrics.averageRealizedR)}R` : "N/A",
-      detail: rMultipleCopy(metrics.averageRealizedR),
-      tone: rMultipleTone(metrics.averageRealizedR)
-    }
+    strongestSegment
+      ? {
+          label: "Best segment",
+          value: currency.format(strongestSegment.netPnl),
+          detail: `${strongestSegment.group} by net PnL.`,
+          tone: strongestSegment.netPnl > 0 ? "green" : "gray"
+        }
+      : undefined
   ]);
   const priorReport = findPriorReport(result, availableReports);
   const priorReportDate = formatShortDate(priorReport?.createdAt);
@@ -810,10 +812,10 @@ export function DashboardPage({
                     {comparisonRows.map((row) => (
                       <div key={row.label}>
                         <span>{row.label}</span>
-                        <strong>{row.current}</strong>
+                        <strong className={`tone-${row.tone}`}>{row.delta}</strong>
                         <small className={`tone-${row.tone}`}>
                           {row.tone === "green" ? <TrendingUp size={13} aria-hidden="true" /> : row.tone === "red" ? <TrendingDown size={13} aria-hidden="true" /> : null}
-                          {row.delta}
+                          {row.previous ? `Prior ${row.previous}` : row.current}
                         </small>
                       </div>
                     ))}
@@ -830,7 +832,6 @@ export function DashboardPage({
             <article className="EdgeTrace-command-card EdgeTrace-command-drivers">
               <div className="EdgeTrace-command-card-heading">
                 <span>Top Drivers</span>
-                <em>Native units</em>
               </div>
               <div className="EdgeTrace-command-driver-signal-grid">
                 {driverSignals.map((driver) => (
@@ -3197,7 +3198,7 @@ function buildComparisonRow(
   formatValue: (value: number) => string
 ) {
   if (previousValue === undefined || !Number.isFinite(previousValue)) {
-    return { label, current: formatValue(currentValue), delta: "No prior value", tone: "gray" as const };
+    return { label, current: formatValue(currentValue), previous: undefined, delta: "No prior value", tone: "gray" as const };
   }
 
   const difference = currentValue - previousValue;
@@ -3208,6 +3209,7 @@ function buildComparisonRow(
   return {
     label,
     current: formatValue(currentValue),
+    previous: formatValue(previousValue),
     delta: `${formattedDifference}${formattedPercent}`,
     tone: difference > 0 ? ("green" as const) : difference < 0 ? ("red" as const) : ("gray" as const)
   };
