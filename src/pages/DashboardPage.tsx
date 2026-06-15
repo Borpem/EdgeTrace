@@ -529,18 +529,40 @@ export function DashboardPage({
   const healthTrendLabel = healthTrendDelta >= 0 ? "Equity curve rising" : "Equity curve falling";
   const trendLabel = intelligence.strategyHealthScore >= 70 ? "Improving" : intelligence.strategyHealthScore >= 50 ? "Stabilizing" : "Needs Work";
   const driverImpact = Math.abs(impactBreakdown.reduce((total, item) => total + item.value, 0) || metrics.totalCosts || metrics.netPnl);
-  const negativeDrivers = [
-    { label: "Commission & Fees", value: -Math.abs(metrics.totalCosts || driverImpact * 0.5) },
-    { label: largestLeak ? largestLeak.group : "Small Losses", value: largestLeak?.netPnl ?? -Math.abs(driverImpact * 0.32) },
-    { label: "Unfavorable R:R", value: -Math.abs(driverImpact * 0.18) }
-  ];
-  const positiveDrivers = [
-    { label: "Strong Win Rate", value: Math.abs(metrics.averageWin * Math.max(1, Math.round(metrics.winRate * metrics.totalTrades))) },
-    { label: strongestSegment ? strongestSegment.group : "Trend Following Setups", value: Math.max(0, strongestSegment?.netPnl ?? Math.abs(metrics.netPnl * 0.52)) },
-    { label: "Trade Management", value: Math.abs(metrics.expectancy * metrics.totalTrades * 0.28) }
-  ];
-  const negativeDriverTotal = negativeDrivers.reduce((total, driver) => total + Math.abs(driver.value), 0);
-  const positiveDriverTotal = positiveDrivers.reduce((total, driver) => total + Math.abs(driver.value), 0);
+  const driverSignals = compactDetails([
+    {
+      label: "Cost drag",
+      value: metrics.totalCosts > 0 ? currency.format(-Math.abs(metrics.totalCosts)) : currency.format(0),
+      detail: "Commissions, fees, and estimated costs.",
+      tone: metrics.totalCosts > 0 ? "red" : "gray"
+    },
+    largestLeak
+      ? {
+          label: `${largestLeak.group} leak`,
+          value: currency.format(largestLeak.netPnl),
+          detail: "Weakest segment by net PnL.",
+          tone: largestLeak.netPnl < 0 ? "red" : "green"
+        }
+      : undefined,
+    {
+      label: "Win rate",
+      value: percent.format(metrics.winRate),
+      detail: winRateCopy(metrics.winRate),
+      tone: winRateTone(metrics.winRate)
+    },
+    {
+      label: "Profit factor",
+      value: formatProfitFactor(metrics.profitFactor),
+      detail: profitFactorCopy(metrics.profitFactor),
+      tone: profitFactorTone(metrics.profitFactor)
+    },
+    {
+      label: "R capture",
+      value: metrics.averageRealizedR !== undefined ? `${number.format(metrics.averageRealizedR)}R` : "N/A",
+      detail: rMultipleCopy(metrics.averageRealizedR),
+      tone: rMultipleTone(metrics.averageRealizedR)
+    }
+  ]);
   const priorReport = findPriorReport(result, availableReports);
   const priorReportDate = formatShortDate(priorReport?.createdAt);
   const priorReportName = priorReport?.name ?? "prior report";
@@ -808,26 +830,16 @@ export function DashboardPage({
             <article className="EdgeTrace-command-card EdgeTrace-command-drivers">
               <div className="EdgeTrace-command-card-heading">
                 <span>Top Drivers</span>
+                <em>Native units</em>
               </div>
-              <div className="EdgeTrace-command-driver-columns">
-                <div>
-                  <div className="EdgeTrace-command-driver-head">
-                    <h3>Negative Impact</h3>
-                    <strong className="is-red">-{currency.format(negativeDriverTotal)}</strong>
+              <div className="EdgeTrace-command-driver-signal-grid">
+                {driverSignals.map((driver) => (
+                  <div key={driver.label} className={`tone-${driver.tone}`}>
+                    <span>{driver.label}</span>
+                    <strong>{driver.value}</strong>
+                    <small>{driver.detail}</small>
                   </div>
-                  {negativeDrivers.map((driver) => (
-                    <p key={driver.label}><span>{driver.label}</span><strong className="is-red">{currency.format(driver.value)}</strong></p>
-                  ))}
-                </div>
-                <div>
-                  <div className="EdgeTrace-command-driver-head">
-                    <h3>Positive Impact</h3>
-                    <strong className="is-green">+{currency.format(positiveDriverTotal)}</strong>
-                  </div>
-                  {positiveDrivers.map((driver) => (
-                    <p key={driver.label}><span>{driver.label}</span><strong className="is-green">+{currency.format(driver.value)}</strong></p>
-                  ))}
-                </div>
+                ))}
               </div>
             </article>
 

@@ -6133,6 +6133,74 @@ body {
   text-align: right;
 }
 
+.EdgeTrace-command-driver-signal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: 0.72rem;
+  margin-top: 0.7rem;
+}
+
+.EdgeTrace-command-driver-signal-grid > div {
+  --driver-tone: var(--command-blue);
+  min-height: 6.7rem;
+  border: 1px solid rgba(36, 53, 66, 0.68);
+  border-left: 3px solid var(--driver-tone);
+  border-radius: 5px;
+  background: rgba(5, 10, 15, 0.52);
+  padding: 0.78rem;
+}
+
+.EdgeTrace-command-driver-signal-grid span {
+  display: block;
+  overflow: hidden;
+  color: var(--command-text-muted);
+  font-size: 0.7rem;
+  font-weight: 680;
+  letter-spacing: 0.06em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.EdgeTrace-command-driver-signal-grid strong {
+  display: block;
+  margin-top: 0.55rem;
+  color: var(--driver-tone);
+  font-size: clamp(1.35rem, 1.65vw, 1.9rem);
+  font-variant-numeric: tabular-nums;
+  font-weight: 560;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+.EdgeTrace-command-driver-signal-grid small {
+  display: block;
+  margin-top: 0.48rem;
+  color: var(--command-text-secondary);
+  font-size: 0.78rem;
+  line-height: 1.32;
+}
+
+.EdgeTrace-command-driver-signal-grid .tone-red {
+  --driver-tone: var(--command-red);
+}
+
+.EdgeTrace-command-driver-signal-grid .tone-yellow {
+  --driver-tone: var(--command-yellow);
+}
+
+.EdgeTrace-command-driver-signal-grid .tone-green {
+  --driver-tone: var(--command-green);
+}
+
+.EdgeTrace-command-driver-signal-grid .tone-blue {
+  --driver-tone: var(--command-blue);
+}
+
+.EdgeTrace-command-driver-signal-grid .tone-gray {
+  --driver-tone: var(--command-neutral);
+}
+
 .EdgeTrace-command-action-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(13rem, 0.22fr);
