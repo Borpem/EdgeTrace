@@ -5295,6 +5295,7 @@ body {
 
 .EdgeTrace-command-drivers {
   grid-column: 1 / -1;
+  padding: 0.9rem 1rem;
 }
 
 .EdgeTrace-command-actions {
@@ -6021,7 +6022,7 @@ body {
   grid-template-columns: 1fr 1fr;
   gap: 0;
   overflow: hidden;
-  margin-top: 0.9rem;
+  margin-top: 0.65rem;
   border: 1px solid rgba(36, 53, 66, 0.72);
   border-radius: 5px;
   background:
@@ -6034,12 +6035,29 @@ body {
   border: 0;
   border-radius: 0;
   background: transparent;
-  padding: 0.95rem 1.05rem 1rem;
+  padding: 0.72rem 0.9rem 0.78rem;
+}
+
+.EdgeTrace-command-driver-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid rgba(36, 53, 66, 0.74);
+  padding-bottom: 0.55rem;
+}
+
+.EdgeTrace-command-driver-head strong {
+  font-size: 1.02rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
 }
 
 .EdgeTrace-command-driver-columns h3,
 .EdgeTrace-command-action-row aside h3 {
-  margin: 0 0 0.75rem;
+  margin: 0;
   font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: 0.05em;
@@ -6072,12 +6090,13 @@ body {
 
 .EdgeTrace-command-driver-columns p {
   margin: 0;
-  border-top: 1px solid rgba(36, 53, 66, 0.56);
-  padding: 0.68rem 0;
+  border-top: 1px solid rgba(36, 53, 66, 0.46);
+  padding: 0.52rem 0;
 }
 
 .EdgeTrace-command-driver-columns p:first-of-type {
-  border-top-color: rgba(36, 53, 66, 0.82);
+  border-top: 0;
+  padding-top: 0.58rem;
 }
 
 .EdgeTrace-command-driver-columns p:last-child {
@@ -6089,6 +6108,7 @@ body {
   align-items: center;
   gap: 0.48rem;
   color: var(--command-text-secondary);
+  min-width: 0;
 }
 
 .EdgeTrace-command-driver-columns p span::before {
@@ -6107,7 +6127,7 @@ body {
 }
 
 .EdgeTrace-command-driver-columns p strong {
-  min-width: 7.5rem;
+  min-width: 6.6rem;
   font-variant-numeric: tabular-nums;
   font-weight: 650;
   text-align: right;

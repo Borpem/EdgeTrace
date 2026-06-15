@@ -539,6 +539,8 @@ export function DashboardPage({
     { label: strongestSegment ? strongestSegment.group : "Trend Following Setups", value: Math.max(0, strongestSegment?.netPnl ?? Math.abs(metrics.netPnl * 0.52)) },
     { label: "Trade Management", value: Math.abs(metrics.expectancy * metrics.totalTrades * 0.28) }
   ];
+  const negativeDriverTotal = negativeDrivers.reduce((total, driver) => total + Math.abs(driver.value), 0);
+  const positiveDriverTotal = positiveDrivers.reduce((total, driver) => total + Math.abs(driver.value), 0);
   const priorReport = findPriorReport(result, availableReports);
   const priorReportDate = formatShortDate(priorReport?.createdAt);
   const priorReportName = priorReport?.name ?? "prior report";
@@ -809,13 +811,19 @@ export function DashboardPage({
               </div>
               <div className="EdgeTrace-command-driver-columns">
                 <div>
-                  <h3>Negative Impact</h3>
+                  <div className="EdgeTrace-command-driver-head">
+                    <h3>Negative Impact</h3>
+                    <strong className="is-red">-{currency.format(negativeDriverTotal)}</strong>
+                  </div>
                   {negativeDrivers.map((driver) => (
                     <p key={driver.label}><span>{driver.label}</span><strong className="is-red">{currency.format(driver.value)}</strong></p>
                   ))}
                 </div>
                 <div>
-                  <h3>Positive Impact</h3>
+                  <div className="EdgeTrace-command-driver-head">
+                    <h3>Positive Impact</h3>
+                    <strong className="is-green">+{currency.format(positiveDriverTotal)}</strong>
+                  </div>
                   {positiveDrivers.map((driver) => (
                     <p key={driver.label}><span>{driver.label}</span><strong className="is-green">+{currency.format(driver.value)}</strong></p>
                   ))}
