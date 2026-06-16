@@ -5357,32 +5357,14 @@ body {
 }
 
 .EdgeTrace-review-loop-status {
-  display: grid;
-  grid-template-columns: minmax(12rem, 0.52fr) minmax(0, 1fr) minmax(8rem, auto);
-  gap: 0;
-  align-items: stretch;
-  overflow: hidden;
-  border: 1px solid rgba(36, 53, 66, 0.78);
-  border-left-width: 3px;
-  border-radius: 5px;
-  background: rgba(5, 10, 15, 0.55);
-  margin-top: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  border-left: 2px solid rgba(72, 104, 121, 0.7);
+  margin-top: 0.74rem;
+  padding: 0.18rem 0 0.24rem 0.78rem;
 }
 
-.EdgeTrace-review-loop-status-title,
-.EdgeTrace-review-loop-status-detail,
-.EdgeTrace-review-loop-issue-count {
-  min-width: 0;
-  padding: 0.82rem 0.95rem;
-}
-
-.EdgeTrace-review-loop-status-detail,
-.EdgeTrace-review-loop-issue-count {
-  border-left: 1px solid rgba(36, 53, 66, 0.62);
-}
-
-.EdgeTrace-review-loop-status-title > span,
-.EdgeTrace-review-loop-status-detail > span,
 .EdgeTrace-review-benchmark-tiles span,
 .EdgeTrace-review-story > span,
 .EdgeTrace-review-targets > span {
@@ -5394,64 +5376,53 @@ body {
   text-transform: uppercase;
 }
 
-.EdgeTrace-review-loop-status-title > strong {
-  display: block;
-  margin-top: 0.28rem;
+.EdgeTrace-review-loop-status > strong {
+  flex: 0 0 auto;
   color: var(--command-text);
-  font-size: clamp(1.28rem, 1.45vw, 1.62rem);
-  font-weight: 600;
-  letter-spacing: -0.025em;
-  line-height: 1.12;
+  font-size: 1.02rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
 }
 
-.EdgeTrace-review-loop-status-detail p,
+.EdgeTrace-review-loop-status p,
 .EdgeTrace-review-targets > p,
 .EdgeTrace-review-story > p {
-  margin: 0.32rem 0 0;
+  min-width: 0;
+  margin: 0;
   color: var(--command-text-secondary);
   font-size: 0.86rem;
   line-height: 1.42;
 }
 
 .EdgeTrace-review-loop-issue-count {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  background: rgba(2, 6, 10, 0.26);
-  text-align: right;
-}
-
-.EdgeTrace-review-loop-issue-count strong {
-  color: var(--command-text);
-  font-size: 1.35rem;
-  font-weight: 620;
-  line-height: 1.05;
-}
-
-.EdgeTrace-review-loop-issue-count span {
+  flex: 0 0 auto;
+  margin-left: auto;
+  border: 1px solid rgba(72, 104, 121, 0.5);
+  border-radius: 999px;
   color: var(--command-text-muted);
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   font-weight: 650;
-  letter-spacing: 0.06em;
-  line-height: 1;
-  margin-top: 0.18rem;
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+  padding: 0.32rem 0.58rem;
   text-transform: uppercase;
 }
 
 .EdgeTrace-review-loop-status.tone-red {
-  border-left-color: var(--command-red);
+  border-left-color: rgba(230, 95, 115, 0.85);
 }
 
 .EdgeTrace-review-loop-status.tone-yellow {
-  border-left-color: var(--command-yellow);
+  border-left-color: rgba(232, 190, 76, 0.88);
 }
 
 .EdgeTrace-review-loop-status.tone-green {
-  border-left-color: var(--command-green);
+  border-left-color: rgba(115, 201, 143, 0.85);
 }
 
 .EdgeTrace-review-loop-status.tone-blue {
-  border-left-color: var(--command-blue);
+  border-left-color: rgba(78, 196, 236, 0.88);
 }
 
 .EdgeTrace-review-benchmark-tiles {
@@ -6492,6 +6463,16 @@ body {
 
   .EdgeTrace-command-diagnosis {
     grid-template-columns: 1fr;
+  }
+
+  .EdgeTrace-review-loop-status {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.46rem;
+  }
+
+  .EdgeTrace-review-loop-issue-count {
+    margin-left: 0;
   }
 
   .EdgeTrace-command-two-metrics {

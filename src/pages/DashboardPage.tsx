@@ -1852,17 +1852,10 @@ function ProReviewLoopPanel({
       </div>
 
       <div className={`EdgeTrace-review-loop-status tone-${review.statusTone}`}>
-        <div className="EdgeTrace-review-loop-status-title">
-          <span>Review status</span>
-          <strong>{review.statusTitle}</strong>
-        </div>
-        <div className="EdgeTrace-review-loop-status-detail">
-          <span>Cadence</span>
-          <p>{review.statusDetail}</p>
-        </div>
+        <strong>{review.statusTitle}</strong>
+        <p>{review.statusDetail}</p>
         <div className="EdgeTrace-review-loop-issue-count">
-          <strong>{number.format(review.issueCount)}</strong>
-          <span>{review.issueCount === 1 ? "issue to verify" : "issues to verify"}</span>
+          {number.format(review.issueCount)} {review.issueCount === 1 ? "issue to verify" : "issues to verify"}
         </div>
       </div>
 
