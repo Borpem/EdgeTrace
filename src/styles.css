@@ -5614,9 +5614,7 @@ body {
   border: 1px solid rgba(36, 53, 66, 0.62);
   border-left: 3px solid var(--item-tone);
   border-radius: 5px;
-  background:
-    linear-gradient(90deg, color-mix(in srgb, var(--item-tone) 7%, transparent), transparent 34%),
-    rgba(3, 8, 12, 0.38);
+  background: rgba(3, 8, 12, 0.38);
   padding: 0.7rem 0.78rem;
 }
 
