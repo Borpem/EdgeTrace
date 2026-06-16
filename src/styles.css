@@ -5357,10 +5357,7 @@ body {
 }
 
 .EdgeTrace-review-loop-hero {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 1rem;
-  align-items: stretch;
+  display: block;
   border: 1px solid rgba(36, 53, 66, 0.78);
   border-left-width: 3px;
   border-radius: 5px;
@@ -5371,7 +5368,7 @@ body {
   padding: 0.95rem;
 }
 
-.EdgeTrace-review-loop-hero > div:first-child span,
+.EdgeTrace-review-loop-status-copy > span,
 .EdgeTrace-review-benchmark-tiles span,
 .EdgeTrace-review-story > span,
 .EdgeTrace-review-targets > span {
@@ -5383,7 +5380,7 @@ body {
   text-transform: uppercase;
 }
 
-.EdgeTrace-review-loop-hero > div:first-child strong {
+.EdgeTrace-review-loop-status-copy > strong {
   display: block;
   margin-top: 0.32rem;
   color: var(--command-text);
@@ -5403,27 +5400,27 @@ body {
 }
 
 .EdgeTrace-review-loop-issue-count {
-  display: grid;
-  min-width: 8.8rem;
-  place-items: center;
-  border: 1px solid rgba(36, 53, 66, 0.72);
-  border-radius: 5px;
-  background: rgba(2, 6, 10, 0.42);
-  padding: 0.8rem;
-  text-align: center;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.42rem;
+  margin-top: 0.8rem;
+  border: 1px solid rgba(72, 104, 121, 0.62);
+  border-radius: 999px;
+  background: rgba(2, 6, 10, 0.36);
+  padding: 0.36rem 0.66rem;
 }
 
 .EdgeTrace-review-loop-issue-count strong {
   color: var(--command-text);
-  font-size: clamp(2rem, 2.7vw, 3rem);
-  font-weight: 520;
-  line-height: 0.95;
+  font-size: 1rem;
+  font-weight: 650;
+  line-height: 1;
 }
 
 .EdgeTrace-review-loop-issue-count span {
-  margin-top: 0.25rem;
   color: var(--command-text-muted);
   font-size: 0.78rem;
+  line-height: 1;
 }
 
 .EdgeTrace-review-loop-hero.tone-red {

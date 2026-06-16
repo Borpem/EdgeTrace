@@ -1849,18 +1849,18 @@ function ProReviewLoopPanel({
     <article className="EdgeTrace-command-card EdgeTrace-command-pro-loop">
       <div className="EdgeTrace-command-card-heading">
         <span>Pro Review Loop</span>
-        <em>Built for 2x weekly check-ins</em>
+        <em>2x weekly check-in workflow</em>
       </div>
 
       <div className={`EdgeTrace-review-loop-hero tone-${review.statusTone}`}>
-        <div>
+        <div className="EdgeTrace-review-loop-status-copy">
           <span>Review status</span>
           <strong>{review.statusTitle}</strong>
           <p>{review.statusDetail}</p>
-        </div>
-        <div className="EdgeTrace-review-loop-issue-count">
-          <strong>{number.format(review.issueCount)}</strong>
-          <span>{review.issueCount === 1 ? "issue to verify" : "issues to verify"}</span>
+          <div className="EdgeTrace-review-loop-issue-count">
+            <strong>{number.format(review.issueCount)}</strong>
+            <span>{review.issueCount === 1 ? "issue to verify" : "issues to verify"}</span>
+          </div>
         </div>
       </div>
 
