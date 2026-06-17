@@ -304,27 +304,26 @@
     padding: 0.95rem 1.05rem 1.8rem;
   }
 
-  .EdgeTrace-auth-topbar {
+  .EdgeTrace-auth-topbar-shell {
     position: sticky;
     top: 0;
     z-index: 120;
     isolation: isolate;
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
     grid-column: 1;
     grid-row: 1;
+    min-width: 0;
+    width: min(100%, 1880px);
+    margin: 0 auto;
+  }
+
+  .EdgeTrace-auth-topbar {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
     gap: 1.35rem;
     min-width: 0;
-    width: min(104rem, calc(100vw - 2.1rem));
-    margin: 0 auto;
     border-bottom: 1px solid rgba(27, 52, 68, 0.95);
-    background:
-      radial-gradient(circle at 18% 0%, rgba(97, 184, 211, 0.022), transparent 25rem),
-      radial-gradient(circle at 88% 2%, rgba(122, 140, 255, 0.022), transparent 30rem),
-      rgba(5, 13, 20, 0.92);
-    padding: 0.96rem 0.25rem 0.72rem;
-    backdrop-filter: blur(18px);
+    padding: 0.15rem 0.25rem 0.72rem;
   }
 
   .EdgeTrace-auth-command-nav {
@@ -3554,7 +3553,7 @@
       grid-template-rows: auto minmax(0, 1fr);
     }
 
-    .EdgeTrace-auth-topbar {
+    .EdgeTrace-auth-topbar-shell {
       position: sticky;
       grid-column: 1;
       grid-row: 1;
@@ -3608,15 +3607,19 @@
       padding: 1rem;
     }
 
+    .EdgeTrace-auth-topbar-shell {
+      width: 100%;
+      padding: 0.82rem;
+    }
+
     .EdgeTrace-auth-topbar {
       align-items: flex-start;
-      grid-template-columns: 1fr auto;
-      padding: 0.9rem 1rem;
+      grid-template-columns: 1fr;
+      padding: 0.15rem 0 0.72rem;
     }
 
     .EdgeTrace-auth-command-nav {
       grid-column: 1 / -1;
-      order: 3;
       width: 100%;
       overflow-x: auto;
       padding-bottom: 0.2rem;
@@ -3773,7 +3776,6 @@
       width: 100%;
     }
 
-    .EdgeTrace-auth-topbar-primary,
     .EdgeTrace-account-utility-profile,
     .EdgeTrace-account-utility-link {
       width: 100%;
@@ -4892,6 +4894,14 @@ body {
   box-shadow: none;
   color: var(--command-text);
   padding: 0.82rem 1.05rem;
+}
+
+.EdgeTrace-auth-topbar-shell.EdgeTrace-command-shell {
+  position: sticky;
+  top: 0;
+  z-index: 120;
+  width: min(100%, 1880px);
+  margin: 0 auto;
 }
 
 .EdgeTrace-command-nav {

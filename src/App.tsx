@@ -988,35 +988,37 @@ function AuthenticatedTopbar({
   ];
 
   return (
-    <header className="EdgeTrace-auth-topbar">
-      <button className="EdgeTrace-command-brand" onClick={onDashboard} aria-label="EdgeTrace dashboard">
-        <img src="/brand/edgetrace_icon_monochrome_white_transparent.png" alt="" aria-hidden="true" />
-        <img src="/brand/edgetrace_wordmark_monochrome_white.png" alt="EdgeTrace" />
-      </button>
-      <nav aria-label="Application navigation" className="EdgeTrace-auth-command-nav">
-        {navItems.map(({ target, label, action }) => (
-          <button key={label} className={activeNavPage === target ? "active" : ""} onClick={action}>
-            {label}
-          </button>
-        ))}
-      </nav>
-      <div className="EdgeTrace-auth-topbar-actions">
-        <button className="EdgeTrace-auth-topbar-primary" onClick={onAnalyze}>
-          + New Report
+    <div className="EdgeTrace-auth-topbar-shell EdgeTrace-command-shell">
+      <header className="EdgeTrace-auth-topbar EdgeTrace-command-nav">
+        <button className="EdgeTrace-command-brand" onClick={onDashboard} aria-label="EdgeTrace dashboard">
+          <img src="/brand/edgetrace_icon_monochrome_white_transparent.png" alt="" aria-hidden="true" />
+          <img src="/brand/edgetrace_wordmark_monochrome_white.png" alt="EdgeTrace" />
         </button>
-        <AccountUtility
-          userName={userName}
-          profile={profile}
-          authMode={authMode}
-          onAccount={onAccount}
-          onSignOut={onSignOut}
-        />
-      </div>
-      <div className="EdgeTrace-auth-topbar-context" aria-hidden="true">
-        <p>{activeLabel}</p>
-        <span>{profile?.planId ? `${profile.planId.toUpperCase()} plan` : "Workspace"}</span>
-      </div>
-    </header>
+        <nav aria-label="Application navigation" className="EdgeTrace-auth-command-nav">
+          {navItems.map(({ target, label, action }) => (
+            <button key={label} className={activeNavPage === target ? "active" : ""} onClick={action}>
+              {label}
+            </button>
+          ))}
+        </nav>
+        <div className="EdgeTrace-auth-topbar-actions EdgeTrace-command-nav-actions">
+          <button className="EdgeTrace-auth-topbar-primary EdgeTrace-command-primary" onClick={onAnalyze}>
+            + New Report
+          </button>
+          <AccountUtility
+            userName={userName}
+            profile={profile}
+            authMode={authMode}
+            onAccount={onAccount}
+            onSignOut={onSignOut}
+          />
+        </div>
+        <div className="EdgeTrace-auth-topbar-context" aria-hidden="true">
+          <p>{activeLabel}</p>
+          <span>{profile?.planId ? `${profile.planId.toUpperCase()} plan` : "Workspace"}</span>
+        </div>
+      </header>
+    </div>
   );
 }
 
