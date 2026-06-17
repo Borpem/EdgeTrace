@@ -398,7 +398,7 @@ export function ComparePage({
           <section className="mt-8 grid gap-4 xl:grid-cols-2">
             <ChartPanel title="Metric Comparison">
               <ResponsiveContainer width="100%" height={280}>
-                <BarChart data={metricChartData}>
+                <BarChart data={metricChartData} barCategoryGap="32%" barGap={8} margin={{ top: 8, right: 18, left: 6, bottom: 0 }}>
                   <CartesianGrid stroke="#243B64" strokeOpacity={0.45} />
                   <XAxis dataKey="metric" stroke="#9CA8C7" />
                   <YAxis stroke="#9CA8C7" />
@@ -406,14 +406,14 @@ export function ComparePage({
                     formatter={(value) => formatChartTooltipValue(value, "currency")}
                     contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }}
                   />
-                  <Bar dataKey="Report A" fill="#3E8BFF" />
-                  <Bar dataKey="Report B" fill="#45D5FF" />
+                  <Bar dataKey="Report A" fill="#3E8BFF" maxBarSize={42} />
+                  <Bar dataKey="Report B" fill="#45D5FF" maxBarSize={42} />
                 </BarChart>
               </ResponsiveContainer>
             </ChartPanel>
             <ChartPanel title="Cost Drag Comparison">
               <ResponsiveContainer width="100%" height={280}>
-                <BarChart data={costChartData}>
+                <BarChart data={costChartData} barCategoryGap="56%" margin={{ top: 8, right: 18, left: 6, bottom: 0 }}>
                   <CartesianGrid stroke="#243B64" strokeOpacity={0.45} />
                   <XAxis dataKey="report" stroke="#9CA8C7" />
                   <YAxis stroke="#9CA8C7" />
@@ -421,7 +421,7 @@ export function ComparePage({
                     formatter={(value) => formatChartTooltipValue(value, "percentPoints")}
                     contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }}
                   />
-                  <Bar dataKey="Cost Drag" fill="#FFB84D" />
+                  <Bar dataKey="Cost Drag" fill="#FFB84D" maxBarSize={74} />
                 </BarChart>
               </ResponsiveContainer>
             </ChartPanel>

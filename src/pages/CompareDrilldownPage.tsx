@@ -271,7 +271,7 @@ export function CompareDrilldownPage({
       <section className="mt-8 grid gap-5 xl:grid-cols-2">
         <ChartPanel title="Net PnL Comparison">
           <ResponsiveContainer width="100%" height={260}>
-            <BarChart data={charts.netPnl}>
+            <BarChart data={charts.netPnl} barCategoryGap="56%" margin={{ top: 8, right: 18, left: 6, bottom: 0 }}>
               <CartesianGrid stroke="#243B64" strokeOpacity={0.45} />
               <XAxis dataKey="report" stroke="#9CA8C7" />
               <YAxis stroke="#9CA8C7" />
@@ -279,13 +279,13 @@ export function CompareDrilldownPage({
                 formatter={(value) => formatChartTooltipValue(value, "currency")}
                 contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }}
               />
-              <Bar dataKey="netPnl" fill="#3DDC97" />
+              <Bar dataKey="netPnl" fill="#3DDC97" maxBarSize={74} />
             </BarChart>
           </ResponsiveContainer>
         </ChartPanel>
         <ChartPanel title="Cost Drag Comparison">
           <ResponsiveContainer width="100%" height={260}>
-            <BarChart data={charts.costDrag}>
+            <BarChart data={charts.costDrag} barCategoryGap="56%" margin={{ top: 8, right: 18, left: 6, bottom: 0 }}>
               <CartesianGrid stroke="#243B64" strokeOpacity={0.45} />
               <XAxis dataKey="report" stroke="#9CA8C7" />
               <YAxis stroke="#9CA8C7" />
@@ -293,13 +293,13 @@ export function CompareDrilldownPage({
                 formatter={(value) => formatChartTooltipValue(value, "percentPoints")}
                 contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }}
               />
-              <Bar dataKey="costDrag" fill="#FFB84D" />
+              <Bar dataKey="costDrag" fill="#FFB84D" maxBarSize={74} />
             </BarChart>
           </ResponsiveContainer>
         </ChartPanel>
         <ChartPanel title="Realized R Distribution">
           <ResponsiveContainer width="100%" height={260}>
-            <BarChart data={charts.rDistribution}>
+            <BarChart data={charts.rDistribution} barCategoryGap="32%" barGap={8} margin={{ top: 8, right: 18, left: 6, bottom: 0 }}>
               <CartesianGrid stroke="#243B64" strokeOpacity={0.45} />
               <XAxis dataKey="bucket" stroke="#9CA8C7" />
               <YAxis stroke="#9CA8C7" />
@@ -307,8 +307,8 @@ export function CompareDrilldownPage({
                 formatter={(value) => formatChartTooltipValue(value, "count")}
                 contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }}
               />
-              <Bar dataKey="Report A" fill="#3E8BFF" />
-              <Bar dataKey="Report B" fill="#45D5FF" />
+              <Bar dataKey="Report A" fill="#3E8BFF" maxBarSize={42} />
+              <Bar dataKey="Report B" fill="#45D5FF" maxBarSize={42} />
             </BarChart>
           </ResponsiveContainer>
         </ChartPanel>
