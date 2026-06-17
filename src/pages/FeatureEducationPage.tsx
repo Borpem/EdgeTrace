@@ -173,11 +173,11 @@ function PresentationFrame({
 
   return (
     <div className="pointer-events-none relative isolate select-none [perspective:1200px]" aria-hidden="true">
-      <div className="absolute -inset-x-5 bottom-[-1.35rem] h-12 bg-[radial-gradient(ellipse,rgba(88,214,255,0.18),rgba(124,92,255,0.08)_42%,transparent_72%)] blur-2xl" />
+      <div className="absolute -inset-x-4 bottom-[-1.15rem] h-10 bg-[radial-gradient(ellipse,rgba(30,120,150,0.16),rgba(0,0,0,0)_68%)] blur-2xl" />
       <div
-        className={`relative overflow-hidden border border-white/[0.095] bg-[linear-gradient(145deg,rgba(8,13,22,0.98),rgba(4,8,15,0.95))] shadow-[0_30px_92px_-60px_rgba(88,214,255,0.72),0_14px_34px_-26px_rgba(0,0,0,0.96)] ring-1 ring-white/[0.035] ${tiltClass}`}
+        className={`relative overflow-hidden rounded-md border border-[#203747] bg-[#071015] shadow-[0_26px_72px_-54px_rgba(84,214,255,0.42),0_18px_42px_-32px_rgba(0,0,0,0.98)] ring-1 ring-white/[0.025] ${tiltClass}`}
       >
-        <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
+        <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-cyan/35 to-transparent" />
         {children}
       </div>
     </div>
@@ -185,71 +185,86 @@ function PresentationFrame({
 }
 
 function WorkspaceVisual() {
+  const metrics = [
+    ["Net PnL", "$2,730", "text-profit"],
+    ["Expectancy", "$14.07", "text-profit"],
+    ["Win Rate", "46.4%", "text-warning"],
+    ["R-Multiple", "0.26R", "text-loss"]
+  ];
+
   return (
     <PresentationFrame tilt="right">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_10%,rgba(124,92,255,0.12),transparent_35%),radial-gradient(circle_at_18%_86%,rgba(34,197,245,0.11),transparent_34%)]" />
-      <div className="relative p-5">
-        <div className="flex items-center justify-between border-b border-white/[0.08] pb-4">
-          <div>
-            <p className="text-sm font-semibold text-ink">Current dashboard view</p>
-            <p className="mt-1 text-xs text-muted">Report selector, diagnosis, drivers, and review loop</p>
+      <div className="relative p-4 sm:p-5">
+        <div className="flex items-center justify-between border-b border-[#1b3342] pb-3">
+          <div className="flex items-center gap-3">
+            <span className="h-3 w-6 skew-x-[-18deg] bg-white/85" />
+            <span className="text-[0.62rem] font-semibold uppercase tracking-[0.38em] text-ink/85">EDGETRACE</span>
           </div>
-          <span className="border border-cyan/30 bg-cyan/[0.05] px-3 py-1 text-xs font-semibold text-cyan">
-            Report ready
+          <span className="rounded-sm border border-cyan/35 px-2.5 py-1 text-[0.62rem] font-semibold text-cyan">
+            Dashboard
           </span>
         </div>
 
-        <div className="mt-5 grid gap-4">
-          <div className="grid gap-3 sm:grid-cols-[0.88fr_1.12fr]">
-            <div className="border border-white/[0.08] bg-black/25 p-4">
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">Upload</p>
-                  <p className="mt-3 text-base font-semibold text-ink">broker-export.csv</p>
-                  <p className="mt-1 text-xs text-muted">Completed trades, costs, and timestamps</p>
-                </div>
-                <FileText className="text-cyan" size={24} />
+        <div className="mt-4 rounded-md border border-[#203747] bg-[#101b23] p-4">
+          <div>
+            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-cyan">Report overview</p>
+            <p className="mt-2 text-lg font-semibold tracking-[-0.03em] text-ink">Test - improved trades</p>
+          </div>
+          <div className="mt-4 grid gap-2 sm:grid-cols-4">
+            {metrics.map(([label, value, color]) => (
+              <div key={label} className="rounded-sm border border-[#1d3443] bg-[#070d12] p-3">
+                <p className="text-[0.58rem] font-semibold uppercase tracking-[0.16em] text-muted">{label}</p>
+                <p className={`mt-2 text-lg font-semibold ${color}`}>{value}</p>
               </div>
-              <div className="mt-4 h-2 bg-white/[0.08]">
-                <div className="h-full w-[86%] bg-gradient-to-r from-cyan to-accent" />
-              </div>
-            </div>
+            ))}
+          </div>
+        </div>
 
-            <div className="border border-white/[0.08] bg-[#050a12]/94 p-4">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-cyan">Edge Health</p>
-                  <p className="mt-3 text-5xl font-semibold tracking-[-0.07em] text-ink">60</p>
-                </div>
-                <p className="border border-cyan/25 bg-cyan/[0.04] px-2.5 py-1 text-xs font-semibold text-cyan">
-                  Stabilizing
-                </p>
+        <div className="mt-3 grid gap-3 md:grid-cols-[1fr_1fr]">
+          <div className="rounded-md border border-[#284758] bg-[#111d25] p-4">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">Edge Health</p>
+                <p className="mt-3 text-5xl font-semibold tracking-[-0.06em] text-warning">60<span className="text-base text-ink">/100</span></p>
               </div>
-              <svg className="mt-4 h-20 w-full overflow-visible" viewBox="0 0 320 92" role="img" aria-label="Strategy trend line">
-                <path d="M8 70 C54 60, 76 75, 112 48 S170 44, 210 34 S270 27, 312 16" fill="none" stroke="rgba(88,214,255,0.92)" strokeWidth="3" />
-                <path d="M8 78 C62 74, 92 66, 136 66 S206 50, 312 42" fill="none" stroke="rgba(255,255,255,0.16)" strokeWidth="2" />
-                <circle cx="312" cy="16" r="4" fill="rgba(88,214,255,1)" />
-              </svg>
+              <span className="text-sm font-medium text-warning">Stabilizing</span>
+            </div>
+            <svg className="mt-4 h-16 w-full overflow-visible" viewBox="0 0 300 82" role="img" aria-label="Equity curve">
+              <path d="M0 56 L300 56" stroke="rgba(130,160,178,0.18)" strokeDasharray="4 5" />
+              <path d="M8 46 C28 22, 48 62, 70 54 S115 62, 132 55 S166 48, 186 57 S224 22, 292 26" fill="none" stroke="#6bd28f" strokeWidth="3" />
+            </svg>
+            <p className="mt-2 text-xs text-profit">Equity curve rising</p>
+          </div>
+          <div className="rounded-md border border-loss/30 bg-[#111820] p-4">
+            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">Primary diagnosis</p>
+            <h3 className="mt-5 text-3xl font-semibold tracking-[-0.04em] text-ink">Loss Concentration</h3>
+            <p className="mt-3 text-sm leading-6 text-muted">One or two losses are large enough to materially distort performance.</p>
+            <div className="mt-5 grid grid-cols-2 gap-3">
+              <div className="rounded-sm border border-[#1d3443] bg-[#070d12] p-3">
+                <p className="text-[0.6rem] uppercase tracking-[0.14em] text-muted">Est. impact</p>
+                <p className="mt-2 text-lg font-semibold text-loss">-$1,610</p>
+              </div>
+              <div className="rounded-sm border border-[#1d3443] bg-[#070d12] p-3">
+                <p className="text-[0.6rem] uppercase tracking-[0.14em] text-muted">Diagnosis strength</p>
+                <p className="mt-2 text-lg font-semibold text-ink">Moderate</p>
+              </div>
             </div>
           </div>
+        </div>
 
-          <div className="grid gap-3 sm:grid-cols-[1.08fr_0.92fr]">
-            <div className="border border-violet/25 bg-violet/[0.045] p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-violet">Primary diagnosis</p>
-              <p className="mt-3 text-xl font-semibold tracking-[-0.04em] text-ink">Loss concentration</p>
-              <p className="mt-2 text-sm leading-6 text-muted">One or two losses are distorting the report.</p>
-            </div>
-            <div className="border border-white/[0.08] bg-black/25 p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">Workflow</p>
-              <div className="mt-4 space-y-3 text-sm">
-                {["Import", "Diagnose", "Compare", "Review Loop"].map((step, index) => (
-                  <div key={step} className="flex items-center gap-3 text-muted">
-                    <span className={`h-1.5 w-1.5 ${index < 3 ? "bg-cyan" : "bg-violet"}`} />
-                    <span>{step}</span>
-                  </div>
-                ))}
+        <div className="mt-3 rounded-md border border-[#203747] bg-[#070d12] p-4">
+          <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">Pro Review Loop</p>
+          <div className="mt-3 grid gap-2 sm:grid-cols-3">
+            {[
+              ["Cost Drag", "38th", "text-warning"],
+              ["R-Capture", "59th", "text-cyan"],
+              ["Expectancy", "63rd", "text-cyan"]
+            ].map(([label, value, color]) => (
+              <div key={label} className="rounded-sm border border-[#1d3443] bg-[#0b151b] p-3">
+                <p className="text-[0.58rem] uppercase tracking-[0.16em] text-muted">{label}</p>
+                <p className={`mt-1 text-2xl font-semibold tracking-[-0.04em] ${color}`}>{value}</p>
               </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
@@ -313,23 +328,53 @@ function WalkthroughSection({
 function ImportReportVisual() {
   return (
     <PresentationFrame tilt="left">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_16%_20%,rgba(34,197,245,0.12),transparent_30%),radial-gradient(circle_at_86%_82%,rgba(124,92,255,0.1),transparent_36%)]" />
-      <div className="relative grid gap-5 p-6 md:grid-cols-[0.8fr_auto_1.1fr] md:items-center">
-        <div className="border border-white/[0.09] bg-black/25 p-5">
-          <FileText className="text-cyan" size={30} />
-          <p className="mt-5 text-2xl font-semibold tracking-[-0.04em] text-ink">CSV export</p>
-          <p className="mt-2 text-sm text-muted">Broker rows, fills, costs, and timestamps</p>
-        </div>
-        <ArrowRight className="hidden text-cyan/70 md:block" size={28} />
-        <div className="border border-cyan/20 bg-cyan/[0.035] p-5">
-          <p className="text-sm font-semibold text-cyan">Normalized report input</p>
-          <div className="mt-5 space-y-3">
-            {["Trades normalized", "Costs detected", "Mapping verified"].map((label) => (
-              <div key={label} className="flex items-center justify-between border-b border-white/[0.07] pb-3 text-sm">
-                <span className="text-muted">{label}</span>
-                <span className="text-cyan">Ready</span>
-              </div>
-            ))}
+      <div className="relative p-5">
+        <div className="grid gap-3 md:grid-cols-[0.78fr_1fr_1fr] md:items-stretch">
+          <div className="rounded-md border border-[#203747] bg-[#101b23] p-4">
+            <div className="grid h-10 w-10 place-items-center rounded-sm border border-cyan/35 bg-cyan/[0.06] text-cyan">
+              <FileText size={20} />
+            </div>
+            <p className="mt-5 text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">Import Trades</p>
+            <p className="mt-2 text-xl font-semibold tracking-[-0.04em] text-ink">IBKR export</p>
+            <p className="mt-2 text-sm leading-6 text-muted">Completed executions, fees, side, time, and symbol.</p>
+          </div>
+
+          <div className="rounded-md border border-[#203747] bg-[#070d12] p-4">
+            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-cyan">Review mapping</p>
+            <div className="mt-4 space-y-2">
+              {[
+                ["Trades detected", "194"],
+                ["Costs mapped", "Yes"],
+                ["R data", "Partial"],
+                ["Reconstruction", "194 / 194"]
+              ].map(([label, value]) => (
+                <div key={label} className="flex items-center justify-between border-b border-[#1b3342] py-2 text-sm last:border-b-0">
+                  <span className="text-muted">{label}</span>
+                  <span className="font-semibold text-ink">{value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-md border border-[#203747] bg-[#101b23] p-4">
+            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">Generated report</p>
+            <div className="mt-4 grid grid-cols-2 gap-2">
+              {[
+                ["Net PnL", "$2,730", "text-profit"],
+                ["Expectancy", "$14.07", "text-profit"],
+                ["Win Rate", "46.4%", "text-warning"],
+                ["Trades", "194", "text-profit"]
+              ].map(([label, value, color]) => (
+                <div key={label} className="rounded-sm border border-[#1d3443] bg-[#070d12] p-3">
+                  <p className="text-[0.58rem] uppercase tracking-[0.14em] text-muted">{label}</p>
+                  <p className={`mt-2 text-lg font-semibold ${color}`}>{value}</p>
+                </div>
+              ))}
+            </div>
+            <div className="mt-4 flex items-center justify-between rounded-sm border border-cyan/30 bg-cyan/[0.04] px-3 py-2 text-sm font-semibold text-cyan">
+              <span>Open dashboard</span>
+              <ArrowRight size={14} />
+            </div>
           </div>
         </div>
       </div>
@@ -338,37 +383,47 @@ function ImportReportVisual() {
 }
 
 function AttributionVisual() {
+  const drivers = [
+    ["Cost Drag", "-$1,140.07", "Commissions, fees, and estimated costs.", "text-loss", "border-loss/60"],
+    ["Weakest Segment", "-$318.83", "META by net PnL.", "text-loss", "border-loss/60"],
+    ["Average Loss", "-$155.20", "Typical losing trade size.", "text-loss", "border-loss/60"],
+    ["Average Win", "$209.67", "Typical winning trade size.", "text-profit", "border-profit/60"],
+    ["Best Segment", "$1,114.15", "TSLA by net PnL.", "text-profit", "border-profit/60"]
+  ];
+
   return (
     <PresentationFrame tilt="right">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(124,92,255,0.11),transparent_34%)]" />
-      <div className="relative p-6">
-        <div className="grid gap-4 md:grid-cols-3">
-          <div className="border border-white/[0.08] bg-black/20 p-4">
-            <p className="text-sm font-semibold text-muted">Gross edge</p>
-            <p className="mt-2 text-4xl font-semibold tracking-[-0.06em] text-ink">$6.1k</p>
-            <p className="mt-3 text-xs text-muted">Before costs</p>
-          </div>
-          <div className="border border-warning/35 bg-warning/[0.045] p-4">
-            <p className="text-sm font-semibold text-warning">Leak detected</p>
-            <p className="mt-2 text-4xl font-semibold tracking-[-0.06em] text-ink">22.6%</p>
-            <p className="mt-3 text-xs text-muted">Cost drag</p>
-          </div>
-          <div className="border border-cyan/25 bg-cyan/[0.04] p-4">
-            <p className="text-sm font-semibold text-cyan">After-cost return</p>
-            <p className="mt-2 text-4xl font-semibold tracking-[-0.06em] text-ink">$4.8k</p>
-            <p className="mt-3 text-xs text-muted">Net result</p>
+      <div className="relative p-5">
+        <div className="rounded-md border border-[#203747] bg-[#101b23] p-4">
+          <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">Top Drivers</p>
+          <div className="mt-4 grid gap-2 md:grid-cols-5">
+            {drivers.map(([label, value, body, color, border]) => (
+              <div key={label} className={`rounded-sm border border-[#1d3443] border-l-2 ${border} bg-[#070d12] p-3`}>
+                <p className="text-[0.58rem] font-semibold uppercase tracking-[0.14em] text-muted">{label}</p>
+                <p className={`mt-3 text-2xl font-semibold tracking-[-0.04em] ${color}`}>{value}</p>
+                <p className="mt-2 text-xs leading-5 text-muted">{body}</p>
+              </div>
+            ))}
           </div>
         </div>
 
-        <div className="mt-5 border border-white/[0.08] bg-black/20 p-4">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="text-sm font-semibold text-ink">Primary attribution path</p>
-              <p className="mt-1 text-sm text-muted">Opening-session costs remain the largest drag.</p>
-            </div>
-            <div className="flex items-center gap-2 text-xs text-muted">
-              <span className="h-1.5 w-12 bg-gradient-to-r from-cyan to-warning" />
-              <span>Gross to net</span>
+        <div className="mt-3 grid gap-3 md:grid-cols-[1.05fr_0.95fr]">
+          <div className="rounded-md border border-loss/30 border-l-loss/70 bg-[#101820] p-5">
+            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">Primary diagnosis</p>
+            <h3 className="mt-4 text-2xl font-semibold tracking-[-0.04em] text-ink">Loss Concentration</h3>
+            <p className="mt-2 text-sm leading-6 text-muted">The largest loss pocket is driving the report more than the average trade.</p>
+          </div>
+          <div className="rounded-md border border-[#203747] bg-[#070d12] p-5">
+            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-cyan">What changed</p>
+            <div className="mt-4 grid grid-cols-2 gap-3">
+              <div>
+                <p className="text-sm text-muted">Expectancy</p>
+                <p className="mt-1 text-xl font-semibold text-profit">+$58.29</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted">Profit factor</p>
+                <p className="mt-1 text-xl font-semibold text-profit">+0.64</p>
+              </div>
             </div>
           </div>
         </div>
@@ -378,135 +433,89 @@ function AttributionVisual() {
 }
 
 function StrategyTimelineReviewVisual() {
-  const previousMetrics = [
-    ["Expectancy", "+0.18R"],
-    ["Cost drag", "31.4%"],
-    ["R capture", "0.51R"],
-    ["Edge Health", "52"]
+  const reviewItems = [
+    ["Regression", "Expectancy slipped", "$35.55 to $14.07 per trade."],
+    ["Quality", "Profit factor weakened", "1.40 to 1.17."],
+    ["Hit rate", "Win rate is falling", "51.8% to 46.4%."]
   ];
-  const currentMetrics = [
-    ["Expectancy", "+0.31R"],
-    ["Cost drag", "22.6%"],
-    ["R capture", "0.74R"],
-    ["Edge Health", "60"]
-  ];
-  const changes = [
-    ["Expectancy improved", "+0.13R", "cyan" as Tone],
-    ["Cost drag reduced", "-8.8 pts", "purple" as Tone],
-    ["Execution improved", "Watchlist clear", "amber" as Tone]
+  const targets = [
+    ["Fix", "Review Primary Leak", "Next upload should show whether this fix improved the report."],
+    ["Limit", "Recheck META", "Target less than $318.83 of downside from this segment."],
+    ["Target", "Protect expectancy", "Next report target: $35.55 per trade or better."]
   ];
 
   return (
     <PresentationFrame>
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_76%_18%,rgba(124,92,255,0.14),transparent_34%),radial-gradient(circle_at_18%_84%,rgba(34,197,245,0.12),transparent_34%)]" />
       <div className="relative p-5">
-        <div className="mb-5 flex flex-col gap-3 border-b border-white/[0.08] pb-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mb-4 flex flex-col gap-3 border-b border-[#1b3342] pb-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm font-semibold text-ink">Pro review loop</p>
-            <p className="mt-1 text-xs text-muted">Compare what changed and set the next upload target.</p>
+            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">Pro Review Loop</p>
+            <p className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-ink">Review Overdue</p>
+            <p className="mt-1 text-sm text-muted">Import after the next 2-3 sessions to keep the loop useful.</p>
           </div>
-          <span className="w-fit border border-warning/30 bg-warning/[0.045] px-3 py-1 text-xs font-semibold text-warning">
+          <span className="w-fit rounded-sm border border-cyan/30 px-3 py-1 text-xs font-semibold text-cyan">
             2x weekly check-in
           </span>
         </div>
 
-        <div className="grid gap-4 lg:grid-cols-[1fr_0.78fr_1fr] lg:items-stretch">
-          <IterationMetricPanel
-            label="Previous iteration"
-            title="Prior report"
-            subtitle="Baseline upload"
-            metrics={previousMetrics}
-            tone="cyan"
-          />
-
-          <div className="relative border border-white/[0.08] bg-black/25 p-4">
-            <div className="absolute left-1/2 top-0 hidden h-full w-px -translate-x-1/2 bg-white/[0.06] lg:block" />
-            <p className="relative text-center text-xs font-semibold uppercase tracking-[0.16em] text-muted">What changed</p>
-            <div className="relative mt-4 space-y-3">
-              {changes.map(([label, value, tone]) => {
-                const toneClass = toneClasses[tone as Tone];
-                return (
-                  <div key={label} className="border border-white/[0.08] bg-[#050a12]/92 p-3">
-                    <div className="flex items-center justify-between gap-3">
-                      <span className="text-sm text-muted">{label}</span>
-                      <span className={`text-sm font-semibold ${toneClass.text}`}>{value}</span>
-                    </div>
-                  </div>
-                );
-              })}
+        <div className="grid gap-3 md:grid-cols-3">
+          {[
+            ["Cost Drag Percentile", "38th", "text-warning", "border-warning/45"],
+            ["R-Capture Benchmark", "59th", "text-cyan", "border-cyan/45"],
+            ["Expectancy Benchmark", "63rd", "text-cyan", "border-cyan/45"]
+          ].map(([label, value, color, border]) => (
+            <div key={label} className={`rounded-md border ${border} bg-[#0a141a] p-4`}>
+              <p className={`text-[0.62rem] font-semibold uppercase tracking-[0.16em] ${color}`}>{label}</p>
+              <div className="mt-4 flex items-end gap-3">
+                <span className={`text-5xl font-semibold tracking-[-0.06em] ${color}`}>{value}</span>
+                <span className="mb-2 text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-muted">Percentile</span>
+              </div>
+              <div className="mt-4 h-1.5 rounded-full bg-[#16313d]">
+                <div className={`h-full rounded-full ${label.startsWith("Cost") ? "w-[38%] bg-warning" : label.startsWith("R-") ? "w-[59%] bg-cyan" : "w-[63%] bg-cyan"}`} />
+              </div>
             </div>
-            <div className="relative mt-5 hidden items-center justify-center gap-2 text-xs text-muted lg:flex">
-              <span className="h-px w-10 bg-cyan/45" />
-              <ArrowRight size={14} className="text-cyan" />
-              <span className="h-px w-10 bg-violet/45" />
+          ))}
+        </div>
+
+        <div className="mt-3 grid gap-3 lg:grid-cols-2">
+          <div className="rounded-md border border-[#203747] bg-[#070d12] p-4">
+            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">Weekly Edge Review</p>
+            <h3 className="mt-3 text-xl font-semibold tracking-[-0.03em] text-ink">This review got worse</h3>
+            <div className="mt-4 space-y-2">
+              {reviewItems.map(([badge, title, detail]) => (
+                <div key={title} className="grid gap-3 rounded-sm border border-[#1d3443] border-l-warning/80 bg-[#090f14] p-3 sm:grid-cols-[5.5rem_1fr] sm:items-center">
+                  <span className="w-fit rounded-full border border-warning/45 px-2 py-1 text-[0.58rem] font-semibold uppercase tracking-[0.12em] text-warning">
+                    {badge}
+                  </span>
+                  <div>
+                    <p className="text-sm font-semibold text-ink">{title}</p>
+                    <p className="mt-1 text-xs text-muted">{detail}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
-          <IterationMetricPanel
-            label="Current iteration"
-            title="Current report"
-            subtitle="Latest upload"
-            metrics={currentMetrics}
-            tone="purple"
-            emphasized
-          />
-        </div>
-
-        <div className="mt-4 border border-white/[0.08] bg-black/20 p-4">
-          <div className="grid gap-4 md:grid-cols-[1fr_auto] md:items-center">
-            <div>
-              <p className="text-sm font-semibold text-ink">Monitoring insight</p>
-              <p className="mt-1 text-sm leading-6 text-muted">
-                The latest upload improved after cost drag fell and R capture expanded. The next target is to confirm
-                that the largest-loss segment keeps shrinking.
-              </p>
-            </div>
-            <div className="flex items-center gap-2 text-xs text-warning">
-              <span className="h-2 w-2 bg-warning" />
-              Verify largest-loss segment
+          <div className="rounded-md border border-[#203747] bg-[#070d12] p-4">
+            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">Next Review Targets</p>
+            <p className="mt-3 text-sm text-muted">Next upload is checked against the current problem areas.</p>
+            <div className="mt-4 space-y-2">
+              {targets.map(([badge, title, detail], index) => (
+                <div key={title} className={`grid gap-3 rounded-sm border border-[#1d3443] bg-[#090f14] p-3 sm:grid-cols-[5.5rem_1fr] sm:items-center ${index === 2 ? "border-l-profit/80" : "border-l-warning/80"}`}>
+                  <span className={`w-fit rounded-full border px-2 py-1 text-[0.58rem] font-semibold uppercase tracking-[0.12em] ${index === 2 ? "border-profit/45 text-profit" : "border-warning/45 text-warning"}`}>
+                    {badge}
+                  </span>
+                  <div>
+                    <p className="text-sm font-semibold text-ink">{title}</p>
+                    <p className="mt-1 text-xs text-muted">{detail}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </div>
     </PresentationFrame>
-  );
-}
-
-function IterationMetricPanel({
-  label,
-  title,
-  subtitle,
-  metrics,
-  tone,
-  emphasized = false
-}: {
-  label: string;
-  title: string;
-  subtitle: string;
-  metrics: string[][];
-  tone: Tone;
-  emphasized?: boolean;
-}) {
-  const toneClass = toneClasses[tone];
-  return (
-    <div className={`border p-4 ${emphasized ? `${toneClass.border} bg-violet/[0.045]` : "border-white/[0.08] bg-black/25"}`}>
-      <p className={`text-xs font-semibold uppercase tracking-[0.16em] ${toneClass.text}`}>{label}</p>
-      <div className="mt-4 flex items-start justify-between gap-4">
-        <div>
-          <h3 className="text-2xl font-semibold tracking-[-0.04em] text-ink">{title}</h3>
-          <p className="mt-1 text-sm text-muted">{subtitle}</p>
-        </div>
-        {emphasized && <span className="border border-cyan/25 bg-cyan/[0.04] px-2.5 py-1 text-xs font-semibold text-cyan">Current</span>}
-      </div>
-      <div className="mt-5 space-y-3">
-        {metrics.map(([metric, value]) => (
-          <div key={metric} className="flex items-center justify-between border-b border-white/[0.07] pb-2 text-sm">
-            <span className="text-muted">{metric}</span>
-            <span className="font-semibold text-ink">{value}</span>
-          </div>
-        ))}
-      </div>
-    </div>
   );
 }
 
