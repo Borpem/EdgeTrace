@@ -225,9 +225,12 @@ function WorkspaceVisual() {
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">Edge Health</p>
-                <p className="mt-3 text-5xl font-semibold tracking-[-0.06em] text-warning">60<span className="text-base text-ink">/100</span></p>
+                <div className="mt-3 flex items-baseline gap-2">
+                  <span className="text-5xl font-semibold leading-none tracking-[-0.04em] text-warning">60</span>
+                  <span className="text-base font-medium text-ink/90">/100</span>
+                </div>
               </div>
-              <span className="text-sm font-medium text-warning">Stabilizing</span>
+              <span className="mt-1 whitespace-nowrap text-sm font-semibold text-warning">Stabilizing</span>
             </div>
             <svg className="mt-4 h-16 w-full overflow-visible" viewBox="0 0 300 82" role="img" aria-label="Equity curve">
               <path d="M0 56 L300 56" stroke="rgba(130,160,178,0.18)" strokeDasharray="4 5" />
@@ -383,27 +386,55 @@ function ImportReportVisual() {
 }
 
 function AttributionVisual() {
-  const drivers = [
-    ["Cost Drag", "-$1,140.07", "Commissions, fees, and estimated costs.", "text-loss", "border-loss/60"],
-    ["Weakest Segment", "-$318.83", "META by net PnL.", "text-loss", "border-loss/60"],
-    ["Average Loss", "-$155.20", "Typical losing trade size.", "text-loss", "border-loss/60"],
-    ["Average Win", "$209.67", "Typical winning trade size.", "text-profit", "border-profit/60"],
-    ["Best Segment", "$1,114.15", "TSLA by net PnL.", "text-profit", "border-profit/60"]
+  const negativeDrivers = [
+    ["Cost Drag", "-$1,140.07", "Commissions and fees"],
+    ["Weakest Segment", "-$318.83", "META by net PnL"],
+    ["Average Loss", "-$155.20", "Typical losing trade"]
+  ];
+  const positiveDrivers = [
+    ["Average Win", "$209.67", "Typical winning trade"],
+    ["Best Segment", "$1,114.15", "TSLA by net PnL"],
+    ["Win Rate", "46.4%", "Near break-even"]
   ];
 
   return (
     <PresentationFrame tilt="right">
       <div className="relative p-5">
         <div className="rounded-md border border-[#203747] bg-[#101b23] p-4">
-          <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">Top Drivers</p>
-          <div className="mt-4 grid gap-2 md:grid-cols-5">
-            {drivers.map(([label, value, body, color, border]) => (
-              <div key={label} className={`rounded-sm border border-[#1d3443] border-l-2 ${border} bg-[#070d12] p-3`}>
-                <p className="text-[0.58rem] font-semibold uppercase tracking-[0.14em] text-muted">{label}</p>
-                <p className={`mt-3 text-2xl font-semibold tracking-[-0.04em] ${color}`}>{value}</p>
-                <p className="mt-2 text-xs leading-5 text-muted">{body}</p>
+          <div className="flex items-center justify-between gap-4">
+            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">Top Drivers</p>
+            <p className="hidden text-xs font-medium text-cyan sm:block">Native units</p>
+          </div>
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
+            <div className="rounded-sm border border-[#1d3443] border-l-2 border-l-loss bg-[#070d12] p-3">
+              <p className="text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-loss">Negative impact</p>
+              <div className="mt-3 divide-y divide-[#1b3342]">
+                {negativeDrivers.map(([label, value, body]) => (
+                  <div key={label} className="grid grid-cols-[1fr_auto] gap-3 py-2.5 first:pt-0 last:pb-0">
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold text-ink">{label}</p>
+                      <p className="mt-0.5 truncate text-xs text-muted">{body}</p>
+                    </div>
+                    <p className="whitespace-nowrap text-base font-semibold text-loss">{value}</p>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
+
+            <div className="rounded-sm border border-[#1d3443] border-l-2 border-l-profit bg-[#070d12] p-3">
+              <p className="text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-profit">Positive impact</p>
+              <div className="mt-3 divide-y divide-[#1b3342]">
+                {positiveDrivers.map(([label, value, body]) => (
+                  <div key={label} className="grid grid-cols-[1fr_auto] gap-3 py-2.5 first:pt-0 last:pb-0">
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold text-ink">{label}</p>
+                      <p className="mt-0.5 truncate text-xs text-muted">{body}</p>
+                    </div>
+                    <p className="whitespace-nowrap text-base font-semibold text-profit">{value}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 
