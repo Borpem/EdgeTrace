@@ -56,7 +56,7 @@ const insightGroups: Array<{
   {
     title: "Monitoring",
     body:
-      "Group related reports into strategy sets so the review becomes a repeatable process instead of a one-time diagnosis.",
+      "Group related reports into strategy sets, then use Pro to turn repeated uploads into a twice-weekly review loop.",
     tone: "amber",
     icon: Layers,
     bullets: ["Strategy sets", "Iteration tracking", "Regression monitoring", "Stability analysis"],
@@ -74,10 +74,10 @@ const featureRows: Array<{ label: string; feature?: FeatureKey; access: Record<P
   { label: "Exports", feature: "audit_exports", access: { free: "Included", pro: "Included", advanced: "Included" } },
   { label: "Strategy monitoring", feature: "strategy_health_monitoring", access: { free: "Included", pro: "Included", advanced: "Included" } },
   { label: "Weekly Edge Review loop", feature: "review_cadence", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Regression alerts", feature: "review_cadence", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Benchmark drift tracking", feature: "review_cadence", access: { free: "-", pro: "Included", advanced: "Included" } },
+  { label: "Regression / improvement tracking", feature: "review_cadence", access: { free: "-", pro: "Included", advanced: "Included" } },
+  { label: "Benchmark percentile cards", feature: "review_cadence", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Next-review checklist", feature: "review_cadence", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Process score", feature: "review_cadence", access: { free: "-", pro: "Included", advanced: "Included" } },
+  { label: "Review cadence status", feature: "review_cadence", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Aggregate benchmark intelligence", feature: "aggregate_benchmarks", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Cost-drag cohort percentiles", feature: "aggregate_benchmarks", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "R-capture comparisons", feature: "aggregate_benchmarks", access: { free: "-", pro: "Included", advanced: "Included" } },
@@ -191,8 +191,8 @@ function WorkspaceVisual() {
       <div className="relative p-5">
         <div className="flex items-center justify-between border-b border-white/[0.08] pb-4">
           <div>
-            <p className="text-sm font-semibold text-ink">Diagnostic report preview</p>
-            <p className="mt-1 text-xs text-muted">Completed trades to primary diagnosis</p>
+            <p className="text-sm font-semibold text-ink">Current dashboard view</p>
+            <p className="mt-1 text-xs text-muted">Report selector, diagnosis, drivers, and review loop</p>
           </div>
           <span className="border border-cyan/30 bg-cyan/[0.05] px-3 py-1 text-xs font-semibold text-cyan">
             Report ready
@@ -206,7 +206,7 @@ function WorkspaceVisual() {
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">Upload</p>
                   <p className="mt-3 text-base font-semibold text-ink">broker-export.csv</p>
-                  <p className="mt-1 text-xs text-muted">1,248 completed trades</p>
+                  <p className="mt-1 text-xs text-muted">Completed trades, costs, and timestamps</p>
                 </div>
                 <FileText className="text-cyan" size={24} />
               </div>
@@ -218,11 +218,11 @@ function WorkspaceVisual() {
             <div className="border border-white/[0.08] bg-[#050a12]/94 p-4">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-cyan">Strategy health</p>
-                  <p className="mt-3 text-5xl font-semibold tracking-[-0.07em] text-ink">82</p>
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-cyan">Edge Health</p>
+                  <p className="mt-3 text-5xl font-semibold tracking-[-0.07em] text-ink">60</p>
                 </div>
                 <p className="border border-cyan/25 bg-cyan/[0.04] px-2.5 py-1 text-xs font-semibold text-cyan">
-                  Improving
+                  Stabilizing
                 </p>
               </div>
               <svg className="mt-4 h-20 w-full overflow-visible" viewBox="0 0 320 92" role="img" aria-label="Strategy trend line">
@@ -236,13 +236,13 @@ function WorkspaceVisual() {
           <div className="grid gap-3 sm:grid-cols-[1.08fr_0.92fr]">
             <div className="border border-violet/25 bg-violet/[0.045] p-4">
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-violet">Primary diagnosis</p>
-              <p className="mt-3 text-xl font-semibold tracking-[-0.04em] text-ink">Cost drag reduced, but still visible.</p>
-              <p className="mt-2 text-sm leading-6 text-muted">Next inspection starts with opening-session trades.</p>
+              <p className="mt-3 text-xl font-semibold tracking-[-0.04em] text-ink">Loss concentration</p>
+              <p className="mt-2 text-sm leading-6 text-muted">One or two losses are distorting the report.</p>
             </div>
             <div className="border border-white/[0.08] bg-black/25 p-4">
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">Workflow</p>
               <div className="mt-4 space-y-3 text-sm">
-                {["Import", "Diagnose", "Inspect", "Monitor"].map((step, index) => (
+                {["Import", "Diagnose", "Compare", "Review Loop"].map((step, index) => (
                   <div key={step} className="flex items-center gap-3 text-muted">
                     <span className={`h-1.5 w-1.5 ${index < 3 ? "bg-cyan" : "bg-violet"}`} />
                     <span>{step}</span>
@@ -265,8 +265,8 @@ function WorkflowWalkthrough() {
           From broker export to strategy intelligence.
         </h2>
         <p className="max-w-xl text-base leading-7 text-muted">
-          The workflow is intentionally linear: import the file, isolate what changed, then monitor whether the strategy
-          keeps improving.
+          The workflow is intentionally linear: import the file, isolate what changed, then use new uploads to prove
+          whether the strategy improved.
         </p>
       </div>
       <div className="space-y-12">
@@ -382,13 +382,13 @@ function StrategyTimelineReviewVisual() {
     ["Expectancy", "+0.18R"],
     ["Cost drag", "31.4%"],
     ["R capture", "0.51R"],
-    ["Health", "68"]
+    ["Edge Health", "52"]
   ];
   const currentMetrics = [
     ["Expectancy", "+0.31R"],
     ["Cost drag", "22.6%"],
     ["R capture", "0.74R"],
-    ["Health", "82"]
+    ["Edge Health", "60"]
   ];
   const changes = [
     ["Expectancy improved", "+0.13R", "cyan" as Tone],
@@ -402,19 +402,19 @@ function StrategyTimelineReviewVisual() {
       <div className="relative p-5">
         <div className="mb-5 flex flex-col gap-3 border-b border-white/[0.08] pb-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm font-semibold text-ink">Strategy timeline review</p>
-            <p className="mt-1 text-xs text-muted">Compare what changed between saved reports.</p>
+            <p className="text-sm font-semibold text-ink">Pro review loop</p>
+            <p className="mt-1 text-xs text-muted">Compare what changed and set the next upload target.</p>
           </div>
           <span className="w-fit border border-warning/30 bg-warning/[0.045] px-3 py-1 text-xs font-semibold text-warning">
-            Monitoring active
+            2x weekly check-in
           </span>
         </div>
 
         <div className="grid gap-4 lg:grid-cols-[1fr_0.78fr_1fr] lg:items-stretch">
           <IterationMetricPanel
             label="Previous iteration"
-            title="ORB V2"
-            subtitle="Lower cost experiment"
+            title="Prior report"
+            subtitle="Baseline upload"
             metrics={previousMetrics}
             tone="cyan"
           />
@@ -444,8 +444,8 @@ function StrategyTimelineReviewVisual() {
 
           <IterationMetricPanel
             label="Current iteration"
-            title="ORB V3"
-            subtitle="May live review"
+            title="Current report"
+            subtitle="Latest upload"
             metrics={currentMetrics}
             tone="purple"
             emphasized
@@ -457,13 +457,13 @@ function StrategyTimelineReviewVisual() {
             <div>
               <p className="text-sm font-semibold text-ink">Monitoring insight</p>
               <p className="mt-1 text-sm leading-6 text-muted">
-                V3 improved because cost drag fell and R capture expanded, but opening-session trades remain the next
-                review target.
+                The latest upload improved after cost drag fell and R capture expanded. The next target is to confirm
+                that the largest-loss segment keeps shrinking.
               </p>
             </div>
             <div className="flex items-center gap-2 text-xs text-warning">
               <span className="h-2 w-2 bg-warning" />
-              Watch opening session
+              Verify largest-loss segment
             </div>
           </div>
         </div>
@@ -598,7 +598,7 @@ function PlansSection({
         <h2>Core analytics are free. Pro adds the review loop.</h2>
         <span>
           EdgeTrace gives every trader the complete reporting workflow. The paid tier is reserved for aggregate
-          weekly Edge Reviews, regression alerts, benchmark context, next-review checklists, review status, and aggregate benchmark context.
+          weekly Edge Reviews, benchmark percentiles, next-review checklists, review cadence status, and regression / improvement tracking.
         </span>
         {isAuthenticated && (
           <em className={currentPlanPillClass(currentPlan)}>

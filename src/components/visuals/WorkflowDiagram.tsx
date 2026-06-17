@@ -16,7 +16,7 @@ export function WorkflowDiagram({
   className = ""
 }: WorkflowDiagramProps) {
   return (
-    <div className={`border border-white/[0.1] bg-white/[0.025] ${compact ? "p-3" : "p-5"} ${className}`}>
+    <div className={`border border-[#223746] bg-[#071017] ${compact ? "p-3" : "p-5"} ${className}`}>
       <div className="grid gap-2 md:grid-cols-[repeat(var(--step-count),minmax(0,1fr))]" style={{ "--step-count": steps.length } as CSSProperties}>
         {steps.map((step, index) => {
           const active = activeIndex === index;
@@ -26,19 +26,19 @@ export function WorkflowDiagram({
               <div
                 className={`border p-3 ${
                   active
-                    ? "border-cyan/60 bg-cyan/[0.08] shadow-[0_0_36px_-30px_rgba(88,214,255,0.9)]"
+                    ? "border-[#4ec4ec]/55 bg-[#0a2b3a]/45 shadow-[0_0_36px_-34px_rgba(78,196,236,0.7)]"
                     : completed
-                      ? "border-cyan/25 bg-cyan/[0.035]"
-                      : "border-white/[0.1] bg-black/20"
+                      ? "border-[#284657] bg-[#0b151d]"
+                      : "border-[#1f3441] bg-[#060d13]"
                 }`}
               >
-                <p className={active ? "text-[10px] font-semibold uppercase tracking-[0.2em] text-cyan" : "text-[10px] font-semibold uppercase tracking-[0.2em] text-muted"}>
+                <p className={active ? "text-[10px] font-semibold uppercase tracking-[0.2em] text-[#4ec4ec]" : "text-[10px] font-semibold uppercase tracking-[0.2em] text-muted"}>
                   0{index + 1}
                 </p>
                 <p className="mt-3 text-sm font-semibold text-ink">{step}</p>
               </div>
               {index < steps.length - 1 && (
-                <div className="pointer-events-none absolute left-full top-1/2 z-10 hidden h-px w-2 -translate-y-1/2 bg-cyan/40 md:block" />
+                <div className="pointer-events-none absolute left-full top-1/2 z-10 hidden h-px w-2 -translate-y-1/2 bg-[#4ec4ec]/32 md:block" />
               )}
             </div>
           );

@@ -31,7 +31,7 @@ const pricingPlans: PricingPlan[] = [
   {
     id: "pro",
     eyebrow: "Most Popular",
-    summary: "For traders who want twice-weekly review loops, regression alerts, benchmark drift, and a next-upload checklist.",
+    summary: "For traders who want twice-weekly check-ins, benchmark percentiles, and clear targets for the next upload.",
     accent: "purple",
     recommended: true
   }
@@ -47,10 +47,10 @@ const featureRows: Array<{ label: string; access: Record<PlanId, string> }> = [
   { label: "Exports", access: { free: "Included", pro: "Included", advanced: "Included" } },
   { label: "Strategy health monitoring", access: { free: "Included", pro: "Included", advanced: "Included" } },
   { label: "Weekly Edge Review loop", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Regression alerts", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Benchmark context", access: { free: "-", pro: "Included", advanced: "Included" } },
+  { label: "Regression / improvement tracking", access: { free: "-", pro: "Included", advanced: "Included" } },
+  { label: "Benchmark percentile cards", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Next-review checklist", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Review status", access: { free: "-", pro: "Included", advanced: "Included" } },
+  { label: "Review cadence status", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Aggregate benchmark intelligence", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Cost-drag cohort percentiles", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "R-capture comparisons", access: { free: "-", pro: "Included", advanced: "Included" } },
@@ -66,12 +66,12 @@ const faqs = [
   {
     question: "What does Pro unlock?",
     answer:
-      "Pro is the $9.99/month review loop: weekly Edge Reviews, regression alerts, benchmark context, next-review checklists, review status, and aggregate cohort context."
+      "Pro is the $9.99/month review loop: weekly Edge Reviews, benchmark percentile cards, next-review checklists, review cadence status, and regression / improvement tracking."
   },
   {
     question: "Can I use Free long term?",
     answer:
-      "Yes. The core product stays free. Pro is for traders who want the app to actively coach, alert, and simulate strategy changes."
+      "Yes. The core product stays free. Pro is for traders who want a reason to check in regularly and measure whether each new upload improved."
   },
   {
     question: "Is my data secure?",
@@ -316,8 +316,8 @@ export function PricingPage({
         <p className="EdgeTrace-pricing-eyebrow">Pricing</p>
         <h1>Simple pricing. Serious edge.</h1>
         <p>
-          Use the full EdgeTrace reporting workflow for free. Upgrade to Pro when you want the app to coach, alert, and
-          simulate around your trading data.
+          Use the full EdgeTrace reporting workflow for free. Upgrade to Pro when you want a twice-weekly review loop,
+          benchmark percentiles, and next-upload targets.
         </p>
         <div className="EdgeTrace-pricing-billing">
           <span>Pay monthly</span>

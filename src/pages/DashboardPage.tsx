@@ -619,7 +619,7 @@ export function DashboardPage({
   );
   const commandNavItems: Array<{ label: string; action?: () => void; active?: boolean }> = [
     { label: "Dashboard", action: onOpenDashboard, active: true },
-    { label: "Analyze Trades", action: onCreateReport },
+    { label: "Import Trades", action: onCreateReport },
     { label: "Reports", action: onViewReports },
     { label: "Strategy Sets", action: onOpenCollections },
     { label: "Compare", action: handleSidebarCompare },

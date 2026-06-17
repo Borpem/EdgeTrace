@@ -81,7 +81,7 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
     id: "pro",
     displayName: "Pro",
     monthlyPriceLabel: "$9.99/month",
-    description: "Recurring reviews, alerts, and benchmark drift.",
+    description: "Recurring reviews, benchmark percentiles, and next-upload targets.",
     limits: {
       maxReports: "unlimited",
       maxFullReports: "unlimited",
@@ -111,10 +111,10 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
     featureBullets: [
       "Everything in Free",
       "Weekly Edge Review loop",
-      "Regression alerts",
-      "Benchmark drift tracking",
+      "Twice-weekly check-in workflow",
+      "Aggregate benchmark percentiles",
       "Next-review checklist",
-      "Process score"
+      "Regression and improvement tracking"
     ]
   },
   advanced: {
@@ -151,10 +151,10 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
     featureBullets: [
       "Everything in Free",
       "Weekly Edge Review loop",
-      "Regression alerts",
-      "Benchmark drift tracking",
+      "Twice-weekly check-in workflow",
+      "Aggregate benchmark percentiles",
       "Next-review checklist",
-      "Process score"
+      "Regression and improvement tracking"
     ]
   }
 };

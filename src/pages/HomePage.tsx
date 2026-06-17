@@ -17,10 +17,10 @@ import {
 import type { LucideIcon } from "lucide-react";
 
 const capabilityItems: Array<{ icon: LucideIcon; title: string; body: string }> = [
-  { icon: Search, title: "Diagnose performance drag", body: "Find costs, weak segments, and poor R capture." },
-  { icon: TrendingUp, title: "Compare strategy iterations", body: "See whether changes improved the edge or introduced leakage." },
-  { icon: Activity, title: "Monitor edge quality", body: "Track when performance strengthens, weakens, or breaks." },
-  { icon: Target, title: "Make data-backed decisions", body: "Focus on the problems that actually move expectancy." }
+  { icon: Search, title: "Diagnose the leak", body: "Find the cost, segment, or risk issue dragging the report." },
+  { icon: TrendingUp, title: "Track each upload", body: "See whether the next report improved or slipped." },
+  { icon: Activity, title: "Review the process", body: "Use Pro to check in twice a week with clear targets." },
+  { icon: Target, title: "Compare to context", body: "Benchmark percentiles show where the report stands." }
 ];
 
 const workflowSteps: Array<{ icon: LucideIcon; title: string; body: string; visual: "upload" | "report" | "bars" | "compare" | "monitor" }> = [
@@ -37,7 +37,7 @@ const trustItems: Array<{ icon: LucideIcon; title: string; body: string }> = [
   { icon: Shield, title: "Aggregate intelligence", body: "Trade history can power sharper diagnostics and benchmark insights." },
   { icon: Lock, title: "Secure access", body: "Encrypted transport and account-scoped access controls." },
   { icon: BarChart3, title: "Transparent analysis", body: "Key report inputs and diagnostic logic are visible in the workflow." },
-  { icon: Send, title: "Built by traders", body: "For traders who want real answers." }
+  { icon: Send, title: "Free core, paid loop", body: "Use the full workflow free. Upgrade when you want recurring review pressure." }
 ];
 
 export function HomePage({
@@ -64,7 +64,7 @@ export function HomePage({
             </h1>
 
             <p className="mt-7 max-w-xl text-lg leading-8 text-slate-300 md:text-xl md:leading-9">
-              EdgeTrace turns completed trade history into clear diagnostics, showing what worked, what leaked, and where to inspect next.
+              EdgeTrace turns completed trade history into clear diagnostics. Free gives you the full reporting workflow. Pro adds the recurring review loop that keeps you coming back.
             </p>
 
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
@@ -106,72 +106,89 @@ export function HomePage({
 function HomeBackdrop() {
   return (
     <div className="pointer-events-none absolute inset-0 -z-10">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_16%_8%,rgba(79,140,255,0.16),transparent_28rem),radial-gradient(circle_at_82%_10%,rgba(120,97,255,0.16),transparent_31rem),radial-gradient(circle_at_50%_38%,rgba(88,214,255,0.075),transparent_40rem),linear-gradient(180deg,#030407_0%,#050505_44%,#040609_100%)]" />
-      <div className="absolute inset-x-0 top-0 h-[46rem] bg-[linear-gradient(90deg,rgba(88,214,255,0.05)_1px,transparent_1px),linear-gradient(180deg,rgba(88,214,255,0.035)_1px,transparent_1px)] bg-[size:96px_96px] opacity-35 [mask-image:linear-gradient(to_bottom,black,transparent_78%)]" />
-      <div className="absolute left-1/2 top-[35rem] h-px w-[calc(100%-5rem)] max-w-[1420px] -translate-x-1/2 bg-gradient-to-r from-transparent via-cyan/15 to-transparent" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_8%,rgba(78,196,236,0.08),transparent_28rem),radial-gradient(circle_at_82%_10%,rgba(232,190,76,0.045),transparent_31rem),linear-gradient(180deg,#020609_0%,#050a0e_48%,#020609_100%)]" />
+      <div className="absolute inset-x-0 top-0 h-[46rem] bg-[linear-gradient(90deg,rgba(78,196,236,0.025)_1px,transparent_1px),linear-gradient(180deg,rgba(78,196,236,0.018)_1px,transparent_1px)] bg-[size:96px_96px] opacity-35 [mask-image:linear-gradient(to_bottom,black,transparent_78%)]" />
+      <div className="absolute left-1/2 top-[35rem] h-px w-[calc(100%-5rem)] max-w-[1420px] -translate-x-1/2 bg-gradient-to-r from-transparent via-cyan/10 to-transparent" />
     </div>
   );
 }
 
 function DashboardMockup() {
   return (
-    <div className="relative mx-auto w-full max-w-[840px] lg:mx-0">
-      <div className="absolute -inset-6 bg-[radial-gradient(circle_at_72%_18%,rgba(120,97,255,0.24),transparent_25rem),radial-gradient(circle_at_24%_82%,rgba(88,214,255,0.18),transparent_24rem)] blur-2xl" />
-      <div className="relative border border-violet/35 bg-white/[0.045] p-3 shadow-[0_36px_110px_-56px_rgba(120,97,255,0.58),0_22px_80px_-68px_rgba(88,214,255,0.62)] lg:[transform:perspective(1400px)_rotateY(-5deg)_rotateX(2deg)_rotateZ(1deg)]">
-        <div className="relative overflow-hidden border border-white/[0.12] bg-[#080c15]/95 p-5 backdrop-blur-xl md:p-7">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_12%,rgba(88,214,255,0.075),transparent_18rem),radial-gradient(circle_at_82%_10%,rgba(120,97,255,0.09),transparent_21rem)]" />
-          <div className="relative flex items-start justify-between gap-6 border-b border-white/[0.1] pb-5">
+    <div className="relative mx-auto w-full max-w-[900px] lg:mx-0">
+      <div className="absolute -inset-5 bg-[radial-gradient(circle_at_72%_20%,rgba(78,196,236,0.12),transparent_24rem),radial-gradient(circle_at_22%_82%,rgba(232,190,76,0.08),transparent_22rem)] blur-2xl" />
+      <div className="relative border border-[#264354] bg-[#071017] p-3 shadow-[0_34px_120px_-78px_rgba(78,196,236,0.55)]">
+        <div className="border border-[#223746] bg-[#050a0f] p-4 md:p-5">
+          <div className="flex flex-col gap-4 border-b border-[#1c2e3a] pb-4 md:flex-row md:items-center md:justify-between">
             <div>
-              <div className="flex items-center gap-3">
-                <img src="/brand/edgetrace_icon_monochrome_white_transparent.png" alt="EdgeTrace" className="h-7 w-auto opacity-75" />
-                <p className="text-[0.62rem] font-semibold uppercase tracking-[0.26em] text-slate-400">Strategy Dashboard</p>
-              </div>
-              <h2 className="mt-4 text-2xl font-semibold tracking-[-0.035em] text-ink md:text-3xl">ORB Iteration V3</h2>
+              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#8ca2af]">Report overview</p>
+              <h2 className="mt-2 text-xl font-semibold tracking-[-0.02em] text-ink">Test - improving trades</h2>
             </div>
-            <div className="border border-white/[0.13] bg-black/35 px-3 py-3 text-right">
-              <p className="text-[0.58rem] font-semibold uppercase tracking-[0.22em] text-slate-400">Current Report</p>
-              <p className="mt-1 text-xs font-semibold text-ink">May Live Review</p>
+            <div className="grid grid-cols-3 gap-2 text-right">
+              <DashboardMetric label="Net PnL" value="$2,730" detail="After costs" tone="text-[#73c98f]" />
+              <DashboardMetric label="Win Rate" value="46.4%" detail="Watchlist" tone="text-[#e8be4c]" />
+              <DashboardMetric label="R-Multiple" value="0.26R" detail="Weak capture" tone="text-[#e65f73]" />
             </div>
           </div>
 
-          <div className="relative mt-5 grid gap-4 lg:grid-cols-[1fr_1.05fr]">
-            <div className="border border-white/[0.12] bg-[#0b111c]/80 p-5">
-              <p className="text-[0.65rem] font-semibold uppercase tracking-[0.24em] text-cyan">Edge Health</p>
-              <div className="mt-6 flex items-start gap-5">
-                <p className="text-6xl font-semibold tracking-[-0.08em] text-ink">82</p>
-                <div className="pt-2">
-                  <p className="text-lg font-semibold text-cyan">Improving</p>
-                  <p className="mt-1 text-xs text-muted">+9 vs prior report</p>
+          <div className="mt-4 grid gap-3 lg:grid-cols-[1fr_1fr]">
+            <div className="border border-[#284657] bg-[#0b151d] p-4">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#9db0bc]">Edge Health</p>
+                  <div className="mt-3 flex items-baseline gap-2">
+                    <strong className="text-5xl font-semibold tracking-[-0.04em] text-[#e8be4c]">60</strong>
+                    <span className="text-sm text-[#b7c5cf]">/100</span>
+                  </div>
                 </div>
+                <span className="text-sm font-semibold text-[#e8be4c]">Stabilizing</span>
               </div>
-              <p className="mt-5 text-xs leading-5 text-slate-300">
-                Net performance improved after cost drag fell and R capture expanded.
-              </p>
-              <svg className="mt-6 h-24 w-full" viewBox="0 0 360 104" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M0 84H360M0 54H360M0 24H360" stroke="white" strokeOpacity=".1" />
-                <path d="M10 84L62 70L112 76L160 42L212 58L262 28L306 38L350 18" stroke="#58D6FF" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M10 94L62 88L112 88L160 68L212 74L262 54L306 56L350 42" stroke="white" strokeOpacity=".24" strokeWidth="2" strokeLinecap="round" />
+              <p className="mt-3 text-sm leading-6 text-[#b7c5cf]">Positive profile with one or two areas still worth reviewing.</p>
+              <svg className="mt-4 h-28 w-full" viewBox="0 0 420 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 96H420M0 64H420M0 32H420" stroke="#203241" />
+                <path d="M0 78 C42 24, 85 104, 130 70 S212 82, 250 76 S306 28, 420 42" stroke="#73C98F" strokeWidth="3" fill="none" />
+                <path d="M115 70 C146 108, 205 92, 250 76" stroke="#E65F73" strokeWidth="3" fill="none" />
+                <path d="M0 80H420" stroke="#6B7784" strokeOpacity=".42" strokeDasharray="4 5" />
               </svg>
             </div>
 
-            <div className="border border-white/[0.12] bg-[#0b111c]/80 p-5">
-              <p className="text-[0.65rem] font-semibold uppercase tracking-[0.24em] text-warning">Primary Diagnosis</p>
-              <h3 className="mt-6 text-2xl font-semibold tracking-[-0.04em] text-ink">Cost drag reduced</h3>
-              <p className="mt-4 text-xs leading-5 text-slate-300">
-                Costs are still visible, but the latest iteration converted more gross edge into after-cost returns.
-              </p>
-              <div className="mt-6 border border-cyan/20 bg-black/28 p-4 shadow-[inset_2px_0_0_rgba(88,214,255,0.48)]">
-                <p className="text-[0.58rem] font-semibold uppercase tracking-[0.22em] text-cyan">Next Inspection</p>
-                <p className="mt-2 text-base font-semibold text-ink">Inspect Opening Session</p>
-                <p className="mt-1 text-xs text-muted">Largest remaining cost concentration</p>
+            <div className="border border-[#284657] bg-[#0b151d] p-4">
+              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#9db0bc]">Primary Diagnosis</p>
+              <h3 className="mt-8 text-3xl font-semibold tracking-[-0.03em] text-ink">Loss Concentration</h3>
+              <p className="mt-3 max-w-md text-sm leading-6 text-[#b7c5cf]">One or two losses are large enough to materially distort report performance.</p>
+              <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                <div className="border border-[#1f3441] bg-[#060d13] p-3">
+                  <span className="text-[0.68rem] uppercase tracking-[0.14em] text-[#8ca2af]">Est. Impact</span>
+                  <strong className="mt-2 block text-xl text-[#e65f73]">-$1,610</strong>
+                </div>
+                <div className="border border-[#1f3441] bg-[#060d13] p-3">
+                  <span className="text-[0.68rem] uppercase tracking-[0.14em] text-[#8ca2af]">Diagnosis Strength</span>
+                  <strong className="mt-2 block text-xl text-ink">Moderate</strong>
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="relative mt-4 grid gap-4 md:grid-cols-3">
-            <DashboardMetric label="After-cost PnL" value="$4.8k" detail="Expectancy +$42/trade" tone="text-cyan" />
-            <DashboardMetric label="Cost Drag" value="22.6%" detail="Down 14 pts vs V2" tone="text-warning" />
-            <DashboardMetric label="R Capture" value="0.74R" detail="Win rate 57.8% - PF 1.48" tone="text-cyan" />
+          <div className="mt-3 grid gap-3 md:grid-cols-5">
+            <DashboardMetric label="Cost Drag" value="-$1,140" detail="Fees and costs" tone="text-[#e65f73]" />
+            <DashboardMetric label="Weakest Segment" value="META" detail="By net PnL" tone="text-[#e65f73]" />
+            <DashboardMetric label="Average Loss" value="-$155" detail="Typical loser" tone="text-[#e65f73]" />
+            <DashboardMetric label="Average Win" value="$209" detail="Typical winner" tone="text-[#73c98f]" />
+            <DashboardMetric label="Best Segment" value="TSLA" detail="By net PnL" tone="text-[#73c98f]" />
+          </div>
+
+          <div className="mt-3 border border-[#223746] bg-[#071017] p-4">
+            <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+              <div>
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#9db0bc]">Pro Review Loop</p>
+                <p className="mt-1 text-sm text-[#b7c5cf]">Weekly review, benchmark percentiles, and next-upload targets.</p>
+              </div>
+              <div className="grid grid-cols-3 gap-2 text-center">
+                <ReviewMini label="Cost Drag" value="38th" tone="text-[#e8be4c]" />
+                <ReviewMini label="R-Capture" value="59th" tone="text-[#4ec4ec]" />
+                <ReviewMini label="Expectancy" value="63rd" tone="text-[#4ec4ec]" />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -181,10 +198,19 @@ function DashboardMockup() {
 
 function DashboardMetric({ label, value, detail, tone }: { label: string; value: string; detail: string; tone: string }) {
   return (
-    <div className="border border-white/[0.12] bg-[#0b111c]/72 p-4">
-      <p className="text-[0.62rem] font-semibold uppercase tracking-[0.23em] text-slate-400">{label}</p>
-      <p className={`mt-4 text-3xl font-semibold tracking-[-0.06em] ${tone}`}>{value}</p>
-      <p className="mt-2 text-xs text-muted">{detail}</p>
+    <div className="border border-[#1f3441] bg-[#060d13] p-3">
+      <p className="text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-[#8ca2af]">{label}</p>
+      <p className={`mt-2 text-xl font-semibold tracking-[-0.02em] ${tone}`}>{value}</p>
+      <p className="mt-1 text-xs text-[#8ca2af]">{detail}</p>
+    </div>
+  );
+}
+
+function ReviewMini({ label, value, tone }: { label: string; value: string; tone: string }) {
+  return (
+    <div className="min-w-24 border border-[#1f3441] bg-[#060d13] px-3 py-2">
+      <strong className={`block text-xl font-semibold ${tone}`}>{value}</strong>
+      <span className="text-[0.62rem] uppercase tracking-[0.12em] text-[#8ca2af]">{label}</span>
     </div>
   );
 }

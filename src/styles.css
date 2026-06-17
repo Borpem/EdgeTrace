@@ -6574,10 +6574,9 @@ textarea:focus-visible {
   padding: 0 1.5rem 3rem;
   color: #f7f7f3;
   background:
-    radial-gradient(circle at 18% 10%, rgba(88, 214, 255, 0.15), transparent 30rem),
-    radial-gradient(circle at 84% 8%, rgba(120, 97, 255, 0.15), transparent 31rem),
-    radial-gradient(circle at 50% 54%, rgba(88, 214, 255, 0.055), transparent 35rem),
-    linear-gradient(180deg, #030811 0%, #050a13 50%, #03060c 100%);
+    radial-gradient(circle at 18% 10%, rgba(78, 196, 236, 0.08), transparent 30rem),
+    radial-gradient(circle at 82% 12%, rgba(232, 190, 76, 0.045), transparent 28rem),
+    linear-gradient(180deg, #020609 0%, #050a0e 50%, #020609 100%);
 }
 
 .EdgeTrace-pricing-page .EdgeTrace-pricing-primary,
@@ -6596,18 +6595,18 @@ textarea:focus-visible {
 }
 
 .EdgeTrace-pricing-page .EdgeTrace-pricing-primary {
-  border-color: rgba(88, 214, 255, 0.65);
-  background: linear-gradient(135deg, #2798df 0%, #594df7 100%);
+  border-color: rgba(78, 196, 236, 0.55);
+  background: rgba(10, 43, 58, 0.76);
   box-shadow:
-    inset 0 1px 0 rgba(247, 247, 243, 0.22),
-    0 18px 44px -30px rgba(88, 214, 255, 0.8);
+    inset 0 1px 0 rgba(247, 247, 243, 0.08),
+    0 18px 44px -34px rgba(78, 196, 236, 0.62);
 }
 
 .EdgeTrace-pricing-page .EdgeTrace-pricing-primary:hover {
   transform: translateY(-1px);
   box-shadow:
-    inset 0 1px 0 rgba(247, 247, 243, 0.25),
-    0 22px 50px -30px rgba(88, 214, 255, 0.92);
+    inset 0 1px 0 rgba(247, 247, 243, 0.1),
+    0 22px 50px -34px rgba(78, 196, 236, 0.72);
 }
 
 .EdgeTrace-pricing-page .EdgeTrace-pricing-secondary {
@@ -6723,7 +6722,7 @@ textarea:focus-visible {
 
 .EdgeTrace-pricing-cards {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
   width: min(100%, var(--pricing-max));
   margin: 0 auto;
@@ -6735,26 +6734,23 @@ textarea:focus-visible {
   overflow: hidden;
   border: 1px solid rgba(247, 247, 243, 0.11);
   background:
-    radial-gradient(circle at 100% 0%, rgba(88, 214, 255, 0.065), transparent 16rem),
-    linear-gradient(135deg, rgba(247, 247, 243, 0.045), rgba(88, 214, 255, 0.012)),
-    rgba(6, 12, 22, 0.82);
+    linear-gradient(135deg, rgba(18, 31, 40, 0.92), rgba(7, 12, 18, 0.98)),
+    rgba(6, 12, 18, 0.84);
   box-shadow: inset 0 1px 0 rgba(247, 247, 243, 0.04);
 }
 
 .EdgeTrace-pricing-plan.featured {
-  border-color: rgba(88, 214, 255, 0.78);
+  border-color: rgba(78, 196, 236, 0.72);
   box-shadow:
-    inset 0 0 0 1px rgba(120, 97, 255, 0.2),
-    0 24px 74px -54px rgba(88, 214, 255, 0.82);
+    inset 0 0 0 1px rgba(78, 196, 236, 0.1),
+    0 24px 74px -58px rgba(78, 196, 236, 0.74);
   transform: translateY(-0.55rem);
 }
 
 .EdgeTrace-pricing-plan.tone-purple {
   background:
-    radial-gradient(circle at 100% 0%, rgba(120, 97, 255, 0.14), transparent 17rem),
-    radial-gradient(circle at 0% 100%, rgba(88, 214, 255, 0.09), transparent 17rem),
-    linear-gradient(135deg, rgba(247, 247, 243, 0.06), rgba(120, 97, 255, 0.035)),
-    rgba(7, 13, 24, 0.88);
+    linear-gradient(135deg, rgba(18, 34, 43, 0.98), rgba(7, 12, 18, 0.98)),
+    rgba(7, 13, 18, 0.88);
 }
 
 .EdgeTrace-pricing-plan.tone-amber {
@@ -6778,7 +6774,9 @@ textarea:focus-visible {
 }
 
 .EdgeTrace-pricing-ribbon.tone-purple {
-  background: linear-gradient(135deg, #2698df 0%, #594df7 100%);
+  border-color: rgba(78, 196, 236, 0.34);
+  background: rgba(10, 43, 58, 0.82);
+  color: #dff8ff;
 }
 
 .EdgeTrace-pricing-ribbon.tone-amber {

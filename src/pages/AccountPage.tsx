@@ -485,12 +485,12 @@ function accessItems(planId: PlanId) {
     },
     {
       title: "Review loop",
-      body: pro ? "Weekly Edge Reviews, alerts, and checklists are active." : "Upgrade for twice-weekly process reviews.",
+      body: pro ? "Weekly Edge Reviews and next-review checklists are active." : "Upgrade for twice-weekly process reviews.",
       enabled: pro
     },
     {
       title: "Benchmark context",
-      body: pro ? "Benchmark drift and cohort context are active." : "Upgrade for benchmark drift and cohort context.",
+      body: pro ? "Benchmark percentiles and cohort context are active." : "Upgrade for benchmark percentiles and cohort context.",
       enabled: pro
     }
   ];
