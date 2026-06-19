@@ -4864,7 +4864,7 @@ body {
   background:
     radial-gradient(circle at 72% 12%, rgba(97, 184, 211, 0.035), transparent 34rem),
     linear-gradient(180deg, var(--command-bg-page) 0%, #050a0e 48%, var(--command-bg-page) 100%);
-  padding: 0.4rem;
+  padding: 0 0.4rem 0.4rem;
 }
 
 .EdgeTrace-command-dashboard > .EdgeTrace-dashboard-sidebar,
