@@ -385,12 +385,20 @@ function ImportCompatibilitySection() {
             Import from major broker exports or use a generic CSV. EdgeTrace normalizes completed trade history into diagnostics without turning it into a manual journal.
           </p>
           <div className="mt-8 grid max-w-2xl grid-cols-1 gap-3 sm:grid-cols-2">
-            {brokerPills.map((broker) => (
-              <div key={broker} className="flex items-center gap-3 border border-white/[0.12] bg-white/[0.035] px-4 py-3.5 text-sm font-semibold text-ink shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition hover:border-cyan/35 hover:bg-cyan/[0.045]">
-                <span className="h-2 w-2 bg-cyan shadow-[0_0_18px_rgba(88,214,255,0.75)]" />
-                {broker}
-              </div>
-            ))}
+            {brokerPills.map((broker) => {
+              const Icon = broker === "Generic CSV" ? FileText : Database;
+              return (
+                <div
+                  key={broker}
+                  className="flex min-h-12 items-center gap-3 border border-white/[0.12] bg-white/[0.035] px-4 py-3 text-sm font-semibold text-ink shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition hover:border-cyan/35 hover:bg-cyan/[0.045]"
+                >
+                  <span className="grid h-8 w-8 shrink-0 place-items-center border border-cyan/25 bg-cyan/[0.055] text-cyan">
+                    <Icon size={15} strokeWidth={1.9} />
+                  </span>
+                  <span className="min-w-0 truncate">{broker}</span>
+                </div>
+              );
+            })}
           </div>
         </div>
 
@@ -432,7 +440,7 @@ function ImportVisual() {
             <SummaryRow label="Mapping confidence" value="High" tone="text-cyan" />
             <SummaryRow label="Warnings" value="2" tone="text-warning" />
           </dl>
-          <button className="mt-7 flex w-full items-center justify-center bg-gradient-to-r from-cyan to-violet px-5 py-3 text-sm font-bold text-white">
+          <button className="mt-7 flex w-full items-center justify-center border border-cyan/35 bg-[#061019] px-5 py-3 text-sm font-semibold text-ink shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_18px_40px_-30px_rgba(88,214,255,0.8)] transition hover:border-cyan/55 hover:bg-[#0a1722]">
             Run Diagnostics
           </button>
         </div>
