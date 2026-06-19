@@ -116,80 +116,90 @@ function HomeBackdrop() {
 function DashboardMockup() {
   return (
     <div className="relative mx-auto w-full max-w-[900px] lg:mx-0">
-      <div className="absolute -inset-5 bg-[radial-gradient(circle_at_72%_20%,rgba(78,196,236,0.12),transparent_24rem),radial-gradient(circle_at_22%_82%,rgba(232,190,76,0.08),transparent_22rem)] blur-2xl" />
-      <div className="relative border border-[#264354] bg-[#071017] p-3 shadow-[0_34px_120px_-78px_rgba(78,196,236,0.55)]">
-        <div className="border border-[#223746] bg-[#050a0f] p-4 md:p-5">
+      <div className="absolute -inset-6 bg-[radial-gradient(circle_at_72%_18%,rgba(78,196,236,0.16),transparent_23rem),radial-gradient(circle_at_18%_80%,rgba(232,190,76,0.1),transparent_21rem)] blur-2xl" />
+      <div className="relative overflow-hidden border border-[#294757] bg-[#050a0f] shadow-[0_34px_120px_-78px_rgba(78,196,236,0.65)]">
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.035),transparent_30%),radial-gradient(circle_at_82%_18%,rgba(78,196,236,0.11),transparent_18rem)]" />
+        <div className="relative p-4 md:p-5">
           <div className="flex flex-col gap-4 border-b border-[#1c2e3a] pb-4 md:flex-row md:items-center md:justify-between">
             <div>
-              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#8ca2af]">Report overview</p>
-              <h2 className="mt-2 text-xl font-semibold tracking-[-0.02em] text-ink">Test - improving trades</h2>
+              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[#8ca2af]">Strategy intelligence</p>
+              <h2 className="mt-2 text-2xl font-semibold tracking-[-0.035em] text-ink">Where the edge is working</h2>
             </div>
-            <div className="grid grid-cols-3 gap-2 text-right">
-              <DashboardMetric label="Net PnL" value="$2,730" detail="After costs" tone="text-[#73c98f]" />
-              <DashboardMetric label="Win Rate" value="46.4%" detail="Watchlist" tone="text-[#e8be4c]" />
-              <DashboardMetric label="R-Multiple" value="0.26R" detail="Weak capture" tone="text-[#e65f73]" />
+            <div className="flex items-center gap-2">
+              <span className="border border-[#284657] bg-[#08141c] px-3 py-1.5 text-xs font-semibold text-[#73c98f]">Improving</span>
+              <span className="border border-[#284657] bg-[#08141c] px-3 py-1.5 text-xs font-semibold text-[#4ec4ec]">194 trades</span>
             </div>
           </div>
 
-          <div className="mt-4 grid gap-3 lg:grid-cols-[1fr_1fr]">
-            <div className="border border-[#284657] bg-[#0b151d] p-4">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#9db0bc]">Edge Health</p>
-                  <div className="mt-3 flex items-baseline gap-2">
-                    <strong className="text-5xl font-semibold tracking-[-0.04em] text-[#e8be4c]">60</strong>
-                    <span className="text-sm text-[#b7c5cf]">/100</span>
+          <div className="mt-4 grid gap-4 lg:grid-cols-[1.22fr_0.78fr]">
+            <div className="border border-[#284657] bg-[#0b151d] p-5">
+              <div className="grid gap-5 sm:grid-cols-[auto_1fr] sm:items-start">
+                <div className="relative grid h-36 w-36 shrink-0 place-items-center">
+                  <svg className="absolute inset-0 h-full w-full -rotate-90" viewBox="0 0 120 120" aria-hidden="true">
+                    <circle cx="60" cy="60" r="49" stroke="#162833" strokeWidth="10" fill="none" />
+                    <circle cx="60" cy="60" r="49" stroke="#e8be4c" strokeWidth="10" fill="none" strokeDasharray="188 308" strokeLinecap="round" />
+                    <circle cx="60" cy="60" r="49" stroke="#73c98f" strokeWidth="10" fill="none" strokeDasharray="118 308" strokeDashoffset="-190" strokeLinecap="round" />
+                  </svg>
+                  <div className="text-center">
+                    <strong className="block text-5xl font-semibold leading-none tracking-[-0.055em] text-[#e8be4c]">60</strong>
+                    <span className="mt-1 block text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-[#8ca2af]">Edge Health</span>
                   </div>
                 </div>
-                <span className="text-sm font-semibold text-[#e8be4c]">Stabilizing</span>
+
+                <div>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="border border-[#284657] bg-[#08141c] px-2.5 py-1 text-xs font-semibold text-[#e8be4c]">Review risk</span>
+                    <span className="border border-[#284657] bg-[#08141c] px-2.5 py-1 text-xs font-semibold text-[#73c98f]">Net positive</span>
+                  </div>
+                  <p className="mt-4 text-base leading-7 text-[#d6e3ea]">The strategy is profitable, but one leak is pulling the report away from a clean edge profile.</p>
+                  <svg className="mt-5 h-36 w-full" viewBox="0 0 520 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                      <linearGradient id="heroChartFill" x1="0" x2="0" y1="0" y2="1">
+                        <stop stopColor="#73C98F" stopOpacity="0.24" />
+                        <stop offset="1" stopColor="#73C98F" stopOpacity="0" />
+                      </linearGradient>
+                      <linearGradient id="heroChartLine" x1="0" x2="520" y1="0" y2="0">
+                        <stop stopColor="#4EC4EC" />
+                        <stop offset="0.58" stopColor="#73C98F" />
+                        <stop offset="1" stopColor="#E8BE4C" />
+                      </linearGradient>
+                    </defs>
+                    <path d="M0 138H520M0 96H520M0 54H520" stroke="#203241" />
+                    <path d="M0 116H520" stroke="#6B7784" strokeOpacity=".34" strokeDasharray="4 6" />
+                    <path d="M8 124 C44 82, 78 116, 112 106 C152 94, 170 130, 214 126 C260 121, 268 82, 312 74 C350 67, 376 96, 408 70 C436 47, 468 48, 512 58 L512 180 L8 180 Z" fill="url(#heroChartFill)" />
+                    <path d="M8 124 C44 82, 78 116, 112 106 C152 94, 170 130, 214 126 C260 121, 268 82, 312 74 C350 67, 376 96, 408 70 C436 47, 468 48, 512 58" stroke="url(#heroChartLine)" strokeWidth="4" strokeLinecap="round" fill="none" />
+                    <circle cx="312" cy="74" r="5" fill="#73C98F" />
+                    <circle cx="408" cy="70" r="5" fill="#E8BE4C" />
+                  </svg>
+                </div>
               </div>
-              <p className="mt-3 text-sm leading-6 text-[#b7c5cf]">Positive profile with one or two areas still worth reviewing.</p>
-              <svg className="mt-4 h-28 w-full" viewBox="0 0 420 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M0 96H420M0 64H420M0 32H420" stroke="#203241" />
-                <path d="M0 76H420" stroke="#6B7784" strokeOpacity=".42" strokeDasharray="4 5" />
-                <path d="M0 70 C32 34, 68 48, 98 64 C112 72, 124 75, 138 77" stroke="#73C98F" strokeWidth="3" strokeLinecap="round" fill="none" />
-                <path d="M138 77 C164 90, 198 91, 228 83 C244 79, 260 77, 276 76" stroke="#E65F73" strokeWidth="3" strokeLinecap="round" fill="none" />
-                <path d="M276 76 C310 64, 338 42, 374 38 C392 36, 406 38, 420 41" stroke="#73C98F" strokeWidth="3" strokeLinecap="round" fill="none" />
-              </svg>
             </div>
 
-            <div className="border border-[#284657] bg-[#0b151d] p-4">
-              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#9db0bc]">Primary Diagnosis</p>
-              <h3 className="mt-8 text-3xl font-semibold tracking-[-0.03em] text-ink">Loss Concentration</h3>
-              <p className="mt-3 max-w-md text-sm leading-6 text-[#b7c5cf]">One or two losses are large enough to materially distort report performance.</p>
-              <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                <div className="border border-[#1f3441] bg-[#060d13] p-3">
-                  <span className="text-[0.68rem] uppercase tracking-[0.14em] text-[#8ca2af]">Est. Impact</span>
-                  <strong className="mt-2 block text-xl text-[#e65f73]">-$1,610</strong>
+            <div className="grid gap-3">
+              <div className="border border-[#324a59] border-l-[#e65f73] bg-[#0b151d] p-5">
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#9db0bc]">Primary diagnosis</p>
+                <h3 className="mt-5 text-3xl font-semibold tracking-[-0.04em] text-ink">Loss leak isolated</h3>
+                <p className="mt-3 text-sm leading-6 text-[#b7c5cf]">The largest loss pocket is the next issue to review.</p>
+                <div className="mt-5 flex items-end justify-between gap-4 border-t border-[#203241] pt-4">
+                  <div>
+                    <span className="text-[0.62rem] uppercase tracking-[0.14em] text-[#8ca2af]">Estimated drag</span>
+                    <strong className="mt-1 block text-2xl text-[#e65f73]">-$1.6k</strong>
+                  </div>
+                  <span className="border border-[#284657] bg-[#08141c] px-3 py-1.5 text-xs font-semibold text-ink">Fix first</span>
                 </div>
-                <div className="border border-[#1f3441] bg-[#060d13] p-3">
-                  <span className="text-[0.68rem] uppercase tracking-[0.14em] text-[#8ca2af]">Diagnosis Strength</span>
-                  <strong className="mt-2 block text-xl text-ink">Moderate</strong>
-                </div>
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                <MarketingMini label="Cost Drag" value="38th" tone="text-[#e8be4c]" />
+                <MarketingMini label="R-Capture" value="59th" tone="text-[#4ec4ec]" />
+                <MarketingMini label="Expectancy" value="63rd" tone="text-[#4ec4ec]" />
               </div>
             </div>
           </div>
 
-          <div className="mt-3 grid gap-3 md:grid-cols-5">
-            <DashboardMetric label="Cost Drag" value="-$1,140" detail="Fees and costs" tone="text-[#e65f73]" />
-            <DashboardMetric label="Weakest Segment" value="META" detail="By net PnL" tone="text-[#e65f73]" />
-            <DashboardMetric label="Average Loss" value="-$155" detail="Typical loser" tone="text-[#e65f73]" />
-            <DashboardMetric label="Average Win" value="$209" detail="Typical winner" tone="text-[#73c98f]" />
-            <DashboardMetric label="Best Segment" value="TSLA" detail="By net PnL" tone="text-[#73c98f]" />
-          </div>
-
-          <div className="mt-3 border border-[#223746] bg-[#071017] p-4">
-            <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-              <div>
-                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#9db0bc]">Pro Review Loop</p>
-                <p className="mt-1 text-sm text-[#b7c5cf]">Weekly review, benchmark percentiles, and next-upload targets.</p>
-              </div>
-              <div className="grid grid-cols-3 gap-2 text-center">
-                <ReviewMini label="Cost Drag" value="38th" tone="text-[#e8be4c]" />
-                <ReviewMini label="R-Capture" value="59th" tone="text-[#4ec4ec]" />
-                <ReviewMini label="Expectancy" value="63rd" tone="text-[#4ec4ec]" />
-              </div>
-            </div>
+          <div className="mt-4 grid gap-3 md:grid-cols-3">
+            <MarketingSignal label="Edge retained" value="$2.7k" body="Net after costs" tone="text-[#73c98f]" />
+            <MarketingSignal label="Leak detected" value="META" body="Weakest segment" tone="text-[#e65f73]" />
+            <MarketingSignal label="Next check-in" value="2-3" body="Sessions to verify" tone="text-[#4ec4ec]" />
           </div>
         </div>
       </div>
@@ -197,21 +207,21 @@ function DashboardMockup() {
   );
 }
 
-function DashboardMetric({ label, value, detail, tone }: { label: string; value: string; detail: string; tone: string }) {
+function MarketingSignal({ label, value, body, tone }: { label: string; value: string; body: string; tone: string }) {
   return (
-    <div className="border border-[#1f3441] bg-[#060d13] p-3">
+    <div className="border border-[#1f3441] bg-[#060d13] p-4">
       <p className="text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-[#8ca2af]">{label}</p>
-      <p className={`mt-2 text-xl font-semibold tracking-[-0.02em] ${tone}`}>{value}</p>
-      <p className="mt-1 text-xs text-[#8ca2af]">{detail}</p>
+      <p className={`mt-2 text-2xl font-semibold tracking-[-0.03em] ${tone}`}>{value}</p>
+      <p className="mt-1 text-xs text-[#8ca2af]">{body}</p>
     </div>
   );
 }
 
-function ReviewMini({ label, value, tone }: { label: string; value: string; tone: string }) {
+function MarketingMini({ label, value, tone }: { label: string; value: string; tone: string }) {
   return (
-    <div className="min-w-24 border border-[#1f3441] bg-[#060d13] px-3 py-2">
-      <strong className={`block text-xl font-semibold ${tone}`}>{value}</strong>
-      <span className="text-[0.62rem] uppercase tracking-[0.12em] text-[#8ca2af]">{label}</span>
+    <div className="border border-[#1f3441] bg-[#060d13] px-3 py-3 text-center">
+      <strong className={`block text-2xl font-semibold tracking-[-0.04em] ${tone}`}>{value}</strong>
+      <span className="mt-1 block text-[0.56rem] uppercase tracking-[0.12em] text-[#8ca2af]">{label}</span>
     </div>
   );
 }
