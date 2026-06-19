@@ -115,91 +115,76 @@ function HomeBackdrop() {
 
 function DashboardMockup() {
   return (
-    <div className="relative mx-auto w-full max-w-[900px] lg:mx-0">
-      <div className="absolute -inset-6 bg-[radial-gradient(circle_at_72%_18%,rgba(78,196,236,0.16),transparent_23rem),radial-gradient(circle_at_18%_80%,rgba(232,190,76,0.1),transparent_21rem)] blur-2xl" />
-      <div className="relative overflow-hidden border border-[#294757] bg-[#050a0f] shadow-[0_34px_120px_-78px_rgba(78,196,236,0.65)]">
-        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.035),transparent_30%),radial-gradient(circle_at_82%_18%,rgba(78,196,236,0.11),transparent_18rem)]" />
-        <div className="relative p-4 md:p-5">
-          <div className="flex flex-col gap-4 border-b border-[#1c2e3a] pb-4 md:flex-row md:items-center md:justify-between">
+    <div className="relative mx-auto w-full max-w-[940px] lg:mx-0">
+      <div className="absolute -inset-8 bg-[radial-gradient(circle_at_76%_22%,rgba(78,196,236,0.25),transparent_22rem),radial-gradient(circle_at_25%_78%,rgba(232,190,76,0.15),transparent_21rem),radial-gradient(circle_at_52%_48%,rgba(115,201,143,0.08),transparent_26rem)] blur-2xl" />
+      <div className="relative overflow-hidden border border-[#31536a] bg-[#04080c] shadow-[0_42px_140px_-84px_rgba(78,196,236,0.85)]">
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(78,196,236,0.07)_1px,transparent_1px),linear-gradient(180deg,rgba(78,196,236,0.045)_1px,transparent_1px)] bg-[size:38px_38px] opacity-45 [mask-image:radial-gradient(circle_at_50%_42%,black,transparent_78%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_16%,rgba(78,196,236,0.16),transparent_17rem),linear-gradient(135deg,rgba(255,255,255,0.045),transparent_32%)]" />
+
+        <div className="relative p-4 md:p-6">
+          <div className="flex flex-col gap-4 border-b border-[#203747] pb-5 md:flex-row md:items-start md:justify-between">
             <div>
-              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[#8ca2af]">Strategy intelligence</p>
-              <h2 className="mt-2 text-2xl font-semibold tracking-[-0.035em] text-ink">Where the edge is working</h2>
+              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-[#8ca2af]">Strategy signal board</p>
+              <h2 className="mt-2 text-3xl font-semibold leading-tight tracking-[-0.045em] text-ink">Your next review, decoded.</h2>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="border border-[#284657] bg-[#08141c] px-3 py-1.5 text-xs font-semibold text-[#73c98f]">Improving</span>
-              <span className="border border-[#284657] bg-[#08141c] px-3 py-1.5 text-xs font-semibold text-[#4ec4ec]">194 trades</span>
+            <div className="grid grid-cols-3 gap-2 text-center">
+              <MarketingMini label="Net PnL" value="$2.7k" tone="text-[#73c98f]" />
+              <MarketingMini label="Cost Drag" value="38th" tone="text-[#e8be4c]" />
+              <MarketingMini label="Next Check" value="2-3" tone="text-[#4ec4ec]" />
             </div>
           </div>
 
-          <div className="mt-4 grid gap-4 lg:grid-cols-[1.22fr_0.78fr]">
-            <div className="border border-[#284657] bg-[#0b151d] p-5">
-              <div className="grid gap-5 sm:grid-cols-[auto_1fr] sm:items-start">
-                <div className="relative grid h-36 w-36 shrink-0 place-items-center">
-                  <svg className="absolute inset-0 h-full w-full -rotate-90" viewBox="0 0 120 120" aria-hidden="true">
-                    <circle cx="60" cy="60" r="49" stroke="#162833" strokeWidth="10" fill="none" />
-                    <circle cx="60" cy="60" r="49" stroke="#e8be4c" strokeWidth="10" fill="none" strokeDasharray="188 308" strokeLinecap="round" />
-                    <circle cx="60" cy="60" r="49" stroke="#73c98f" strokeWidth="10" fill="none" strokeDasharray="118 308" strokeDashoffset="-190" strokeLinecap="round" />
-                  </svg>
-                  <div className="text-center">
-                    <strong className="block text-5xl font-semibold leading-none tracking-[-0.055em] text-[#e8be4c]">60</strong>
-                    <span className="mt-1 block text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-[#8ca2af]">Edge Health</span>
-                  </div>
-                </div>
-
+          <div className="mt-5 grid gap-4 lg:grid-cols-[0.84fr_1.16fr]">
+            <div className="relative overflow-hidden border border-[#284657] bg-[#071017]/96 p-5">
+              <div className="absolute -right-14 -top-14 h-36 w-36 rounded-full bg-cyan/10 blur-3xl" />
+              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-[#9db0bc]">Edge health</p>
+              <div className="mt-5 flex items-end justify-between gap-4">
                 <div>
-                  <div className="flex flex-wrap gap-2">
-                    <span className="border border-[#284657] bg-[#08141c] px-2.5 py-1 text-xs font-semibold text-[#e8be4c]">Review risk</span>
-                    <span className="border border-[#284657] bg-[#08141c] px-2.5 py-1 text-xs font-semibold text-[#73c98f]">Net positive</span>
-                  </div>
-                  <p className="mt-4 text-base leading-7 text-[#d6e3ea]">The strategy is profitable, but one leak is pulling the report away from a clean edge profile.</p>
-                  <svg className="mt-5 h-36 w-full" viewBox="0 0 520 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                      <linearGradient id="heroChartFill" x1="0" x2="0" y1="0" y2="1">
-                        <stop stopColor="#73C98F" stopOpacity="0.24" />
-                        <stop offset="1" stopColor="#73C98F" stopOpacity="0" />
-                      </linearGradient>
-                      <linearGradient id="heroChartLine" x1="0" x2="520" y1="0" y2="0">
-                        <stop stopColor="#4EC4EC" />
-                        <stop offset="0.58" stopColor="#73C98F" />
-                        <stop offset="1" stopColor="#E8BE4C" />
-                      </linearGradient>
-                    </defs>
-                    <path d="M0 138H520M0 96H520M0 54H520" stroke="#203241" />
-                    <path d="M0 116H520" stroke="#6B7784" strokeOpacity=".34" strokeDasharray="4 6" />
-                    <path d="M8 124 C44 82, 78 116, 112 106 C152 94, 170 130, 214 126 C260 121, 268 82, 312 74 C350 67, 376 96, 408 70 C436 47, 468 48, 512 58 L512 180 L8 180 Z" fill="url(#heroChartFill)" />
-                    <path d="M8 124 C44 82, 78 116, 112 106 C152 94, 170 130, 214 126 C260 121, 268 82, 312 74 C350 67, 376 96, 408 70 C436 47, 468 48, 512 58" stroke="url(#heroChartLine)" strokeWidth="4" strokeLinecap="round" fill="none" />
-                    <circle cx="312" cy="74" r="5" fill="#73C98F" />
-                    <circle cx="408" cy="70" r="5" fill="#E8BE4C" />
-                  </svg>
+                  <span className="text-7xl font-semibold leading-none tracking-[-0.07em] text-[#e8be4c]">60</span>
+                  <span className="ml-2 text-lg text-[#d6e3ea]">/100</span>
                 </div>
+                <span className="border border-[#e8be4c]/35 bg-[#e8be4c]/10 px-3 py-1.5 text-sm font-semibold text-[#e8be4c]">Stabilizing</span>
               </div>
+              <p className="mt-4 max-w-md text-sm leading-6 text-[#c8d6df]">Profitable, but not clean. One loss pocket is holding the score back.</p>
+              <svg className="mt-6 h-28 w-full overflow-visible" viewBox="0 0 360 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="homeHeroCurve" x1="0" x2="360" y1="0" y2="0">
+                    <stop stopColor="#73C98F" />
+                    <stop offset="0.44" stopColor="#E65F73" />
+                    <stop offset="0.68" stopColor="#E65F73" />
+                    <stop offset="1" stopColor="#73C98F" />
+                  </linearGradient>
+                </defs>
+                <path d="M0 92H360M0 58H360M0 24H360" stroke="#203241" />
+                <path d="M0 76H360" stroke="#6B7784" strokeOpacity=".3" strokeDasharray="4 6" />
+                <path d="M6 76 C32 38, 62 52, 90 70 C118 87, 146 94, 184 84 C216 76, 228 55, 260 58 C294 60, 318 30, 354 34" stroke="url(#homeHeroCurve)" strokeWidth="4" strokeLinecap="round" fill="none" />
+                <circle cx="184" cy="84" r="5" fill="#E65F73" />
+                <circle cx="318" cy="30" r="5" fill="#73C98F" />
+              </svg>
             </div>
 
-            <div className="grid gap-3">
-              <div className="border border-[#324a59] border-l-[#e65f73] bg-[#0b151d] p-5">
-                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#9db0bc]">Primary diagnosis</p>
-                <h3 className="mt-5 text-3xl font-semibold tracking-[-0.04em] text-ink">Loss leak isolated</h3>
-                <p className="mt-3 text-sm leading-6 text-[#b7c5cf]">The largest loss pocket is the next issue to review.</p>
-                <div className="mt-5 flex items-end justify-between gap-4 border-t border-[#203241] pt-4">
+            <div className="grid gap-4">
+              <div className="relative overflow-hidden border border-[#324a59] border-l-[#e65f73] bg-[#071017]/96 p-5">
+                <div className="absolute -right-16 top-0 h-40 w-40 rounded-full bg-[#e65f73]/10 blur-3xl" />
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-[#9db0bc]">Primary diagnosis</p>
+                <div className="mt-5 grid gap-5 md:grid-cols-[1fr_auto] md:items-end">
                   <div>
-                    <span className="text-[0.62rem] uppercase tracking-[0.14em] text-[#8ca2af]">Estimated drag</span>
-                    <strong className="mt-1 block text-2xl text-[#e65f73]">-$1.6k</strong>
+                    <h3 className="text-3xl font-semibold tracking-[-0.045em] text-ink">Loss leak isolated</h3>
+                    <p className="mt-3 max-w-sm text-sm leading-6 text-[#b7c5cf]">The next upload should prove whether the largest loss segment has been contained.</p>
                   </div>
-                  <span className="border border-[#284657] bg-[#08141c] px-3 py-1.5 text-xs font-semibold text-ink">Fix first</span>
+                  <div className="grid min-w-44 gap-2">
+                    <MarketingSignal label="Drag" value="-$1.6k" body="Est. impact" tone="text-[#e65f73]" />
+                    <MarketingSignal label="Fix first" value="META" body="Weakest segment" tone="text-[#e65f73]" />
+                  </div>
                 </div>
               </div>
-              <div className="grid grid-cols-3 gap-2">
-                <MarketingMini label="Cost Drag" value="38th" tone="text-[#e8be4c]" />
-                <MarketingMini label="R-Capture" value="59th" tone="text-[#4ec4ec]" />
-                <MarketingMini label="Expectancy" value="63rd" tone="text-[#4ec4ec]" />
+
+              <div className="grid gap-3 md:grid-cols-3">
+                <MarketingSignal label="Win quality" value="46.4%" body="Watchlist" tone="text-[#e8be4c]" />
+                <MarketingSignal label="R capture" value="0.26R" body="Weak capture" tone="text-[#e65f73]" />
+                <MarketingSignal label="Benchmark" value="63rd" body="Expectancy" tone="text-[#4ec4ec]" />
               </div>
             </div>
-          </div>
-
-          <div className="mt-4 grid gap-3 md:grid-cols-3">
-            <MarketingSignal label="Edge retained" value="$2.7k" body="Net after costs" tone="text-[#73c98f]" />
-            <MarketingSignal label="Leak detected" value="META" body="Weakest segment" tone="text-[#e65f73]" />
-            <MarketingSignal label="Next check-in" value="2-3" body="Sessions to verify" tone="text-[#4ec4ec]" />
           </div>
         </div>
       </div>
@@ -256,7 +241,7 @@ function WorkflowStep({
   return (
     <>
       <article className="text-center lg:text-left">
-        <div className="mx-auto flex h-28 w-32 items-center justify-center border border-white/[0.13] bg-white/[0.04] shadow-[0_24px_70px_-52px_rgba(88,214,255,0.78)] lg:mx-0">
+        <div className="mx-auto flex h-28 w-32 items-center justify-center overflow-hidden border border-[#284657] bg-[#071017] shadow-[0_24px_80px_-58px_rgba(78,196,236,0.78)] lg:mx-0">
           <StepVisual visual={step.visual} Icon={Icon} />
         </div>
         <h3 className="mt-6 text-xl font-semibold tracking-[-0.025em] text-ink">
@@ -272,9 +257,9 @@ function WorkflowStep({
 function StepVisual({ visual, Icon }: { visual: (typeof workflowSteps)[number]["visual"]; Icon: LucideIcon }) {
   if (visual === "upload") {
     return (
-      <div className="relative flex h-16 w-16 items-center justify-center border border-cyan/40 bg-gradient-to-br from-accent/40 to-violet/45">
-        <Upload className="text-white" size={31} />
-        <div className="absolute inset-0 shadow-[0_0_42px_-12px_rgba(88,214,255,0.9)]" />
+      <div className="relative grid h-20 w-20 place-items-center border border-cyan/35 bg-[#061019]">
+        <div className="absolute inset-2 border border-cyan/15" />
+        <Upload className="relative text-cyan drop-shadow-[0_0_14px_rgba(78,196,236,0.55)]" size={31} />
       </div>
     );
   }
@@ -282,10 +267,11 @@ function StepVisual({ visual, Icon }: { visual: (typeof workflowSteps)[number]["
   if (visual === "bars") {
     return (
       <svg width="82" height="62" viewBox="0 0 72 54" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="9" y="24" width="8" height="24" fill="#7861FF" />
-        <rect x="25" y="13" width="8" height="35" fill="#4F8CFF" />
-        <rect x="41" y="5" width="8" height="43" fill="#58D6FF" />
-        <rect x="57" y="20" width="8" height="28" fill="#4F8CFF" />
+        <path d="M4 48H68" stroke="#284657" />
+        <rect x="9" y="25" width="9" height="23" fill="#E65F73" />
+        <rect x="25" y="17" width="9" height="31" fill="#E8BE4C" />
+        <rect x="41" y="8" width="9" height="40" fill="#73C98F" />
+        <rect x="57" y="20" width="9" height="28" fill="#4EC4EC" />
       </svg>
     );
   }
@@ -293,8 +279,9 @@ function StepVisual({ visual, Icon }: { visual: (typeof workflowSteps)[number]["
   if (visual === "compare") {
     return (
       <svg width="90" height="60" viewBox="0 0 82 54" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M3 42C13 30 22 25 33 30C43 35 48 18 57 14C65 10 72 18 79 7" stroke="#58D6FF" strokeWidth="3" strokeLinecap="round" />
-        <path d="M3 34C13 31 21 34 31 42C43 52 52 32 61 26C68 21 74 25 79 20" stroke="#7861FF" strokeWidth="3" strokeLinecap="round" />
+        <path d="M3 42C13 30 22 25 33 30C43 35 48 18 57 14C65 10 72 18 79 7" stroke="#73C98F" strokeWidth="3" strokeLinecap="round" />
+        <path d="M3 34C13 31 21 34 31 42C43 52 52 32 61 26C68 21 74 25 79 20" stroke="#E65F73" strokeWidth="3" strokeLinecap="round" />
+        <circle cx="57" cy="14" r="3" fill="#E8BE4C" />
       </svg>
     );
   }
@@ -302,7 +289,8 @@ function StepVisual({ visual, Icon }: { visual: (typeof workflowSteps)[number]["
   if (visual === "monitor") {
     return (
       <svg width="90" height="62" viewBox="0 0 78 54" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M4 30H19L26 12L38 46L48 23H61L67 14L74 30" stroke="#58D6FF" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M4 30H19L26 12L38 46L48 23H61L67 14L74 30" stroke="#4EC4EC" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M4 45H74" stroke="#284657" />
       </svg>
     );
   }
@@ -311,8 +299,8 @@ function StepVisual({ visual, Icon }: { visual: (typeof workflowSteps)[number]["
     <div className="space-y-2">
       {[0, 1, 2].map((item) => (
         <div key={item} className="flex items-center gap-3">
-          <Icon className="text-cyan" size={16} />
-          <span className="h-1.5 w-14 bg-white/15" />
+          <Icon className={item === 0 ? "text-cyan" : item === 1 ? "text-profit" : "text-warning"} size={16} />
+          <span className="h-1.5 w-14 bg-[#203747]" />
         </div>
       ))}
     </div>

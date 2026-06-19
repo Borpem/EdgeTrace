@@ -173,10 +173,11 @@ function PresentationFrame({
 
   return (
     <div className="pointer-events-none relative isolate select-none [perspective:1200px]" aria-hidden="true">
-      <div className="absolute -inset-x-4 bottom-[-1.15rem] h-10 bg-[radial-gradient(ellipse,rgba(30,120,150,0.16),rgba(0,0,0,0)_68%)] blur-2xl" />
+      <div className="absolute -inset-x-6 -bottom-6 h-16 bg-[radial-gradient(ellipse,rgba(78,196,236,0.18),rgba(0,0,0,0)_68%)] blur-2xl" />
       <div
-        className={`relative overflow-hidden rounded-md border border-[#203747] bg-[#071015] shadow-[0_26px_72px_-54px_rgba(84,214,255,0.42),0_18px_42px_-32px_rgba(0,0,0,0.98)] ring-1 ring-white/[0.025] ${tiltClass}`}
+        className={`relative overflow-hidden rounded-md border border-[#294757] bg-[#04080c] shadow-[0_34px_110px_-70px_rgba(78,196,236,0.62),0_18px_42px_-32px_rgba(0,0,0,0.98)] ring-1 ring-white/[0.025] ${tiltClass}`}
       >
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(78,196,236,0.055)_1px,transparent_1px),linear-gradient(180deg,rgba(78,196,236,0.035)_1px,transparent_1px)] bg-[size:36px_36px] opacity-35 [mask-image:radial-gradient(circle_at_50%_44%,black,transparent_78%)]" />
         <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-cyan/35 to-transparent" />
         {children}
       </div>
@@ -185,16 +186,10 @@ function PresentationFrame({
 }
 
 function WorkspaceVisual() {
-  const metrics = [
-    ["Net PnL", "$2,730", "text-profit"],
-    ["Expectancy", "$14.07", "text-profit"],
-    ["Win Rate", "46.4%", "text-warning"],
-    ["R-Multiple", "0.26R", "text-loss"]
-  ];
-
   return (
     <PresentationFrame tilt="right">
       <div className="relative p-4 sm:p-5">
+        <div className="pointer-events-none absolute -right-20 top-0 h-64 w-64 rounded-full bg-cyan/10 blur-3xl" />
         <div className="flex items-center justify-between border-b border-[#1b3342] pb-3">
           <div className="flex items-center gap-3">
             <span className="h-3 w-6 skew-x-[-18deg] bg-white/85" />
@@ -205,69 +200,74 @@ function WorkspaceVisual() {
           </span>
         </div>
 
-        <div className="mt-4 rounded-md border border-[#203747] bg-[#101b23] p-4">
-          <div>
-            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-cyan">Report overview</p>
-            <p className="mt-2 text-lg font-semibold tracking-[-0.03em] text-ink">Test - improved trades</p>
-          </div>
-          <div className="mt-4 grid gap-2 sm:grid-cols-4">
-            {metrics.map(([label, value, color]) => (
-              <div key={label} className="rounded-sm border border-[#1d3443] bg-[#070d12] p-3">
-                <p className="text-[0.58rem] font-semibold uppercase tracking-[0.16em] text-muted">{label}</p>
-                <p className={`mt-2 text-lg font-semibold ${color}`}>{value}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-3 grid gap-3 md:grid-cols-[1fr_1fr]">
-          <div className="rounded-md border border-[#284758] bg-[#111d25] p-4">
-            <div className="flex items-start justify-between">
+        <div className="mt-4 grid gap-3 md:grid-cols-[0.9fr_1.1fr]">
+          <div className="rounded-md border border-[#284758] bg-[#0b151d] p-4">
+            <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">Edge Health</p>
                 <div className="mt-3 flex items-baseline gap-2">
-                  <span className="text-5xl font-semibold leading-none tracking-[-0.04em] text-warning">60</span>
+                  <span className="text-6xl font-semibold leading-none tracking-[-0.06em] text-warning">60</span>
                   <span className="text-base font-medium text-ink/90">/100</span>
                 </div>
               </div>
-              <span className="mt-1 whitespace-nowrap text-sm font-semibold text-warning">Stabilizing</span>
+              <span className="mt-1 whitespace-nowrap rounded-sm border border-warning/35 bg-warning/10 px-2.5 py-1 text-xs font-semibold text-warning">Stabilizing</span>
             </div>
-            <svg className="mt-4 h-16 w-full overflow-visible" viewBox="0 0 300 82" role="img" aria-label="Equity curve">
-              <path d="M0 56 L300 56" stroke="rgba(130,160,178,0.18)" strokeDasharray="4 5" />
-              <path d="M8 46 C28 22, 48 62, 70 54 S115 62, 132 55 S166 48, 186 57 S224 22, 292 26" fill="none" stroke="#6bd28f" strokeWidth="3" />
+            <p className="mt-3 text-sm leading-6 text-muted">One leak remains visible, but the edge is still intact.</p>
+            <svg className="mt-5 h-20 w-full overflow-visible" viewBox="0 0 300 92" role="img" aria-label="Equity curve">
+              <path d="M0 68H300M0 42H300M0 16H300" stroke="#203241" />
+              <path d="M0 58 L300 58" stroke="rgba(130,160,178,0.22)" strokeDasharray="4 5" />
+              <path d="M8 58 C28 28, 48 62, 70 54 S115 62, 132 55 S166 48, 186 57 S224 22, 292 26" fill="none" stroke="#6bd28f" strokeWidth="3" />
+              <path d="M98 62 C116 76, 142 77, 162 66" fill="none" stroke="#e65f73" strokeWidth="3" strokeLinecap="round" />
             </svg>
-            <p className="mt-2 text-xs text-profit">Equity curve rising</p>
           </div>
-          <div className="rounded-md border border-loss/30 bg-[#111820] p-4">
+
+          <div className="rounded-md border border-loss/30 border-l-loss/70 bg-[#0b1118] p-4">
             <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">Primary diagnosis</p>
-            <h3 className="mt-5 text-3xl font-semibold tracking-[-0.04em] text-ink">Loss Concentration</h3>
-            <p className="mt-3 text-sm leading-6 text-muted">One or two losses are large enough to materially distort performance.</p>
+            <h3 className="mt-5 text-3xl font-semibold tracking-[-0.04em] text-ink">Loss leak isolated</h3>
+            <p className="mt-3 text-sm leading-6 text-muted">The next review should prove whether the weakest pocket has been contained.</p>
             <div className="mt-5 grid grid-cols-2 gap-3">
               <div className="rounded-sm border border-[#1d3443] bg-[#070d12] p-3">
-                <p className="text-[0.6rem] uppercase tracking-[0.14em] text-muted">Est. impact</p>
-                <p className="mt-2 text-lg font-semibold text-loss">-$1,610</p>
+                <p className="text-[0.6rem] uppercase tracking-[0.14em] text-muted">Drag</p>
+                <p className="mt-2 text-xl font-semibold text-loss">-$1.6k</p>
               </div>
               <div className="rounded-sm border border-[#1d3443] bg-[#070d12] p-3">
-                <p className="text-[0.6rem] uppercase tracking-[0.14em] text-muted">Diagnosis strength</p>
-                <p className="mt-2 text-lg font-semibold text-ink">Moderate</p>
+                <p className="text-[0.6rem] uppercase tracking-[0.14em] text-muted">Fix first</p>
+                <p className="mt-2 text-xl font-semibold text-loss">META</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="mt-3 rounded-md border border-[#203747] bg-[#070d12] p-4">
-          <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">Pro Review Loop</p>
-          <div className="mt-3 grid gap-2 sm:grid-cols-3">
+        <div className="mt-3 grid gap-3 md:grid-cols-[1fr_0.72fr]">
+          <div className="rounded-md border border-[#203747] bg-[#070d12] p-4">
+            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">Top drivers</p>
+            <div className="mt-3 grid gap-2 sm:grid-cols-3">
+              {[
+                ["Cost drag", "-$1.1k", "text-loss"],
+                ["Avg win", "$209", "text-profit"],
+                ["Best segment", "TSLA", "text-profit"]
+              ].map(([label, value, color]) => (
+                <div key={label} className="rounded-sm border border-[#1d3443] bg-[#0b151b] p-3">
+                  <p className="text-[0.58rem] uppercase tracking-[0.16em] text-muted">{label}</p>
+                  <p className={`mt-1 text-xl font-semibold tracking-[-0.04em] ${color}`}>{value}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="rounded-md border border-[#203747] bg-[#070d12] p-4">
+            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">Benchmarks</p>
+            <div className="mt-3 grid grid-cols-3 gap-2">
             {[
               ["Cost Drag", "38th", "text-warning"],
               ["R-Capture", "59th", "text-cyan"],
               ["Expectancy", "63rd", "text-cyan"]
             ].map(([label, value, color]) => (
-              <div key={label} className="rounded-sm border border-[#1d3443] bg-[#0b151b] p-3">
+              <div key={label} className="rounded-sm border border-[#1d3443] bg-[#0b151b] p-2 text-center">
                 <p className="text-[0.58rem] uppercase tracking-[0.16em] text-muted">{label}</p>
-                <p className={`mt-1 text-2xl font-semibold tracking-[-0.04em] ${color}`}>{value}</p>
+                <p className={`mt-1 text-xl font-semibold tracking-[-0.04em] ${color}`}>{value}</p>
               </div>
             ))}
+            </div>
           </div>
         </div>
       </div>
@@ -332,41 +332,37 @@ function ImportReportVisual() {
   return (
     <PresentationFrame tilt="left">
       <div className="relative p-5">
-        <div className="grid gap-3 md:grid-cols-[0.78fr_1fr_1fr] md:items-stretch">
-          <div className="rounded-md border border-[#203747] bg-[#101b23] p-4">
-            <div className="grid h-10 w-10 place-items-center rounded-sm border border-cyan/35 bg-cyan/[0.06] text-cyan">
-              <FileText size={20} />
+        <div className="pointer-events-none absolute -left-20 top-8 h-56 w-56 rounded-full bg-cyan/10 blur-3xl" />
+        <div className="grid gap-3 md:grid-cols-[0.76fr_auto_1fr] md:items-stretch">
+          <div className="rounded-md border border-[#203747] bg-[#101b23] p-5">
+            <div className="grid h-14 w-14 place-items-center rounded-sm border border-cyan/35 bg-cyan/[0.06] text-cyan shadow-[0_0_34px_-20px_rgba(78,196,236,0.9)]">
+              <FileText size={25} />
             </div>
             <p className="mt-5 text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">Import Trades</p>
             <p className="mt-2 text-xl font-semibold tracking-[-0.04em] text-ink">IBKR export</p>
             <p className="mt-2 text-sm leading-6 text-muted">Completed executions, fees, side, time, and symbol.</p>
           </div>
 
-          <div className="rounded-md border border-[#203747] bg-[#070d12] p-4">
-            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-cyan">Review mapping</p>
-            <div className="mt-4 space-y-2">
-              {[
-                ["Trades detected", "194"],
-                ["Costs mapped", "Yes"],
-                ["R data", "Partial"],
-                ["Reconstruction", "194 / 194"]
-              ].map(([label, value]) => (
-                <div key={label} className="flex items-center justify-between border-b border-[#1b3342] py-2 text-sm last:border-b-0">
-                  <span className="text-muted">{label}</span>
-                  <span className="font-semibold text-ink">{value}</span>
-                </div>
-              ))}
+          <div className="hidden items-center md:flex">
+            <div className="relative h-px w-16 bg-cyan/35">
+              <span className="absolute right-0 top-1/2 h-2 w-2 -translate-y-1/2 rotate-45 border-r border-t border-cyan/60" />
             </div>
           </div>
 
-          <div className="rounded-md border border-[#203747] bg-[#101b23] p-4">
-            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">Generated report</p>
+          <div className="rounded-md border border-[#203747] bg-[#101b23] p-5">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-cyan">Mapped report</p>
+                <p className="mt-2 text-lg font-semibold tracking-[-0.03em] text-ink">Ready for diagnostics</p>
+              </div>
+              <span className="rounded-sm border border-profit/35 bg-profit/10 px-2.5 py-1 text-xs font-semibold text-profit">High confidence</span>
+            </div>
             <div className="mt-4 grid grid-cols-2 gap-2">
               {[
-                ["Net PnL", "$2,730", "text-profit"],
-                ["Expectancy", "$14.07", "text-profit"],
-                ["Win Rate", "46.4%", "text-warning"],
-                ["Trades", "194", "text-profit"]
+                ["Trades", "194", "text-profit"],
+                ["Costs", "Mapped", "text-cyan"],
+                ["R data", "Partial", "text-warning"],
+                ["Audit", "Clean", "text-profit"]
               ].map(([label, value, color]) => (
                 <div key={label} className="rounded-sm border border-[#1d3443] bg-[#070d12] p-3">
                   <p className="text-[0.58rem] uppercase tracking-[0.14em] text-muted">{label}</p>
@@ -375,7 +371,7 @@ function ImportReportVisual() {
               ))}
             </div>
             <div className="mt-4 flex items-center justify-between rounded-sm border border-cyan/30 bg-cyan/[0.04] px-3 py-2 text-sm font-semibold text-cyan">
-              <span>Open dashboard</span>
+              <span>Generate signal board</span>
               <ArrowRight size={14} />
             </div>
           </div>
@@ -386,54 +382,37 @@ function ImportReportVisual() {
 }
 
 function AttributionVisual() {
-  const negativeDrivers = [
-    ["Cost Drag", "-$1,140.07", "Commissions and fees"],
-    ["Weakest Segment", "-$318.83", "META by net PnL"],
-    ["Average Loss", "-$155.20", "Typical losing trade"]
-  ];
-  const positiveDrivers = [
-    ["Average Win", "$209.67", "Typical winning trade"],
-    ["Best Segment", "$1,114.15", "TSLA by net PnL"],
-    ["Win Rate", "46.4%", "Near break-even"]
-  ];
-
   return (
     <PresentationFrame tilt="right">
       <div className="relative p-5">
+        <div className="pointer-events-none absolute -right-20 top-8 h-56 w-56 rounded-full bg-profit/10 blur-3xl" />
         <div className="rounded-md border border-[#203747] bg-[#101b23] p-4">
-          <div className="flex items-center justify-between gap-4">
-            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">Top Drivers</p>
-            <p className="hidden text-xs font-medium text-cyan sm:block">Native units</p>
-          </div>
-          <div className="mt-4 grid gap-3 md:grid-cols-2">
-            <div className="rounded-sm border border-[#1d3443] border-l-2 border-l-loss bg-[#070d12] p-3">
-              <p className="text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-loss">Negative impact</p>
-              <div className="mt-3 divide-y divide-[#1b3342]">
-                {negativeDrivers.map(([label, value, body]) => (
-                  <div key={label} className="grid grid-cols-[1fr_auto] gap-3 py-2.5 first:pt-0 last:pb-0">
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-semibold text-ink">{label}</p>
-                      <p className="mt-0.5 truncate text-xs text-muted">{body}</p>
-                    </div>
-                    <p className="whitespace-nowrap text-base font-semibold text-loss">{value}</p>
-                  </div>
-                ))}
-              </div>
+          <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">Driver map</p>
+          <div className="mt-4 grid gap-3 md:grid-cols-5">
+            <div className="rounded-sm border border-loss/35 bg-[#070d12] p-3">
+              <p className="text-[0.58rem] font-semibold uppercase tracking-[0.14em] text-muted">Cost drag</p>
+              <p className="mt-3 text-2xl font-semibold tracking-[-0.05em] text-loss">-$1.1k</p>
+              <p className="mt-1 text-xs text-muted">Fees and costs</p>
             </div>
-
-            <div className="rounded-sm border border-[#1d3443] border-l-2 border-l-profit bg-[#070d12] p-3">
-              <p className="text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-profit">Positive impact</p>
-              <div className="mt-3 divide-y divide-[#1b3342]">
-                {positiveDrivers.map(([label, value, body]) => (
-                  <div key={label} className="grid grid-cols-[1fr_auto] gap-3 py-2.5 first:pt-0 last:pb-0">
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-semibold text-ink">{label}</p>
-                      <p className="mt-0.5 truncate text-xs text-muted">{body}</p>
-                    </div>
-                    <p className="whitespace-nowrap text-base font-semibold text-profit">{value}</p>
-                  </div>
-                ))}
-              </div>
+            <div className="rounded-sm border border-loss/35 bg-[#070d12] p-3">
+              <p className="text-[0.58rem] font-semibold uppercase tracking-[0.14em] text-muted">Weakest</p>
+              <p className="mt-3 text-2xl font-semibold tracking-[-0.05em] text-loss">META</p>
+              <p className="mt-1 text-xs text-muted">By net PnL</p>
+            </div>
+            <div className="rounded-sm border border-warning/35 bg-[#070d12] p-3">
+              <p className="text-[0.58rem] font-semibold uppercase tracking-[0.14em] text-muted">Win rate</p>
+              <p className="mt-3 text-2xl font-semibold tracking-[-0.05em] text-warning">46.4%</p>
+              <p className="mt-1 text-xs text-muted">Watchlist</p>
+            </div>
+            <div className="rounded-sm border border-profit/35 bg-[#070d12] p-3">
+              <p className="text-[0.58rem] font-semibold uppercase tracking-[0.14em] text-muted">Avg win</p>
+              <p className="mt-3 text-2xl font-semibold tracking-[-0.05em] text-profit">$209</p>
+              <p className="mt-1 text-xs text-muted">Typical winner</p>
+            </div>
+            <div className="rounded-sm border border-profit/35 bg-[#070d12] p-3">
+              <p className="text-[0.58rem] font-semibold uppercase tracking-[0.14em] text-muted">Best</p>
+              <p className="mt-3 text-2xl font-semibold tracking-[-0.05em] text-profit">TSLA</p>
+              <p className="mt-1 text-xs text-muted">Strongest pocket</p>
             </div>
           </div>
         </div>
