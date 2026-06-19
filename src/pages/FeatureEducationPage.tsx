@@ -2,7 +2,6 @@ import { useEffect, type ReactNode } from "react";
 import {
   ArrowRight,
   Check,
-  FileText,
   Gauge,
   Layers,
   Minus,
@@ -185,92 +184,17 @@ function PresentationFrame({
   );
 }
 
+function MarketingGraphicImage({ src, alt }: { src: string; alt: string }) {
+  return <img src={src} alt={alt} className="relative block w-full select-none" draggable={false} />;
+}
+
 function WorkspaceVisual() {
   return (
     <PresentationFrame tilt="right">
-      <div className="relative p-4 sm:p-5">
-        <div className="pointer-events-none absolute -right-20 top-0 h-64 w-64 rounded-full bg-cyan/10 blur-3xl" />
-        <div className="flex items-center justify-between border-b border-[#1b3342] pb-3">
-          <div className="flex items-center gap-3">
-            <span className="h-3 w-6 skew-x-[-18deg] bg-white/85" />
-            <span className="text-[0.62rem] font-semibold uppercase tracking-[0.38em] text-ink/85">EDGETRACE</span>
-          </div>
-          <span className="rounded-sm border border-cyan/35 px-2.5 py-1 text-[0.62rem] font-semibold text-cyan">
-            Dashboard
-          </span>
-        </div>
-
-        <div className="mt-4 grid gap-3 md:grid-cols-[0.9fr_1.1fr]">
-          <div className="rounded-md border border-[#284758] bg-[#0b151d] p-4">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">Edge Health</p>
-                <div className="mt-3 flex items-baseline gap-2">
-                  <span className="text-6xl font-semibold leading-none tracking-[-0.06em] text-warning">60</span>
-                  <span className="text-base font-medium text-ink/90">/100</span>
-                </div>
-              </div>
-              <span className="mt-1 whitespace-nowrap rounded-sm border border-warning/35 bg-warning/10 px-2.5 py-1 text-xs font-semibold text-warning">Stabilizing</span>
-            </div>
-            <p className="mt-3 text-sm leading-6 text-muted">One leak remains visible, but the edge is still intact.</p>
-            <svg className="mt-5 h-20 w-full overflow-visible" viewBox="0 0 300 92" role="img" aria-label="Equity curve">
-              <path d="M0 68H300M0 42H300M0 16H300" stroke="#203241" />
-              <path d="M0 58 L300 58" stroke="rgba(130,160,178,0.22)" strokeDasharray="4 5" />
-              <path d="M8 58 C28 28, 48 62, 70 54 S115 62, 132 55 S166 48, 186 57 S224 22, 292 26" fill="none" stroke="#6bd28f" strokeWidth="3" />
-              <path d="M98 62 C116 76, 142 77, 162 66" fill="none" stroke="#e65f73" strokeWidth="3" strokeLinecap="round" />
-            </svg>
-          </div>
-
-          <div className="rounded-md border border-loss/30 border-l-loss/70 bg-[#0b1118] p-4">
-            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">Primary diagnosis</p>
-            <h3 className="mt-5 text-3xl font-semibold tracking-[-0.04em] text-ink">Loss leak isolated</h3>
-            <p className="mt-3 text-sm leading-6 text-muted">The next review should prove whether the weakest pocket has been contained.</p>
-            <div className="mt-5 grid grid-cols-2 gap-3">
-              <div className="rounded-sm border border-[#1d3443] bg-[#070d12] p-3">
-                <p className="text-[0.6rem] uppercase tracking-[0.14em] text-muted">Drag</p>
-                <p className="mt-2 text-xl font-semibold text-loss">-$1.6k</p>
-              </div>
-              <div className="rounded-sm border border-[#1d3443] bg-[#070d12] p-3">
-                <p className="text-[0.6rem] uppercase tracking-[0.14em] text-muted">Fix first</p>
-                <p className="mt-2 text-xl font-semibold text-loss">META</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-3 grid gap-3 md:grid-cols-[1fr_0.72fr]">
-          <div className="rounded-md border border-[#203747] bg-[#070d12] p-4">
-            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">Top drivers</p>
-            <div className="mt-3 grid gap-2 sm:grid-cols-3">
-              {[
-                ["Cost drag", "-$1.1k", "text-loss"],
-                ["Avg win", "$209", "text-profit"],
-                ["Best segment", "TSLA", "text-profit"]
-              ].map(([label, value, color]) => (
-                <div key={label} className="rounded-sm border border-[#1d3443] bg-[#0b151b] p-3">
-                  <p className="text-[0.58rem] uppercase tracking-[0.16em] text-muted">{label}</p>
-                  <p className={`mt-1 text-xl font-semibold tracking-[-0.04em] ${color}`}>{value}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="rounded-md border border-[#203747] bg-[#070d12] p-4">
-            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">Benchmarks</p>
-            <div className="mt-3 grid grid-cols-3 gap-2">
-            {[
-              ["Cost Drag", "38th", "text-warning"],
-              ["R-Capture", "59th", "text-cyan"],
-              ["Expectancy", "63rd", "text-cyan"]
-            ].map(([label, value, color]) => (
-              <div key={label} className="rounded-sm border border-[#1d3443] bg-[#0b151b] p-2 text-center">
-                <p className="text-[0.58rem] uppercase tracking-[0.16em] text-muted">{label}</p>
-                <p className={`mt-1 text-xl font-semibold tracking-[-0.04em] ${color}`}>{value}</p>
-              </div>
-            ))}
-            </div>
-          </div>
-        </div>
-      </div>
+      <MarketingGraphicImage
+        src="/marketing/edgetrace-signal-board.svg"
+        alt="EdgeTrace signal board showing edge health, primary diagnosis, driver metrics, and benchmark context."
+      />
     </PresentationFrame>
   );
 }
@@ -331,52 +255,10 @@ function WalkthroughSection({
 function ImportReportVisual() {
   return (
     <PresentationFrame tilt="left">
-      <div className="relative p-5">
-        <div className="pointer-events-none absolute -left-20 top-8 h-56 w-56 rounded-full bg-cyan/10 blur-3xl" />
-        <div className="grid gap-3 md:grid-cols-[0.76fr_auto_1fr] md:items-stretch">
-          <div className="rounded-md border border-[#203747] bg-[#101b23] p-5">
-            <div className="grid h-14 w-14 place-items-center rounded-sm border border-cyan/35 bg-cyan/[0.06] text-cyan shadow-[0_0_34px_-20px_rgba(78,196,236,0.9)]">
-              <FileText size={25} />
-            </div>
-            <p className="mt-5 text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">Import Trades</p>
-            <p className="mt-2 text-xl font-semibold tracking-[-0.04em] text-ink">IBKR export</p>
-            <p className="mt-2 text-sm leading-6 text-muted">Completed executions, fees, side, time, and symbol.</p>
-          </div>
-
-          <div className="hidden items-center md:flex">
-            <div className="relative h-px w-16 bg-cyan/35">
-              <span className="absolute right-0 top-1/2 h-2 w-2 -translate-y-1/2 rotate-45 border-r border-t border-cyan/60" />
-            </div>
-          </div>
-
-          <div className="rounded-md border border-[#203747] bg-[#101b23] p-5">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-cyan">Mapped report</p>
-                <p className="mt-2 text-lg font-semibold tracking-[-0.03em] text-ink">Ready for diagnostics</p>
-              </div>
-              <span className="rounded-sm border border-profit/35 bg-profit/10 px-2.5 py-1 text-xs font-semibold text-profit">High confidence</span>
-            </div>
-            <div className="mt-4 grid grid-cols-2 gap-2">
-              {[
-                ["Trades", "194", "text-profit"],
-                ["Costs", "Mapped", "text-cyan"],
-                ["R data", "Partial", "text-warning"],
-                ["Audit", "Clean", "text-profit"]
-              ].map(([label, value, color]) => (
-                <div key={label} className="rounded-sm border border-[#1d3443] bg-[#070d12] p-3">
-                  <p className="text-[0.58rem] uppercase tracking-[0.14em] text-muted">{label}</p>
-                  <p className={`mt-2 text-lg font-semibold ${color}`}>{value}</p>
-                </div>
-              ))}
-            </div>
-            <div className="mt-4 flex items-center justify-between rounded-sm border border-cyan/30 bg-cyan/[0.04] px-3 py-2 text-sm font-semibold text-cyan">
-              <span>Generate signal board</span>
-              <ArrowRight size={14} />
-            </div>
-          </div>
-        </div>
-      </div>
+      <MarketingGraphicImage
+        src="/marketing/edgetrace-import-flow.svg"
+        alt="EdgeTrace import pipeline graphic showing broker export, mapping, and generated diagnostic report."
+      />
     </PresentationFrame>
   );
 }
@@ -384,147 +266,21 @@ function ImportReportVisual() {
 function AttributionVisual() {
   return (
     <PresentationFrame tilt="right">
-      <div className="relative p-5">
-        <div className="pointer-events-none absolute -right-20 top-8 h-56 w-56 rounded-full bg-profit/10 blur-3xl" />
-        <div className="rounded-md border border-[#203747] bg-[#101b23] p-4">
-          <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">Driver map</p>
-          <div className="mt-4 grid gap-3 md:grid-cols-5">
-            <div className="rounded-sm border border-loss/35 bg-[#070d12] p-3">
-              <p className="text-[0.58rem] font-semibold uppercase tracking-[0.14em] text-muted">Cost drag</p>
-              <p className="mt-3 text-2xl font-semibold tracking-[-0.05em] text-loss">-$1.1k</p>
-              <p className="mt-1 text-xs text-muted">Fees and costs</p>
-            </div>
-            <div className="rounded-sm border border-loss/35 bg-[#070d12] p-3">
-              <p className="text-[0.58rem] font-semibold uppercase tracking-[0.14em] text-muted">Weakest</p>
-              <p className="mt-3 text-2xl font-semibold tracking-[-0.05em] text-loss">META</p>
-              <p className="mt-1 text-xs text-muted">By net PnL</p>
-            </div>
-            <div className="rounded-sm border border-warning/35 bg-[#070d12] p-3">
-              <p className="text-[0.58rem] font-semibold uppercase tracking-[0.14em] text-muted">Win rate</p>
-              <p className="mt-3 text-2xl font-semibold tracking-[-0.05em] text-warning">46.4%</p>
-              <p className="mt-1 text-xs text-muted">Watchlist</p>
-            </div>
-            <div className="rounded-sm border border-profit/35 bg-[#070d12] p-3">
-              <p className="text-[0.58rem] font-semibold uppercase tracking-[0.14em] text-muted">Avg win</p>
-              <p className="mt-3 text-2xl font-semibold tracking-[-0.05em] text-profit">$209</p>
-              <p className="mt-1 text-xs text-muted">Typical winner</p>
-            </div>
-            <div className="rounded-sm border border-profit/35 bg-[#070d12] p-3">
-              <p className="text-[0.58rem] font-semibold uppercase tracking-[0.14em] text-muted">Best</p>
-              <p className="mt-3 text-2xl font-semibold tracking-[-0.05em] text-profit">TSLA</p>
-              <p className="mt-1 text-xs text-muted">Strongest pocket</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-3 grid gap-3 md:grid-cols-[1.05fr_0.95fr]">
-          <div className="rounded-md border border-loss/30 border-l-loss/70 bg-[#101820] p-5">
-            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">Primary diagnosis</p>
-            <h3 className="mt-4 text-2xl font-semibold tracking-[-0.04em] text-ink">Loss Concentration</h3>
-            <p className="mt-2 text-sm leading-6 text-muted">The largest loss pocket is driving the report more than the average trade.</p>
-          </div>
-          <div className="rounded-md border border-[#203747] bg-[#070d12] p-5">
-            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-cyan">What changed</p>
-            <div className="mt-4 grid grid-cols-2 gap-3">
-              <div>
-                <p className="text-sm text-muted">Expectancy</p>
-                <p className="mt-1 text-xl font-semibold text-profit">+$58.29</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted">Profit factor</p>
-                <p className="mt-1 text-xl font-semibold text-profit">+0.64</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <MarketingGraphicImage
+        src="/marketing/edgetrace-driver-map.svg"
+        alt="EdgeTrace driver map graphic separating negative drivers, watchlist metrics, and positive drivers."
+      />
     </PresentationFrame>
   );
 }
 
 function StrategyTimelineReviewVisual() {
-  const reviewItems = [
-    ["Regression", "Expectancy slipped", "$35.55 to $14.07 per trade."],
-    ["Quality", "Profit factor weakened", "1.40 to 1.17."],
-    ["Hit rate", "Win rate is falling", "51.8% to 46.4%."]
-  ];
-  const targets = [
-    ["Fix", "Review Primary Leak", "Next upload should show whether this fix improved the report."],
-    ["Limit", "Recheck META", "Target less than $318.83 of downside from this segment."],
-    ["Target", "Protect expectancy", "Next report target: $35.55 per trade or better."]
-  ];
-
   return (
     <PresentationFrame>
-      <div className="relative p-5">
-        <div className="mb-4 flex flex-col gap-3 border-b border-[#1b3342] pb-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">Pro Review Loop</p>
-            <p className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-ink">Review Overdue</p>
-            <p className="mt-1 text-sm text-muted">Import after the next 2-3 sessions to keep the loop useful.</p>
-          </div>
-          <span className="w-fit rounded-sm border border-cyan/30 px-3 py-1 text-xs font-semibold text-cyan">
-            2x weekly check-in
-          </span>
-        </div>
-
-        <div className="grid gap-3 md:grid-cols-3">
-          {[
-            ["Cost Drag Percentile", "38th", "text-warning", "border-warning/45"],
-            ["R-Capture Benchmark", "59th", "text-cyan", "border-cyan/45"],
-            ["Expectancy Benchmark", "63rd", "text-cyan", "border-cyan/45"]
-          ].map(([label, value, color, border]) => (
-            <div key={label} className={`rounded-md border ${border} bg-[#0a141a] p-4`}>
-              <p className={`text-[0.62rem] font-semibold uppercase tracking-[0.16em] ${color}`}>{label}</p>
-              <div className="mt-4 flex items-end gap-3">
-                <span className={`text-5xl font-semibold tracking-[-0.06em] ${color}`}>{value}</span>
-                <span className="mb-2 text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-muted">Percentile</span>
-              </div>
-              <div className="mt-4 h-1.5 rounded-full bg-[#16313d]">
-                <div className={`h-full rounded-full ${label.startsWith("Cost") ? "w-[38%] bg-warning" : label.startsWith("R-") ? "w-[59%] bg-cyan" : "w-[63%] bg-cyan"}`} />
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-3 grid gap-3 lg:grid-cols-2">
-          <div className="rounded-md border border-[#203747] bg-[#070d12] p-4">
-            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">Weekly Edge Review</p>
-            <h3 className="mt-3 text-xl font-semibold tracking-[-0.03em] text-ink">This review got worse</h3>
-            <div className="mt-4 space-y-2">
-              {reviewItems.map(([badge, title, detail]) => (
-                <div key={title} className="grid gap-3 rounded-sm border border-[#1d3443] border-l-warning/80 bg-[#090f14] p-3 sm:grid-cols-[5.5rem_1fr] sm:items-center">
-                  <span className="w-fit rounded-full border border-warning/45 px-2 py-1 text-[0.58rem] font-semibold uppercase tracking-[0.12em] text-warning">
-                    {badge}
-                  </span>
-                  <div>
-                    <p className="text-sm font-semibold text-ink">{title}</p>
-                    <p className="mt-1 text-xs text-muted">{detail}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="rounded-md border border-[#203747] bg-[#070d12] p-4">
-            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">Next Review Targets</p>
-            <p className="mt-3 text-sm text-muted">Next upload is checked against the current problem areas.</p>
-            <div className="mt-4 space-y-2">
-              {targets.map(([badge, title, detail], index) => (
-                <div key={title} className={`grid gap-3 rounded-sm border border-[#1d3443] bg-[#090f14] p-3 sm:grid-cols-[5.5rem_1fr] sm:items-center ${index === 2 ? "border-l-profit/80" : "border-l-warning/80"}`}>
-                  <span className={`w-fit rounded-full border px-2 py-1 text-[0.58rem] font-semibold uppercase tracking-[0.12em] ${index === 2 ? "border-profit/45 text-profit" : "border-warning/45 text-warning"}`}>
-                    {badge}
-                  </span>
-                  <div>
-                    <p className="text-sm font-semibold text-ink">{title}</p>
-                    <p className="mt-1 text-xs text-muted">{detail}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
+      <MarketingGraphicImage
+        src="/marketing/edgetrace-review-loop.svg"
+        alt="EdgeTrace Pro review loop graphic showing benchmark percentiles and next review targets."
+      />
     </PresentationFrame>
   );
 }

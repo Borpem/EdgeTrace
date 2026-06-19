@@ -1,0 +1,128 @@
+<svg width="1400" height="1040" viewBox="0 0 1400 1040" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="glowCyan" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(970 190) rotate(130) scale(530 390)">
+      <stop stop-color="#4EC4EC" stop-opacity=".34"/>
+      <stop offset=".48" stop-color="#4EC4EC" stop-opacity=".08"/>
+      <stop offset="1" stop-color="#4EC4EC" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowAmber" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(260 820) rotate(-38) scale(390 280)">
+      <stop stop-color="#E8BE4C" stop-opacity=".20"/>
+      <stop offset=".55" stop-color="#E8BE4C" stop-opacity=".05"/>
+      <stop offset="1" stop-color="#E8BE4C" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="panel" x1="0" x2="1" y1="0" y2="1">
+      <stop stop-color="#101D25"/>
+      <stop offset=".46" stop-color="#081118"/>
+      <stop offset="1" stop-color="#050A0E"/>
+    </linearGradient>
+    <linearGradient id="curve" x1="220" x2="650" y1="586" y2="586" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#72D89A"/>
+      <stop offset=".36" stop-color="#72D89A"/>
+      <stop offset=".49" stop-color="#F05E77"/>
+      <stop offset=".66" stop-color="#F05E77"/>
+      <stop offset=".8" stop-color="#72D89A"/>
+      <stop offset="1" stop-color="#72D89A"/>
+    </linearGradient>
+    <filter id="softShadow" x="0" y="0" width="1400" height="1040" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="48" stdDeviation="56" flood-color="#000000" flood-opacity=".62"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="34" flood-color="#4EC4EC" flood-opacity=".18"/>
+    </filter>
+    <filter id="smallGlow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="7" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <pattern id="grid" width="44" height="44" patternUnits="userSpaceOnUse">
+      <path d="M44 0H0V44" stroke="#4EC4EC" stroke-opacity=".055" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1400" height="1040" fill="#020609"/>
+  <rect width="1400" height="1040" fill="url(#glowCyan)"/>
+  <rect width="1400" height="1040" fill="url(#glowAmber)"/>
+
+  <g filter="url(#softShadow)">
+    <rect x="116" y="96" width="1168" height="844" fill="#04080C" stroke="#31536A" stroke-width="2"/>
+    <rect x="136" y="116" width="1128" height="804" fill="url(#panel)" stroke="#243E4F" stroke-width="1"/>
+    <rect x="136" y="116" width="1128" height="804" fill="url(#grid)"/>
+    <path d="M176 256H1224" stroke="#274456" stroke-width="1"/>
+
+    <text x="176" y="190" fill="#9CCFE4" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700" letter-spacing="9">STRATEGY SIGNAL BOARD</text>
+    <text x="176" y="232" fill="#F6FAFC" font-family="Inter, Arial, sans-serif" font-size="46" font-weight="750" letter-spacing="-2">Your next review, decoded.</text>
+
+    <g>
+      <rect x="818" y="148" width="126" height="108" fill="#071017" stroke="#284657"/>
+      <text x="881" y="185" text-anchor="middle" fill="#9CCFE4" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="5">NET PNL</text>
+      <text x="881" y="222" text-anchor="middle" fill="#72D89A" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="750">$2.7k</text>
+      <text x="881" y="244" text-anchor="middle" fill="#9EB1BD" font-family="Inter, Arial, sans-serif" font-size="13">after costs</text>
+    </g>
+    <g>
+      <rect x="960" y="148" width="126" height="108" fill="#071017" stroke="#284657"/>
+      <text x="1023" y="185" text-anchor="middle" fill="#9CCFE4" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="5">COST</text>
+      <text x="1023" y="222" text-anchor="middle" fill="#E8BE4C" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="750">38th</text>
+      <text x="1023" y="244" text-anchor="middle" fill="#9EB1BD" font-family="Inter, Arial, sans-serif" font-size="13">percentile</text>
+    </g>
+    <g>
+      <rect x="1102" y="148" width="122" height="108" fill="#071017" stroke="#284657"/>
+      <text x="1163" y="185" text-anchor="middle" fill="#9CCFE4" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="5">NEXT</text>
+      <text x="1163" y="222" text-anchor="middle" fill="#4EC4EC" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="750">2-3</text>
+      <text x="1163" y="244" text-anchor="middle" fill="#9EB1BD" font-family="Inter, Arial, sans-serif" font-size="13">sessions</text>
+    </g>
+
+    <g>
+      <rect x="176" y="306" width="462" height="514" fill="#08131A" stroke="#2B4A5D"/>
+      <text x="206" y="360" fill="#B7E8F8" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="700" letter-spacing="7">EDGE HEALTH</text>
+      <text x="206" y="450" fill="#E8BE4C" font-family="Inter, Arial, sans-serif" font-size="104" font-weight="740" letter-spacing="-7">60</text>
+      <text x="318" y="446" fill="#F5F8FA" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="550">/100</text>
+      <rect x="468" y="390" width="132" height="48" fill="#151605" stroke="#B99539"/>
+      <text x="534" y="421" text-anchor="middle" fill="#E8BE4C" font-family="Inter, Arial, sans-serif" font-size="19" font-weight="760">Stabilizing</text>
+      <text x="206" y="500" fill="#D7E8F0" font-family="Inter, Arial, sans-serif" font-size="21" font-weight="450">Profitable, but not clean.</text>
+      <text x="206" y="532" fill="#D7E8F0" font-family="Inter, Arial, sans-serif" font-size="21" font-weight="450">One loss pocket is holding the score back.</text>
+
+      <path d="M206 645H600M206 607H600M206 569H600" stroke="#1C3341" stroke-width="1.4"/>
+      <path d="M206 626H600" stroke="#7D8E99" stroke-opacity=".32" stroke-width="1.4" stroke-dasharray="6 8"/>
+      <path d="M212 626C239 582 276 586 314 616C349 644 387 644 425 628C464 612 481 596 512 601C551 607 565 570 598 578" stroke="url(#curve)" stroke-width="5.5" stroke-linecap="round" fill="none"/>
+      <circle cx="390" cy="637" r="7" fill="#F05E77" filter="url(#smallGlow)"/>
+      <circle cx="560" cy="576" r="7" fill="#72D89A" filter="url(#smallGlow)"/>
+      <text x="206" y="720" fill="#72D89A" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="650">↗ Equity curve rising</text>
+    </g>
+
+    <g>
+      <rect x="664" y="306" width="560" height="360" fill="#08131A" stroke="#2B4A5D"/>
+      <path d="M664 306V666" stroke="#F05E77" stroke-width="3"/>
+      <text x="696" y="360" fill="#B7E8F8" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="700" letter-spacing="7">PRIMARY DIAGNOSIS</text>
+      <text x="696" y="450" fill="#F6FAFC" font-family="Inter, Arial, sans-serif" font-size="50" font-weight="760" letter-spacing="-2.4">Loss leak</text>
+      <text x="696" y="510" fill="#F6FAFC" font-family="Inter, Arial, sans-serif" font-size="50" font-weight="760" letter-spacing="-2.4">isolated</text>
+      <text x="696" y="565" fill="#D7E8F0" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="650">Fix-first target</text>
+      <text x="696" y="602" fill="#9EB1BD" font-family="Inter, Arial, sans-serif" font-size="18">Verify on next upload</text>
+
+      <rect x="948" y="384" width="226" height="104" fill="#0A0F15" stroke="#2B4A5D"/>
+      <text x="974" y="422" fill="#9CCFE4" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="5">EST. DRAG</text>
+      <text x="974" y="462" fill="#F05E77" font-family="Inter, Arial, sans-serif" font-size="36" font-weight="760">-$1.6k</text>
+      <rect x="948" y="510" width="226" height="104" fill="#0A0F15" stroke="#2B4A5D"/>
+      <text x="974" y="548" fill="#9CCFE4" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="5">FIX FIRST</text>
+      <text x="974" y="588" fill="#F05E77" font-family="Inter, Arial, sans-serif" font-size="36" font-weight="760">META</text>
+    </g>
+
+    <g>
+      <rect x="664" y="690" width="180" height="130" fill="#071017" stroke="#284657"/>
+      <text x="754" y="730" text-anchor="middle" fill="#9CCFE4" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="5">WIN QUALITY</text>
+      <text x="754" y="770" text-anchor="middle" fill="#E8BE4C" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="760">46.4%</text>
+      <text x="754" y="795" text-anchor="middle" fill="#9EB1BD" font-family="Inter, Arial, sans-serif" font-size="15">watchlist</text>
+    </g>
+    <g>
+      <rect x="866" y="690" width="180" height="130" fill="#071017" stroke="#284657"/>
+      <text x="956" y="730" text-anchor="middle" fill="#9CCFE4" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="5">R CAPTURE</text>
+      <text x="956" y="770" text-anchor="middle" fill="#F05E77" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="760">0.26R</text>
+      <text x="956" y="795" text-anchor="middle" fill="#9EB1BD" font-family="Inter, Arial, sans-serif" font-size="15">weak capture</text>
+    </g>
+    <g>
+      <rect x="1068" y="690" width="156" height="130" fill="#071017" stroke="#284657"/>
+      <text x="1146" y="730" text-anchor="middle" fill="#9CCFE4" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="5">BENCHMARK</text>
+      <text x="1146" y="770" text-anchor="middle" fill="#4EC4EC" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="760">63rd</text>
+      <text x="1146" y="795" text-anchor="middle" fill="#9EB1BD" font-family="Inter, Arial, sans-serif" font-size="15">expectancy</text>
+    </g>
+  </g>
+</svg>

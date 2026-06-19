@@ -116,97 +116,13 @@ function HomeBackdrop() {
 function DashboardMockup() {
   return (
     <div className="relative mx-auto w-full max-w-[940px] lg:mx-0">
-      <div className="absolute -inset-8 bg-[radial-gradient(circle_at_76%_22%,rgba(78,196,236,0.25),transparent_22rem),radial-gradient(circle_at_25%_78%,rgba(232,190,76,0.15),transparent_21rem),radial-gradient(circle_at_52%_48%,rgba(115,201,143,0.08),transparent_26rem)] blur-2xl" />
-      <div className="relative overflow-hidden border border-[#31536a] bg-[#04080c] shadow-[0_42px_140px_-84px_rgba(78,196,236,0.85)]">
-        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(78,196,236,0.07)_1px,transparent_1px),linear-gradient(180deg,rgba(78,196,236,0.045)_1px,transparent_1px)] bg-[size:38px_38px] opacity-45 [mask-image:radial-gradient(circle_at_50%_42%,black,transparent_78%)]" />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_16%,rgba(78,196,236,0.16),transparent_17rem),linear-gradient(135deg,rgba(255,255,255,0.045),transparent_32%)]" />
-
-        <div className="relative p-4 md:p-6">
-          <div className="flex flex-col gap-4 border-b border-[#203747] pb-5 md:flex-row md:items-start md:justify-between">
-            <div>
-              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-[#8ca2af]">Strategy signal board</p>
-              <h2 className="mt-2 text-3xl font-semibold leading-tight tracking-[-0.045em] text-ink">Your next review, decoded.</h2>
-            </div>
-            <div className="grid grid-cols-3 gap-2 text-center">
-              <MarketingMini label="Net PnL" value="$2.7k" tone="text-[#73c98f]" />
-              <MarketingMini label="Cost Drag" value="38th" tone="text-[#e8be4c]" />
-              <MarketingMini label="Next Check" value="2-3" tone="text-[#4ec4ec]" />
-            </div>
-          </div>
-
-          <div className="mt-5 grid gap-4 lg:grid-cols-[0.84fr_1.16fr]">
-            <div className="relative overflow-hidden border border-[#284657] bg-[#071017]/96 p-5">
-              <div className="absolute -right-14 -top-14 h-36 w-36 rounded-full bg-cyan/10 blur-3xl" />
-              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-[#9db0bc]">Edge health</p>
-              <div className="mt-5 flex items-end justify-between gap-4">
-                <div>
-                  <span className="text-7xl font-semibold leading-none tracking-[-0.07em] text-[#e8be4c]">60</span>
-                  <span className="ml-2 text-lg text-[#d6e3ea]">/100</span>
-                </div>
-                <span className="border border-[#e8be4c]/35 bg-[#e8be4c]/10 px-3 py-1.5 text-sm font-semibold text-[#e8be4c]">Stabilizing</span>
-              </div>
-              <p className="mt-4 max-w-md text-sm leading-6 text-[#c8d6df]">Profitable, but not clean. One loss pocket is holding the score back.</p>
-              <svg className="mt-6 h-28 w-full overflow-visible" viewBox="0 0 360 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                  <linearGradient id="homeHeroCurve" x1="0" x2="360" y1="0" y2="0">
-                    <stop stopColor="#73C98F" />
-                    <stop offset="0.44" stopColor="#E65F73" />
-                    <stop offset="0.68" stopColor="#E65F73" />
-                    <stop offset="1" stopColor="#73C98F" />
-                  </linearGradient>
-                </defs>
-                <path d="M0 92H360M0 58H360M0 24H360" stroke="#203241" />
-                <path d="M0 76H360" stroke="#6B7784" strokeOpacity=".3" strokeDasharray="4 6" />
-                <path d="M6 76 C32 38, 62 52, 90 70 C118 87, 146 94, 184 84 C216 76, 228 55, 260 58 C294 60, 318 30, 354 34" stroke="url(#homeHeroCurve)" strokeWidth="4" strokeLinecap="round" fill="none" />
-                <circle cx="184" cy="84" r="5" fill="#E65F73" />
-                <circle cx="318" cy="30" r="5" fill="#73C98F" />
-              </svg>
-            </div>
-
-            <div className="grid gap-4">
-              <div className="relative overflow-hidden border border-[#324a59] border-l-[#e65f73] bg-[#071017]/96 p-5">
-                <div className="absolute -right-16 top-0 h-40 w-40 rounded-full bg-[#e65f73]/10 blur-3xl" />
-                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-[#9db0bc]">Primary diagnosis</p>
-                <div className="mt-5 grid gap-5 md:grid-cols-[1fr_auto] md:items-end">
-                  <div>
-                    <h3 className="text-3xl font-semibold tracking-[-0.045em] text-ink">Loss leak isolated</h3>
-                    <p className="mt-3 max-w-sm text-sm leading-6 text-[#b7c5cf]">The next upload should prove whether the largest loss segment has been contained.</p>
-                  </div>
-                  <div className="grid min-w-44 gap-2">
-                    <MarketingSignal label="Drag" value="-$1.6k" body="Est. impact" tone="text-[#e65f73]" />
-                    <MarketingSignal label="Fix first" value="META" body="Weakest segment" tone="text-[#e65f73]" />
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid gap-3 md:grid-cols-3">
-                <MarketingSignal label="Win quality" value="46.4%" body="Watchlist" tone="text-[#e8be4c]" />
-                <MarketingSignal label="R capture" value="0.26R" body="Weak capture" tone="text-[#e65f73]" />
-                <MarketingSignal label="Benchmark" value="63rd" body="Expectancy" tone="text-[#4ec4ec]" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function MarketingSignal({ label, value, body, tone }: { label: string; value: string; body: string; tone: string }) {
-  return (
-    <div className="border border-[#1f3441] bg-[#060d13] p-4">
-      <p className="text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-[#8ca2af]">{label}</p>
-      <p className={`mt-2 text-2xl font-semibold tracking-[-0.03em] ${tone}`}>{value}</p>
-      <p className="mt-1 text-xs text-[#8ca2af]">{body}</p>
-    </div>
-  );
-}
-
-function MarketingMini({ label, value, tone }: { label: string; value: string; tone: string }) {
-  return (
-    <div className="border border-[#1f3441] bg-[#060d13] px-3 py-3 text-center">
-      <strong className={`block text-2xl font-semibold tracking-[-0.04em] ${tone}`}>{value}</strong>
-      <span className="mt-1 block text-[0.56rem] uppercase tracking-[0.12em] text-[#8ca2af]">{label}</span>
+      <div className="absolute -inset-8 bg-[radial-gradient(circle_at_68%_32%,rgba(78,196,236,0.26),transparent_25rem),radial-gradient(circle_at_28%_82%,rgba(232,190,76,0.12),transparent_22rem)] blur-2xl" />
+      <img
+        src="/marketing/edgetrace-signal-board.svg"
+        alt="EdgeTrace strategy signal board showing edge health, diagnosis, review targets, and benchmark metrics."
+        className="relative block w-full select-none drop-shadow-[0_34px_95px_rgba(0,0,0,0.72)]"
+        draggable={false}
+      />
     </div>
   );
 }
