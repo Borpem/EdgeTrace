@@ -470,7 +470,7 @@ export function App() {
 
   const rootClassName = [
     "EdgeTrace-contours min-h-screen text-ink",
-    useAuthenticatedAppShell ? "EdgeTrace-auth-framed" : "",
+    useAuthenticatedAppShell ? "EdgeTrace-auth-framed EdgeTrace-command-dashboard" : "",
     !useAuthenticatedAppShell && !useReportDashboardShell ? "EdgeTrace-public-framed" : ""
   ]
     .filter(Boolean)
