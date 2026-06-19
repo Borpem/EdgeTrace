@@ -146,9 +146,10 @@ function DashboardMockup() {
               <p className="mt-3 text-sm leading-6 text-[#b7c5cf]">Positive profile with one or two areas still worth reviewing.</p>
               <svg className="mt-4 h-28 w-full" viewBox="0 0 420 120" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M0 96H420M0 64H420M0 32H420" stroke="#203241" />
-                <path d="M0 78 C42 24, 85 104, 130 70 S212 82, 250 76 S306 28, 420 42" stroke="#73C98F" strokeWidth="3" fill="none" />
-                <path d="M115 70 C146 108, 205 92, 250 76" stroke="#E65F73" strokeWidth="3" fill="none" />
-                <path d="M0 80H420" stroke="#6B7784" strokeOpacity=".42" strokeDasharray="4 5" />
+                <path d="M0 76H420" stroke="#6B7784" strokeOpacity=".42" strokeDasharray="4 5" />
+                <path d="M0 70 C32 34, 68 48, 98 64 C112 72, 124 75, 138 77" stroke="#73C98F" strokeWidth="3" strokeLinecap="round" fill="none" />
+                <path d="M138 77 C164 90, 198 91, 228 83 C244 79, 260 77, 276 76" stroke="#E65F73" strokeWidth="3" strokeLinecap="round" fill="none" />
+                <path d="M276 76 C310 64, 338 42, 374 38 C392 36, 406 38, 420 41" stroke="#73C98F" strokeWidth="3" strokeLinecap="round" fill="none" />
               </svg>
             </div>
 
