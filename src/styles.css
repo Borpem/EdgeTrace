@@ -4587,6 +4587,8 @@
 body {
   margin: 0;
   background: #03060c;
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
 }
 
 .EdgeTrace-contours {
@@ -4909,6 +4911,7 @@ body {
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 1.35rem;
+  min-height: 4.1rem;
   border-bottom: 1px solid rgba(27, 52, 68, 0.95);
   padding: 0.15rem 0.25rem 0.72rem;
 }
@@ -4935,6 +4938,7 @@ body {
   display: flex;
   align-items: center;
   gap: 1.25rem;
+  height: 2.55rem;
   min-width: 0;
 }
 
@@ -4943,6 +4947,7 @@ body {
   color: var(--command-text-secondary);
   font-size: 0.92rem;
   font-weight: 560;
+  line-height: 1;
   white-space: nowrap;
 }
 
