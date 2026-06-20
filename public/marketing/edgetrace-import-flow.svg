@@ -1,58 +1,84 @@
-<svg width="1100" height="520" viewBox="0 0 1100 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="1200" height="620" viewBox="0 0 1200 620" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="panel" x1="0" x2="1" y1="0" y2="1">
-      <stop stop-color="#101D25"/><stop offset="1" stop-color="#050A0E"/>
+      <stop stop-color="#101D25"/>
+      <stop offset=".55" stop-color="#081118"/>
+      <stop offset="1" stop-color="#050A0E"/>
     </linearGradient>
-    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(270 130) rotate(35) scale(420 260)">
-      <stop stop-color="#4EC4EC" stop-opacity=".2"/><stop offset="1" stop-color="#4EC4EC" stop-opacity="0"/>
+    <radialGradient id="glowA" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(260 110) rotate(36) scale(420 270)">
+      <stop stop-color="#4EC4EC" stop-opacity=".18"/>
+      <stop offset=".55" stop-color="#4EC4EC" stop-opacity=".04"/>
+      <stop offset="1" stop-color="#4EC4EC" stop-opacity="0"/>
     </radialGradient>
-    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-      <path d="M40 0H0V40" stroke="#4EC4EC" stroke-opacity=".05"/>
+    <radialGradient id="glowB" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1000 492) rotate(-28) scale(360 230)">
+      <stop stop-color="#72D89A" stop-opacity=".14"/>
+      <stop offset="1" stop-color="#72D89A" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="44" height="44" patternUnits="userSpaceOnUse">
+      <path d="M44 0H0V44" stroke="#4EC4EC" stroke-opacity=".045"/>
     </pattern>
-    <filter id="shadow" x="-10%" y="-20%" width="120%" height="150%">
-      <feDropShadow dx="0" dy="30" stdDeviation="30" flood-color="#000" flood-opacity=".55"/>
+    <filter id="shadow" x="-8%" y="-18%" width="116%" height="140%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="34" stdDeviation="36" flood-color="#000000" flood-opacity=".62"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="28" flood-color="#4EC4EC" flood-opacity=".11"/>
     </filter>
   </defs>
-  <rect width="1100" height="520" fill="#020609"/>
-  <rect width="1100" height="520" fill="url(#glow)"/>
+
+  <rect width="1200" height="620" fill="#020609"/>
+  <rect width="1200" height="620" fill="url(#glowA)"/>
+  <rect width="1200" height="620" fill="url(#glowB)"/>
+
   <g filter="url(#shadow)">
-    <rect x="40" y="40" width="1020" height="440" fill="url(#panel)" stroke="#294757"/>
-    <rect x="40" y="40" width="1020" height="440" fill="url(#grid)"/>
-    <text x="78" y="96" fill="#B7E8F8" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700" letter-spacing="7">IMPORT PIPELINE</text>
-    <text x="78" y="136" fill="#F6FAFC" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="760" letter-spacing="-1.6">Broker export becomes a diagnostic report.</text>
+    <rect x="72" y="58" width="1056" height="504" fill="#04080C" stroke="#31536A" stroke-width="1.5"/>
+    <rect x="92" y="78" width="1016" height="464" fill="url(#panel)" stroke="#243E4F"/>
+    <rect x="92" y="78" width="1016" height="464" fill="url(#grid)"/>
+
+    <text x="132" y="136" fill="#9CCFE4" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700" letter-spacing="7">IMPORT WORKSPACE</text>
+    <text x="132" y="176" fill="#F6FAFC" font-family="Inter, Arial, sans-serif" font-size="38" font-weight="760" letter-spacing="-1.7">Trade history becomes clean report data.</text>
+    <path d="M132 214H1068" stroke="#274456"/>
 
     <g>
-      <rect x="86" y="190" width="250" height="210" fill="#071017" stroke="#284657"/>
-      <rect x="126" y="224" width="86" height="110" fill="#0E1C24" stroke="#8FB4C5"/>
-      <path d="M182 224V258H212" stroke="#8FB4C5"/>
-      <text x="126" y="366" fill="#4EC4EC" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="750">CSV / HTML export</text>
-      <path d="M236 248H294M236 278H294M236 308H294" stroke="#284657" stroke-width="8"/>
+      <rect x="132" y="258" width="270" height="208" fill="#071017" stroke="#284657"/>
+      <text x="162" y="302" fill="#B7E8F8" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="750" letter-spacing="5">SOURCE FILE</text>
+      <rect x="162" y="326" width="78" height="98" fill="#0D1B23" stroke="#90B4C5"/>
+      <path d="M216 326V356H240" stroke="#90B4C5"/>
+      <text x="180" y="385" fill="#F6FAFC" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="760">CSV</text>
+      <path d="M260 342H356M260 368H340M260 394H364" stroke="#203746" stroke-width="8"/>
+      <text x="162" y="450" fill="#9EB1BD" font-family="Inter, Arial, sans-serif" font-size="15">IBKR, Robinhood, Schwab, or CSV</text>
     </g>
 
-    <path d="M370 296H476" stroke="#4EC4EC" stroke-width="3"/>
-    <path d="M462 278L480 296L462 314" stroke="#4EC4EC" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M430 360H514" stroke="#4EC4EC" stroke-width="3"/>
+    <path d="M499 343L516 360L499 377" stroke="#4EC4EC" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
 
     <g>
-      <rect x="520" y="166" width="220" height="258" fill="#071017" stroke="#284657"/>
-      <text x="552" y="218" fill="#B7E8F8" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="5">MAPPING</text>
-      <g font-family="Inter, Arial, sans-serif" font-size="17">
-        <text x="552" y="270" fill="#D7E8F0">Trades</text><text x="682" y="270" text-anchor="end" fill="#72D89A" font-weight="750">194</text>
-        <text x="552" y="312" fill="#D7E8F0">Costs</text><text x="682" y="312" text-anchor="end" fill="#4EC4EC" font-weight="750">Mapped</text>
-        <text x="552" y="354" fill="#D7E8F0">Audit</text><text x="682" y="354" text-anchor="end" fill="#72D89A" font-weight="750">Clean</text>
+      <rect x="546" y="238" width="266" height="248" fill="#071017" stroke="#284657"/>
+      <text x="576" y="282" fill="#B7E8F8" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="750" letter-spacing="5">NORMALIZED INPUTS</text>
+      <g font-family="Inter, Arial, sans-serif">
+        <rect x="576" y="314" width="206" height="42" fill="#081018" stroke="#243E4F"/>
+        <text x="592" y="341" fill="#9EB1BD" font-size="14">Trades imported</text>
+        <text x="766" y="341" fill="#72D89A" font-size="18" font-weight="760" text-anchor="end">194</text>
+
+        <rect x="576" y="368" width="206" height="42" fill="#081018" stroke="#243E4F"/>
+        <text x="592" y="395" fill="#9EB1BD" font-size="14">Costs detected</text>
+        <text x="766" y="395" fill="#4EC4EC" font-size="18" font-weight="760" text-anchor="end">Yes</text>
+
+        <rect x="576" y="422" width="206" height="42" fill="#081018" stroke="#243E4F"/>
+        <text x="592" y="449" fill="#9EB1BD" font-size="14">Mapping confidence</text>
+        <text x="766" y="449" fill="#E8BE4C" font-size="18" font-weight="760" text-anchor="end">Review</text>
       </g>
     </g>
 
-    <path d="M770 296H876" stroke="#4EC4EC" stroke-width="3"/>
-    <path d="M862 278L880 296L862 314" stroke="#4EC4EC" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M840 360H924" stroke="#4EC4EC" stroke-width="3"/>
+    <path d="M909 343L926 360L909 377" stroke="#4EC4EC" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
 
     <g>
-      <rect x="914" y="166" width="108" height="258" fill="#071017" stroke="#284657"/>
-      <text x="968" y="224" text-anchor="middle" fill="#B7E8F8" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="5">REPORT</text>
-      <circle cx="968" cy="292" r="45" stroke="#17303B" stroke-width="12"/>
-      <path d="M968 247A45 45 0 0 1 1013 292" stroke="#E8BE4C" stroke-width="12" stroke-linecap="round"/>
-      <path d="M1013 292A45 45 0 0 1 943 331" stroke="#72D89A" stroke-width="12" stroke-linecap="round"/>
-      <text x="968" y="302" text-anchor="middle" fill="#E8BE4C" font-family="Inter, Arial, sans-serif" font-size="32" font-weight="760">60</text>
-      <text x="968" y="376" text-anchor="middle" fill="#D7E8F0" font-family="Inter, Arial, sans-serif" font-size="15">Edge Health</text>
+      <rect x="956" y="238" width="112" height="248" fill="#071017" stroke="#284657"/>
+      <text x="1012" y="282" fill="#B7E8F8" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="750" letter-spacing="5" text-anchor="middle">REPORT</text>
+      <circle cx="1012" cy="352" r="48" stroke="#17303B" stroke-width="12"/>
+      <path d="M1012 304A48 48 0 0 1 1059 362" stroke="#E8BE4C" stroke-width="12" stroke-linecap="round"/>
+      <path d="M1056 371A48 48 0 0 1 981 389" stroke="#72D89A" stroke-width="12" stroke-linecap="round"/>
+      <text x="1012" y="362" fill="#E8BE4C" font-family="Inter, Arial, sans-serif" font-size="36" font-weight="780" text-anchor="middle">60</text>
+      <text x="1012" y="428" fill="#9EB1BD" font-family="Inter, Arial, sans-serif" font-size="13" text-anchor="middle">Edge Health</text>
+      <text x="1012" y="456" fill="#4EC4EC" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="750" text-anchor="middle">Ready to inspect</text>
     </g>
   </g>
 </svg>
