@@ -115,7 +115,7 @@ function HomeBackdrop() {
 
 function DashboardMockup() {
   return (
-    <div className="relative mx-auto w-full max-w-[940px] lg:mx-0">
+    <div className="relative mx-auto w-full max-w-[1080px] lg:mx-0 lg:w-[108%] xl:w-[112%]">
       <div className="absolute -inset-8 bg-[radial-gradient(circle_at_68%_32%,rgba(78,196,236,0.26),transparent_25rem),radial-gradient(circle_at_28%_82%,rgba(232,190,76,0.12),transparent_22rem)] blur-2xl" />
       <img
         src="/marketing/edgetrace-hero-dashboard-preview-text-adjusted.svg"
