@@ -1,0 +1,158 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 690" role="img" aria-labelledby="title desc">
+  <title id="title">EdgeTrace dashboard hero preview</title>
+  <desc id="desc">A stylized EdgeTrace dashboard preview showing primary diagnosis, edge health, a continuous equity curve with cleaner text spacing, an aligned live report status chip, and top driver cards.</desc>
+  <defs>
+    <linearGradient id="frameBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1b24"/>
+      <stop offset="0.58" stop-color="#071117"/>
+      <stop offset="1" stop-color="#05090d"/>
+    </linearGradient>
+    <linearGradient id="panelBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d2029" stop-opacity="0.96"/>
+      <stop offset="0.7" stop-color="#07131a" stop-opacity="0.98"/>
+      <stop offset="1" stop-color="#050b10" stop-opacity="0.99"/>
+    </linearGradient>
+    <linearGradient id="cardBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1c25"/>
+      <stop offset="1" stop-color="#061017"/>
+    </linearGradient>
+    <linearGradient id="chipBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1a23"/>
+      <stop offset="1" stop-color="#061018"/>
+    </linearGradient>
+    <linearGradient id="greenFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#67e89a" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#67e89a" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="grid" width="36" height="36" patternUnits="userSpaceOnUse">
+      <path d="M 36 0 L 0 0 0 36" fill="none" stroke="#1b3948" stroke-width="1" opacity="0.20"/>
+    </pattern>
+    <clipPath id="frameClip"><rect x="42" y="34" width="1116" height="612" rx="14"/></clipPath>
+    <clipPath id="chartClip"><rect x="790" y="162" width="300" height="112" rx="2"/></clipPath>
+    <filter id="outerShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="28" stdDeviation="34" flood-color="#000000" flood-opacity="0.55"/>
+    </filter>
+    <filter id="panelShadow" x="-12%" y="-12%" width="124%" height="124%">
+      <feDropShadow dx="0" dy="12" stdDeviation="20" flood-color="#000000" flood-opacity="0.34"/>
+    </filter>
+    <filter id="blurGlow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="54"/>
+    </filter>
+    <style>
+      .font { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      .mono { font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace; }
+      .kicker { font-size: 12px; font-weight: 800; letter-spacing: .22em; fill: #b7ecff; }
+      .smallKicker { font-size: 10px; font-weight: 800; letter-spacing: .18em; fill: #8db9ca; }
+      .panelStroke { stroke: #2a5060; stroke-width: 1.25; }
+      .muted { fill: #b5c8d1; }
+      .white { fill: #f7fbff; }
+      .green { fill: #6de99d; }
+      .red { fill: #ff5d84; }
+      .gold { fill: #e7bd49; }
+    </style>
+  </defs>
+
+  <g class="font">
+    <rect x="42" y="34" width="1116" height="612" rx="14" fill="url(#frameBg)" stroke="#2b6075" stroke-width="1.4" filter="url(#outerShadow)"/>
+    <g clip-path="url(#frameClip)">
+      <ellipse cx="870" cy="238" rx="360" ry="210" fill="#41d4f5" opacity="0.09" filter="url(#blurGlow)"/>
+      <ellipse cx="595" cy="578" rx="420" ry="160" fill="#6d5cff" opacity="0.08" filter="url(#blurGlow)"/>
+    </g>
+    <rect x="56" y="50" width="1088" height="580" rx="10" fill="#08151c" stroke="#173340" stroke-width="1" opacity="0.88"/>
+    <rect x="56" y="50" width="1088" height="580" rx="10" fill="url(#grid)" opacity="0.28"/>
+
+    <circle cx="86" cy="76" r="3.1" fill="#63e39a" opacity="0.86"/>
+    <circle cx="101" cy="76" r="3.1" fill="#e2bb4c" opacity="0.85"/>
+    <circle cx="116" cy="76" r="3.1" fill="#ff5c82" opacity="0.86"/>
+    <text x="165" y="81" class="smallKicker mono">DASHBOARD OVERVIEW</text>
+    <rect x="910" y="58" width="190" height="28" rx="7" fill="#0b1c25" stroke="#244b5b" opacity="0.95"/>
+    <circle cx="930" cy="72" r="3" fill="#63e39a" opacity="0.9"/>
+    <text x="950" y="76" class="smallKicker mono">LIVE REPORT</text>
+    <path d="M1058 72H1084" stroke="#376576" stroke-width="1.2" stroke-linecap="round" opacity="0.75"/>
+
+    <rect x="82" y="104" width="452" height="220" rx="9" fill="url(#panelBg)" class="panelStroke" filter="url(#panelShadow)"/>
+    <path d="M82 147V292" stroke="#ff5d84" stroke-width="2" stroke-linecap="round"/>
+    <text x="106" y="138" class="kicker mono">PRIMARY DIAGNOSIS</text>
+    <text x="106" y="184" font-size="31" font-weight="780" class="white">Loss Concentration</text>
+    <text x="106" y="222" font-size="15.5" class="muted">One or two losses are large enough to distort</text>
+    <text x="106" y="246" font-size="15.5" class="muted">the reported performance profile.</text>
+    <rect x="106" y="266" width="178" height="52" rx="5" fill="url(#chipBg)" stroke="#203f4d"/>
+    <text x="123" y="286" class="smallKicker mono">EST. IMPACT</text>
+    <text x="123" y="310" font-size="20" font-weight="800" class="red">-$1,610.11</text>
+    <rect x="298" y="266" width="207" height="52" rx="5" fill="url(#chipBg)" stroke="#203f4d"/>
+    <text x="315" y="286" class="smallKicker mono">DIAGNOSIS STRENGTH</text>
+    <text x="315" y="310" font-size="18" font-weight="780" class="white">Moderate</text>
+
+    <rect x="548" y="104" width="570" height="220" rx="9" fill="url(#panelBg)" class="panelStroke" filter="url(#panelShadow)"/>
+    <text x="572" y="138" class="kicker mono">EDGE HEALTH</text>
+    <text x="572" y="193" font-size="58" font-weight="790" class="gold">60</text>
+    <text x="652" y="193" font-size="22" font-weight="650" class="white">/100</text>
+    <text x="572" y="224" font-size="14.7" class="muted">Positive edge profile;</text>
+    <text x="572" y="247" font-size="14.7" class="muted">review concentration risk.</text>
+    <text x="572" y="298" font-size="14" font-weight="750" class="green">↗ Equity curve rising</text>
+
+    <g clip-path="url(#chartClip)">
+      <rect x="790" y="162" width="300" height="112" fill="#081822" opacity="0.42"/>
+      <line x1="790" y1="176" x2="1090" y2="176" stroke="#1b3947" opacity="0.72"/>
+      <line x1="790" y1="204" x2="1090" y2="204" stroke="#1b3947" opacity="0.72"/>
+      <line x1="790" y1="232" x2="1090" y2="232" stroke="#1b3947" opacity="0.72"/>
+      <line x1="790" y1="260" x2="1090" y2="260" stroke="#1b3947" opacity="0.72"/>
+      <line x1="790" y1="246" x2="1090" y2="246" stroke="#385361" stroke-dasharray="4 8" opacity="0.7"/>
+      <path d="M 990.0 243.2 L 1002.5 239.0 L 1015.0 230.6 L 1027.5 222.2 L 1040.0 211.0 L 1052.5 204.0 L 1065.0 209.6 L 1077.5 197.0 L 1090.0 201.2 L 1090.0 274.0 L 990.0 274.0 Z" fill="url(#greenFill)"/>
+      <polyline points="790.0,244.6 802.5,240.4 815.0,243.2 827.5,233.4 840.0,239.7 852.5,244.6 865.0,254.4 877.5,251.6 890.0,258.6 902.5,261.4 915.0,255.8 927.5,253.0 940.0,249.5 952.5,254.4 965.0,251.6 977.5,250.2 990.0,243.2 1002.5,239.0 1015.0,230.6 1027.5,222.2 1040.0,211.0 1052.5,204.0 1065.0,209.6 1077.5,197.0 1090.0,201.2" fill="none" stroke="#264d5c" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.36"/>
+      <polyline points="790.0,244.6 802.5,240.4 815.0,243.2 827.5,233.4 840.0,239.7 852.5,244.6 865.0,254.4" fill="none" stroke="#6de99d" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round"/>
+      <polyline points="852.5,244.6 865.0,254.4 877.5,251.6 890.0,258.6 902.5,261.4 915.0,255.8 927.5,253.0 940.0,249.5 952.5,254.4 965.0,251.6 977.5,250.2 990.0,243.2" fill="none" stroke="#ff5d84" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round"/>
+      <polyline points="977.5,250.2 990.0,243.2 1002.5,239.0 1015.0,230.6 1027.5,222.2 1040.0,211.0 1052.5,204.0 1065.0,209.6 1077.5,197.0 1090.0,201.2" fill="none" stroke="#6de99d" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+    <text x="758" y="166" font-size="10" fill="#82a9b9" class="mono">$6K</text>
+    <text x="758" y="204" font-size="10" fill="#82a9b9" class="mono">$2K</text>
+    <text x="764" y="263" font-size="10" fill="#82a9b9" class="mono">-$2K</text>
+    <text x="790" y="292" font-size="10" fill="#82a9b9" class="mono">1</text>
+    <text x="880" y="292" font-size="10" fill="#82a9b9" class="mono">51</text>
+    <text x="974" y="292" font-size="10" fill="#82a9b9" class="mono">101</text>
+    <text x="1060" y="292" font-size="10" fill="#82a9b9" class="mono">194</text>
+    <text x="1002" y="160" font-size="14" font-weight="750" class="gold">Stabilizing ↗</text>
+
+    <rect x="82" y="352" width="1036" height="222" rx="9" fill="url(#panelBg)" class="panelStroke"/>
+    <text x="106" y="396" class="kicker mono">TOP DRIVERS</text>
+
+    <g>
+      <rect x="106" y="418" width="184" height="118" rx="6" fill="url(#cardBg)" stroke="#203f4d"/>
+      <path d="M106 421V533" stroke="#ff5d84" stroke-width="2" stroke-linecap="round"/>
+      <text x="126" y="450" class="smallKicker mono">COST DRAG</text>
+      <text x="126" y="489" font-size="28" font-weight="810" class="red">-$1,140.07</text>
+      <text x="126" y="514" font-size="12.2" class="white">Fees and slippage.</text>
+      <line x1="126" y1="530" x2="270" y2="530" stroke="#183644" opacity="0.62"/>
+
+      <rect x="306" y="418" width="184" height="118" rx="6" fill="url(#cardBg)" stroke="#203f4d"/>
+      <path d="M306 421V533" stroke="#ff5d84" stroke-width="2" stroke-linecap="round"/>
+      <text x="326" y="450" class="smallKicker mono">WEAKEST SEGMENT</text>
+      <text x="326" y="489" font-size="28" font-weight="810" class="red">-$318.83</text>
+      <text x="326" y="514" font-size="12.2" class="white">META by net PnL.</text>
+      <line x1="326" y1="530" x2="470" y2="530" stroke="#183644" opacity="0.62"/>
+
+      <rect x="506" y="418" width="184" height="118" rx="6" fill="url(#cardBg)" stroke="#203f4d"/>
+      <path d="M506 421V533" stroke="#ff5d84" stroke-width="2" stroke-linecap="round"/>
+      <text x="526" y="450" class="smallKicker mono">AVERAGE LOSS</text>
+      <text x="526" y="489" font-size="28" font-weight="810" class="red">-$155.20</text>
+      <text x="526" y="514" font-size="12.2" class="white">Typical loss size.</text>
+      <line x1="526" y1="530" x2="670" y2="530" stroke="#183644" opacity="0.62"/>
+
+      <rect x="706" y="418" width="184" height="118" rx="6" fill="url(#cardBg)" stroke="#203f4d"/>
+      <path d="M706 421V533" stroke="#6de99d" stroke-width="2" stroke-linecap="round"/>
+      <text x="726" y="450" class="smallKicker mono">AVERAGE WIN</text>
+      <text x="726" y="489" font-size="28" font-weight="810" class="green">$209.67</text>
+      <text x="726" y="514" font-size="12.2" class="white">Typical win size.</text>
+      <line x1="726" y1="530" x2="870" y2="530" stroke="#183644" opacity="0.62"/>
+
+      <rect x="906" y="418" width="184" height="118" rx="6" fill="url(#cardBg)" stroke="#203f4d"/>
+      <path d="M906 421V533" stroke="#6de99d" stroke-width="2" stroke-linecap="round"/>
+      <text x="926" y="450" class="smallKicker mono">BEST SEGMENT</text>
+      <text x="926" y="489" font-size="28" font-weight="810" class="green">$1,114.15</text>
+      <text x="926" y="514" font-size="12.2" class="white">TSLA by net PnL.</text>
+      <line x1="926" y1="530" x2="1070" y2="530" stroke="#183644" opacity="0.62"/>
+    </g>
+    <rect x="42" y="34" width="1116" height="612" rx="14" fill="none" stroke="#57c9ed" stroke-width="0.7" opacity="0.28"/>
+    <path d="M70 621H1130" stroke="#0d2733" stroke-width="1" opacity="0.7"/>
+  </g>
+</svg>

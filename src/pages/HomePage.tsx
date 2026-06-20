@@ -118,7 +118,7 @@ function DashboardMockup() {
     <div className="relative mx-auto w-full max-w-[940px] lg:mx-0">
       <div className="absolute -inset-8 bg-[radial-gradient(circle_at_68%_32%,rgba(78,196,236,0.26),transparent_25rem),radial-gradient(circle_at_28%_82%,rgba(232,190,76,0.12),transparent_22rem)] blur-2xl" />
       <img
-        src="/marketing/edgetrace-signal-board.svg"
+        src="/marketing/edgetrace-hero-dashboard-preview-text-adjusted.svg"
         alt="EdgeTrace strategy signal board showing edge health, diagnosis, review targets, and benchmark metrics."
         className="relative block w-full select-none drop-shadow-[0_34px_95px_rgba(0,0,0,0.72)]"
         draggable={false}
