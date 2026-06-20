@@ -57,9 +57,9 @@ export function HomePage({
               <span className="block">Know exactly why your </span>
               <span className="block">
                 strategy{" "}
-                <span className="inline-block overflow-visible bg-gradient-to-r from-cyan to-accent bg-clip-text pr-2 text-transparent">wins</span>{" "}
+                <span className="inline-block overflow-visible text-positive">wins</span>{" "}
                 or{" "}
-                <span className="inline-block overflow-visible bg-gradient-to-r from-violet to-fuchsia-400 bg-clip-text pr-1 text-transparent">fails.</span>
+                <span className="inline-block overflow-visible text-negative">fails.</span>
               </span>
             </h1>
 
