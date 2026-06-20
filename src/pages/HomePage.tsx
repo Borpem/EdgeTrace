@@ -51,7 +51,7 @@ export function HomePage({
       <HomeBackdrop />
 
       <section className="EdgeTrace-shell relative pb-12 pt-12 md:pb-16 md:pt-16 lg:pb-20 lg:pt-20">
-        <div className="grid items-center gap-10 lg:grid-cols-[0.88fr_1.12fr] lg:gap-10 xl:gap-12">
+        <div className="grid items-center gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:gap-8 xl:gap-10">
           <div className="max-w-[760px]">
             <h1 className="overflow-visible text-[clamp(3.2rem,5.7vw,6rem)] font-semibold leading-[1.02] tracking-[-0.048em] text-ink md:tracking-[-0.052em]">
               <span className="block">Know exactly why your </span>
@@ -115,7 +115,7 @@ function HomeBackdrop() {
 
 function DashboardMockup() {
   return (
-    <div className="relative mx-auto w-full max-w-[1080px] lg:mx-0 lg:w-[108%] xl:w-[112%]">
+    <div className="relative mx-auto w-full max-w-[1220px] lg:mx-0 lg:w-[124%] xl:w-[130%]">
       <div className="absolute -inset-8 bg-[radial-gradient(circle_at_68%_32%,rgba(78,196,236,0.26),transparent_25rem),radial-gradient(circle_at_28%_82%,rgba(232,190,76,0.12),transparent_22rem)] blur-2xl" />
       <img
         src="/marketing/edgetrace-hero-dashboard-preview-text-adjusted.svg"
