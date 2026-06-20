@@ -79,13 +79,31 @@ const app = express();
 const port = process.env.PORT ? Number(process.env.PORT) : 4000;
 const isProduction = process.env.NODE_ENV === "production";
 const allowedFrontendOrigins = getAllowedFrontendOrigins();
+const MAX_UPLOAD_ROWS = 75_000;
+const MAX_DIAGNOSTIC_TRADES = 75_000;
+const MAX_HTML_UPLOAD_CHARS = 3_000_000;
 
 app.disable("x-powered-by");
 app.use(securityHeaders);
 app.use(
+  createRateLimiter({
+    name: "public",
+    windowMs: 60_000,
+    maxRequests: isProduction ? 240 : 1200
+  })
+);
+app.use(
   cors({
     origin: isProduction ? productionCorsOrigin : true,
     credentials: true
+  })
+);
+app.use(
+  "/api/stripe/webhook",
+  createRateLimiter({
+    name: "stripe-webhook",
+    windowMs: 60_000,
+    maxRequests: 120
   })
 );
 app.post("/api/stripe/webhook", express.raw({ type: "application/json" }), async (req, res) => {
@@ -150,10 +168,20 @@ const jsonBodyErrorHandler: express.ErrorRequestHandler = (err, _req, res, next)
 
   next(err);
 };
+app.use("/api", requireJsonForMutatingRequests);
 app.use(express.json({ limit: "25mb" }));
 app.use(jsonBodyErrorHandler);
 
 app.get("/api/health", (_req, res) => {
+  if (isProduction) {
+    res.json({
+      ok: true,
+      service: "edgetrace-api",
+      gitCommit: process.env.RAILWAY_GIT_COMMIT_SHA || process.env.VERCEL_GIT_COMMIT_SHA || ""
+    });
+    return;
+  }
+
   res.json({
     ok: true,
     service: "edgetrace-api",
@@ -357,7 +385,42 @@ function getUserId(req: express.Request) {
   return (req as EdgeTraceRequest).edgeTraceUserId ?? "";
 }
 
-app.use("/api", requireEdgeTraceUser);
+app.use(
+  "/api",
+  createRateLimiter({
+    name: "api",
+    windowMs: 60_000,
+    maxRequests: isProduction ? 120 : 1200
+  }),
+  requireEdgeTraceUser
+);
+app.use(
+  "/api/events",
+  createRateLimiter({
+    name: "events",
+    windowMs: 60_000,
+    maxRequests: isProduction ? 60 : 600,
+    preferUserKey: true
+  })
+);
+app.use(
+  ["/api/trades/upload", "/api/diagnostics/run"],
+  createRateLimiter({
+    name: "imports",
+    windowMs: 15 * 60_000,
+    maxRequests: isProduction ? 30 : 300,
+    preferUserKey: true
+  })
+);
+app.use(
+  "/api/billing",
+  createRateLimiter({
+    name: "billing",
+    windowMs: 10 * 60_000,
+    maxRequests: isProduction ? 20 : 200,
+    preferUserKey: true
+  })
+);
 
 app.get("/api/me", async (req, res) => {
   try {
@@ -522,6 +585,12 @@ app.post("/api/billing/create-portal-session", async (req, res) => {
 });
 
 app.post("/api/trades/upload", (req, res) => {
+  const validationError = validateTradeUploadBody(req.body);
+  if (validationError) {
+    res.status(400).json(validationError);
+    return;
+  }
+
   const rows = typeof req.body?.html === "string" ? [{ sourceType: "html", content: req.body.html }] : Array.isArray(req.body?.rows) ? req.body.rows : [];
   const normalizedTrades = normalizeTrades(rows);
   res.json({
@@ -534,6 +603,12 @@ app.post("/api/trades/upload", (req, res) => {
 app.post("/api/diagnostics/run", async (req, res) => {
   const userId = getUserId(req);
   const trades = Array.isArray(req.body?.trades) ? req.body.trades : [];
+  const validationError = validateDiagnosticsBody(req.body, trades);
+  if (validationError) {
+    res.status(400).json(validationError);
+    return;
+  }
+
   const name = typeof req.body?.name === "string" ? req.body.name : "";
   const isDemo = !isProduction && (req.body?.isDemo === true || isDemoName(name));
   const brokerId = typeof req.body?.brokerId === "string" ? req.body.brokerId : "generic_csv";
@@ -1183,13 +1258,175 @@ function isSensitiveEventProperty(key: string) {
   );
 }
 
+type RateLimitOptions = {
+  name: string;
+  windowMs: number;
+  maxRequests: number;
+  preferUserKey?: boolean;
+};
+
+type RateLimitBucket = {
+  count: number;
+  resetAt: number;
+};
+
+const rateLimitBuckets = new Map<string, RateLimitBucket>();
+
+function createRateLimiter(options: RateLimitOptions): express.RequestHandler {
+  return (req, res, next) => {
+    const now = Date.now();
+    const key = `${options.name}:${rateLimitIdentity(req, options.preferUserKey)}`;
+    const existingBucket = rateLimitBuckets.get(key);
+    const bucket = !existingBucket || existingBucket.resetAt <= now ? { count: 0, resetAt: now + options.windowMs } : existingBucket;
+    bucket.count += 1;
+    rateLimitBuckets.set(key, bucket);
+
+    if (bucket.count > options.maxRequests) {
+      const retryAfterSeconds = Math.max(1, Math.ceil((bucket.resetAt - now) / 1000));
+      res.setHeader("Retry-After", String(retryAfterSeconds));
+      res.status(429).json({
+        error: "RATE_LIMITED",
+        message: "Too many requests. Wait a moment and try again."
+      });
+      return;
+    }
+
+    if (rateLimitBuckets.size > 20_000 && Math.random() < 0.02) pruneRateLimitBuckets(now);
+    next();
+  };
+}
+
+function rateLimitIdentity(req: express.Request, preferUserKey = false) {
+  const userId = preferUserKey ? getUserId(req) : "";
+  if (userId) return `user:${userId}`;
+  const forwardedFor = req.get("x-forwarded-for")?.split(",")[0]?.trim();
+  return `ip:${forwardedFor || req.ip || "unknown"}`;
+}
+
+function pruneRateLimitBuckets(now: number) {
+  for (const [key, bucket] of rateLimitBuckets) {
+    if (bucket.resetAt <= now) rateLimitBuckets.delete(key);
+  }
+}
+
+function requireJsonForMutatingRequests(req: express.Request, res: express.Response, next: express.NextFunction) {
+  if (req.method === "GET" || req.method === "HEAD" || req.method === "OPTIONS") {
+    next();
+    return;
+  }
+
+  const contentLength = Number(req.get("content-length") || 0);
+  if (contentLength === 0) {
+    next();
+    return;
+  }
+
+  if (!req.is("application/json")) {
+    res.status(415).json({
+      error: "UNSUPPORTED_MEDIA_TYPE",
+      message: "API requests with a body must use application/json."
+    });
+    return;
+  }
+
+  next();
+}
+
+function validateTradeUploadBody(body: unknown) {
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    return {
+      error: "INVALID_UPLOAD_BODY",
+      message: "Upload body must include rows or html."
+    };
+  }
+
+  const input = body as Record<string, unknown>;
+  if (typeof input.html === "string") {
+    if (input.html.length > MAX_HTML_UPLOAD_CHARS) {
+      return {
+        error: "UPLOAD_TOO_LARGE",
+        message: "This HTML export is too large to process in one request. Export a smaller date range and try again."
+      };
+    }
+    return null;
+  }
+
+  if (!Array.isArray(input.rows)) {
+    return {
+      error: "INVALID_UPLOAD_BODY",
+      message: "Upload body must include rows or html."
+    };
+  }
+
+  if (input.rows.length > MAX_UPLOAD_ROWS) {
+    return {
+      error: "UPLOAD_TOO_LARGE",
+      message: "This upload has too many rows to process in one request. Export a smaller date range and try again."
+    };
+  }
+
+  return null;
+}
+
+function validateDiagnosticsBody(body: unknown, trades: unknown[]) {
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    return {
+      error: "INVALID_DIAGNOSTICS_BODY",
+      message: "Diagnostics body must include a trades array."
+    };
+  }
+
+  if (!Array.isArray((body as Record<string, unknown>).trades)) {
+    return {
+      error: "INVALID_DIAGNOSTICS_BODY",
+      message: "Diagnostics body must include a trades array."
+    };
+  }
+
+  if (trades.length > MAX_DIAGNOSTIC_TRADES) {
+    return {
+      error: "UPLOAD_TOO_LARGE",
+      message: "This report has too many trades to process in one request. Export a smaller date range and try again."
+    };
+  }
+
+  const name = (body as Record<string, unknown>).name;
+  if (typeof name === "string" && name.length > 180) {
+    return {
+      error: "INVALID_REPORT_NAME",
+      message: "Report name must be 180 characters or fewer."
+    };
+  }
+
+  return null;
+}
+
 function securityHeaders(_req: express.Request, res: express.Response, next: express.NextFunction) {
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
   res.setHeader("X-Frame-Options", "DENY");
   res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+  res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
+  res.setHeader("Content-Security-Policy", contentSecurityPolicy());
   if (isProduction) {
-    res.setHeader("Strict-Transport-Security", "max-age=15552000; includeSubDomains");
+    res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
   }
   next();
+}
+
+function contentSecurityPolicy() {
+  return [
+    "default-src 'self'",
+    "base-uri 'self'",
+    "object-src 'none'",
+    "frame-ancestors 'none'",
+    "img-src 'self' data: blob: https:",
+    "font-src 'self' data:",
+    "style-src 'self' 'unsafe-inline'",
+    "script-src 'self' 'unsafe-inline' https://*.clerk.accounts.dev https://*.clerk.com https://js.stripe.com https://va.vercel-scripts.com",
+    "connect-src 'self' https://edgetrace-production.up.railway.app https://*.clerk.accounts.dev https://*.clerk.com https://api.clerk.com https://*.stripe.com https://api.stripe.com https://vitals.vercel-insights.com",
+    "frame-src https://js.stripe.com https://hooks.stripe.com https://*.clerk.accounts.dev https://*.clerk.com",
+    "form-action 'self' https://*.stripe.com",
+    "upgrade-insecure-requests"
+  ].join("; ");
 }
