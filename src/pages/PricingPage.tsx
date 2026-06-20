@@ -397,7 +397,7 @@ function PlanCard({
             </>
           )}
         </div>
-        {action}
+        <div className="EdgeTrace-pricing-action">{action}</div>
         <ul>
           {config.featureBullets.map((feature) => (
             <li key={feature}>
