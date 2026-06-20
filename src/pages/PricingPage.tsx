@@ -319,11 +319,6 @@ export function PricingPage({
           Use the full EdgeTrace reporting workflow for free. Upgrade to Pro when you want a twice-weekly review loop,
           benchmark percentiles, and next-upload targets.
         </p>
-        <div className="EdgeTrace-pricing-billing">
-          <span>Pay monthly</span>
-          <button type="button" aria-label="Monthly billing selected" />
-          <span className="muted">Annual billing not available yet</span>
-        </div>
       </section>
 
       <StatusMessages billingConfigured={billingConfigured} notice={notice} error={error} />

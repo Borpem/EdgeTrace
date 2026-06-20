@@ -57,9 +57,9 @@ export function HomePage({
               <span className="block">Know exactly why your </span>
               <span className="block">
                 strategy{" "}
-                <span className="inline-block overflow-visible text-positive">wins</span>{" "}
+                <span className="inline-block overflow-visible text-profit">wins</span>{" "}
                 or{" "}
-                <span className="inline-block overflow-visible text-negative">fails.</span>
+                <span className="inline-block overflow-visible text-loss">fails.</span>
               </span>
             </h1>
 
