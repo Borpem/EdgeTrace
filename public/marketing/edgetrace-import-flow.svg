@@ -67,7 +67,7 @@
   </defs>
 
   <g class="font">
-    <rect x="42" y="34" width="1116" height="612" rx="14" fill="url(#frameBg)" stroke="#2b6075" stroke-width="1.4" filter="url(#outerShadow)"/>
+    <rect x="42" y="34" width="1116" height="612" rx="14" fill="none" stroke="none"/>
     <g clip-path="url(#frameClip)">
       <ellipse cx="328" cy="296" rx="260" ry="210" fill="#41d4f5" opacity="0.09" filter="url(#blurGlow)"/>
       <ellipse cx="894" cy="205" rx="340" ry="210" fill="#6d5cff" opacity="0.075" filter="url(#blurGlow)"/>

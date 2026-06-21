@@ -3999,6 +3999,74 @@
     background: linear-gradient(135deg, rgba(247, 247, 243, 0.12), rgba(88, 214, 255, 0.07));
   }
 
+  .EdgeTrace-education-hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+    align-items: center;
+    gap: clamp(2rem, 4vw, 4.5rem);
+  }
+
+  .EdgeTrace-education-graphic-frame {
+    position: relative;
+    isolation: isolate;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    user-select: none;
+  }
+
+  .EdgeTrace-education-graphic-glow {
+    position: absolute;
+    right: 6%;
+    bottom: -0.85rem;
+    left: 6%;
+    z-index: -1;
+    height: 2.7rem;
+    background: radial-gradient(ellipse, rgba(78, 196, 236, 0.18), rgba(0, 0, 0, 0) 70%);
+    filter: blur(18px);
+  }
+
+  .EdgeTrace-education-graphic {
+    position: relative;
+    overflow: visible;
+  }
+
+  .EdgeTrace-education-graphic-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 33rem;
+    object-fit: contain;
+  }
+
+  .EdgeTrace-education-workflow-head {
+    max-width: 52rem;
+    margin-bottom: 2rem;
+  }
+
+  .EdgeTrace-education-walkthrough-row {
+    display: grid;
+    grid-template-columns: minmax(17rem, 0.62fr) minmax(0, 1.38fr);
+    align-items: center;
+    gap: clamp(1.75rem, 3.5vw, 4rem);
+  }
+
+  .EdgeTrace-education-walkthrough-row.is-reverse {
+    grid-template-columns: minmax(0, 1.38fr) minmax(17rem, 0.62fr);
+  }
+
+  .EdgeTrace-education-walkthrough-row.is-reverse .EdgeTrace-education-walkthrough-copy {
+    order: 2;
+  }
+
+  .EdgeTrace-education-walkthrough-copy {
+    max-width: 28rem;
+  }
+
+  .EdgeTrace-education-walkthrough-row .EdgeTrace-education-graphic-frame {
+    max-width: 920px;
+  }
+
   .EdgeTrace-education-plans-section {
     position: relative;
     z-index: 10;
@@ -4145,6 +4213,25 @@
   }
 
   @media (max-width: 900px) {
+    .EdgeTrace-education-hero-grid,
+    .EdgeTrace-education-walkthrough-row,
+    .EdgeTrace-education-walkthrough-row.is-reverse {
+      grid-template-columns: 1fr;
+    }
+
+    .EdgeTrace-education-walkthrough-row.is-reverse .EdgeTrace-education-walkthrough-copy {
+      order: 0;
+    }
+
+    .EdgeTrace-education-graphic-frame,
+    .EdgeTrace-education-walkthrough-row .EdgeTrace-education-graphic-frame {
+      max-width: 760px;
+    }
+
+    .EdgeTrace-education-graphic-image {
+      max-height: none;
+    }
+
     .EdgeTrace-education-plans-section {
       padding: 2.7rem 0;
     }

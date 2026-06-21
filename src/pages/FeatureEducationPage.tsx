@@ -131,7 +131,7 @@ function HeroSection({
   return (
     <section className="relative z-10 overflow-hidden border-b border-white/[0.08] py-12 md:py-16">
       <div className="pointer-events-none absolute left-1/2 top-0 h-80 w-[54rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(34,197,245,0.12),rgba(124,92,255,0.06)_44%,transparent_72%)] blur-[118px]" />
-      <div className="relative grid gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:items-center">
+      <div className="EdgeTrace-education-hero-grid relative">
         <div>
           <h1 className="max-w-4xl text-5xl font-semibold leading-[1.08] tracking-[-0.035em] text-ink md:text-6xl xl:text-7xl">
             Understand every layer of your trading performance.
@@ -162,9 +162,9 @@ function PresentationFrame({
   children: ReactNode;
 }) {
   return (
-    <div className="pointer-events-none relative isolate select-none" aria-hidden="true">
-      <div className="absolute -inset-x-6 -bottom-7 h-16 bg-[radial-gradient(ellipse,rgba(78,196,236,0.22),rgba(0,0,0,0)_68%)] blur-2xl" />
-      <div className="relative overflow-hidden shadow-[0_34px_110px_-76px_rgba(78,196,236,0.72),0_18px_42px_-34px_rgba(0,0,0,0.98)]">
+    <div className="EdgeTrace-education-graphic-frame pointer-events-none" aria-hidden="true">
+      <div className="EdgeTrace-education-graphic-glow" />
+      <div className="EdgeTrace-education-graphic">
         {children}
       </div>
     </div>
@@ -172,7 +172,7 @@ function PresentationFrame({
 }
 
 function MarketingGraphicImage({ src, alt }: { src: string; alt: string }) {
-  return <img src={src} alt={alt} className="relative block aspect-[5/3] w-full select-none object-contain" draggable={false} />;
+  return <img src={src} alt={alt} className="EdgeTrace-education-graphic-image" draggable={false} />;
 }
 
 function WorkspaceVisual() {
@@ -188,8 +188,8 @@ function WorkspaceVisual() {
 
 function WorkflowWalkthrough() {
   return (
-    <section className="relative z-10 py-12 md:py-16">
-      <div className="mb-9 max-w-3xl">
+    <section className="EdgeTrace-education-workflow relative z-10 py-12 md:py-16">
+      <div className="EdgeTrace-education-workflow-head">
         <h2 className="max-w-4xl text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl xl:text-6xl">
           From broker export to strategy intelligence.
         </h2>
@@ -223,8 +223,8 @@ function WalkthroughSection({
   reverse?: boolean;
 }) {
   return (
-    <section className={`grid gap-9 lg:grid-cols-[0.55fr_1.45fr] lg:items-center ${reverse ? "lg:[&>*:first-child]:order-2 lg:grid-cols-[1.45fr_0.55fr]" : ""}`}>
-      <div>
+    <section className={`EdgeTrace-education-walkthrough-row ${reverse ? "is-reverse" : ""}`}>
+      <div className="EdgeTrace-education-walkthrough-copy">
         <h3 className="max-w-2xl text-3xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-4xl">
           {title}
         </h3>

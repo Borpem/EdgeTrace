@@ -24,7 +24,7 @@
   </style>
 </defs>
 <g class="font">
-<rect x="42" y="34" width="1116" height="640" rx="14" fill="url(#frameBg)" stroke="#2b6075" stroke-width="1.4" filter="url(#outerShadow)"/>
+<rect x="42" y="34" width="1116" height="640" rx="14" fill="none" stroke="none"/>
 <g clip-path="url(#frameClip)">
 <rect x="56" y="50" width="1088" height="608" rx="10" fill="#08151c" opacity="0.92"/>
 <ellipse cx="890" cy="198" rx="350" ry="190" fill="#41d4f5" opacity="0.065" filter="url(#blurGlow)"/>
