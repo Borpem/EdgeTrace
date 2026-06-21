@@ -131,7 +131,7 @@ function HeroSection({
   return (
     <section className="relative z-10 overflow-hidden border-b border-white/[0.08] py-12 md:py-16">
       <div className="pointer-events-none absolute left-1/2 top-0 h-80 w-[54rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(34,197,245,0.12),rgba(124,92,255,0.06)_44%,transparent_72%)] blur-[118px]" />
-      <div className="relative grid gap-10 lg:grid-cols-[0.95fr_0.9fr] lg:items-center">
+      <div className="relative grid gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:items-center">
         <div>
           <h1 className="max-w-4xl text-5xl font-semibold leading-[1.08] tracking-[-0.035em] text-ink md:text-6xl xl:text-7xl">
             Understand every layer of your trading performance.
@@ -157,27 +157,14 @@ function HeroSection({
 }
 
 function PresentationFrame({
-  children,
-  tilt = "none"
+  children
 }: {
   children: ReactNode;
-  tilt?: "left" | "right" | "none";
 }) {
-  const tiltClass =
-    tilt === "left"
-      ? "lg:[transform:rotateX(1.2deg)_rotateY(1.6deg)_translateZ(0)]"
-      : tilt === "right"
-        ? "lg:[transform:rotateX(1.2deg)_rotateY(-1.6deg)_translateZ(0)]"
-        : "lg:[transform:translateZ(0)]";
-
   return (
-    <div className="pointer-events-none relative isolate select-none [perspective:1200px]" aria-hidden="true">
-      <div className="absolute -inset-x-6 -bottom-6 h-16 bg-[radial-gradient(ellipse,rgba(78,196,236,0.18),rgba(0,0,0,0)_68%)] blur-2xl" />
-      <div
-        className={`relative overflow-hidden rounded-md border border-[#294757] bg-[#04080c] shadow-[0_34px_110px_-70px_rgba(78,196,236,0.62),0_18px_42px_-32px_rgba(0,0,0,0.98)] ring-1 ring-white/[0.025] ${tiltClass}`}
-      >
-        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(78,196,236,0.055)_1px,transparent_1px),linear-gradient(180deg,rgba(78,196,236,0.035)_1px,transparent_1px)] bg-[size:36px_36px] opacity-35 [mask-image:radial-gradient(circle_at_50%_44%,black,transparent_78%)]" />
-        <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-cyan/35 to-transparent" />
+    <div className="pointer-events-none relative isolate select-none" aria-hidden="true">
+      <div className="absolute -inset-x-6 -bottom-7 h-16 bg-[radial-gradient(ellipse,rgba(78,196,236,0.22),rgba(0,0,0,0)_68%)] blur-2xl" />
+      <div className="relative overflow-hidden shadow-[0_34px_110px_-76px_rgba(78,196,236,0.72),0_18px_42px_-34px_rgba(0,0,0,0.98)]">
         {children}
       </div>
     </div>
@@ -185,12 +172,12 @@ function PresentationFrame({
 }
 
 function MarketingGraphicImage({ src, alt }: { src: string; alt: string }) {
-  return <img src={src} alt={alt} className="relative block w-full select-none" draggable={false} />;
+  return <img src={src} alt={alt} className="relative block aspect-[5/3] w-full select-none object-contain" draggable={false} />;
 }
 
 function WorkspaceVisual() {
   return (
-    <PresentationFrame tilt="right">
+    <PresentationFrame>
       <MarketingGraphicImage
         src="/marketing/edgetrace-signal-board.svg"
         alt="EdgeTrace signal board showing edge health, primary diagnosis, driver metrics, and benchmark context."
@@ -202,19 +189,15 @@ function WorkspaceVisual() {
 function WorkflowWalkthrough() {
   return (
     <section className="relative z-10 py-12 md:py-16">
-      <div className="mb-9 grid gap-5 lg:grid-cols-[0.78fr_1fr] lg:items-end">
+      <div className="mb-9 max-w-3xl">
         <h2 className="max-w-4xl text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl xl:text-6xl">
           From broker export to strategy intelligence.
         </h2>
-        <p className="max-w-xl text-base leading-7 text-muted">
-          The workflow is intentionally linear: import the file, isolate what changed, then use new uploads to prove
-          whether the strategy improved.
-        </p>
       </div>
       <div className="space-y-12">
         <WalkthroughSection
           title="Import completed trade history."
-          body="Upload broker exports or generic CSV files. EdgeTrace normalizes completed trades into a structured diagnostic workflow."
+          body="The workflow is intentionally linear: import the file, isolate what changed, then use new uploads to prove whether the strategy improved."
           visual={<ImportReportVisual />}
         />
         <WalkthroughSection
@@ -240,7 +223,7 @@ function WalkthroughSection({
   reverse?: boolean;
 }) {
   return (
-    <section className={`grid gap-7 lg:grid-cols-[0.82fr_1.18fr] lg:items-center ${reverse ? "lg:[&>*:first-child]:order-2" : ""}`}>
+    <section className={`grid gap-9 lg:grid-cols-[0.55fr_1.45fr] lg:items-center ${reverse ? "lg:[&>*:first-child]:order-2 lg:grid-cols-[1.45fr_0.55fr]" : ""}`}>
       <div>
         <h3 className="max-w-2xl text-3xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-4xl">
           {title}
@@ -254,7 +237,7 @@ function WalkthroughSection({
 
 function ImportReportVisual() {
   return (
-    <PresentationFrame tilt="left">
+    <PresentationFrame>
       <MarketingGraphicImage
         src="/marketing/edgetrace-import-flow.svg"
         alt="EdgeTrace import pipeline graphic showing broker export, mapping, and generated diagnostic report."
@@ -265,7 +248,7 @@ function ImportReportVisual() {
 
 function AttributionVisual() {
   return (
-    <PresentationFrame tilt="right">
+    <PresentationFrame>
       <MarketingGraphicImage
         src="/marketing/edgetrace-driver-map.svg"
         alt="EdgeTrace driver map graphic separating negative drivers, watchlist metrics, and positive drivers."
