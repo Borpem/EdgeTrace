@@ -98,7 +98,12 @@ export function FeatureEducationPage({
         "The report turns the import into a quick read on health, expectancy, cost drag, R-capture, and the primary issue most likely to improve the next upload.",
       points: ["Primary diagnosis", "Edge health score", "Top performance drivers"],
       reverse: true,
-      visual: <DiagnosticPreview />
+      visual: (
+        <HowGraphic
+          src="/graphics/edgetrace-how-pro-review-loop-thin-gauge.png"
+          alt="EdgeTrace Pro review loop graphic with benchmark gauges, weekly review, and next review targets."
+        />
+      )
     },
     {
       id: "how-drilldowns",
@@ -292,44 +297,5 @@ function HowGraphic({
       draggable={false}
       loading={hero ? "eager" : "lazy"}
     />
-  );
-}
-
-function DiagnosticPreview() {
-  const stats = [
-    { label: "Edge Health", value: "60", note: "Stabilizing", tone: "warning" },
-    { label: "Primary Diagnosis", value: "Loss leak", note: "Fix-first target", tone: "loss" },
-    { label: "Benchmark", value: "63rd", note: "Expectancy", tone: "cyan" }
-  ];
-
-  return (
-    <div className="how-diagnostic-preview" aria-label="Sample diagnostic report preview">
-      <div className="how-diagnostic-header">
-        <span>Report Overview</span>
-        <strong>Test - improving trades</strong>
-      </div>
-      <div className="how-diagnostic-grid">
-        {stats.map((stat) => (
-          <article className={`how-diagnostic-card is-${stat.tone}`} key={stat.label}>
-            <span>{stat.label}</span>
-            <strong>{stat.value}</strong>
-            <small>{stat.note}</small>
-          </article>
-        ))}
-      </div>
-      <div className="how-mini-chart" aria-hidden="true">
-        <svg viewBox="0 0 520 118" role="img">
-          <path className="gridline" d="M0 96H520M0 58H520M0 20H520" />
-          <path
-            className="loss-line"
-            d="M0 70 C38 38 82 48 125 68 C173 90 219 93 262 76 C307 58 348 70 390 51 C434 32 470 27 520 35"
-          />
-          <path
-            className="profit-line"
-            d="M0 70 C38 38 82 48 125 68 C173 90 219 93 262 76 C307 58 348 70 390 51 C434 32 470 27 520 35"
-          />
-        </svg>
-      </div>
-    </div>
   );
 }
