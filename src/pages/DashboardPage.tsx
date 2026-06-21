@@ -20,13 +20,8 @@ import {
   CheckCircle2,
   ChevronDown,
   ChevronLeft,
-  FileText,
-  HelpCircle,
-  Home,
   Info,
-  Layers3,
   Lock,
-  Scale,
   TrendingDown,
   TrendingUp,
   X
@@ -628,16 +623,6 @@ export function DashboardPage({
 
   return (
     <main className={`EdgeTrace-report-dashboard EdgeTrace-command-dashboard ${walkthroughOpen ? "has-walkthrough-open" : ""}`}>
-      <DashboardSidebar
-        onDashboard={onOpenDashboard}
-        onAnalyze={onCreateReport}
-        onReports={onViewReports}
-        onCollections={onOpenCollections}
-        onCompare={handleSidebarCompare}
-        onFeatures={onOpenFeatures}
-        ariaHidden={walkthroughOpen}
-      />
-
       <section className="EdgeTrace-dashboard-main" aria-hidden={walkthroughOpen}>
         <div className="EdgeTrace-command-shell">
           <header className="EdgeTrace-command-nav">
@@ -939,6 +924,8 @@ export function DashboardPage({
           </section>
         </div>
 
+        {false && (
+          <>
         <header className="EdgeTrace-dashboard-header">
           <div className="EdgeTrace-dashboard-title-group">
             <div>
@@ -975,15 +962,13 @@ export function DashboardPage({
             <div className="EdgeTrace-report-generated">
               <span>
                 Generated{" "}
-                {reportDate
-                  ? reportDate.toLocaleString(undefined, {
+                {reportDate?.toLocaleString(undefined, {
                       month: "short",
                       day: "numeric",
                       year: "numeric",
                       hour: "numeric",
                       minute: "2-digit"
-                    })
-                  : "date unavailable"}
+                    }) ?? "date unavailable"}
               </span>
               <CalendarDays size={13} aria-hidden="true" />
             </div>
@@ -1086,7 +1071,7 @@ export function DashboardPage({
           />
           <DashboardMetricCard
             title="R-Multiple"
-            value={metrics.averageRealizedR !== undefined ? `${number.format(metrics.averageRealizedR)}R` : "N/A"}
+            value={metrics.averageRealizedR != null ? `${number.format(metrics.averageRealizedR as number)}R` : "N/A"}
             detail={rMultipleCopy(metrics.averageRealizedR)}
             subdetail="Avg R"
             tone={statusTone(intelligence.keyMetricStatuses.averageR)}
@@ -1210,7 +1195,7 @@ export function DashboardPage({
                   metrics={metrics}
                   averageR={metrics.averageRealizedR}
                   normalizedTradeCount={normalizedTradeCount}
-                  onCompare={onCompareReport ? () => onCompareReport(result.id) : undefined}
+                  onCompare={onCompareReport ? () => onCompareReport?.(result.id) : undefined}
                 />
                 <TopActions
                   actionItems={actionItems}
@@ -1446,6 +1431,8 @@ export function DashboardPage({
             </DashboardDisclosureCard>
           </div>
         </section>
+          </>
+        )}
       </section>
 
       {isEditingDetails && (
@@ -1476,51 +1463,6 @@ export function DashboardPage({
         />
       )}
     </main>
-  );
-}
-
-function DashboardSidebar({
-  onDashboard,
-  onAnalyze,
-  onReports,
-  onCollections,
-  onCompare,
-  onFeatures,
-  ariaHidden
-}: {
-  onDashboard?: () => void;
-  onAnalyze?: () => void;
-  onReports?: () => void;
-  onCollections?: () => void;
-  onCompare?: () => void;
-  onFeatures?: () => void;
-  ariaHidden?: boolean;
-}) {
-  const navItems = [
-    { label: "Dashboard", icon: Home, action: onDashboard, active: true },
-    { label: "Import Trades", icon: TrendingUp, action: onAnalyze },
-    { label: "Reports", icon: FileText, action: onReports },
-    { label: "Strategy Sets", icon: Layers3, action: onCollections },
-    { label: "Compare", icon: Scale, action: onCompare },
-    { label: "How It Works", icon: HelpCircle, action: onFeatures }
-  ];
-
-  return (
-    <aside className="EdgeTrace-dashboard-sidebar" aria-hidden={ariaHidden}>
-      <button className="EdgeTrace-sidebar-brand" onClick={onDashboard} aria-label="EdgeTrace dashboard">
-        <img src="/brand/edgetrace_icon_monochrome_white_transparent.png" alt="" aria-hidden="true" />
-        <img className="EdgeTrace-sidebar-wordmark" src="/brand/edgetrace_wordmark_monochrome_white.png" alt="EdgeTrace" />
-      </button>
-
-      <nav aria-label="Dashboard navigation" className="EdgeTrace-sidebar-nav">
-        {navItems.map(({ label, icon: Icon, action, active }) => (
-          <button key={label} className={active ? "active" : ""} onClick={action}>
-            <Icon size={18} aria-hidden="true" />
-            <span>{label}</span>
-          </button>
-        ))}
-      </nav>
-    </aside>
   );
 }
 

@@ -1,14 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { UserButton } from "@clerk/clerk-react";
 import {
-  FileText,
-  HelpCircle,
-  Home,
-  Layers3,
   LogOut,
   Menu,
-  Scale,
-  TrendingUp,
   UserCircle
 } from "lucide-react";
 import { useAuth } from "./context/AuthContext";
@@ -63,6 +57,7 @@ export function App() {
   const [initialComparePair, setInitialComparePair] = useState<{ reportAId?: string; reportBId?: string } | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [createdReportId, setCreatedReportId] = useState<string | null>(null);
+  const [isRouteResolving, setIsRouteResolving] = useState(true);
 
   useEffect(() => {
     if ("scrollRestoration" in window.history) {
@@ -431,12 +426,25 @@ export function App() {
   useEffect(() => {
     if (authLoading) return;
 
-    void routeToPath(`${window.location.pathname}${window.location.search}`, true);
+    let cancelled = false;
+    const resolveCurrentRoute = async () => {
+      setIsRouteResolving(true);
+      try {
+        await routeToPath(`${window.location.pathname}${window.location.search}`, true);
+      } finally {
+        if (!cancelled) setIsRouteResolving(false);
+      }
+    };
+
+    void resolveCurrentRoute();
     const handlePopState = () => {
-      void routeToPath(`${window.location.pathname}${window.location.search}`, true);
+      void resolveCurrentRoute();
     };
     window.addEventListener("popstate", handlePopState);
-    return () => window.removeEventListener("popstate", handlePopState);
+    return () => {
+      cancelled = true;
+      window.removeEventListener("popstate", handlePopState);
+    };
   }, [authLoading, isAuthenticated]);
 
   useEffect(() => {
@@ -475,6 +483,10 @@ export function App() {
   ]
     .filter(Boolean)
     .join(" ");
+
+  if (authLoading || isRouteResolving) {
+    return <RouteLoadingShell isAuthenticated={isAuthenticated} />;
+  }
 
   return (
     <div className={rootClassName}>
@@ -904,51 +916,6 @@ export function App() {
   );
 }
 
-function AuthenticatedSidebar({
-  activeNavPage,
-  onDashboard,
-  onAnalyze,
-  onReports,
-  onCollections,
-  onCompare,
-  onFeatures
-}: {
-  activeNavPage: Page;
-  onDashboard: () => void;
-  onAnalyze: () => void;
-  onReports: () => void;
-  onCollections: () => void;
-  onCompare: () => void;
-  onFeatures: () => void;
-}) {
-  const navItems: Array<{ target: Page; label: string; icon: typeof Home; action: () => void }> = [
-    { target: "strategyDashboard", label: "Dashboard", icon: Home, action: onDashboard },
-    { target: "upload", label: "Import Trades", icon: TrendingUp, action: onAnalyze },
-    { target: "reports", label: "Reports", icon: FileText, action: onReports },
-    { target: "collections", label: "Strategy Sets", icon: Layers3, action: onCollections },
-    { target: "compare", label: "Compare", icon: Scale, action: onCompare },
-    { target: "features", label: "How It Works", icon: HelpCircle, action: onFeatures }
-  ];
-
-  return (
-    <aside className="EdgeTrace-dashboard-sidebar EdgeTrace-auth-sidebar">
-      <button className="EdgeTrace-sidebar-brand" onClick={onDashboard} aria-label="EdgeTrace dashboard">
-        <img src="/brand/edgetrace_icon_monochrome_white_transparent.png" alt="" aria-hidden="true" />
-        <img className="EdgeTrace-sidebar-wordmark" src="/brand/edgetrace_wordmark_monochrome_white.png" alt="EdgeTrace" />
-      </button>
-
-      <nav aria-label="Application navigation" className="EdgeTrace-sidebar-nav">
-        {navItems.map(({ target, label, icon: Icon, action }) => (
-          <button key={label} className={activeNavPage === target ? "active" : ""} onClick={action}>
-            <Icon size={18} aria-hidden="true" />
-            <span>{label}</span>
-          </button>
-        ))}
-      </nav>
-    </aside>
-  );
-}
-
 function AuthenticatedTopbar({
   activeNavPage,
   activeLabel,
@@ -1102,6 +1069,20 @@ function AccountUtility({
           </button>
         </div>
       )}
+    </div>
+  );
+}
+
+function RouteLoadingShell({ isAuthenticated }: { isAuthenticated: boolean }) {
+  return (
+    <div className={`EdgeTrace-contours min-h-screen text-ink ${isAuthenticated ? "EdgeTrace-auth-framed" : "EdgeTrace-public-framed"}`}>
+      <main className="EdgeTrace-shell py-10">
+        <section className="EdgeTrace-command-card p-6">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-sky">
+            {isAuthenticated ? "Loading workspace" : "Loading EdgeTrace"}
+          </p>
+        </section>
+      </main>
     </div>
   );
 }
