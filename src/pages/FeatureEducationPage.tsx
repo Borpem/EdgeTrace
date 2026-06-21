@@ -183,14 +183,6 @@ export function FeatureEducationPage({
             </button>
           </div>
         </div>
-
-        <div className="how-hero-visual">
-          <HowGraphic
-            src="/graphics/edgetrace-hero-dashboard-preview-text-adjusted.svg"
-            alt="EdgeTrace dashboard preview showing edge health, diagnosis, drivers, and benchmark context."
-            hero
-          />
-        </div>
       </section>
 
       <FeatureStrip items={featureStrip} />

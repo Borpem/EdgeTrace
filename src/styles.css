@@ -8109,16 +8109,18 @@ textarea:focus-visible {
 }
 
 .how-hero {
-  display: grid;
-  grid-template-columns: minmax(20rem, 0.82fr) minmax(0, 1.18fr);
-  align-items: center;
-  gap: clamp(2.5rem, 5vw, 5.5rem);
-  padding: clamp(3.25rem, 6vw, 5.75rem) 0 clamp(2.8rem, 5vw, 4.5rem);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: clamp(4rem, 7vw, 7rem) 0 clamp(3.2rem, 5vw, 4.8rem);
   border-bottom: 1px solid rgba(247, 247, 243, 0.08);
+  text-align: center;
 }
 
 .how-hero-copy {
-  max-width: 42rem;
+  display: grid;
+  justify-items: center;
+  max-width: 58rem;
 }
 
 .how-eyebrow,
@@ -8133,17 +8135,17 @@ textarea:focus-visible {
 
 .how-title {
   margin-top: 0.75rem;
-  max-width: 47rem;
+  max-width: 56rem;
   color: var(--how-text);
-  font-size: clamp(3.5rem, 6.1vw, 6.5rem);
+  font-size: clamp(3.9rem, 7.2vw, 7.2rem);
   font-weight: 650;
-  letter-spacing: -0.055em;
-  line-height: 0.98;
+  letter-spacing: -0.06em;
+  line-height: 0.94;
 }
 
 .how-body {
   margin-top: 1.6rem;
-  max-width: 40rem;
+  max-width: 46rem;
   color: #c6d3db;
   font-size: clamp(1.02rem, 1.25vw, 1.18rem);
   line-height: 1.78;
@@ -8152,6 +8154,7 @@ textarea:focus-visible {
 .how-cta-row {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 0.8rem;
   margin-top: 2.1rem;
 }
@@ -8531,10 +8534,10 @@ textarea:focus-visible {
 }
 
 .EdgeTrace-auth-framed .EdgeTrace-auth-education .how-title {
-  font-size: clamp(3.1rem, 5.7vw, 6.25rem);
+  font-size: clamp(3.6rem, 6.8vw, 7rem);
   font-weight: 650;
-  letter-spacing: -0.055em;
-  line-height: 0.98;
+  letter-spacing: -0.06em;
+  line-height: 0.94;
 }
 
 .EdgeTrace-auth-framed .EdgeTrace-auth-education .how-workflow-intro h2,
@@ -8604,7 +8607,8 @@ textarea:focus-visible {
 
   .how-title,
   .EdgeTrace-auth-framed .EdgeTrace-auth-education .how-title {
-    font-size: clamp(2.75rem, 14vw, 4.3rem);
+    font-size: clamp(2.85rem, 14vw, 4.4rem);
+    line-height: 0.98;
   }
 
   .how-feature-strip,
