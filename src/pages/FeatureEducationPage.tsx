@@ -41,13 +41,6 @@ type HowSection = {
   visual: ReactNode;
 };
 
-const featureStrip: FeatureItem[] = [
-  { icon: FileSearch, title: "Diagnose the leak", body: "Find the cost, segment, or risk issue dragging the report." },
-  { icon: Activity, title: "Track each upload", body: "See whether the next report improved or slipped." },
-  { icon: Target, title: "Review the process", body: "Use Pro check-ins to keep the review loop active." },
-  { icon: BarChart3, title: "Compare to context", body: "Benchmark percentiles show where the report stands." }
-];
-
 const workflowSteps: FeatureItem[] = [
   { icon: Upload, title: "Import Trades", body: "Upload broker exports or a generic CSV." },
   { icon: FileSearch, title: "Diagnostic Report", body: "See expectancy, cost drag, R-capture, and health." },
@@ -184,8 +177,6 @@ export function FeatureEducationPage({
           </div>
         </div>
       </section>
-
-      <FeatureStrip items={featureStrip} />
 
       <section className="how-workflow-intro" id="how-workflow">
         <p className="how-eyebrow">Workflow</p>
