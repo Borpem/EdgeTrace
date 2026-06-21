@@ -250,8 +250,8 @@ function AttributionVisual() {
   return (
     <PresentationFrame>
       <MarketingGraphicImage
-        src="/marketing/edgetrace-driver-map.svg"
-        alt="EdgeTrace driver map graphic separating negative drivers, watchlist metrics, and positive drivers."
+        src="/marketing/edgetrace-segment-analysis-readout-polished.png"
+        alt="EdgeTrace segment analysis readout showing symbol-level diagnostics, risk flags, and performance metrics."
       />
     </PresentationFrame>
   );
