@@ -261,8 +261,8 @@ function StrategyTimelineReviewVisual() {
   return (
     <PresentationFrame>
       <MarketingGraphicImage
-        src="/marketing/edgetrace-review-loop.svg"
-        alt="EdgeTrace Pro review loop graphic showing benchmark percentiles and next review targets."
+        src="/marketing/edgetrace-pro-review-loop-thin-gauge.png"
+        alt="EdgeTrace Pro review loop graphic showing benchmark gauges, review status, and next review targets."
       />
     </PresentationFrame>
   );
