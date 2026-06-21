@@ -100,8 +100,8 @@ export function FeatureEducationPage({
       reverse: true,
       visual: (
         <HowGraphic
-          src="/graphics/edgetrace-how-pro-review-loop-thin-gauge.png"
-          alt="EdgeTrace Pro review loop graphic with benchmark gauges, weekly review, and next review targets."
+          src="/graphics/edgetrace-how-report-overview-negative-expectancy-final-clean.png"
+          alt="EdgeTrace report overview graphic showing negative expectancy, edge health, and diagnostic metrics."
         />
       )
     },
