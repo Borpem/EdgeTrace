@@ -1,0 +1,203 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 690" role="img" aria-labelledby="title desc">
+  <title id="title">EdgeTrace report creation workflow graphic</title>
+  <desc id="desc">A stylized EdgeTrace workflow graphic showing imported trade files flowing through mapping and diagnostics into a report preview.</desc>
+  <defs>
+    <linearGradient id="frameBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1b24"/>
+      <stop offset="0.62" stop-color="#071117"/>
+      <stop offset="1" stop-color="#05090d"/>
+    </linearGradient>
+    <linearGradient id="panelBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d2029" stop-opacity="0.96"/>
+      <stop offset="0.72" stop-color="#07131a" stop-opacity="0.98"/>
+      <stop offset="1" stop-color="#050b10" stop-opacity="0.99"/>
+    </linearGradient>
+    <linearGradient id="cardBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1c25"/>
+      <stop offset="1" stop-color="#061017"/>
+    </linearGradient>
+    <linearGradient id="softPanel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0c222d" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#060d13" stop-opacity="0.96"/>
+    </linearGradient>
+    <linearGradient id="greenFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#67e89a" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#67e89a" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="cyanFill" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#58c8e8" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#58c8e8" stop-opacity="0.02"/>
+    </linearGradient>
+    <pattern id="grid" width="36" height="36" patternUnits="userSpaceOnUse">
+      <path d="M 36 0 L 0 0 0 36" fill="none" stroke="#1b3948" stroke-width="1" opacity="0.20"/>
+    </pattern>
+    <clipPath id="frameClip"><rect x="42" y="34" width="1116" height="612" rx="14"/></clipPath>
+    <clipPath id="miniChartClip"><rect x="956" y="227" width="118" height="78" rx="2"/></clipPath>
+    <filter id="outerShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="28" stdDeviation="34" flood-color="#000000" flood-opacity="0.55"/>
+    </filter>
+    <filter id="panelShadow" x="-16%" y="-16%" width="132%" height="132%">
+      <feDropShadow dx="0" dy="12" stdDeviation="18" flood-color="#000000" flood-opacity="0.32"/>
+    </filter>
+    <filter id="blurGlow" x="-45%" y="-45%" width="190%" height="190%">
+      <feGaussianBlur stdDeviation="54"/>
+    </filter>
+    <filter id="tinyGlow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="8"/>
+    </filter>
+    <marker id="arrowCyan" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#58c8e8" opacity="0.9"/>
+    </marker>
+    <style>
+      .font { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      .mono { font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace; }
+      .kicker { font-size: 12px; font-weight: 800; letter-spacing: .22em; fill: #b7ecff; }
+      .smallKicker { font-size: 10px; font-weight: 800; letter-spacing: .18em; fill: #8db9ca; }
+      .micro { font-size: 9px; font-weight: 800; letter-spacing: .16em; fill: #8db9ca; }
+      .panelStroke { stroke: #2a5060; stroke-width: 1.25; }
+      .muted { fill: #b5c8d1; }
+      .dim { fill: #87a5b3; }
+      .white { fill: #f7fbff; }
+      .green { fill: #6de99d; }
+      .red { fill: #ff5d84; }
+      .gold { fill: #e7bd49; }
+      .cyan { fill: #65d3f2; }
+      .softLine { stroke: #1f4050; stroke-width: 1; opacity: .78; }
+    </style>
+  </defs>
+
+  <g class="font">
+    <rect x="42" y="34" width="1116" height="612" rx="14" fill="url(#frameBg)" stroke="#2b6075" stroke-width="1.4" filter="url(#outerShadow)"/>
+    <g clip-path="url(#frameClip)">
+      <ellipse cx="328" cy="296" rx="260" ry="210" fill="#41d4f5" opacity="0.09" filter="url(#blurGlow)"/>
+      <ellipse cx="894" cy="205" rx="340" ry="210" fill="#6d5cff" opacity="0.075" filter="url(#blurGlow)"/>
+      <ellipse cx="612" cy="558" rx="420" ry="150" fill="#41d4f5" opacity="0.045" filter="url(#blurGlow)"/>
+    </g>
+    <rect x="56" y="50" width="1088" height="580" rx="10" fill="#08151c" stroke="#173340" stroke-width="1" opacity="0.90"/>
+    <rect x="56" y="50" width="1088" height="580" rx="10" fill="url(#grid)" opacity="0.27"/>
+
+    <!-- Header bar -->
+    <circle cx="86" cy="76" r="3.1" fill="#63e39a" opacity="0.86"/>
+    <circle cx="101" cy="76" r="3.1" fill="#e2bb4c" opacity="0.85"/>
+    <circle cx="116" cy="76" r="3.1" fill="#ff5c82" opacity="0.86"/>
+    <text x="165" y="81" class="smallKicker mono">REPORT CREATION FLOW</text>
+    <rect x="902" y="58" width="198" height="28" rx="7" fill="#0b1c25" stroke="#244b5b" opacity="0.95"/>
+    <circle cx="924" cy="72" r="3" fill="#63e39a" opacity="0.9"/>
+    <text x="944" y="76" class="smallKicker mono">READY TO BUILD</text>
+    <path d="M1072 72H1086" stroke="#376576" stroke-width="1.2" stroke-linecap="round" opacity="0.75"/>
+
+    <!-- Main panels -->
+    <rect x="82" y="112" width="328" height="322" rx="9" fill="url(#panelBg)" class="panelStroke" filter="url(#panelShadow)"/>
+    <text x="106" y="146" class="kicker mono">IMPORT TRADES</text>
+    <text x="106" y="177" font-size="15" class="muted">Completed history becomes the input.</text>
+    <rect x="112" y="210" width="143" height="168" rx="6" fill="#081219" stroke="#617985" stroke-width="1.2"/>
+    <path d="M224 210L255 241H224Z" fill="#172a34" stroke="#294652"/>
+    <text x="139" y="286" font-size="31" font-weight="780" class="white">.CSV</text>
+    <line x1="139" y1="309" x2="222" y2="309" stroke="#1b3b49" stroke-width="5" opacity="0.7"/>
+    <line x1="139" y1="328" x2="222" y2="328" stroke="#1b3b49" stroke-width="5" opacity="0.52"/>
+    <line x1="139" y1="347" x2="206" y2="347" stroke="#1b3b49" stroke-width="5" opacity="0.42"/>
+    <circle cx="184" cy="294" r="62" fill="#65d3f2" opacity="0.045" filter="url(#tinyGlow)"/>
+
+    <g transform="translate(274 213)">
+      <rect x="0" y="0" width="108" height="38" rx="5" fill="#071118" stroke="#203f4d"/>
+      <text x="14" y="15" class="micro mono">BROKER</text>
+      <text x="14" y="30" font-size="11" font-weight="740" class="white">Export</text>
+      <rect x="0" y="52" width="108" height="38" rx="5" fill="#071118" stroke="#203f4d"/>
+      <text x="14" y="67" class="micro mono">GENERIC</text>
+      <text x="14" y="82" font-size="11" font-weight="740" class="white">CSV</text>
+      <rect x="0" y="104" width="108" height="38" rx="5" fill="#071118" stroke="#203f4d"/>
+      <text x="14" y="119" class="micro mono">IBKR</text>
+      <text x="14" y="134" font-size="11" font-weight="740" class="white">HTML</text>
+    </g>
+
+    <rect x="436" y="112" width="328" height="322" rx="9" fill="url(#panelBg)" class="panelStroke" filter="url(#panelShadow)"/>
+    <text x="460" y="146" class="kicker mono">REVIEW MAPPING</text>
+    <text x="460" y="177" font-size="15" class="muted">Fields are normalized before analysis.</text>
+
+    <rect x="466" y="210" width="112" height="178" rx="6" fill="url(#cardBg)" stroke="#203f4d"/>
+    <text x="485" y="236" class="micro mono">SOURCE</text>
+    <line x1="487" y1="259" x2="554" y2="259" stroke="#1b3b49" stroke-width="5"/>
+    <line x1="487" y1="287" x2="548" y2="287" stroke="#1b3b49" stroke-width="5" opacity="0.82"/>
+    <line x1="487" y1="315" x2="558" y2="315" stroke="#1b3b49" stroke-width="5" opacity="0.64"/>
+    <line x1="487" y1="343" x2="540" y2="343" stroke="#1b3b49" stroke-width="5" opacity="0.48"/>
+
+    <rect x="622" y="210" width="112" height="178" rx="6" fill="url(#cardBg)" stroke="#203f4d"/>
+    <text x="641" y="236" class="micro mono">NORMALIZED</text>
+    <line x1="643" y1="259" x2="710" y2="259" stroke="#1b3b49" stroke-width="5"/>
+    <line x1="643" y1="287" x2="704" y2="287" stroke="#1b3b49" stroke-width="5" opacity="0.82"/>
+    <line x1="643" y1="315" x2="714" y2="315" stroke="#1b3b49" stroke-width="5" opacity="0.64"/>
+    <line x1="643" y1="343" x2="696" y2="343" stroke="#1b3b49" stroke-width="5" opacity="0.48"/>
+
+    <path d="M578 259 C596 259, 602 259, 622 259" stroke="#58c8e8" stroke-width="1.4" fill="none" opacity="0.95" marker-end="url(#arrowCyan)"/>
+    <path d="M578 287 C596 284, 603 289, 622 287" stroke="#58c8e8" stroke-width="1.4" fill="none" opacity="0.72" marker-end="url(#arrowCyan)"/>
+    <path d="M578 315 C596 310, 604 320, 622 315" stroke="#58c8e8" stroke-width="1.4" fill="none" opacity="0.55" marker-end="url(#arrowCyan)"/>
+    <path d="M578 343 C596 339, 604 347, 622 343" stroke="#58c8e8" stroke-width="1.4" fill="none" opacity="0.42" marker-end="url(#arrowCyan)"/>
+    <circle cx="600" cy="300" r="41" fill="#65d3f2" opacity="0.045" filter="url(#tinyGlow)"/>
+    <circle cx="600" cy="300" r="16" fill="#0a1a22" stroke="#2f6377"/>
+    <path d="M594 300h12M600 294v12" stroke="#65d3f2" stroke-width="2" stroke-linecap="round"/>
+
+    <rect x="790" y="112" width="328" height="322" rx="9" fill="url(#panelBg)" class="panelStroke" filter="url(#panelShadow)"/>
+    <text x="814" y="146" class="kicker mono">REPORT PREVIEW</text>
+    <text x="814" y="174" font-size="15" class="muted">Diagnostics resolve into</text>
+    <text x="814" y="197" font-size="15" class="muted">review-ready output.</text>
+
+    <rect x="814" y="208" width="280" height="180" rx="6" fill="url(#cardBg)" stroke="#203f4d"/>
+    <text x="838" y="238" class="micro mono">EDGE HEALTH</text>
+    <text x="838" y="285" font-size="48" font-weight="790" class="gold">60</text>
+    <text x="899" y="285" font-size="18" font-weight="650" class="white">/100</text>
+    <text x="838" y="318" font-size="13" class="muted">Primary issue isolated.</text>
+    <text x="838" y="344" font-size="13" font-weight="740" class="green">↗ Report ready</text>
+
+    <g clip-path="url(#miniChartClip)">
+      <rect x="956" y="227" width="118" height="78" fill="#081822" opacity="0.45"/>
+      <line x1="956" y1="242" x2="1074" y2="242" stroke="#1b3947" opacity="0.72"/>
+      <line x1="956" y1="263" x2="1074" y2="263" stroke="#1b3947" opacity="0.72"/>
+      <line x1="956" y1="284" x2="1074" y2="284" stroke="#1b3947" opacity="0.72"/>
+      <line x1="956" y1="275" x2="1074" y2="275" stroke="#385361" stroke-dasharray="4 8" opacity="0.7"/>
+      <path d="M1050 273 L1057 269 L1064 262 L1070 254 L1074 246 L1074 305 L1050 305 Z" fill="url(#greenFill)"/>
+      <polyline points="956,273 965,270 975,272 984,266 993,271 1003,277 1012,282" fill="none" stroke="#6de99d" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <polyline points="1003,277 1012,282 1021,280 1031,284 1040,279 1050,273" fill="none" stroke="#ff5d84" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <polyline points="1040,279 1050,273 1057,269 1064,262 1070,254 1074,246" fill="none" stroke="#6de99d" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+    <rect x="838" y="360" width="68" height="14" rx="2" fill="#ff5d84" opacity="0.95"/>
+    <rect x="916" y="360" width="62" height="14" rx="2" fill="#e7bd49" opacity="0.95"/>
+    <rect x="988" y="360" width="66" height="14" rx="2" fill="#6de99d" opacity="0.95"/>
+
+    <!-- Connector arrows between panels -->
+    <path d="M413 273 C423 273, 425 273, 433 273" stroke="#58c8e8" stroke-width="1.4" fill="none" opacity="0.65" marker-end="url(#arrowCyan)"/>
+    <path d="M767 273 C777 273, 779 273, 787 273" stroke="#58c8e8" stroke-width="1.4" fill="none" opacity="0.65" marker-end="url(#arrowCyan)"/>
+
+    <!-- Step rail -->
+    <rect x="82" y="462" width="1036" height="116" rx="9" fill="url(#panelBg)" class="panelStroke"/>
+    <text x="106" y="504" class="kicker mono">FOUR STEP WORKFLOW</text>
+    <line x1="168" y1="540" x2="1032" y2="540" stroke="#214858" stroke-width="2" opacity="0.85"/>
+    <circle cx="168" cy="540" r="8" fill="#65d3f2" opacity="0.92"/>
+    <circle cx="456" cy="540" r="8" fill="#65d3f2" opacity="0.74"/>
+    <circle cx="744" cy="540" r="8" fill="#65d3f2" opacity="0.58"/>
+    <circle cx="1032" cy="540" r="8" fill="#6de99d" opacity="0.90"/>
+
+    <g>
+      <rect x="126" y="516" width="178" height="48" rx="5" fill="#09202a" stroke="#2a7188"/>
+      <text x="146" y="536" class="micro mono">01</text>
+      <text x="146" y="555" font-size="13" font-weight="760" class="white">Import</text>
+    </g>
+    <g>
+      <rect x="414" y="516" width="178" height="48" rx="5" fill="#071118" stroke="#203f4d"/>
+      <text x="434" y="536" class="micro mono">02</text>
+      <text x="434" y="555" font-size="13" font-weight="760" class="white">Map</text>
+    </g>
+    <g>
+      <rect x="702" y="516" width="178" height="48" rx="5" fill="#071118" stroke="#203f4d"/>
+      <text x="722" y="536" class="micro mono">03</text>
+      <text x="722" y="555" font-size="13" font-weight="760" class="white">Diagnose</text>
+    </g>
+    <g>
+      <rect x="948" y="516" width="170" height="48" rx="5" fill="#071118" stroke="#2e6255"/>
+      <text x="968" y="536" class="micro mono">04</text>
+      <text x="968" y="555" font-size="13" font-weight="760" class="green">Report</text>
+    </g>
+
+    <rect x="42" y="34" width="1116" height="612" rx="14" fill="none" stroke="#57c9ed" stroke-width="0.7" opacity="0.28"/>
+    <path d="M70 621H1130" stroke="#0d2733" stroke-width="1" opacity="0.7"/>
+  </g>
+</svg>

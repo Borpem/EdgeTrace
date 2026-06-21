@@ -1,17 +1,18 @@
 import { useEffect, type ReactNode } from "react";
 import {
+  Activity,
   ArrowRight,
+  BarChart3,
   Check,
-  Gauge,
+  FileSearch,
   Layers,
-  Minus,
-  Search,
+  ShieldCheck,
+  Target,
+  Upload,
   type LucideIcon
 } from "lucide-react";
 import { PageShell } from "../components/ui/Primitives";
 import { trackEvent } from "../lib/analytics";
-import { getPlanConfig } from "../lib/entitlements";
-import { planConfigs, planOrder, type FeatureKey, type PlanId } from "../lib/plans";
 import type { UserProfile } from "../types";
 
 type FeatureEducationPageProps = {
@@ -24,75 +25,125 @@ type FeatureEducationPageProps = {
   onCreateStrategySet?: () => void;
 };
 
-type Tone = "cyan" | "purple" | "amber";
-
-const insightGroups: Array<{
+type FeatureItem = {
+  icon: LucideIcon;
   title: string;
   body: string;
-  tone: Tone;
-  icon: LucideIcon;
-  bullets: string[];
-  anchorIds: string[];
-}> = [
-  {
-    title: "Diagnostics",
-    body:
-      "Understand Edge Health, expectancy, cost drag, and R capture from completed trade history before you inspect individual segments.",
-    tone: "cyan",
-    icon: Gauge,
-    bullets: ["Edge Health", "Cost drag analysis", "Expectancy breakdowns", "R-multiple analysis"],
-    anchorIds: ["diagnostic-reports", "import-provenance", "broker-imports", "full-report-access"]
-  },
-  {
-    title: "Attribution",
-    body:
-      "Separate where performance is being created or lost across symbols, strategies, time windows, and report comparisons.",
-    tone: "purple",
-    icon: Search,
-    bullets: ["Symbol performance", "Strategy breakdowns", "Time-window attribution", "Report comparisons"],
-    anchorIds: ["drilldowns", "compare", "full-drilldowns", "full-compare", "reconstruction-audit"]
-  },
-  {
-    title: "Monitoring",
-    body:
-      "Group related reports into strategy sets, then use Pro to turn repeated uploads into a twice-weekly review loop.",
-    tone: "amber",
-    icon: Layers,
-    bullets: ["Strategy sets", "Iteration tracking", "Regression monitoring", "Stability analysis"],
-    anchorIds: ["strategy-sets", "strategy-monitoring", "exports", "strategy-health-monitoring"]
-  }
+};
+
+type HowSection = {
+  id: string;
+  kicker: string;
+  title: string;
+  body: string;
+  points: string[];
+  reverse?: boolean;
+  visual: ReactNode;
+};
+
+const featureStrip: FeatureItem[] = [
+  { icon: FileSearch, title: "Diagnose the leak", body: "Find the cost, segment, or risk issue dragging the report." },
+  { icon: Activity, title: "Track each upload", body: "See whether the next report improved or slipped." },
+  { icon: Target, title: "Review the process", body: "Use Pro check-ins to keep the review loop active." },
+  { icon: BarChart3, title: "Compare to context", body: "Benchmark percentiles show where the report stands." }
 ];
 
-const featureRows: Array<{ label: string; feature?: FeatureKey; access: Record<PlanId, string> }> = [
-  { label: "Unlimited full diagnostic reports", access: { free: "Included", pro: "Included", advanced: "Included" } },
-  { label: "Broker and generic CSV imports", feature: "broker_imports", access: { free: "Included", pro: "Included", advanced: "Included" } },
-  { label: "Full drilldowns", feature: "full_drilldowns", access: { free: "Included", pro: "Included", advanced: "Included" } },
-  { label: "Full compare", feature: "full_compare", access: { free: "Included", pro: "Included", advanced: "Included" } },
-  { label: "Strategy sets", feature: "strategy_sets", access: { free: "Included", pro: "Included", advanced: "Included" } },
-  { label: "Reconstruction audit", feature: "reconstruction_audit", access: { free: "Included", pro: "Included", advanced: "Included" } },
-  { label: "Exports", feature: "audit_exports", access: { free: "Included", pro: "Included", advanced: "Included" } },
-  { label: "Strategy monitoring", feature: "strategy_health_monitoring", access: { free: "Included", pro: "Included", advanced: "Included" } },
-  { label: "Weekly Edge Review loop", feature: "review_cadence", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Regression / improvement tracking", feature: "review_cadence", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Benchmark percentile cards", feature: "review_cadence", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Next-review checklist", feature: "review_cadence", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Review cadence status", feature: "review_cadence", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Aggregate benchmark intelligence", feature: "aggregate_benchmarks", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Cost-drag cohort percentiles", feature: "aggregate_benchmarks", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "R-capture comparisons", feature: "aggregate_benchmarks", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Expectancy and profit-factor context", feature: "aggregate_benchmarks", access: { free: "-", pro: "Included", advanced: "Included" } }
+const workflowSteps: FeatureItem[] = [
+  { icon: Upload, title: "Import Trades", body: "Upload broker exports or a generic CSV." },
+  { icon: FileSearch, title: "Diagnostic Report", body: "See expectancy, cost drag, R-capture, and health." },
+  { icon: Layers, title: "Drilldowns", body: "Break performance down by symbol, strategy, and time." },
+  { icon: Target, title: "Recommended Actions", body: "Prioritize the next fixes to inspect or retest." },
+  { icon: Activity, title: "Review Loop", body: "Track whether edge is strengthening or deteriorating." }
+];
+
+const valueStrip: FeatureItem[] = [
+  { icon: BarChart3, title: "Aggregate intelligence", body: "Trade history becomes sharper diagnostics and benchmark insight." },
+  { icon: ShieldCheck, title: "Secure access", body: "Encrypted transport and account-scoped access controls." },
+  { icon: FileSearch, title: "Transparent analysis", body: "Key report inputs and diagnostic logic stay visible in the workflow." },
+  { icon: Activity, title: "Free core, paid loop", body: "Use the full workflow free. Upgrade when you want recurring review pressure." }
 ];
 
 export function FeatureEducationPage({
   profile,
   isAuthenticated = Boolean(profile),
   onAnalyze,
-  onPricing,
   onSignup
 }: FeatureEducationPageProps) {
-  const plan = getPlanConfig(profile?.planId);
   const accountAction = isAuthenticated ? onAnalyze : onSignup ?? onAnalyze;
-  const accountLabel = isAuthenticated ? "Create Diagnostic Report" : "Create Free Account";
+  const accountLabel = isAuthenticated ? "Create a Report" : "Create Free Account";
+  const sampleAction = () => {
+    document.getElementById("how-diagnose")?.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
+
+  const howSections: HowSection[] = [
+    {
+      id: "how-import",
+      kicker: "01 / Import",
+      title: "Start with the trades you already have.",
+      body:
+        "Upload completed trade history from a broker export or a generic CSV. EdgeTrace reviews the mapping, normalizes the file, and turns messy trade rows into report-ready data.",
+      points: ["Broker and generic CSV imports", "Mapping review before diagnostics", "Clean workflow from upload to report"],
+      visual: (
+        <HowGraphic
+          src="/graphics/edgetrace-how-report-builder-workflow-clean.svg"
+          alt="EdgeTrace import workflow showing source file, normalized inputs, and generated report."
+        />
+      )
+    },
+    {
+      id: "how-diagnose",
+      kicker: "02 / Diagnose",
+      title: "Find what is degrading your edge.",
+      body:
+        "The report turns the import into a quick read on health, expectancy, cost drag, R-capture, and the primary issue most likely to improve the next upload.",
+      points: ["Primary diagnosis", "Edge health score", "Top performance drivers"],
+      reverse: true,
+      visual: <DiagnosticPreview />
+    },
+    {
+      id: "how-drilldowns",
+      kicker: "03 / Drilldowns",
+      title: "Drill into the segment behind the report.",
+      body:
+        "Move from the dashboard into symbol and segment readouts to understand whether the leak is coming from costs, weak net PnL, risk capture, or a concentrated pocket of losses.",
+      points: ["Symbol-level readouts", "Cost and net PnL context", "Diagnostic flags for weak segments"],
+      visual: (
+        <HowGraphic
+          src="/graphics/edgetrace-how-segment-analysis-readout-polished.png"
+          alt="EdgeTrace segment analysis readout with symbol metrics and diagnostic flags."
+        />
+      )
+    },
+    {
+      id: "how-actions",
+      kicker: "04 / Actions",
+      title: "Turn the diagnosis into a review queue.",
+      body:
+        "Recommended actions translate the report into a short list of fixes to inspect, retest, or limit before you upload the next batch of completed trades.",
+      points: ["Prioritized next steps", "High, medium, and low impact grouping", "Clear next-best-move card"],
+      reverse: true,
+      visual: (
+        <HowGraphic
+          src="/graphics/edgetrace-how-recommended-actions-nextmove-clean.svg"
+          alt="EdgeTrace recommended actions graphic with priorities and next move."
+        />
+      )
+    },
+    {
+      id: "how-review-loop",
+      kicker: "05 / Review Loop",
+      title: "Measure whether the fix worked.",
+      body:
+        "Pro adds the recurring review layer: benchmark movement, next-upload targets, and check-in prompts that make EdgeTrace useful after every new report.",
+      points: ["Review targets", "Benchmark movement", "Recurring improvement loop"],
+      visual: (
+        <HowGraphic
+          src="/graphics/edgetrace-how-pro-review-loop-thin-gauge.png"
+          alt="EdgeTrace Pro review loop graphic with benchmark gauges and next review targets."
+        />
+      )
+    }
+  ];
 
   useEffect(() => {
     trackEvent(isAuthenticated ? "feature_education_opened" : "public_how_it_works_opened");
@@ -108,378 +159,177 @@ export function FeatureEducationPage({
   }, []);
 
   return (
-    <PageShell className={`${isAuthenticated ? "EdgeTrace-auth-education" : ""} relative z-10 pb-16`}>
-      <HeroSection accountAction={accountAction} accountLabel={accountLabel} onPricing={onPricing} />
-      <WorkflowWalkthrough />
-      <DiagnosticInsight />
-      <StrategyEvolution />
-      <PlansSection currentPlan={plan.id} isAuthenticated={isAuthenticated} onPricing={onPricing} />
-      <FinalCta accountAction={accountAction} accountLabel={accountLabel} />
-    </PageShell>
-  );
-}
-
-function HeroSection({
-  accountAction,
-  accountLabel,
-  onPricing
-}: {
-  accountAction: () => void;
-  accountLabel: string;
-  onPricing: () => void;
-}) {
-  return (
-    <section className="relative z-10 overflow-hidden border-b border-white/[0.08] py-12 md:py-16">
-      <div className="pointer-events-none absolute left-1/2 top-0 h-80 w-[54rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(34,197,245,0.12),rgba(124,92,255,0.06)_44%,transparent_72%)] blur-[118px]" />
-      <div className="EdgeTrace-education-hero-grid relative">
-        <div>
-          <h1 className="max-w-4xl text-5xl font-semibold leading-[1.08] tracking-[-0.035em] text-ink md:text-6xl xl:text-7xl">
-            Understand every layer of your trading performance.
-          </h1>
-          <p className="mt-5 max-w-2xl text-base leading-7 text-muted md:text-lg md:leading-8">
-            EdgeTrace turns completed trade history into diagnostics, attribution, comparisons, and strategy monitoring
-            so traders can understand what actually drives performance.
+    <PageShell className={`${isAuthenticated ? "EdgeTrace-auth-education" : ""} how-page relative z-10`}>
+      <section className="how-hero">
+        <div className="how-hero-copy">
+          <p className="how-eyebrow">How It Works</p>
+          <h1 className="how-title">From completed trades to clear next steps.</h1>
+          <p className="how-body">
+            EdgeTrace turns your trade history into a diagnostic workflow: import your data, identify what is degrading
+            performance, drill into weak segments, and track whether your fixes actually improve the next report.
           </p>
-          <div className="mt-7 flex flex-wrap gap-3">
+          <div className="how-cta-row">
             <button className="EdgeTrace-primary-button" onClick={accountAction}>
               {accountLabel}
               <ArrowRight size={16} />
             </button>
-            <button className="EdgeTrace-secondary-button" onClick={onPricing}>
-              View Pricing
+            <button className="EdgeTrace-secondary-button" onClick={sampleAction}>
+              View Sample Report
             </button>
           </div>
         </div>
-        <WorkspaceVisual />
+
+        <div className="how-hero-visual">
+          <HowGraphic
+            src="/graphics/edgetrace-hero-dashboard-preview-text-adjusted.svg"
+            alt="EdgeTrace dashboard preview showing edge health, diagnosis, drivers, and benchmark context."
+            hero
+          />
+        </div>
+      </section>
+
+      <FeatureStrip items={featureStrip} />
+
+      <section className="how-workflow-intro" id="how-workflow">
+        <p className="how-eyebrow">Workflow</p>
+        <h2>From trades to clarity.</h2>
+        <p>A complete workflow for understanding what changed, what leaked, and what deserves attention next.</p>
+      </section>
+
+      <ProcessRow />
+
+      <div className="how-section-stack">
+        {howSections.map((section) => (
+          <HowEditorialSection key={section.id} section={section} />
+        ))}
       </div>
+
+      <FeatureStrip items={valueStrip} className="how-value-strip" />
+
+      <section className="how-final-cta">
+        <div>
+          <p className="how-eyebrow">Start Now</p>
+          <h2>Build your first diagnostic report.</h2>
+          <p>Import completed trades and see the drivers behind your edge.</p>
+        </div>
+        <button className="EdgeTrace-primary-button" onClick={accountAction}>
+          Create a Report
+          <ArrowRight size={16} />
+        </button>
+      </section>
+    </PageShell>
+  );
+}
+
+function FeatureStrip({ items, className = "" }: { items: FeatureItem[]; className?: string }) {
+  return (
+    <section className={`how-feature-strip ${className}`}>
+      {items.map(({ icon: Icon, title, body }) => (
+        <article className="how-feature-item" key={title}>
+          <Icon aria-hidden="true" size={21} strokeWidth={1.8} />
+          <div>
+            <h2>{title}</h2>
+            <p>{body}</p>
+          </div>
+        </article>
+      ))}
     </section>
   );
 }
 
-function PresentationFrame({
-  children
+function ProcessRow() {
+  return (
+    <section className="how-process-row" aria-label="EdgeTrace workflow steps">
+      {workflowSteps.map(({ icon: Icon, title, body }, index) => (
+        <article className="how-process-step" key={title}>
+          <div className="how-step-index">0{index + 1}</div>
+          <div className="how-step-icon">
+            <Icon aria-hidden="true" size={20} strokeWidth={1.8} />
+          </div>
+          <h3>{title}</h3>
+          <p>{body}</p>
+        </article>
+      ))}
+    </section>
+  );
+}
+
+function HowEditorialSection({ section }: { section: HowSection }) {
+  return (
+    <section id={section.id} className={`how-section ${section.reverse ? "how-section--reverse" : ""}`}>
+      <div className="how-section-copy">
+        <p className="how-kicker">{section.kicker}</p>
+        <h2 className="how-section-title">{section.title}</h2>
+        <p className="how-section-body">{section.body}</p>
+        <ul className="how-points">
+          {section.points.map((point) => (
+            <li key={point}>
+              <Check aria-hidden="true" size={17} strokeWidth={2} />
+              <span>{point}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="how-section-visual">{section.visual}</div>
+    </section>
+  );
+}
+
+function HowGraphic({
+  src,
+  alt,
+  hero = false
 }: {
-  children: ReactNode;
+  src: string;
+  alt: string;
+  hero?: boolean;
 }) {
   return (
-    <div className="EdgeTrace-education-graphic-frame pointer-events-none" aria-hidden="true">
-      <div className="EdgeTrace-education-graphic-glow" />
-      <div className="EdgeTrace-education-graphic">
-        {children}
+    <img
+      src={src}
+      alt={alt}
+      className={`how-graphic ${hero ? "how-graphic--hero" : ""}`}
+      draggable={false}
+      loading={hero ? "eager" : "lazy"}
+    />
+  );
+}
+
+function DiagnosticPreview() {
+  const stats = [
+    { label: "Edge Health", value: "60", note: "Stabilizing", tone: "warning" },
+    { label: "Primary Diagnosis", value: "Loss leak", note: "Fix-first target", tone: "loss" },
+    { label: "Benchmark", value: "63rd", note: "Expectancy", tone: "cyan" }
+  ];
+
+  return (
+    <div className="how-diagnostic-preview" aria-label="Sample diagnostic report preview">
+      <div className="how-diagnostic-header">
+        <span>Report Overview</span>
+        <strong>Test - improving trades</strong>
+      </div>
+      <div className="how-diagnostic-grid">
+        {stats.map((stat) => (
+          <article className={`how-diagnostic-card is-${stat.tone}`} key={stat.label}>
+            <span>{stat.label}</span>
+            <strong>{stat.value}</strong>
+            <small>{stat.note}</small>
+          </article>
+        ))}
+      </div>
+      <div className="how-mini-chart" aria-hidden="true">
+        <svg viewBox="0 0 520 118" role="img">
+          <path className="gridline" d="M0 96H520M0 58H520M0 20H520" />
+          <path
+            className="loss-line"
+            d="M0 70 C38 38 82 48 125 68 C173 90 219 93 262 76 C307 58 348 70 390 51 C434 32 470 27 520 35"
+          />
+          <path
+            className="profit-line"
+            d="M0 70 C38 38 82 48 125 68 C173 90 219 93 262 76 C307 58 348 70 390 51 C434 32 470 27 520 35"
+          />
+        </svg>
       </div>
     </div>
   );
 }
-
-function MarketingGraphicImage({ src, alt }: { src: string; alt: string }) {
-  return <img src={src} alt={alt} className="EdgeTrace-education-graphic-image" draggable={false} />;
-}
-
-function WorkspaceVisual() {
-  return (
-    <PresentationFrame>
-      <MarketingGraphicImage
-        src="/marketing/edgetrace-signal-board.svg"
-        alt="EdgeTrace signal board showing edge health, primary diagnosis, driver metrics, and benchmark context."
-      />
-    </PresentationFrame>
-  );
-}
-
-function WorkflowWalkthrough() {
-  return (
-    <section className="EdgeTrace-education-workflow relative z-10 py-12 md:py-16">
-      <div className="EdgeTrace-education-workflow-head">
-        <h2 className="max-w-4xl text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl xl:text-6xl">
-          From broker export to strategy intelligence.
-        </h2>
-      </div>
-      <div className="space-y-12">
-        <WalkthroughSection
-          title="Import completed trade history."
-          body="The workflow is intentionally linear: import the file, isolate what changed, then use new uploads to prove whether the strategy improved."
-          visual={<ImportReportVisual />}
-        />
-        <WalkthroughSection
-          title="Identify what actually drives performance."
-          body="EdgeTrace separates expectancy, cost drag, R capture, symbol performance, strategy behavior, and time-window attribution so traders can isolate the largest source of edge or leakage."
-          visual={<AttributionVisual />}
-          reverse
-        />
-      </div>
-    </section>
-  );
-}
-
-function WalkthroughSection({
-  title,
-  body,
-  visual,
-  reverse = false
-}: {
-  title: string;
-  body: string;
-  visual: ReactNode;
-  reverse?: boolean;
-}) {
-  return (
-    <section className={`EdgeTrace-education-walkthrough-row ${reverse ? "is-reverse" : ""}`}>
-      <div className="EdgeTrace-education-walkthrough-copy">
-        <h3 className="max-w-2xl text-3xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-4xl">
-          {title}
-        </h3>
-        <p className="mt-4 max-w-xl text-base leading-7 text-muted">{body}</p>
-      </div>
-      {visual}
-    </section>
-  );
-}
-
-function ImportReportVisual() {
-  return (
-    <PresentationFrame>
-      <MarketingGraphicImage
-        src="/marketing/edgetrace-import-flow.svg"
-        alt="EdgeTrace import pipeline graphic showing broker export, mapping, and generated diagnostic report."
-      />
-    </PresentationFrame>
-  );
-}
-
-function AttributionVisual() {
-  return (
-    <PresentationFrame>
-      <MarketingGraphicImage
-        src="/marketing/edgetrace-segment-analysis-readout-polished.png"
-        alt="EdgeTrace segment analysis readout showing symbol-level diagnostics, risk flags, and performance metrics."
-      />
-    </PresentationFrame>
-  );
-}
-
-function StrategyTimelineReviewVisual() {
-  return (
-    <PresentationFrame>
-      <MarketingGraphicImage
-        src="/marketing/edgetrace-pro-review-loop-thin-gauge.png"
-        alt="EdgeTrace Pro review loop graphic showing benchmark gauges, review status, and next review targets."
-      />
-    </PresentationFrame>
-  );
-}
-
-function DiagnosticInsight() {
-  return (
-    <section className="relative z-10 border-y border-white/[0.08] bg-[radial-gradient(circle_at_20%_0%,rgba(34,197,245,0.035),transparent_32rem),rgba(3,6,12,0.24)] py-12 md:py-16">
-      <div className="mb-9 max-w-3xl">
-        <h2 className="text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl">
-          What EdgeTrace analyzes.
-        </h2>
-        <p className="mt-4 text-base leading-7 text-muted">
-          Each layer answers a different question about completed trade performance.
-        </p>
-      </div>
-      <div className="grid gap-5 lg:grid-cols-3">
-        {insightGroups.map((group) => (
-          <InsightPanel key={group.title} group={group} />
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function InsightPanel({ group }: { group: (typeof insightGroups)[number] }) {
-  const Icon = group.icon;
-  const toneClass = toneClasses[group.tone];
-  return (
-    <article className="relative overflow-hidden border border-white/[0.1] bg-[#050a12]/94 p-6">
-      {group.anchorIds.map((id) => (
-        <span key={id} id={id} className="absolute -top-24" aria-hidden="true" />
-      ))}
-      <div className={`mb-7 grid h-14 w-14 place-items-center border ${toneClass.border} ${toneClass.bg} ${toneClass.text}`}>
-        <Icon size={27} strokeWidth={1.7} />
-      </div>
-      <h3 className="text-3xl font-semibold tracking-[-0.05em] text-ink">{group.title}</h3>
-      <p className="mt-4 min-h-24 text-base leading-7 text-muted">{group.body}</p>
-      <ul className="mt-6 space-y-3">
-        {group.bullets.map((bullet) => (
-          <li key={bullet} className="flex gap-3 text-sm leading-5 text-muted">
-            <Check className={`mt-0.5 shrink-0 ${toneClass.text}`} size={15} />
-            <span>{bullet}</span>
-          </li>
-        ))}
-      </ul>
-    </article>
-  );
-}
-
-function StrategyEvolution() {
-  return (
-    <section className="relative z-10 py-12 md:py-16">
-      <div className="grid gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
-        <div>
-          <h2 className="max-w-3xl text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl">
-            Track whether your edge is improving or deteriorating.
-          </h2>
-          <p className="mt-4 max-w-2xl text-base leading-7 text-muted">
-            Compare strategy iterations, identify regression risk, and monitor whether changes are improving performance
-            or introducing leakage.
-          </p>
-          <div className="mt-7 space-y-3">
-            {["Compare the current report against prior iterations.", "Group related reports into strategy sets.", "Review stability and regression risk over time."].map((item) => (
-              <div key={item} className="flex gap-3 text-sm leading-6 text-muted">
-                <Check className="mt-1 shrink-0 text-violet" size={15} />
-                <span>{item}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-        <StrategyTimelineReviewVisual />
-      </div>
-    </section>
-  );
-}
-
-function PlansSection({
-  currentPlan,
-  isAuthenticated,
-  onPricing
-}: {
-  currentPlan: PlanId;
-  isAuthenticated: boolean;
-  onPricing: () => void;
-}) {
-  return (
-    <section className="EdgeTrace-education-plans-section">
-      <div className="EdgeTrace-education-plans-head">
-        <p>Free vs Pro</p>
-        <h2>Core analytics are free. Pro adds the review loop.</h2>
-        <span>
-          EdgeTrace gives every trader the complete reporting workflow. The paid tier is reserved for aggregate
-          weekly Edge Reviews, benchmark percentiles, next-review checklists, review cadence status, and regression / improvement tracking.
-        </span>
-        {isAuthenticated && (
-          <em className={currentPlanPillClass(currentPlan)}>
-            Current plan: <strong>{planConfigs[currentPlan].displayName}</strong>
-          </em>
-        )}
-      </div>
-
-      <div className="EdgeTrace-education-feature-card">
-        <div className="EdgeTrace-education-feature-row is-head">
-          <span>Feature access</span>
-          {planOrder.map((planId) => (
-            <strong key={planId} className={currentPlan === planId ? "is-current" : ""}>
-              {planConfigs[planId].displayName}
-              <small>
-                {planId === "free"
-                  ? "Complete workflow"
-                  : planId === "pro"
-                    ? "$9.99/month intelligence"
-                    : "Legacy benchmark access"}
-              </small>
-            </strong>
-          ))}
-        </div>
-
-        {featureRows.map((row) => (
-          <div key={row.label} className="EdgeTrace-education-feature-row">
-            <span>{row.label}</span>
-            {planOrder.map((planId) => (
-              <div key={planId} className={currentPlan === planId ? "is-current" : ""}>
-                <AccessValue value={row.access[planId]} planId={planId} />
-              </div>
-            ))}
-          </div>
-        ))}
-      </div>
-
-      {!isAuthenticated && (
-        <button className="EdgeTrace-secondary-button EdgeTrace-education-pricing-cta" onClick={onPricing}>
-          Compare Pricing
-        </button>
-      )}
-    </section>
-  );
-}
-
-function FinalCta({
-  accountAction,
-  accountLabel
-}: {
-  accountAction: () => void;
-  accountLabel: string;
-}) {
-  return (
-    <section className="relative z-10 pt-11 md:pt-14">
-      <div className="relative overflow-hidden border border-cyan/25 bg-[radial-gradient(circle_at_18%_0%,rgba(34,197,245,0.12),transparent_34%),radial-gradient(circle_at_88%_92%,rgba(124,92,255,0.1),transparent_36%),rgba(255,255,255,0.03)] p-7 md:p-9">
-        <h2 className="max-w-4xl text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-ink md:text-5xl">
-          See how EdgeTrace evaluates completed trades.
-        </h2>
-        <p className="mt-4 max-w-2xl text-base leading-7 text-muted">
-          Create an account to start analyzing completed trade history.
-        </p>
-        <div className="mt-7 flex flex-wrap gap-3">
-          <button className="EdgeTrace-primary-button" onClick={accountAction}>
-            {accountLabel}
-            <ArrowRight size={16} />
-          </button>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function AccessValue({ value, planId }: { value: string; planId: PlanId }) {
-  const toneClass = toneClasses[planToneFromId(planId)];
-  if (value === "-") {
-    return (
-      <span className="inline-flex items-center gap-2 text-muted">
-        <Minus size={14} /> Not included
-      </span>
-    );
-  }
-  if (value === "Coming soon") {
-    return <span className={`inline-flex items-center gap-2 ${toneClass.text}`}>Coming soon</span>;
-  }
-  return (
-    <span className={`inline-flex items-center gap-2 ${toneClass.text}`}>
-      <Check size={14} /> {value}
-    </span>
-  );
-}
-
-function planToneFromId(planId: PlanId): Tone {
-  return planId === "advanced" ? "amber" : planId === "pro" ? "purple" : "cyan";
-}
-
-function currentPlanPillClass(planId: PlanId) {
-  if (planId === "advanced") return "border-warning/35 bg-warning/[0.045] text-warning";
-  if (planId === "pro") return "border-violet/35 bg-violet/[0.045] text-violet";
-  return "border-cyan/30 bg-cyan/[0.04] text-cyan";
-}
-
-function currentPlanTableClass(currentPlanId: PlanId, columnPlanId: PlanId, area: "head" | "body") {
-  if (currentPlanId !== columnPlanId) return "";
-  if (columnPlanId === "advanced") return area === "head" ? "bg-warning/[0.07] text-warning" : "bg-warning/[0.025]";
-  if (columnPlanId === "pro") return area === "head" ? "bg-violet/[0.07] text-violet" : "bg-violet/[0.025]";
-  return area === "head" ? "bg-cyan/[0.07] text-cyan" : "bg-cyan/[0.025]";
-}
-
-const toneClasses = {
-  cyan: {
-    text: "text-cyan",
-    bg: "bg-cyan/[0.055]",
-    border: "border-cyan/35"
-  },
-  purple: {
-    text: "text-violet",
-    bg: "bg-violet/[0.055]",
-    border: "border-violet/35"
-  },
-  amber: {
-    text: "text-warning",
-    bg: "bg-warning/[0.055]",
-    border: "border-warning/35"
-  }
-} as const;
