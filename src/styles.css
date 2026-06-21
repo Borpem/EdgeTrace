@@ -7268,11 +7268,31 @@ textarea:focus-visible {
   }
 
   .EdgeTrace-pricing-plan-inner {
+    grid-template-rows: auto;
+    gap: 1.15rem;
     padding: 1.2rem;
+  }
+
+  .EdgeTrace-pricing-plan-inner > .flex:first-child {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .EdgeTrace-pricing-plan p {
+    max-width: 100%;
+  }
+
+  .EdgeTrace-pricing-price {
+    min-height: 0;
+    margin-top: 0.15rem;
   }
 
   .EdgeTrace-pricing-price strong {
     font-size: 2.2rem;
+  }
+
+  .EdgeTrace-pricing-plan ul {
+    margin-top: 0.25rem;
   }
 
   .EdgeTrace-pricing-table-wrap table {
