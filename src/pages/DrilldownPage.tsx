@@ -13,6 +13,7 @@ import {
   YAxis
 } from "recharts";
 import { breakdownLabels, type BreakdownDimension } from "../lib/breakdowns";
+import type { CostDragState } from "../lib/costDrag";
 import { NO_LOSS_PROFIT_FACTOR } from "../lib/diagnostics";
 import {
   analyzeSegmentLeaks,
@@ -39,6 +40,8 @@ type TradeSortKey =
   | "netPnl"
   | "realizedR"
   | "strategy";
+
+type SegmentTone = "red" | "yellow" | "green" | "blue" | "gray";
 
 export function DrilldownPage({
   result,
@@ -68,6 +71,7 @@ export function DrilldownPage({
   );
   const patterns = useMemo(() => detectSegmentPatterns(segmentTrades), [segmentTrades]);
   const charts = useMemo(() => buildSegmentCharts(segmentTrades), [segmentTrades]);
+  const signedEquityCurve = useMemo(() => splitSignedEquityCurve(charts.equityCurve), [charts.equityCurve]);
 
   const sortedTrades = useMemo(() => {
     return [...segmentTrades].sort((a, b) => {
@@ -120,17 +124,17 @@ export function DrilldownPage({
     );
   }
 
-  const metrics = [
-    ["Total Trades", String(summary.totalTrades)],
-    ["Win Rate", percent.format(summary.winRate)],
-    ["Gross PnL", currency.format(summary.grossPnl)],
-    ["Total Costs", currency.format(summary.totalCosts)],
-    ["Net PnL", currency.format(summary.netPnl)],
-    ["Expectancy", currency.format(summary.expectancy)],
-    ["Average R", formatNumber(summary.averageRealizedR)],
-    ["Profit Factor", formatProfitFactor(summary.profitFactor)],
-    ["Cost Drag", summary.costDrag.label],
-    ["Net/Gross", formatPercent(summary.netToGrossPct)]
+  const metrics: Array<{ label: string; value: string; tone: SegmentTone }> = [
+    { label: "Total Trades", value: String(summary.totalTrades), tone: "gray" },
+    { label: "Win Rate", value: percent.format(summary.winRate), tone: winRateTone(summary.winRate) },
+    { label: "Gross PnL", value: currency.format(summary.grossPnl), tone: signedTone(summary.grossPnl) },
+    { label: "Total Costs", value: currency.format(summary.totalCosts), tone: summary.totalCosts > 0 ? "yellow" : "gray" },
+    { label: "Net PnL", value: currency.format(summary.netPnl), tone: signedTone(summary.netPnl) },
+    { label: "Expectancy", value: currency.format(summary.expectancy), tone: signedTone(summary.expectancy) },
+    { label: "Average R", value: formatNumber(summary.averageRealizedR), tone: rTone(summary.averageRealizedR) },
+    { label: "Profit Factor", value: formatProfitFactor(summary.profitFactor), tone: profitFactorTone(summary.profitFactor) },
+    { label: "Cost Drag", value: summary.costDrag.label, tone: costDragTone(summary.costDrag) },
+    { label: "Net/Gross", value: formatPercent(summary.netToGrossPct), tone: netToGrossTone(summary.netToGrossPct) }
   ];
 
   return (
@@ -147,10 +151,10 @@ export function DrilldownPage({
       </section>
 
       <section className="grid gap-4 md:grid-cols-3 xl:grid-cols-5">
-        {metrics.map(([label, value]) => (
-          <div key={label} className="EdgeTrace-card-soft p-5">
+        {metrics.map(({ label, value, tone }) => (
+          <div key={label} className={`EdgeTrace-card-soft border-l-2 p-5 ${toneBorderClass(tone)}`}>
             <p className="text-xs uppercase tracking-[0.16em] text-muted">{label}</p>
-            <p className="mt-3 text-xl font-semibold">{value}</p>
+            <p className={`mt-3 text-xl font-semibold ${toneTextClass(tone)}`}>{value}</p>
           </div>
         ))}
       </section>
@@ -175,9 +179,9 @@ export function DrilldownPage({
 
       <section className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {patterns.map((pattern) => (
-          <div key={pattern.label} className="EdgeTrace-card-soft p-5">
+          <div key={pattern.label} className={`EdgeTrace-card-soft border-l-2 p-5 ${patternToneClass(pattern.label, pattern.value)}`}>
             <p className="text-xs uppercase tracking-[0.16em] text-muted">{pattern.label}</p>
-            <p className="mt-3 text-lg font-semibold">{pattern.value}</p>
+            <p className={`mt-3 text-lg font-semibold ${patternValueClass(pattern.label, pattern.value)}`}>{pattern.value}</p>
           </div>
         ))}
       </section>
@@ -185,7 +189,7 @@ export function DrilldownPage({
       <section className="mt-8 grid gap-5 xl:grid-cols-3">
         <ChartPanel title="Segment Equity Curve">
           <ResponsiveContainer width="100%" height={260}>
-            <LineChart data={charts.equityCurve}>
+            <LineChart data={signedEquityCurve}>
               <CartesianGrid stroke="#243B64" strokeOpacity={0.45} />
               <XAxis dataKey="trade" stroke="#9CA8C7" />
               <YAxis stroke="#9CA8C7" />
@@ -193,7 +197,26 @@ export function DrilldownPage({
                 formatter={(value) => [formatTooltipCurrency(value), "Equity"]}
                 contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }}
               />
-              <Line type="monotone" dataKey="equity" stroke="#45D5FF" strokeWidth={2} dot={false} />
+              <Line
+                type="monotone"
+                dataKey="positiveEquity"
+                stroke="#6fc78a"
+                strokeWidth={2.2}
+                dot={false}
+                activeDot={{ r: 4, fill: "#6fc78a", stroke: "#07111d", strokeWidth: 2 }}
+                connectNulls={false}
+                isAnimationActive={false}
+              />
+              <Line
+                type="monotone"
+                dataKey="negativeEquity"
+                stroke="#f45b72"
+                strokeWidth={2.2}
+                dot={false}
+                activeDot={{ r: 4, fill: "#f45b72", stroke: "#07111d", strokeWidth: 2 }}
+                connectNulls={false}
+                isAnimationActive={false}
+              />
             </LineChart>
           </ResponsiveContainer>
         </ChartPanel>
@@ -210,7 +233,11 @@ export function DrilldownPage({
                 formatter={(value) => [formatTooltipPercent(value), "Cost drag"]}
                 contentStyle={{ background: "#0D1424", border: "1px solid #243B64" }}
               />
-              <Bar dataKey="costDragPct" name="Cost drag" fill="#FFB84D" />
+              <Bar dataKey="costDragPct" name="Cost drag" radius={[3, 3, 0, 0]} maxBarSize={42}>
+                {charts.costDrag.map((entry) => (
+                  <Cell key={entry.trade} fill={getCostDragFill(entry.costDragPct)} />
+                ))}
+              </Bar>
             </BarChart>
           </ResponsiveContainer>
         </ChartPanel>
@@ -244,12 +271,14 @@ export function DrilldownPage({
                 <td className="px-4 py-3 text-muted">{trade.side}</td>
                 <td className="px-4 py-3 text-muted">{trade.entryTime}</td>
                 <td className="px-4 py-3 text-muted">{trade.exitTime ?? "N/A"}</td>
-                <td className="px-4 py-3">{currency.format(trade.grossPnl)}</td>
-                <td className="px-4 py-3 text-warning">{currency.format(trade.estimatedCosts)}</td>
-                <td className={trade.netPnl >= 0 ? "px-4 py-3 text-accent" : "px-4 py-3 text-loss"}>
+                <td className={`px-4 py-3 ${signedTextClass(trade.grossPnl)}`}>{currency.format(trade.grossPnl)}</td>
+                <td className={`px-4 py-3 ${trade.estimatedCosts > 0 ? "text-warning" : "text-muted"}`}>
+                  {currency.format(trade.estimatedCosts)}
+                </td>
+                <td className={`px-4 py-3 ${signedTextClass(trade.netPnl)}`}>
                   {currency.format(trade.netPnl)}
                 </td>
-                <td className="px-4 py-3 text-muted">{formatNumber(trade.realizedR)}</td>
+                <td className={`px-4 py-3 ${toneTextClass(rTone(trade.realizedR))}`}>{formatNumber(trade.realizedR)}</td>
                 <td className="px-4 py-3 text-muted">{trade.strategy ?? "Unspecified"}</td>
               </tr>
             ))}
@@ -267,6 +296,101 @@ function ChartPanel({ title, children }: { title: string; children: React.ReactN
       {children}
     </div>
   );
+}
+
+function splitSignedEquityCurve(data: Array<{ trade: number; equity: number }>) {
+  return data.map((point) => ({
+    ...point,
+    positiveEquity: point.equity >= 0 ? point.equity : undefined,
+    negativeEquity: point.equity < 0 ? point.equity : undefined
+  }));
+}
+
+function signedTone(value: number | undefined): SegmentTone {
+  if (typeof value !== "number" || !Number.isFinite(value)) return "gray";
+  if (value > 0) return "green";
+  if (value < 0) return "red";
+  return "gray";
+}
+
+function winRateTone(value: number | undefined): SegmentTone {
+  if (typeof value !== "number" || !Number.isFinite(value)) return "gray";
+  if (value >= 0.55) return "green";
+  if (value >= 0.4) return "yellow";
+  return "red";
+}
+
+function rTone(value: number | undefined): SegmentTone {
+  if (typeof value !== "number" || !Number.isFinite(value)) return "gray";
+  if (value >= 1) return "green";
+  if (value > 0) return "yellow";
+  return "red";
+}
+
+function profitFactorTone(value: number | undefined): SegmentTone {
+  if (typeof value !== "number" || Number.isNaN(value)) return "gray";
+  if (value === Infinity || value >= NO_LOSS_PROFIT_FACTOR || value >= 1.5) return "green";
+  if (value >= 1) return "yellow";
+  return "red";
+}
+
+function costDragTone(costDrag: CostDragState): SegmentTone {
+  if (costDrag.type === "pre_cost_unprofitable") return "red";
+  if (costDrag.type === "percentage") {
+    if (costDrag.value <= 0.03) return "green";
+    if (costDrag.value <= 0.12) return "yellow";
+    return "red";
+  }
+  return "gray";
+}
+
+function netToGrossTone(value: number | undefined): SegmentTone {
+  if (typeof value !== "number" || !Number.isFinite(value)) return "gray";
+  if (value <= 0.25) return "green";
+  if (value <= 0.6) return "yellow";
+  return "red";
+}
+
+function toneTextClass(tone: SegmentTone) {
+  if (tone === "red") return "text-loss";
+  if (tone === "yellow") return "text-warning";
+  if (tone === "green") return "text-profit";
+  if (tone === "blue") return "text-accent";
+  return "text-ink";
+}
+
+function signedTextClass(value: number | undefined) {
+  return toneTextClass(signedTone(value));
+}
+
+function toneBorderClass(tone: SegmentTone) {
+  if (tone === "red") return "border-l-loss/80";
+  if (tone === "yellow") return "border-l-warning/80";
+  if (tone === "green") return "border-l-profit/80";
+  if (tone === "blue") return "border-l-accent/80";
+  return "border-l-line";
+}
+
+function patternTone(label: string, value: string): SegmentTone {
+  const normalized = `${label} ${value}`.toLowerCase();
+  if (normalized.includes("loser") || normalized.includes("worst") || normalized.includes("-$")) return "red";
+  if (normalized.includes("winner") || normalized.includes("best")) return "green";
+  return "gray";
+}
+
+function patternToneClass(label: string, value: string) {
+  return toneBorderClass(patternTone(label, value));
+}
+
+function patternValueClass(label: string, value: string) {
+  return toneTextClass(patternTone(label, value));
+}
+
+function getCostDragFill(value: number | undefined) {
+  if (typeof value !== "number" || !Number.isFinite(value)) return "#8fa0ad";
+  if (value <= 3) return "#6fc78a";
+  if (value <= 12) return "#e2b84a";
+  return "#f45b72";
 }
 
 function RealizedRDistributionChart({ data }: { data: Array<{ bucket: string; count: number }> }) {
