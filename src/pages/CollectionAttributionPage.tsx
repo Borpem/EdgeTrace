@@ -181,8 +181,9 @@ function AttributionChart({
 }
 
 function Metric({ label, value, tone }: { label: string; value: string; tone?: "accent" | "loss" }) {
+  const stripeTone = tone === "accent" ? "tone-green" : tone === "loss" ? "tone-red" : "tone-gray";
   return (
-    <div className="EdgeTrace-card-soft px-3 py-2">
+    <div className={`EdgeTrace-card-soft EdgeTrace-drilldown-stripe ${stripeTone} px-3 py-2`}>
       <p className="text-[11px] uppercase tracking-[0.14em] text-muted">{label}</p>
       <p className={`mt-1 font-semibold capitalize ${tone === "accent" ? "text-accent" : tone === "loss" ? "text-loss" : "text-ink"}`}>{value}</p>
     </div>

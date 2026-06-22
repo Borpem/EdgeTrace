@@ -101,8 +101,8 @@ export function ReconstructionAuditPage({
           <section className="grid gap-4 md:grid-cols-4">
             <AuditStat label="Reconstructed Trades" value={totals.trades} />
             <AuditStat label="Source Executions" value={totals.executions} />
-            <AuditStat label="Allocated Costs" value={currency.format(totals.costs)} />
-            <AuditStat label="Warning Types" value={totals.warnings} />
+            <AuditStat label="Allocated Costs" value={currency.format(totals.costs)} tone={totals.costs > 0 ? "yellow" : "gray"} />
+            <AuditStat label="Warning Types" value={totals.warnings} tone={totals.warnings > 0 ? "yellow" : "green"} />
           </section>
           <p className="mt-3 text-sm text-muted">Exports are generated locally from the saved report data.</p>
 
@@ -273,9 +273,9 @@ function AuditRow({
   );
 }
 
-function AuditStat({ label, value }: { label: string; value: string | number }) {
+function AuditStat({ label, value, tone = "gray" }: { label: string; value: string | number; tone?: "green" | "yellow" | "red" | "gray" }) {
   return (
-    <div className="EdgeTrace-card-soft p-5">
+    <div className={`EdgeTrace-card-soft EdgeTrace-drilldown-stripe tone-${tone} p-5`}>
       <p className="text-xs uppercase tracking-[0.16em] text-muted">{label}</p>
       <p className="mt-3 text-2xl font-semibold">{value}</p>
     </div>

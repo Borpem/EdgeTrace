@@ -534,7 +534,7 @@ function BriefMetric({
   status: MetricStatus;
 }) {
   return (
-    <div className="EdgeTrace-dashboard-cell p-3.5">
+    <div className={`EdgeTrace-dashboard-cell EdgeTrace-drilldown-stripe ${metricStatusStripeClass(status)} p-3.5`}>
       <div className="flex items-center justify-between gap-3">
         <p className="text-[10px] font-semibold uppercase tracking-[0.11em] text-muted">{label}</p>
         <StatusDot status={status} />
@@ -569,7 +569,7 @@ function ChangeMatrix({ change, className = "mt-5" }: { change: ReturnType<typeo
 
 function DeltaCard({ metric }: { metric: RecentChangeMetric }) {
   return (
-    <div className={`EdgeTrace-dashboard-cell border-l-2 p-3.5 ${deltaBorderClass(metric.tone)}`}>
+    <div className={`EdgeTrace-dashboard-cell EdgeTrace-drilldown-stripe ${recentChangeStripeClass(metric.tone)} p-3.5`}>
       <p className="text-[10px] font-semibold uppercase tracking-[0.11em] text-muted">{metric.label}</p>
       <p className={`mt-2.5 text-xl font-semibold tracking-[-0.04em] ${deltaTextClass(metric.tone)}`}>{metric.value}</p>
       <p className="mt-1 text-xs leading-5 text-muted">{metric.detail}</p>
@@ -1183,6 +1183,13 @@ function metricTextClass(status: MetricStatus) {
   return "text-ink";
 }
 
+function metricStatusStripeClass(status: MetricStatus) {
+  if (status === "healthy") return "tone-green";
+  if (status === "warning") return "tone-yellow";
+  if (status === "weak") return "tone-red";
+  return "tone-gray";
+}
+
 function statusDotClass(status: MetricStatus) {
   if (status === "healthy") return "bg-cyan";
   if (status === "warning") return "bg-warning";
@@ -1204,18 +1211,18 @@ function trendLabel(trend: TrendDirection) {
   return "Baseline";
 }
 
-function deltaBorderClass(tone: RecentChangeMetric["tone"]) {
-  if (tone === "positive") return "border-cyan/35";
-  if (tone === "negative") return "border-loss/45";
-  if (tone === "warning") return "border-warning/45";
-  return "border-white/[0.1]";
-}
-
 function deltaTextClass(tone: RecentChangeMetric["tone"]) {
   if (tone === "positive") return "text-cyan";
   if (tone === "negative") return "text-loss";
   if (tone === "warning") return "text-warning";
   return "text-ink";
+}
+
+function recentChangeStripeClass(tone: RecentChangeMetric["tone"]) {
+  if (tone === "positive") return "tone-green";
+  if (tone === "negative") return "tone-red";
+  if (tone === "warning") return "tone-yellow";
+  return "tone-gray";
 }
 
 function attentionBadgeClass(severity: AttentionItem["severity"]) {

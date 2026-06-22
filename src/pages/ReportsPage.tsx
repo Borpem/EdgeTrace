@@ -380,7 +380,11 @@ export function ReportsPage({
                     value={formatCurrency(report.netPnl)}
                     tone={isFiniteNumber(report.netPnl) ? (report.netPnl >= 0 ? "accent" : "loss") : undefined}
                   />
-                  <Metric label="Expectancy" value={formatCurrency(report.expectancy)} />
+                  <Metric
+                    label="Expectancy"
+                    value={formatCurrency(report.expectancy)}
+                    tone={isFiniteNumber(report.expectancy) ? (report.expectancy >= 0 ? "accent" : "loss") : undefined}
+                  />
                 </div>
               </div>
 
@@ -600,8 +604,9 @@ function DebugStat({ label, value }: { label: string; value: string }) {
 }
 
 function Metric({ label, value, tone }: { label: string; value: string; tone?: "accent" | "loss" }) {
+  const stripeTone = tone === "accent" ? "tone-green" : tone === "loss" ? "tone-red" : "tone-gray";
   return (
-    <div className="EdgeTrace-card-soft px-3 py-2">
+    <div className={`EdgeTrace-card-soft EdgeTrace-drilldown-stripe ${stripeTone} px-3 py-2`}>
       <p className="text-[11px] uppercase tracking-[0.14em] text-muted">{label}</p>
       <p className={`mt-1 font-semibold ${tone === "accent" ? "text-accent" : tone === "loss" ? "text-loss" : "text-ink"}`}>
         {value}

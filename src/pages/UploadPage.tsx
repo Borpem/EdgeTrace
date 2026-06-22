@@ -892,8 +892,9 @@ function prepareRowsForAdapter(rows: unknown[], mappings: FieldMapping[], adapte
 }
 
 function SummaryStat({ label, value }: { label: string; value: number }) {
+  const tone = label.toLowerCase().includes("warning") || label.toLowerCase().includes("excluded") ? "yellow" : "gray";
   return (
-    <div className="rounded-md border border-line bg-panel p-3">
+    <div className={`EdgeTrace-drilldown-stripe tone-${tone} rounded-md border border-line bg-panel p-3`}>
       <p className="text-xs uppercase tracking-[0.14em] text-muted">{label}</p>
       <p className="mt-1 text-xl font-semibold">{value}</p>
     </div>
@@ -962,8 +963,18 @@ function ImportConfidencePanel({
 }
 
 function ConfidenceMetric({ label, value, wide }: { label: string; value: string | number; wide?: boolean }) {
+  const normalizedLabel = label.toLowerCase();
+  const numericValue = typeof value === "number" ? value : undefined;
+  const tone =
+    normalizedLabel.includes("warning") && (numericValue ?? 0) > 0
+      ? "yellow"
+      : normalizedLabel.includes("excluded") && (numericValue ?? 0) > 0
+        ? "red"
+        : normalizedLabel.includes("mapped") || normalizedLabel.includes("normalized")
+          ? "green"
+          : "gray";
   return (
-    <div className={`border border-white/[0.1] bg-black/25 px-3 py-3 ${wide ? "sm:col-span-2 xl:col-span-2" : ""}`}>
+    <div className={`EdgeTrace-drilldown-stripe tone-${tone} border border-white/[0.1] bg-black/25 px-3 py-3 ${wide ? "sm:col-span-2 xl:col-span-2" : ""}`}>
       <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted">{label}</p>
       <p className="mt-1 truncate text-sm font-semibold text-ink">{value}</p>
     </div>

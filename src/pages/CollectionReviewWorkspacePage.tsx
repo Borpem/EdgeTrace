@@ -367,8 +367,9 @@ function WorkspaceNoteEditor({
 }
 
 function Metric({ label, value, tone }: { label: string; value: string; tone?: "accent" | "warning" }) {
+  const stripeTone = tone === "accent" ? "tone-green" : tone === "warning" ? "tone-yellow" : "tone-gray";
   return (
-    <div className="EdgeTrace-card-soft px-3 py-2">
+    <div className={`EdgeTrace-card-soft EdgeTrace-drilldown-stripe ${stripeTone} px-3 py-2`}>
       <p className="text-[11px] uppercase tracking-[0.14em] text-muted">{label}</p>
       <p className={`mt-1 font-semibold ${tone === "accent" ? "text-accent" : tone === "warning" ? "text-warning" : "text-ink"}`}>{value}</p>
     </div>
@@ -380,7 +381,7 @@ function Delta({ label, value, format, lowerIsBetter }: { label: string; value?:
   const improved = !neutral && (lowerIsBetter ? value < 0 : value > 0);
   const formatted = value === undefined ? "N/A" : format === "currency" ? currency.format(value) : format === "percent" ? percent.format(value) : value.toFixed(2);
   return (
-    <div className="border border-white/[0.08] bg-black/25 px-3 py-2">
+    <div className={`EdgeTrace-drilldown-stripe ${neutral ? "tone-gray" : improved ? "tone-green" : "tone-red"} border border-white/[0.08] bg-black/25 px-3 py-2`}>
       <p className="text-xs text-muted">{label}</p>
       <p className={`mt-1 font-semibold ${neutral ? "" : improved ? "text-accent" : "text-loss"}`}>{formatted}</p>
     </div>

@@ -381,13 +381,24 @@ export function ComparePage({
           >
             <p className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-muted">Interpretation</p>
             <div className="grid gap-3 text-sm md:grid-cols-2">
-              <SummaryLine label="Expectancy Change" value={currency.format(reportB.metrics.expectancy - reportA.metrics.expectancy)} />
+              <SummaryLine
+                label="Expectancy Change"
+                value={currency.format(reportB.metrics.expectancy - reportA.metrics.expectancy)}
+                tone={reportB.metrics.expectancy - reportA.metrics.expectancy >= 0 ? "green" : "red"}
+              />
               <SummaryLine
                 label="R Behavior Change"
                 value={
                   reportA.metrics.averageRealizedR === undefined || reportB.metrics.averageRealizedR === undefined
                     ? "N/A"
                     : number.format(reportB.metrics.averageRealizedR - reportA.metrics.averageRealizedR)
+                }
+                tone={
+                  reportA.metrics.averageRealizedR === undefined || reportB.metrics.averageRealizedR === undefined
+                    ? "gray"
+                    : reportB.metrics.averageRealizedR - reportA.metrics.averageRealizedR >= 0
+                      ? "green"
+                      : "red"
                 }
               />
               <SummaryLine label="Report A Net-to-Gross" value={formatOptional(netToGrossPct(reportA), "percent")} />
@@ -668,7 +679,7 @@ function FilterSelect({
 
 function MetricComparisonCard({ metric }: { metric: ComparisonMetric }) {
   return (
-    <div className="EdgeTrace-card p-5">
+    <div className={`EdgeTrace-card EdgeTrace-drilldown-stripe ${comparisonStatusStripeClass(metric.status)} p-5`}>
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-xs uppercase tracking-[0.16em] text-muted">{metric.label}</p>
@@ -698,9 +709,9 @@ function MetricValue({ label, value }: { label: string; value: string }) {
   );
 }
 
-function SummaryLine({ label, value }: { label: string; value: string }) {
+function SummaryLine({ label, value, tone = "gray" }: { label: string; value: string; tone?: "green" | "red" | "yellow" | "gray" }) {
   return (
-    <div className="rounded-md border border-line bg-graphite px-4 py-3">
+    <div className={`EdgeTrace-drilldown-stripe tone-${tone} rounded-md border border-line bg-graphite px-4 py-3`}>
       <p className="text-xs uppercase tracking-[0.14em] text-muted">{label}</p>
       <p className="mt-1 font-semibold">{value}</p>
     </div>
@@ -737,6 +748,13 @@ function statusClass(status: ComparisonMetric["status"]) {
   if (status === "Degraded") return "border-loss/70 bg-loss/10 text-loss";
   if (status === "Flat") return "border-line bg-graphite text-muted";
   return "border-warning/70 bg-warning/10 text-warning";
+}
+
+function comparisonStatusStripeClass(status: ComparisonMetric["status"]) {
+  if (status === "Improved") return "tone-green";
+  if (status === "Degraded") return "tone-red";
+  if (status === "Flat") return "tone-gray";
+  return "tone-yellow";
 }
 
 function BreakdownComparisonTableRow({ row, onOpen }: { row: BreakdownComparisonRow; onOpen?: () => void }) {

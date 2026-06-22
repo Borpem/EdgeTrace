@@ -414,7 +414,7 @@ function StrategyMonitoringSection({
           </div>
           <div className="mt-5 grid gap-3 md:grid-cols-3">
             {monitoring.trendMetrics.slice(0, 6).map((trend) => (
-              <div key={trend.label} className="border border-white/[0.08] bg-black/25 p-3">
+              <div key={trend.label} className={`EdgeTrace-drilldown-stripe ${collectionTrendStripeClass(trend.direction)} border border-white/[0.08] bg-black/25 p-3`}>
                 <p className="text-[10px] uppercase tracking-[0.18em] text-muted">{trend.label}</p>
                 <p className={`mt-2 text-sm font-semibold ${trend.direction === "improving" ? "text-profit" : trend.direction === "degrading" ? "text-loss" : "text-ink"}`}>
                   {trend.direction.replace(/_/g, " ")}
@@ -952,7 +952,7 @@ function MiniDelta({
           ? percent.format(value)
           : value.toFixed(2);
   return (
-    <div className="rounded-md border border-line bg-panel px-3 py-2">
+    <div className={`EdgeTrace-drilldown-stripe ${neutral ? "tone-gray" : improved ? "tone-green" : "tone-red"} rounded-md border border-line bg-panel px-3 py-2`}>
       <p className="text-xs text-muted">{label}</p>
       <p className={`mt-1 font-semibold ${neutral ? "" : improved ? "text-accent" : "text-loss"}`}>{formatted}</p>
     </div>
@@ -1057,7 +1057,7 @@ function ReviewNoteEditor({
 
 function DriverPanel({ title, rows, tone }: { title: string; rows: CollectionAttributionRow[]; tone: "accent" | "loss" }) {
   return (
-    <div className={`rounded-lg border bg-graphite p-4 ${tone === "accent" ? "border-accent/50" : "border-loss/50"}`}>
+    <div className={`EdgeTrace-drilldown-stripe ${tone === "accent" ? "tone-green" : "tone-red"} rounded-lg border bg-graphite p-4 ${tone === "accent" ? "border-accent/50" : "border-loss/50"}`}>
       <p className="text-xs uppercase tracking-[0.16em] text-muted">{title}</p>
       <div className="mt-3 grid gap-3">
         {rows.length === 0 ? (
@@ -1097,7 +1097,7 @@ function AttributionTableRow({ row, onOpen }: { row: CollectionAttributionRow; o
 
 function TrendCard({ trend }: { trend: CollectionTrendMetric }) {
   return (
-    <div className={`rounded-lg border bg-panel p-5 ${trendClass(trend.direction)}`}>
+    <div className={`EdgeTrace-drilldown-stripe ${collectionTrendStripeClass(trend.direction)} rounded-lg border bg-panel p-5 ${trendClass(trend.direction)}`}>
       <p className="text-xs uppercase tracking-[0.16em] text-muted">{trend.label} Trend</p>
       <p className="mt-3 text-xl font-semibold capitalize">{trend.direction.replace("_", " ")}</p>
       <p className="mt-2 text-xs text-muted">{trend.confidence} confidence</p>
@@ -1110,10 +1110,10 @@ function TrendCard({ trend }: { trend: CollectionTrendMetric }) {
 
 function ReportRankCard({ title, report, value }: { title: string; report?: ReportSummary; value?: number }) {
   return (
-    <div className="EdgeTrace-card p-5">
+    <div className={`EdgeTrace-card EdgeTrace-drilldown-stripe ${value === undefined ? "tone-gray" : value >= 0 ? "tone-green" : "tone-red"} p-5`}>
       <p className="text-xs uppercase tracking-[0.16em] text-muted">{title}</p>
       <p className="mt-3 font-semibold">{report?.name ?? "N/A"}</p>
-      <p className="mt-2 text-lg font-semibold">{value === undefined ? "N/A" : currency.format(value)}</p>
+      <p className={`mt-2 text-lg font-semibold ${value === undefined ? "" : value >= 0 ? "text-accent" : "text-loss"}`}>{value === undefined ? "N/A" : currency.format(value)}</p>
     </div>
   );
 }
@@ -1263,6 +1263,13 @@ function trendClass(direction: CollectionTrendMetric["direction"]) {
   if (direction === "degrading") return "border-loss/60";
   if (direction === "mixed") return "border-warning/60";
   return "border-line";
+}
+
+function collectionTrendStripeClass(direction: CollectionTrendMetric["direction"]) {
+  if (direction === "improving") return "tone-green";
+  if (direction === "degrading") return "tone-red";
+  if (direction === "mixed") return "tone-yellow";
+  return "tone-gray";
 }
 
 function formatTrendValue(value: number | undefined, key: CollectionTrendMetric["key"]) {

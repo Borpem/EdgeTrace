@@ -676,29 +676,29 @@ export function DashboardPage({
                 </div>
               </div>
               <div className="EdgeTrace-command-overview-summary" aria-label="Report summary">
-                <div>
+                <div className={`EdgeTrace-drilldown-stripe tone-${metrics.netPnl >= 0 ? "green" : "red"}`}>
                   <span>Net PnL</span>
                   <strong className={metrics.netPnl >= 0 ? "tone-green" : "tone-red"}>{currency.format(metrics.netPnl)}</strong>
                 </div>
-                <div>
+                <div className={`EdgeTrace-drilldown-stripe tone-${metrics.expectancy >= 0 ? "green" : "red"}`}>
                   <span>Expectancy</span>
                   <strong className={metrics.expectancy >= 0 ? "tone-green" : "tone-red"}>{currency.format(metrics.expectancy)}</strong>
                 </div>
-                <div>
+                <div className={`EdgeTrace-drilldown-stripe tone-${winRateTone(metrics.winRate)}`}>
                   <span>Win Rate</span>
                   <strong className={`tone-${winRateTone(metrics.winRate)}`}>{percent.format(metrics.winRate)}</strong>
                 </div>
-                <div>
+                <div className={`EdgeTrace-drilldown-stripe tone-${profitFactorTone(metrics.profitFactor)}`}>
                   <span>Profit Factor</span>
                   <strong className={`tone-${profitFactorTone(metrics.profitFactor)}`}>{formatProfitFactor(metrics.profitFactor)}</strong>
                 </div>
-                <div>
+                <div className={`EdgeTrace-drilldown-stripe tone-${rMultipleTone(metrics.averageRealizedR)}`}>
                   <span>R-Multiple</span>
                   <strong className={`tone-${rMultipleTone(metrics.averageRealizedR)}`}>
                     {metrics.averageRealizedR !== undefined ? `${number.format(metrics.averageRealizedR)}R` : "N/A"}
                   </strong>
                 </div>
-                <div>
+                <div className={`EdgeTrace-drilldown-stripe tone-${sampleSizeTone(normalizedTradeCount)}`}>
                   <span>Trades</span>
                   <strong className={`tone-${sampleSizeTone(normalizedTradeCount)}`}>{number.format(normalizedTradeCount)}</strong>
                 </div>
@@ -714,8 +714,8 @@ export function DashboardPage({
               <h2>{humanDiagnosis(intelligence.primaryDiagnosis)}</h2>
               <p>{intelligence.primaryLeak.explanation}</p>
               <div className="EdgeTrace-command-two-metrics">
-                <div><span>Est. Impact</span><strong className="is-red">{currency.format(-Math.abs(driverImpact))}</strong></div>
-                <div><span>Diagnosis Strength</span><strong>{diagnosisStrength(intelligence.strategyHealthScore)}</strong></div>
+                <div className="EdgeTrace-drilldown-stripe tone-red"><span>Est. Impact</span><strong className="is-red">{currency.format(-Math.abs(driverImpact))}</strong></div>
+                <div className={`EdgeTrace-drilldown-stripe tone-${healthTone}`}><span>Diagnosis Strength</span><strong>{diagnosisStrength(intelligence.strategyHealthScore)}</strong></div>
               </div>
               <button onClick={inspectPrimarySegment}>View breakdown <ArrowRight size={15} aria-hidden="true" /></button>
             </article>
@@ -790,7 +790,7 @@ export function DashboardPage({
               </div>
               <div className="EdgeTrace-command-driver-signal-grid">
                 {driverSignals.map((driver) => (
-                  <div key={driver.label} className={`tone-${driver.tone}`}>
+                  <div key={driver.label} className={`EdgeTrace-drilldown-stripe tone-${driver.tone}`}>
                     <span>{driver.label}</span>
                     <strong>{driver.value}</strong>
                     <small>{driver.detail}</small>
@@ -810,7 +810,7 @@ export function DashboardPage({
                   </p>
                   <div className="EdgeTrace-command-change-grid">
                     {comparisonRows.map((row) => (
-                      <div key={row.label}>
+                      <div key={row.label} className={`EdgeTrace-drilldown-stripe tone-${row.tone}`}>
                         <span>{row.label}</span>
                         <strong className={`tone-${row.tone}`}>{row.delta}</strong>
                         <small className={`tone-${row.tone}`}>
@@ -1490,7 +1490,7 @@ function DashboardMetricCard({
   dataTestId?: string;
 }) {
   return (
-    <article className={`EdgeTrace-dashboard-panel EdgeTrace-kpi-card tone-${tone} ${icon ? "has-icon" : ""}`} data-testid={dataTestId}>
+    <article className={`EdgeTrace-dashboard-panel EdgeTrace-kpi-card EdgeTrace-drilldown-stripe tone-${tone} ${icon ? "has-icon" : ""}`} data-testid={dataTestId}>
       <PanelHeader title={title} info />
       <div className="EdgeTrace-kpi-body">
         <div>
