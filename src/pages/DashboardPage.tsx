@@ -121,6 +121,21 @@ type ReviewLoopOutput = {
   benchmarkTiles: ReviewBenchmarkTile[];
   checklist: ReviewLoopItem[];
 };
+type MistakeHeatmapCell = {
+  id: string;
+  weekday: string;
+  bucket: string;
+  score: number;
+  trades: number;
+  loss: number;
+  level: number;
+};
+type MistakeHeatmapOutput = {
+  cells: MistakeHeatmapCell[];
+  peakLabel: string;
+  peakDetail: string;
+  totalMistakeCost: number;
+};
 
 const dashboardDisclosureIds: DashboardDisclosureId[] = ["diagnosis", "insights", "nextSteps", "details"];
 
@@ -217,6 +232,7 @@ export function DashboardPage({
   );
   const canViewAggregateBenchmarks = canUseFeature(plan, "aggregate_benchmarks");
   const canUseReviewLoop = canUseFeature(plan, "review_cadence");
+  const canViewMistakeHeatmap = canUseFeature(plan, "mistake_heatmap");
   const canInspectFullDrilldown = reportAccessLevel === "full" && canViewFullDrilldown(plan);
   const fullAttributionAccess =
     canInspectFullDrilldown &&
@@ -603,6 +619,7 @@ export function DashboardPage({
     actionItems,
     largestLeak
   });
+  const mistakeHeatmap = useMemo(() => buildMistakeHeatmap(trades), [trades]);
   const actionPriorityCounts = commandActions.reduce(
     (counts, item) => {
       if (item.tone === "red") counts.high += 1;
@@ -833,7 +850,7 @@ export function DashboardPage({
               feature="review_cadence"
               accessLevel={canUseReviewLoop ? "full" : "preview"}
               title="Upgrade to Pro to unlock the review loop."
-              description="Pro turns repeated imports into weekly edge reviews, regression alerts, benchmark context, and a checklist for the next upload."
+              description="Pro turns repeated imports into weekly edge reviews, mistake heatmaps, benchmark context, and a checklist for the next upload."
               className="EdgeTrace-command-pro-loop-gate"
             >
               <ProReviewLoopPanel
@@ -841,6 +858,16 @@ export function DashboardPage({
                 onCreateReport={onCreateReport}
                 onOpenCollections={onOpenCollections}
               />
+            </PaywallGate>
+
+            <PaywallGate
+              feature="mistake_heatmap"
+              accessLevel={canViewMistakeHeatmap ? "full" : "preview"}
+              title="Upgrade to Pro to unlock the mistake heatmap."
+              description="Pro shows where losses, cost drag, and weak trade clusters repeat by weekday and session so the next upload has a clear inspection target."
+              className="EdgeTrace-command-mistake-heatmap-gate"
+            >
+              <MistakeHeatmapPanel heatmap={mistakeHeatmap} />
             </PaywallGate>
 
             <article className="EdgeTrace-command-card EdgeTrace-command-actions">
@@ -1868,6 +1895,88 @@ function ProReviewLoopPanel({
   );
 }
 
+function MistakeHeatmapPanel({ heatmap }: { heatmap: MistakeHeatmapOutput }) {
+  const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri"];
+  const buckets = ["Open", "AM", "Mid", "PM", "Close"];
+  const cellMap = new Map(heatmap.cells.map((cell) => [cell.id, cell]));
+
+  return (
+    <article className="EdgeTrace-command-card EdgeTrace-command-mistake-heatmap">
+      <div className="EdgeTrace-command-card-heading">
+        <span>Mistake Heatmap</span>
+        <em>Pro only</em>
+      </div>
+      <div className="EdgeTrace-mistake-heatmap-layout">
+        <div>
+          <h3>{heatmap.peakLabel}</h3>
+          <p>{heatmap.peakDetail}</p>
+          <div className="EdgeTrace-mistake-heatmap-stat">
+            <span>Total mistake cost</span>
+            <strong>{currency.format(heatmap.totalMistakeCost)}</strong>
+          </div>
+        </div>
+        <div className="EdgeTrace-mistake-heatmap-grid" role="img" aria-label="Mistake heatmap by weekday and session">
+          <div className="EdgeTrace-mistake-heatmap-corner" />
+          {buckets.map((bucket) => (
+            <span key={bucket} className="EdgeTrace-mistake-heatmap-axis">{bucket}</span>
+          ))}
+          {weekdays.map((weekday) => (
+            <MistakeHeatmapRow
+              key={weekday}
+              weekday={weekday}
+              buckets={buckets}
+              cellMap={cellMap}
+            />
+          ))}
+        </div>
+        <div className="EdgeTrace-mistake-heatmap-legend" aria-hidden="true">
+          <span>Less</span>
+          {[0.12, 0.28, 0.44, 0.62, 0.78, 0.94].map((level) => (
+            <i key={level} style={{ background: mistakeCellBackground(level) }} />
+          ))}
+          <span>More</span>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function MistakeHeatmapRow({
+  weekday,
+  buckets,
+  cellMap
+}: {
+  weekday: string;
+  buckets: string[];
+  cellMap: Map<string, MistakeHeatmapCell>;
+}) {
+  return (
+    <>
+      <span className="EdgeTrace-mistake-heatmap-axis is-row">{weekday}</span>
+      {buckets.map((bucket) => {
+        const cell = cellMap.get(`${weekday}-${bucket}`) ?? {
+          id: `${weekday}-${bucket}`,
+          weekday,
+          bucket,
+          score: 0,
+          trades: 0,
+          loss: 0,
+          level: 0
+        };
+        return (
+          <span
+            key={cell.id}
+            className="EdgeTrace-mistake-heatmap-cell"
+            style={{ background: mistakeCellBackground(cell.level) }}
+            title={`${weekday} ${bucket}: ${cell.trades} mistake trades, ${currency.format(cell.loss)} downside`}
+            aria-label={`${weekday} ${bucket}, ${cell.trades} mistake trades, ${currency.format(cell.loss)} downside`}
+          />
+        );
+      })}
+    </>
+  );
+}
+
 function SnapshotStats({
   metrics,
   averageR,
@@ -2390,6 +2499,94 @@ function buildEquityCurve(trades: NormalizedTrade[]) {
     equity += trade.netPnl;
     return { trade: index + 1, equity };
   });
+}
+
+const mistakeWeekdays = ["Mon", "Tue", "Wed", "Thu", "Fri"] as const;
+const mistakeBuckets = [
+  { label: "Open", start: 9.5, end: 10.5 },
+  { label: "AM", start: 10.5, end: 12 },
+  { label: "Mid", start: 12, end: 14 },
+  { label: "PM", start: 14, end: 15.5 },
+  { label: "Close", start: 15.5, end: 16.25 }
+] as const;
+
+function buildMistakeHeatmap(trades: NormalizedTrade[]): MistakeHeatmapOutput {
+  const cells = new Map<string, MistakeHeatmapCell>();
+  mistakeWeekdays.forEach((weekday) => {
+    mistakeBuckets.forEach((bucket) => {
+      cells.set(`${weekday}-${bucket.label}`, {
+        id: `${weekday}-${bucket.label}`,
+        weekday,
+        bucket: bucket.label,
+        score: 0,
+        trades: 0,
+        loss: 0,
+        level: 0
+      });
+    });
+  });
+
+  trades.forEach((trade) => {
+    const date = parseTradeDate(trade.entryTime);
+    if (!date) return;
+    const weekday = weekdayLabel(date);
+    if (!mistakeWeekdays.includes(weekday as (typeof mistakeWeekdays)[number])) return;
+    const bucket = sessionBucket(date);
+    const cell = cells.get(`${weekday}-${bucket}`);
+    if (!cell) return;
+
+    const loss = Math.max(0, -trade.netPnl);
+    const costs = getTradeCosts(trade);
+    const isMistakeCandidate = loss > 0 || costs > Math.max(1, Math.abs(trade.grossPnl) * 0.12);
+    if (!isMistakeCandidate) return;
+
+    cell.trades += 1;
+    cell.loss += loss;
+    cell.score += loss + costs * 0.65;
+  });
+
+  const scoredCells = [...cells.values()];
+  const maxScore = Math.max(...scoredCells.map((cell) => cell.score), 0);
+  scoredCells.forEach((cell) => {
+    cell.level = maxScore > 0 ? cell.score / maxScore : 0;
+  });
+
+  const peak = [...scoredCells].sort((a, b) => b.score - a.score)[0];
+  const totalMistakeCost = scoredCells.reduce((sum, cell) => sum + cell.score, 0);
+
+  return {
+    cells: scoredCells,
+    peakLabel: peak && peak.score > 0 ? `${peak.weekday} ${peak.bucket} is the hottest leak.` : "No mistake cluster detected.",
+    peakDetail:
+      peak && peak.score > 0
+        ? `${peak.trades} trade${peak.trades === 1 ? "" : "s"} explain ${currency.format(peak.loss)} of downside before the next review.`
+        : "This report does not show a concentrated weekday/session mistake pattern yet.",
+    totalMistakeCost
+  };
+}
+
+function parseTradeDate(value: string | undefined) {
+  if (!value) return null;
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function weekdayLabel(date: Date) {
+  return date.toLocaleDateString("en-US", { weekday: "short" });
+}
+
+function sessionBucket(date: Date) {
+  const hour = date.getHours() + date.getMinutes() / 60;
+  const match = mistakeBuckets.find((bucket) => hour >= bucket.start && hour < bucket.end);
+  return match?.label ?? (hour < mistakeBuckets[0].start ? "Open" : "Close");
+}
+
+function mistakeCellBackground(level: number) {
+  if (level <= 0) return "rgba(36, 53, 66, 0.36)";
+  const clamped = Math.max(0.08, Math.min(1, level));
+  if (clamped < 0.34) return `rgba(160, 76, 42, ${0.36 + clamped * 0.8})`;
+  if (clamped < 0.68) return `rgba(226, 104, 48, ${0.34 + clamped * 0.72})`;
+  return `rgba(230, 72, 79, ${0.38 + clamped * 0.58})`;
 }
 
 function buildSignedEquityCurve(points: EquityCurvePoint[]): SignedEquityCurvePoint[] {

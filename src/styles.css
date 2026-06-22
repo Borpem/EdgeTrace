@@ -5409,7 +5409,9 @@ body {
 }
 
 .EdgeTrace-command-pro-loop,
-.EdgeTrace-command-pro-loop-gate {
+.EdgeTrace-command-pro-loop-gate,
+.EdgeTrace-command-mistake-heatmap,
+.EdgeTrace-command-mistake-heatmap-gate {
   grid-column: 1 / -1;
 }
 
@@ -5446,6 +5448,146 @@ body {
 .EdgeTrace-command-pro-loop-gate .EdgeTrace-command-pro-loop {
   border: 0;
   border-radius: 0;
+}
+
+.EdgeTrace-command-mistake-heatmap-gate {
+  overflow: hidden;
+  border: 1px solid rgba(72, 104, 121, 0.74);
+  border-radius: 7px;
+  background:
+    linear-gradient(135deg, rgba(17, 30, 38, 0.9), rgba(7, 12, 18, 0.98)),
+    var(--command-bg-card-elevated);
+  padding: 0;
+}
+
+.EdgeTrace-command-mistake-heatmap-gate > .pointer-events-none {
+  max-height: none;
+}
+
+.EdgeTrace-command-mistake-heatmap-gate > .pointer-events-none > div {
+  opacity: 0.58;
+}
+
+.EdgeTrace-command-mistake-heatmap-gate .EdgeTrace-command-mistake-heatmap {
+  border: 0;
+  border-radius: 0;
+}
+
+.EdgeTrace-command-mistake-heatmap {
+  border-color: rgba(72, 104, 121, 0.72);
+  background:
+    linear-gradient(135deg, rgba(15, 26, 34, 0.92), rgba(6, 11, 16, 0.98)),
+    var(--command-bg-card-elevated);
+}
+
+.EdgeTrace-mistake-heatmap-layout {
+  display: grid;
+  grid-template-columns: minmax(17rem, 0.58fr) minmax(24rem, 1fr);
+  gap: 1rem 1.2rem;
+  align-items: center;
+  margin-top: 0.9rem;
+}
+
+.EdgeTrace-mistake-heatmap-layout h3 {
+  margin: 0;
+  color: var(--command-text);
+  font-size: clamp(1.3rem, 1.8vw, 2rem);
+  font-weight: 580;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+}
+
+.EdgeTrace-mistake-heatmap-layout p {
+  max-width: 34rem;
+  margin: 0.62rem 0 0;
+  color: var(--command-text-secondary);
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.EdgeTrace-mistake-heatmap-stat {
+  width: fit-content;
+  min-width: 11rem;
+  margin-top: 1rem;
+  border: 1px solid rgba(36, 53, 66, 0.72);
+  border-radius: 5px;
+  background: rgba(3, 8, 12, 0.48);
+  padding: 0.72rem 0.84rem;
+}
+
+.EdgeTrace-mistake-heatmap-stat span {
+  display: block;
+  color: var(--command-text-muted);
+  font-size: 0.68rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.EdgeTrace-mistake-heatmap-stat strong {
+  display: block;
+  margin-top: 0.24rem;
+  color: var(--command-red);
+  font-size: 1.32rem;
+  font-weight: 620;
+  letter-spacing: -0.025em;
+}
+
+.EdgeTrace-mistake-heatmap-grid {
+  display: grid;
+  grid-template-columns: 3.2rem repeat(5, minmax(2.75rem, 1fr));
+  gap: 0.38rem;
+  max-width: 39rem;
+  margin-left: auto;
+  border: 1px solid rgba(36, 53, 66, 0.72);
+  border-radius: 6px;
+  background: rgba(3, 8, 12, 0.46);
+  padding: 0.8rem;
+}
+
+.EdgeTrace-mistake-heatmap-axis {
+  display: flex;
+  min-height: 1.3rem;
+  align-items: center;
+  justify-content: center;
+  color: var(--command-text-muted);
+  font-size: 0.66rem;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.EdgeTrace-mistake-heatmap-axis.is-row {
+  justify-content: flex-start;
+  color: var(--command-text-secondary);
+  text-transform: none;
+}
+
+.EdgeTrace-mistake-heatmap-cell {
+  display: block;
+  min-height: 2.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.035);
+  border-radius: 4px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.045),
+    0 9px 22px -18px rgba(230, 72, 79, 0.9);
+}
+
+.EdgeTrace-mistake-heatmap-legend {
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.3rem;
+  color: var(--command-text-muted);
+  font-size: 0.7rem;
+}
+
+.EdgeTrace-mistake-heatmap-legend i {
+  display: block;
+  width: 1.18rem;
+  height: 0.56rem;
+  border-radius: 2px;
 }
 
 .EdgeTrace-command-card-heading em {
@@ -6563,6 +6705,8 @@ body {
   .EdgeTrace-command-drivers,
   .EdgeTrace-command-pro-loop,
   .EdgeTrace-command-pro-loop-gate,
+  .EdgeTrace-command-mistake-heatmap,
+  .EdgeTrace-command-mistake-heatmap-gate,
   .EdgeTrace-command-table-card,
   .EdgeTrace-command-context {
     grid-column: 1 / -1;
@@ -6572,6 +6716,16 @@ body {
   .EdgeTrace-review-benchmark-tiles,
   .EdgeTrace-review-loop-grid {
     grid-template-columns: 1fr;
+  }
+
+  .EdgeTrace-mistake-heatmap-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .EdgeTrace-mistake-heatmap-grid,
+  .EdgeTrace-mistake-heatmap-legend {
+    grid-column: auto;
+    margin-left: 0;
   }
 
   .EdgeTrace-command-action-row {
@@ -6594,8 +6748,23 @@ body {
   .EdgeTrace-command-action-card,
   .EdgeTrace-command-metric-grid,
   .EdgeTrace-command-change-grid,
-  .EdgeTrace-command-overview-summary {
+  .EdgeTrace-command-overview-summary,
+  .EdgeTrace-mistake-heatmap-layout {
     grid-template-columns: 1fr;
+  }
+
+  .EdgeTrace-mistake-heatmap-grid {
+    grid-template-columns: 2.8rem repeat(5, minmax(1.9rem, 1fr));
+    gap: 0.28rem;
+    padding: 0.64rem;
+  }
+
+  .EdgeTrace-mistake-heatmap-cell {
+    min-height: 1.9rem;
+  }
+
+  .EdgeTrace-mistake-heatmap-legend {
+    justify-content: flex-start;
   }
 
   .EdgeTrace-command-diagnosis {

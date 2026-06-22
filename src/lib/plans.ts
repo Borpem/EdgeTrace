@@ -17,7 +17,8 @@ export type FeatureKey =
   | "audit_exports"
   | "strategy_health_monitoring"
   | "review_cadence"
-  | "aggregate_benchmarks";
+  | "aggregate_benchmarks"
+  | "mistake_heatmap";
 
 export type PlanLimits = {
   maxReports: number | "unlimited";
@@ -67,7 +68,8 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
       audit_exports: true,
       strategy_health_monitoring: true,
       review_cadence: false,
-      aggregate_benchmarks: false
+      aggregate_benchmarks: false,
+      mistake_heatmap: false
     },
     featureBullets: [
       "Unlimited full diagnostic reports",
@@ -81,7 +83,7 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
     id: "pro",
     displayName: "Pro",
     monthlyPriceLabel: "$9.99/month",
-    description: "Recurring reviews, benchmark percentiles, and next-upload targets.",
+    description: "Recurring reviews, mistake heatmaps, benchmark percentiles, and next-upload targets.",
     limits: {
       maxReports: "unlimited",
       maxFullReports: "unlimited",
@@ -106,13 +108,15 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
       audit_exports: true,
       strategy_health_monitoring: true,
       review_cadence: true,
-      aggregate_benchmarks: true
+      aggregate_benchmarks: true,
+      mistake_heatmap: true
     },
     featureBullets: [
       "Everything in Free",
       "Weekly Edge Review loop",
       "Twice-weekly check-in workflow",
       "Aggregate benchmark percentiles",
+      "Mistake heatmap",
       "Next-review checklist",
       "Regression and improvement tracking"
     ]
@@ -121,7 +125,7 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
     id: "advanced",
     displayName: "Advanced",
     monthlyPriceLabel: "Legacy",
-    description: "Legacy access with every paid review feature.",
+    description: "Legacy access with every paid review feature, including mistake heatmaps.",
     limits: {
       maxReports: "unlimited",
       maxFullReports: "unlimited",
@@ -146,13 +150,15 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
       audit_exports: true,
       strategy_health_monitoring: true,
       review_cadence: true,
-      aggregate_benchmarks: true
+      aggregate_benchmarks: true,
+      mistake_heatmap: true
     },
     featureBullets: [
       "Everything in Free",
       "Weekly Edge Review loop",
       "Twice-weekly check-in workflow",
       "Aggregate benchmark percentiles",
+      "Mistake heatmap",
       "Next-review checklist",
       "Regression and improvement tracking"
     ]

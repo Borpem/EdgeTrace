@@ -31,7 +31,7 @@ const pricingPlans: PricingPlan[] = [
   {
     id: "pro",
     eyebrow: "Most Popular",
-    summary: "For traders who want twice-weekly check-ins, benchmark percentiles, and clear targets for the next upload.",
+    summary: "For traders who want twice-weekly check-ins, mistake heatmaps, benchmark percentiles, and clear targets for the next upload.",
     accent: "purple",
     recommended: true
   }
@@ -49,6 +49,7 @@ const featureRows: Array<{ label: string; access: Record<PlanId, string> }> = [
   { label: "Weekly Edge Review loop", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Regression / improvement tracking", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Benchmark percentile cards", access: { free: "-", pro: "Included", advanced: "Included" } },
+  { label: "Mistake heatmap", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Next-review checklist", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Review cadence status", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Aggregate benchmark intelligence", access: { free: "-", pro: "Included", advanced: "Included" } },
@@ -66,7 +67,7 @@ const faqs = [
   {
     question: "What does Pro unlock?",
     answer:
-      "Pro is the $9.99/month review loop: weekly Edge Reviews, benchmark percentile cards, next-review checklists, review cadence status, and regression / improvement tracking."
+      "Pro is the $9.99/month review loop: weekly Edge Reviews, mistake heatmaps, benchmark percentile cards, next-review checklists, review cadence status, and regression / improvement tracking."
   },
   {
     question: "Can I use Free long term?",
@@ -317,7 +318,7 @@ export function PricingPage({
         <h1>Simple pricing. Serious edge.</h1>
         <p>
           Use the full EdgeTrace reporting workflow for free. Upgrade to Pro when you want a twice-weekly review loop,
-          benchmark percentiles, and next-upload targets.
+          mistake heatmaps, benchmark percentiles, and next-upload targets.
         </p>
       </section>
 
@@ -331,7 +332,7 @@ export function PricingPage({
 
       <div className="EdgeTrace-pricing-footnote">
         <ShieldCheck size={18} aria-hidden="true" />
-        <span>Core analytics are free. Pro adds the recurring review loop and aggregate benchmark context for $9.99/month.</span>
+        <span>Core analytics are free. Pro adds mistake heatmaps, the recurring review loop, and aggregate benchmark context for $9.99/month.</span>
       </div>
 
       <FeatureComparison currentPlanId={highlightedPlanId} />

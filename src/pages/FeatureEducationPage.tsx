@@ -53,7 +53,7 @@ const valueStrip: FeatureItem[] = [
   { icon: BarChart3, title: "Aggregate intelligence", body: "Trade history becomes sharper diagnostics and benchmark insight." },
   { icon: ShieldCheck, title: "Secure access", body: "Encrypted transport and account-scoped access controls." },
   { icon: FileSearch, title: "Transparent analysis", body: "Key report inputs and diagnostic logic stay visible in the workflow." },
-  { icon: Activity, title: "Free core, paid loop", body: "Use the full workflow free. Upgrade when you want recurring review pressure." }
+  { icon: Activity, title: "Free core, paid loop", body: "Use the full workflow free. Upgrade for heatmaps, benchmarks, and recurring review pressure." }
 ];
 
 export function FeatureEducationPage({
@@ -132,8 +132,8 @@ export function FeatureEducationPage({
       kicker: "05 / Review Loop",
       title: "Measure whether the fix worked.",
       body:
-        "Pro adds the recurring review layer: benchmark movement, next-upload targets, and check-in prompts that make EdgeTrace useful after every new report.",
-      points: ["Review targets", "Benchmark movement", "Recurring improvement loop"],
+        "Pro adds the recurring review layer: mistake heatmaps, benchmark movement, next-upload targets, and check-in prompts that make EdgeTrace useful after every new report.",
+      points: ["Mistake heatmap", "Review targets", "Benchmark movement", "Recurring improvement loop"],
       visual: (
         <HowGraphic
           src="/graphics/edgetrace-how-pro-review-loop-thin-gauge.png"

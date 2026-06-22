@@ -20,7 +20,7 @@ const capabilityItems: Array<{ icon: LucideIcon; title: string; body: string }> 
   { icon: Search, title: "Diagnose the leak", body: "Find the cost, segment, or risk issue dragging the report." },
   { icon: TrendingUp, title: "Track each upload", body: "See whether the next report improved or slipped." },
   { icon: Activity, title: "Review the process", body: "Use Pro to check in twice a week with clear targets." },
-  { icon: Target, title: "Compare to context", body: "Benchmark percentiles show where the report stands." }
+  { icon: Target, title: "Spot mistake clusters", body: "Pro heatmaps show when weak trades repeat." }
 ];
 
 const workflowSteps: Array<{ icon: LucideIcon; title: string; body: string; visual: "upload" | "report" | "bars" | "compare" | "monitor" }> = [
@@ -37,7 +37,7 @@ const trustItems: Array<{ icon: LucideIcon; title: string; body: string }> = [
   { icon: Shield, title: "Aggregate intelligence", body: "Trade history can power sharper diagnostics and benchmark insights." },
   { icon: Lock, title: "Secure access", body: "Encrypted transport and account-scoped access controls." },
   { icon: BarChart3, title: "Transparent analysis", body: "Key report inputs and diagnostic logic are visible in the workflow." },
-  { icon: Send, title: "Free core, paid loop", body: "Use the full workflow free. Upgrade when you want recurring review pressure." }
+  { icon: Send, title: "Free core, paid loop", body: "Use the full workflow free. Upgrade for heatmaps, benchmarks, and recurring review pressure." }
 ];
 
 export function HomePage({
@@ -64,7 +64,7 @@ export function HomePage({
             </h1>
 
             <p className="mt-7 max-w-xl text-lg leading-8 text-slate-300 md:text-xl md:leading-9">
-              EdgeTrace turns completed trade history into clear diagnostics. Free gives you the full reporting workflow. Pro adds the recurring review loop that keeps you coming back.
+              EdgeTrace turns completed trade history into clear diagnostics. Free gives you the full reporting workflow. Pro adds heatmaps, benchmarks, and the recurring review loop that keeps you coming back.
             </p>
 
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">

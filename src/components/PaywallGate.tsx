@@ -99,8 +99,9 @@ function featureParam(feature: FeatureKey | string) {
     export_audit: "exports",
     audit_exports: "exports",
     strategy_health_monitoring: "strategy-monitoring",
-    review_cadence: "review-cadence",
-    aggregate_benchmarks: "aggregate-benchmarks",
+    review_cadence: "how-review-loop",
+    aggregate_benchmarks: "how-review-loop",
+    mistake_heatmap: "how-review-loop",
     broker_imports: "broker-imports"
   };
   return aliases[value] ?? value.replace(/_/g, "-");
