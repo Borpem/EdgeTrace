@@ -6508,6 +6508,41 @@ body {
 .EdgeTrace-command-dashboard .tone-green { color: var(--command-green); }
 .EdgeTrace-command-dashboard .tone-gray { color: var(--command-neutral); }
 
+.EdgeTrace-drilldown-stripe {
+  --drilldown-stripe: rgba(151, 166, 177, 0.52);
+  position: relative;
+  border-left: 0;
+}
+
+.EdgeTrace-drilldown-stripe::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  border-radius: 2px 0 0 2px;
+  background: var(--drilldown-stripe);
+}
+
+.EdgeTrace-drilldown-stripe.tone-red {
+  --drilldown-stripe: var(--command-red);
+}
+
+.EdgeTrace-drilldown-stripe.tone-yellow {
+  --drilldown-stripe: var(--command-yellow);
+}
+
+.EdgeTrace-drilldown-stripe.tone-green {
+  --drilldown-stripe: var(--command-green);
+}
+
+.EdgeTrace-drilldown-stripe.tone-blue {
+  --drilldown-stripe: var(--command-blue);
+}
+
+.EdgeTrace-drilldown-stripe.tone-gray {
+  --drilldown-stripe: rgba(151, 166, 177, 0.52);
+}
+
 @media (max-width: 1180px) {
   .EdgeTrace-command-nav,
   .EdgeTrace-command-overview-main {

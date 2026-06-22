@@ -560,7 +560,7 @@ function MetricDeltaCard({
   const delta = numericA === undefined || numericB === undefined ? undefined : numericB - numericA;
   const status = deltaStatus(delta, lowerIsBetter);
   return (
-    <div className="EdgeTrace-card p-5">
+    <div className={`EdgeTrace-card EdgeTrace-drilldown-stripe ${statusStripeClass(status)} p-5`}>
       <div className="flex items-start justify-between gap-3">
         <p className="text-xs uppercase tracking-[0.16em] text-muted">{label}</p>
         <span className={`rounded-md border px-2 py-1 text-xs font-semibold ${statusClass(status)}`}>{status}</span>
@@ -757,7 +757,7 @@ function ChartPanel({ title, children }: { title: string; children: React.ReactN
 
 function MiniStat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="EdgeTrace-card-soft p-5">
+    <div className={`EdgeTrace-card-soft EdgeTrace-drilldown-stripe ${miniStatStripeClass(label, value)} p-5`}>
       <p className="text-xs uppercase tracking-[0.16em] text-muted">{label}</p>
       <p className="mt-3 text-xl font-semibold">{value}</p>
     </div>
@@ -799,6 +799,25 @@ function statusClass(status: string) {
   if (status === "Degraded") return "border-loss/70 bg-loss/10 text-loss";
   if (status === "Flat") return "border-line bg-graphite text-muted";
   return "border-warning/70 bg-warning/10 text-warning";
+}
+
+function statusStripeClass(status: string) {
+  if (status === "Improved") return "tone-green";
+  if (status === "Degraded") return "tone-red";
+  if (status === "Flat") return "tone-gray";
+  return "tone-yellow";
+}
+
+function miniStatStripeClass(label: string, value: string) {
+  const normalized = `${label} ${value}`.toLowerCase();
+  if (normalized.includes("loser") || normalized.includes("removed") || value.trim().startsWith("-")) {
+    return "tone-red";
+  }
+  if (normalized.includes("winner") || normalized.includes("added") || normalized.includes("+")) {
+    return "tone-green";
+  }
+  if (normalized.includes("cost")) return "tone-yellow";
+  return "tone-gray";
 }
 
 function signedNumber(value: number) {

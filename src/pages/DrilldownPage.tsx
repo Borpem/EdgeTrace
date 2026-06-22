@@ -152,7 +152,7 @@ export function DrilldownPage({
 
       <section className="grid gap-4 md:grid-cols-3 xl:grid-cols-5">
         {metrics.map(({ label, value, tone }) => (
-          <div key={label} className={`EdgeTrace-card-soft border-l-2 p-5 ${toneBorderClass(tone)}`}>
+          <div key={label} className={`EdgeTrace-card-soft EdgeTrace-drilldown-stripe tone-${tone} p-5`}>
             <p className="text-xs uppercase tracking-[0.16em] text-muted">{label}</p>
             <p className={`mt-3 text-xl font-semibold ${toneTextClass(tone)}`}>{value}</p>
           </div>
@@ -163,13 +163,9 @@ export function DrilldownPage({
         {leakInsights.map((insight) => (
           <div
             key={insight.id}
-            className={`EdgeTrace-card p-5 ${
-              insight.severity === "critical"
-                ? "border-loss/70"
-                : insight.severity === "warning"
-                  ? "border-warning/70"
-                  : "border-line"
-            }`}
+            className={`EdgeTrace-card EdgeTrace-drilldown-stripe ${
+              insight.severity === "critical" ? "tone-red" : insight.severity === "warning" ? "tone-yellow" : "tone-gray"
+            } p-5`}
           >
             <p className="text-sm font-semibold">{insight.title}</p>
             <p className="mt-3 text-sm leading-6 text-muted">{insight.message}</p>
@@ -179,7 +175,7 @@ export function DrilldownPage({
 
       <section className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {patterns.map((pattern) => (
-          <div key={pattern.label} className={`EdgeTrace-card-soft border-l-2 p-5 ${patternToneClass(pattern.label, pattern.value)}`}>
+          <div key={pattern.label} className={`EdgeTrace-card-soft EdgeTrace-drilldown-stripe tone-${patternTone(pattern.label, pattern.value)} p-5`}>
             <p className="text-xs uppercase tracking-[0.16em] text-muted">{pattern.label}</p>
             <p className={`mt-3 text-lg font-semibold ${patternValueClass(pattern.label, pattern.value)}`}>{pattern.value}</p>
           </div>
@@ -363,23 +359,11 @@ function signedTextClass(value: number | undefined) {
   return toneTextClass(signedTone(value));
 }
 
-function toneBorderClass(tone: SegmentTone) {
-  if (tone === "red") return "border-l-loss/80";
-  if (tone === "yellow") return "border-l-warning/80";
-  if (tone === "green") return "border-l-profit/80";
-  if (tone === "blue") return "border-l-accent/80";
-  return "border-l-line";
-}
-
 function patternTone(label: string, value: string): SegmentTone {
   const normalized = `${label} ${value}`.toLowerCase();
   if (normalized.includes("loser") || normalized.includes("worst") || normalized.includes("-$")) return "red";
   if (normalized.includes("winner") || normalized.includes("best")) return "green";
   return "gray";
-}
-
-function patternToneClass(label: string, value: string) {
-  return toneBorderClass(patternTone(label, value));
 }
 
 function patternValueClass(label: string, value: string) {
