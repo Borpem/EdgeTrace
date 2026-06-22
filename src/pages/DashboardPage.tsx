@@ -1904,10 +1904,9 @@ function MistakeHeatmapPanel({ heatmap }: { heatmap: MistakeHeatmapOutput }) {
     <article className="EdgeTrace-command-card EdgeTrace-command-mistake-heatmap">
       <div className="EdgeTrace-command-card-heading">
         <span>Mistake Heatmap</span>
-        <em>Pro only</em>
       </div>
       <div className="EdgeTrace-mistake-heatmap-layout">
-        <div>
+        <div className="EdgeTrace-mistake-heatmap-summary">
           <h3>{heatmap.peakLabel}</h3>
           <p>{heatmap.peakDetail}</p>
           <div className="EdgeTrace-mistake-heatmap-stat">
