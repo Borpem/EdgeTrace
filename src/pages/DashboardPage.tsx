@@ -128,6 +128,13 @@ type MistakeHeatmapCell = {
   score: number;
   trades: number;
   loss: number;
+  costs: number;
+  level: number;
+};
+type MistakeHeatmapRank = {
+  label: string;
+  value: string;
+  detail: string;
   level: number;
 };
 type MistakeHeatmapOutput = {
@@ -135,6 +142,14 @@ type MistakeHeatmapOutput = {
   peakLabel: string;
   peakDetail: string;
   totalMistakeCost: number;
+  mistakeTrades: number;
+  mistakeRate: number;
+  averageMistakeLoss: number;
+  costDrag: number;
+  activeCells: number;
+  topClusters: MistakeHeatmapRank[];
+  topSymbols: MistakeHeatmapRank[];
+  topSessions: MistakeHeatmapRank[];
 };
 
 const dashboardDisclosureIds: DashboardDisclosureId[] = ["diagnosis", "insights", "nextSteps", "details"];
@@ -1909,34 +1924,87 @@ function MistakeHeatmapPanel({ heatmap }: { heatmap: MistakeHeatmapOutput }) {
         <div className="EdgeTrace-mistake-heatmap-summary">
           <h3>{heatmap.peakLabel}</h3>
           <p>{heatmap.peakDetail}</p>
-          <div className="EdgeTrace-mistake-heatmap-stat">
-            <span>Total mistake cost</span>
-            <strong>{currency.format(heatmap.totalMistakeCost)}</strong>
+          <div className="EdgeTrace-mistake-heatmap-stats">
+            <div className="EdgeTrace-mistake-heatmap-stat">
+              <span>Weighted leak</span>
+              <strong>{currency.format(heatmap.totalMistakeCost)}</strong>
+            </div>
+            <div className="EdgeTrace-mistake-heatmap-stat">
+              <span>Mistake trades</span>
+              <strong>{heatmap.mistakeTrades}</strong>
+            </div>
+            <div className="EdgeTrace-mistake-heatmap-stat">
+              <span>Mistake rate</span>
+              <strong>{percent.format(heatmap.mistakeRate)}</strong>
+            </div>
+            <div className="EdgeTrace-mistake-heatmap-stat">
+              <span>Avg mistake loss</span>
+              <strong>{currency.format(heatmap.averageMistakeLoss)}</strong>
+            </div>
+            <div className="EdgeTrace-mistake-heatmap-stat">
+              <span>Cost drag</span>
+              <strong>{currency.format(heatmap.costDrag)}</strong>
+            </div>
+            <div className="EdgeTrace-mistake-heatmap-stat">
+              <span>Active windows</span>
+              <strong>{heatmap.activeCells}</strong>
+            </div>
           </div>
         </div>
-        <div className="EdgeTrace-mistake-heatmap-grid" role="img" aria-label="Mistake heatmap by weekday and session">
-          <div className="EdgeTrace-mistake-heatmap-corner" />
-          {buckets.map((bucket) => (
-            <span key={bucket} className="EdgeTrace-mistake-heatmap-axis">{bucket}</span>
-          ))}
-          {weekdays.map((weekday) => (
-            <MistakeHeatmapRow
-              key={weekday}
-              weekday={weekday}
-              buckets={buckets}
-              cellMap={cellMap}
-            />
-          ))}
+        <div className="EdgeTrace-mistake-heatmap-stage">
+          <div className="EdgeTrace-mistake-heatmap-grid" role="img" aria-label="Mistake heatmap by weekday and session">
+            <div className="EdgeTrace-mistake-heatmap-corner" />
+            {buckets.map((bucket) => (
+              <span key={bucket} className="EdgeTrace-mistake-heatmap-axis">{bucket}</span>
+            ))}
+            {weekdays.map((weekday) => (
+              <MistakeHeatmapRow
+                key={weekday}
+                weekday={weekday}
+                buckets={buckets}
+                cellMap={cellMap}
+              />
+            ))}
+          </div>
+          <div className="EdgeTrace-mistake-heatmap-legend" aria-hidden="true">
+            <span>Less</span>
+            {[0.12, 0.28, 0.44, 0.62, 0.78, 0.94].map((level) => (
+              <i key={level} style={{ background: mistakeCellBackground(level) }} />
+            ))}
+            <span>More</span>
+          </div>
         </div>
-        <div className="EdgeTrace-mistake-heatmap-legend" aria-hidden="true">
-          <span>Less</span>
-          {[0.12, 0.28, 0.44, 0.62, 0.78, 0.94].map((level) => (
-            <i key={level} style={{ background: mistakeCellBackground(level) }} />
-          ))}
-          <span>More</span>
+        <div className="EdgeTrace-mistake-heatmap-rail">
+          <MistakeHeatmapList title="Top clusters" items={heatmap.topClusters} />
+          <MistakeHeatmapList title="Weak symbols" items={heatmap.topSymbols} />
+          <MistakeHeatmapList title="Worst sessions" items={heatmap.topSessions} />
         </div>
       </div>
     </article>
+  );
+}
+
+function MistakeHeatmapList({ title, items }: { title: string; items: MistakeHeatmapRank[] }) {
+  return (
+    <section className="EdgeTrace-mistake-heatmap-list">
+      <h4>{title}</h4>
+      {items.length > 0 ? (
+        <div>
+          {items.map((item) => (
+            <div key={`${title}-${item.label}`} className="EdgeTrace-mistake-heatmap-list-row">
+              <span>
+                <i style={{ background: mistakeCellBackground(item.level) }} />
+                {item.label}
+              </span>
+              <strong>{item.value}</strong>
+              <em>{item.detail}</em>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p>No concentrated mistake pattern yet.</p>
+      )}
+    </section>
   );
 }
 
@@ -1960,6 +2028,7 @@ function MistakeHeatmapRow({
           score: 0,
           trades: 0,
           loss: 0,
+          costs: 0,
           level: 0
         };
         return (
@@ -2511,6 +2580,11 @@ const mistakeBuckets = [
 
 function buildMistakeHeatmap(trades: NormalizedTrade[]): MistakeHeatmapOutput {
   const cells = new Map<string, MistakeHeatmapCell>();
+  const symbols = new Map<string, { score: number; trades: number; loss: number; costs: number }>();
+  const sessions = new Map<string, { score: number; trades: number; loss: number; costs: number }>();
+  let mistakeTrades = 0;
+  let totalLoss = 0;
+  let totalCosts = 0;
   mistakeWeekdays.forEach((weekday) => {
     mistakeBuckets.forEach((bucket) => {
       cells.set(`${weekday}-${bucket.label}`, {
@@ -2520,9 +2594,13 @@ function buildMistakeHeatmap(trades: NormalizedTrade[]): MistakeHeatmapOutput {
         score: 0,
         trades: 0,
         loss: 0,
+        costs: 0,
         level: 0
       });
     });
+  });
+  mistakeBuckets.forEach((bucket) => {
+    sessions.set(bucket.label, { score: 0, trades: 0, loss: 0, costs: 0 });
   });
 
   trades.forEach((trade) => {
@@ -2541,7 +2619,27 @@ function buildMistakeHeatmap(trades: NormalizedTrade[]): MistakeHeatmapOutput {
 
     cell.trades += 1;
     cell.loss += loss;
-    cell.score += loss + costs * 0.65;
+    cell.costs += costs;
+    const score = loss + costs * 0.65;
+    cell.score += score;
+    mistakeTrades += 1;
+    totalLoss += loss;
+    totalCosts += costs;
+
+    const symbol = trade.symbol || "Unspecified";
+    const symbolSummary = symbols.get(symbol) ?? { score: 0, trades: 0, loss: 0, costs: 0 };
+    symbolSummary.score += score;
+    symbolSummary.trades += 1;
+    symbolSummary.loss += loss;
+    symbolSummary.costs += costs;
+    symbols.set(symbol, symbolSummary);
+
+    const sessionSummary = sessions.get(bucket) ?? { score: 0, trades: 0, loss: 0, costs: 0 };
+    sessionSummary.score += score;
+    sessionSummary.trades += 1;
+    sessionSummary.loss += loss;
+    sessionSummary.costs += costs;
+    sessions.set(bucket, sessionSummary);
   });
 
   const scoredCells = [...cells.values()];
@@ -2552,16 +2650,53 @@ function buildMistakeHeatmap(trades: NormalizedTrade[]): MistakeHeatmapOutput {
 
   const peak = [...scoredCells].sort((a, b) => b.score - a.score)[0];
   const totalMistakeCost = scoredCells.reduce((sum, cell) => sum + cell.score, 0);
+  const topClusters = [...scoredCells]
+    .filter((cell) => cell.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3)
+    .map((cell) => ({
+      label: `${cell.weekday} ${cell.bucket}`,
+      value: currency.format(cell.score),
+      detail: `${cell.trades} trade${cell.trades === 1 ? "" : "s"} / ${currency.format(cell.costs)} costs`,
+      level: cell.level
+    }));
+  const topSymbols = rankedMistakeSummaries(symbols, totalMistakeCost, (label) => label);
+  const topSessions = rankedMistakeSummaries(sessions, totalMistakeCost, (label) => `${label} session`);
 
   return {
     cells: scoredCells,
     peakLabel: peak && peak.score > 0 ? `${peak.weekday} ${peak.bucket} is the hottest leak.` : "No mistake cluster detected.",
     peakDetail:
       peak && peak.score > 0
-        ? `${peak.trades} trade${peak.trades === 1 ? "" : "s"} explain ${currency.format(peak.loss)} of downside before the next review.`
+        ? `${peak.trades} trade${peak.trades === 1 ? "" : "s"} explain ${currency.format(peak.loss)} of net downside and ${currency.format(peak.costs)} in costs.`
         : "This report does not show a concentrated weekday/session mistake pattern yet.",
-    totalMistakeCost
+    totalMistakeCost,
+    mistakeTrades,
+    mistakeRate: trades.length > 0 ? mistakeTrades / trades.length : 0,
+    averageMistakeLoss: mistakeTrades > 0 ? totalLoss / mistakeTrades : 0,
+    costDrag: totalCosts,
+    activeCells: scoredCells.filter((cell) => cell.score > 0).length,
+    topClusters,
+    topSymbols,
+    topSessions
   };
+}
+
+function rankedMistakeSummaries(
+  summaries: Map<string, { score: number; trades: number; loss: number; costs: number }>,
+  totalScore: number,
+  labelFormatter: (label: string) => string
+): MistakeHeatmapRank[] {
+  return [...summaries.entries()]
+    .filter(([, summary]) => summary.score > 0)
+    .sort((left, right) => right[1].score - left[1].score)
+    .slice(0, 3)
+    .map(([label, summary]) => ({
+      label: labelFormatter(label),
+      value: currency.format(summary.score),
+      detail: `${summary.trades} trade${summary.trades === 1 ? "" : "s"} / ${percent.format(totalScore > 0 ? summary.score / totalScore : 0)} of heat`,
+      level: totalScore > 0 ? summary.score / totalScore : 0
+    }));
 }
 
 function parseTradeDate(value: string | undefined) {
