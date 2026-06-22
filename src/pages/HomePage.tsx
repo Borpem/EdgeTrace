@@ -14,6 +14,8 @@ import {
   TrendingUp,
   Upload
 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
 
 const capabilityItems: Array<{ icon: LucideIcon; title: string; body: string }> = [
@@ -52,7 +54,7 @@ export function HomePage({
 
       <section className="EdgeTrace-shell relative pb-12 pt-12 md:pb-16 md:pt-16 lg:pb-20 lg:pt-20">
         <div className="grid items-center gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:gap-8 xl:gap-10">
-          <div className="max-w-[760px]">
+          <Reveal className="max-w-[760px]">
             <h1 className="overflow-visible text-[clamp(3.2rem,5.7vw,6rem)] font-semibold leading-[1.02] tracking-[-0.048em] text-ink md:tracking-[-0.052em]">
               <span className="block">Know exactly why your </span>
               <span className="block">
@@ -75,12 +77,14 @@ export function HomePage({
                 Import My Trades <ArrowRight size={17} />
               </button>
             </div>
-          </div>
+          </Reveal>
 
-          <DashboardMockup />
+          <Reveal delay={120}>
+            <DashboardMockup />
+          </Reveal>
         </div>
 
-        <div className="mt-12 grid gap-5 border border-white/[0.07] bg-white/[0.022] p-5 shadow-[0_24px_90px_-74px_rgba(88,214,255,0.45)] sm:grid-cols-2 lg:mt-14 lg:grid-cols-4 lg:gap-6 lg:p-6">
+        <Reveal delay={220} className="mt-12 grid gap-5 border border-white/[0.07] bg-white/[0.022] p-5 shadow-[0_24px_90px_-74px_rgba(88,214,255,0.45)] sm:grid-cols-2 lg:mt-14 lg:grid-cols-4 lg:gap-6 lg:p-6">
           {capabilityItems.map(({ icon: Icon, title, body }) => (
             <article key={title} className="grid grid-cols-[2rem_1fr] gap-4">
               <Icon className="mt-1 text-cyan" size={25} strokeWidth={1.7} />
@@ -90,7 +94,7 @@ export function HomePage({
               </div>
             </article>
           ))}
-        </div>
+        </Reveal>
       </section>
 
       <WorkflowSection />
@@ -113,6 +117,52 @@ function HomeBackdrop() {
   );
 }
 
+function Reveal({
+  children,
+  className = "",
+  delay = 0
+}: {
+  children: ReactNode;
+  className?: string;
+  delay?: number;
+}) {
+  const ref = useRef<HTMLDivElement | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+
+    if (!("IntersectionObserver" in window)) {
+      setIsVisible(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "0px 0px -12% 0px", threshold: 0.12 }
+    );
+
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      className={`EdgeTrace-home-reveal ${isVisible ? "is-visible" : ""} ${className}`}
+      style={{ "--reveal-delay": `${delay}ms` } as CSSProperties}
+    >
+      {children}
+    </div>
+  );
+}
+
 function DashboardMockup() {
   return (
     <div className="relative mx-auto w-full max-w-[1220px] lg:mx-0 lg:w-[124%] xl:w-[130%]">
@@ -130,10 +180,10 @@ function DashboardMockup() {
 function WorkflowSection() {
   return (
     <section className="EdgeTrace-shell py-14 md:py-20">
-      <div className="mx-auto max-w-3xl text-center">
+      <Reveal className="mx-auto max-w-3xl text-center">
         <h2 className="text-4xl font-semibold tracking-[-0.042em] text-ink md:text-5xl">From trades to clarity.</h2>
         <p className="mt-5 text-lg leading-8 text-muted">A complete workflow for understanding what changed, what leaked, and what deserves attention.</p>
-      </div>
+      </Reveal>
 
       <div className="mt-12 grid gap-6 lg:grid-cols-[1fr_auto_1fr_auto_1fr_auto_1fr_auto_1fr] lg:items-start">
         {workflowSteps.map((step, index) => (
@@ -156,7 +206,7 @@ function WorkflowStep({
   const Icon = step.icon;
   return (
     <>
-      <article className="text-center lg:text-left">
+      <Reveal delay={index * 70} className="text-center lg:text-left">
         <div className="mx-auto flex h-28 w-32 items-center justify-center overflow-hidden border border-[#284657] bg-[#071017] shadow-[0_24px_80px_-58px_rgba(78,196,236,0.78)] lg:mx-0">
           <StepVisual visual={step.visual} Icon={Icon} />
         </div>
@@ -164,7 +214,7 @@ function WorkflowStep({
           {index + 1}. {step.title}
         </h3>
         <p className="mx-auto mt-3 max-w-[14.5rem] text-sm leading-6 text-muted lg:mx-0">{step.body}</p>
-      </article>
+      </Reveal>
       {!isLast && <div className="hidden pt-12 text-2xl text-white/16 lg:block">&gt;</div>}
     </>
   );
@@ -227,8 +277,10 @@ function LeakDiagnosticsSection() {
   return (
     <section className="EdgeTrace-shell py-12 md:py-16">
       <div className="grid items-center gap-12 lg:grid-cols-[1.08fr_0.92fr] lg:gap-16">
-        <RadarVisual />
-        <div className="max-w-xl">
+        <Reveal>
+          <RadarVisual />
+        </Reveal>
+        <Reveal delay={120} className="max-w-xl">
           <h2 className="text-4xl font-semibold leading-[1.04] tracking-[-0.042em] text-ink md:text-5xl">
             Find what's degrading your edge.
           </h2>
@@ -249,7 +301,7 @@ function LeakDiagnosticsSection() {
               </li>
             ))}
           </ul>
-        </div>
+        </Reveal>
       </div>
     </section>
   );
@@ -294,7 +346,7 @@ function ImportCompatibilitySection() {
   return (
     <section className="EdgeTrace-shell py-12 md:py-16">
       <div className="grid items-center gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:gap-16">
-        <div>
+        <Reveal>
           <h2 className="text-4xl font-semibold tracking-[-0.042em] text-ink md:text-5xl">Works with your data.</h2>
           <p className="mt-6 max-w-xl text-lg leading-8 text-muted">
             Import from major broker exports or use a generic CSV. EdgeTrace normalizes completed trade history into diagnostics without turning it into a manual journal.
@@ -315,9 +367,11 @@ function ImportCompatibilitySection() {
               );
             })}
           </div>
-        </div>
+        </Reveal>
 
-        <ImportVisual />
+        <Reveal delay={120}>
+          <ImportVisual />
+        </Reveal>
       </div>
     </section>
   );
@@ -378,7 +432,7 @@ function SummaryRow({ label, value, tone }: { label: string; value: string; tone
 function TrustBar() {
   return (
     <section className="EdgeTrace-shell py-10 md:py-14">
-      <div className="grid gap-0 border border-white/[0.09] bg-white/[0.035] shadow-[0_24px_90px_-78px_rgba(88,214,255,0.35)] md:grid-cols-2 lg:grid-cols-4">
+      <Reveal className="grid gap-0 border border-white/[0.09] bg-white/[0.035] shadow-[0_24px_90px_-78px_rgba(88,214,255,0.35)] md:grid-cols-2 lg:grid-cols-4">
         {trustItems.map(({ icon: Icon, title, body }, index) => (
           <article key={title} className={`flex gap-5 p-6 transition hover:bg-white/[0.025] ${index > 0 ? "border-t border-white/[0.08] md:border-l md:border-t-0" : ""}`}>
             <Icon className="mt-1 text-cyan" size={31} strokeWidth={1.55} />
@@ -388,7 +442,7 @@ function TrustBar() {
             </div>
           </article>
         ))}
-      </div>
+      </Reveal>
     </section>
   );
 }
