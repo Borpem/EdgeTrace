@@ -49,7 +49,7 @@ export function HomePage({
   onLearn: () => void;
 }) {
   return (
-    <main className="relative isolate overflow-hidden bg-graphite">
+    <main className="relative isolate overflow-hidden bg-[#020405]">
       <HomeBackdrop />
 
       <section className="EdgeTrace-shell relative pb-12 pt-12 md:pb-16 md:pt-16 lg:pb-20 lg:pt-20">
@@ -108,9 +108,10 @@ export function HomePage({
 function HomeBackdrop() {
   return (
     <div className="pointer-events-none absolute inset-0 -z-10">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_8%,rgba(78,196,236,0.08),transparent_28rem),radial-gradient(circle_at_82%_10%,rgba(232,190,76,0.045),transparent_31rem),linear-gradient(180deg,#020609_0%,#050a0e_48%,#020609_100%)]" />
-      <div className="absolute inset-x-0 top-0 h-[46rem] bg-[linear-gradient(90deg,rgba(78,196,236,0.025)_1px,transparent_1px),linear-gradient(180deg,rgba(78,196,236,0.018)_1px,transparent_1px)] bg-[size:96px_96px] opacity-35 [mask-image:linear-gradient(to_bottom,black,transparent_78%)]" />
-      <div className="absolute left-1/2 top-[35rem] h-px w-[calc(100%-5rem)] max-w-[1420px] -translate-x-1/2 bg-gradient-to-r from-transparent via-cyan/10 to-transparent" />
+      <div className="absolute inset-0 bg-[#020405]" />
+      <div className="absolute inset-x-0 top-0 h-[38rem] bg-[linear-gradient(180deg,rgba(255,255,255,0.028),transparent_24rem)]" />
+      <div className="absolute inset-x-0 top-0 h-px bg-white/[0.08]" />
+      <div className="absolute left-1/2 top-[34rem] h-px w-[calc(100%-5rem)] max-w-[1420px] -translate-x-1/2 bg-white/[0.06]" />
     </div>
   );
 }
