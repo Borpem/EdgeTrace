@@ -53,36 +53,34 @@ export function HomePage({
       <HomeBackdrop />
 
       <section className="EdgeTrace-shell relative pb-12 pt-12 md:pb-16 md:pt-16 lg:pb-20 lg:pt-20">
-        <div className="grid items-center gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:gap-8 xl:gap-10">
-          <Reveal className="max-w-[760px]">
-            <h1 className="overflow-visible text-[clamp(3.2rem,5.7vw,6rem)] font-semibold leading-[1.02] tracking-[-0.048em] text-ink md:tracking-[-0.052em]">
-              <span className="block">Know exactly why your </span>
-              <span className="block">
-                strategy{" "}
-                <span className="inline-block overflow-visible text-profit">wins</span>{" "}
-                or{" "}
-                <span className="inline-block overflow-visible text-loss">fails.</span>
-              </span>
-            </h1>
+        <Reveal className="mx-auto max-w-5xl text-center">
+          <h1 className="mx-auto overflow-visible text-[clamp(3.2rem,5.7vw,6rem)] font-semibold leading-[1.02] tracking-[-0.048em] text-ink md:tracking-[-0.052em]">
+            <span className="block">Know exactly why your </span>
+            <span className="block">
+              strategy{" "}
+              <span className="inline-block overflow-visible text-profit">wins</span>{" "}
+              or{" "}
+              <span className="inline-block overflow-visible text-loss">fails.</span>
+            </span>
+          </h1>
 
-            <p className="mt-7 max-w-xl text-lg leading-8 text-slate-300 md:text-xl md:leading-9">
-              EdgeTrace turns completed trade history into clear diagnostics. Free gives you the full reporting workflow. Pro adds heatmaps, benchmarks, and the recurring review loop that keeps you coming back.
-            </p>
+          <p className="mx-auto mt-7 max-w-3xl text-lg leading-8 text-slate-300 md:text-xl md:leading-9">
+            EdgeTrace turns completed trade history into clear diagnostics. Free gives you the full reporting workflow. Pro adds heatmaps, benchmarks, and the recurring review loop that keeps you coming back.
+          </p>
 
-            <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-              <button
-                className="EdgeTrace-primary-button min-h-12 px-6"
-                onClick={onStart}
-              >
-                Import My Trades <ArrowRight size={17} />
-              </button>
-            </div>
-          </Reveal>
+          <div className="mt-10 flex justify-center">
+            <button
+              className="EdgeTrace-primary-button min-h-12 px-6"
+              onClick={onStart}
+            >
+              Import My Trades <ArrowRight size={17} />
+            </button>
+          </div>
+        </Reveal>
 
-          <Reveal delay={120}>
-            <DashboardMockup />
-          </Reveal>
-        </div>
+        <Reveal delay={120} className="mt-10 md:mt-12 lg:mt-14">
+          <DashboardMockup />
+        </Reveal>
 
         <Reveal delay={220} className="mt-12 grid gap-5 border border-white/[0.07] bg-white/[0.022] p-5 shadow-[0_24px_90px_-74px_rgba(88,214,255,0.45)] sm:grid-cols-2 lg:mt-14 lg:grid-cols-4 lg:gap-6 lg:p-6">
           {capabilityItems.map(({ icon: Icon, title, body }) => (
@@ -165,10 +163,10 @@ function Reveal({
 
 function DashboardMockup() {
   return (
-    <div className="relative mx-auto w-full max-w-[1220px] lg:mx-0 lg:w-[124%] xl:w-[130%]">
-      <div className="absolute -inset-8 bg-[radial-gradient(circle_at_68%_32%,rgba(78,196,236,0.26),transparent_25rem),radial-gradient(circle_at_28%_82%,rgba(232,190,76,0.12),transparent_22rem)] blur-2xl" />
+    <div className="relative mx-auto w-full">
+      <div className="absolute -inset-8 bg-[radial-gradient(circle_at_50%_45%,rgba(78,196,236,0.18),transparent_34rem),radial-gradient(circle_at_50%_92%,rgba(232,190,76,0.08),transparent_26rem)] blur-2xl" />
       <img
-        src="/marketing/edgetrace-hero-dashboard-preview-text-adjusted.svg"
+        src="/marketing/edgetrace-landing-hero-overview.png"
         alt="EdgeTrace strategy signal board showing edge health, diagnosis, review targets, and benchmark metrics."
         className="relative block w-full select-none drop-shadow-[0_34px_95px_rgba(0,0,0,0.72)]"
         draggable={false}
