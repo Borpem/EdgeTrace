@@ -78,7 +78,7 @@ export function FeatureEducationPage({
       points: ["Broker and generic CSV imports", "Mapping review before diagnostics", "Clean workflow from upload to report"],
       visual: (
         <HowGraphic
-          src="/graphics/edgetrace-how-report-builder-workflow-clean.svg"
+          src="/graphics/edgetrace-how-report-builder-workflow-clean.png"
           alt="EdgeTrace import workflow showing source file, normalized inputs, and generated report."
         />
       )
@@ -122,7 +122,7 @@ export function FeatureEducationPage({
       reverse: true,
       visual: (
         <HowGraphic
-          src="/graphics/edgetrace-how-recommended-actions-nextmove-clean.svg"
+          src="/graphics/edgetrace-how-recommended-actions-nextmove-clean.png"
           alt="EdgeTrace recommended actions graphic with priorities and next move."
         />
       )
