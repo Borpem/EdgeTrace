@@ -5644,6 +5644,30 @@ body {
   text-transform: uppercase;
 }
 
+.EdgeTrace-mistake-heatmap-axis.is-column {
+  min-height: 2.15rem;
+  flex-direction: column;
+  gap: 0.1rem;
+  line-height: 1.05;
+}
+
+.EdgeTrace-mistake-heatmap-axis.is-column strong {
+  color: var(--command-text-secondary);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.EdgeTrace-mistake-heatmap-axis.is-column em {
+  color: var(--command-text-muted);
+  font-size: 0.53rem;
+  font-style: normal;
+  font-weight: 560;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: nowrap;
+}
+
 .EdgeTrace-mistake-heatmap-axis.is-row {
   justify-content: flex-start;
   color: var(--command-text-secondary);

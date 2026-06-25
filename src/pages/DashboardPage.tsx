@@ -1993,7 +1993,7 @@ function MistakeHeatmapPanel({ heatmap }: { heatmap: MistakeHeatmapOutput }) {
         <div className="EdgeTrace-mistake-heatmap-stage">
           <HeatmapBlock
             title="Leak map"
-            subtitle="Where losses outweigh gains by weekday and session."
+            subtitle="Where losses outweigh gains by weekday and market session."
             tone="red"
             weekdays={weekdays}
             buckets={buckets}
@@ -2001,7 +2001,7 @@ function MistakeHeatmapPanel({ heatmap }: { heatmap: MistakeHeatmapOutput }) {
           />
           <HeatmapBlock
             title="Edge map"
-            subtitle="Where gains outweigh losses by weekday and session."
+            subtitle="Where gains outweigh losses by weekday and market session."
             tone="green"
             weekdays={weekdays}
             buckets={buckets}
@@ -2054,7 +2054,10 @@ function HeatmapBlock({
       <div className="EdgeTrace-mistake-heatmap-grid" role="img" aria-label={`${title} by weekday and session`}>
         <div className="EdgeTrace-mistake-heatmap-corner" />
         {buckets.map((bucket) => (
-          <span key={bucket} className="EdgeTrace-mistake-heatmap-axis">{bucket}</span>
+          <span key={bucket} className="EdgeTrace-mistake-heatmap-axis is-column">
+            <strong>{bucket}</strong>
+            <em>{heatmapBucketRangeLabel(bucket)}</em>
+          </span>
         ))}
         {weekdays.map((weekday) => (
           <MistakeHeatmapRow
@@ -2143,13 +2146,14 @@ function MistakeHeatmapRow({
           tone === "green"
             ? `${formatHeatCurrency(cell.score, "green")} net upside`
             : `${formatHeatCurrency(cell.score, "red")} net downside`;
+        const bucketRange = heatmapBucketRangeLabel(bucket);
         return (
           <span
             key={cell.id}
             className="EdgeTrace-mistake-heatmap-cell"
             style={{ background: heatmapCellBackground(cell.level, tone) }}
-            title={`${weekday} ${bucket}: ${cell.trades} trade${cell.trades === 1 ? "" : "s"}, ${valueLabel}`}
-            aria-label={`${weekday} ${bucket}, ${cell.trades} trade${cell.trades === 1 ? "" : "s"}, ${valueLabel}`}
+            title={`${weekday} ${bucket} (${bucketRange}): ${cell.trades} trade${cell.trades === 1 ? "" : "s"}, ${valueLabel}`}
+            aria-label={`${weekday} ${bucket} ${bucketRange}, ${cell.trades} trade${cell.trades === 1 ? "" : "s"}, ${valueLabel}`}
           >
             {cell.score > 0 ? (
               <>
@@ -2696,6 +2700,19 @@ const mistakeBuckets = [
   { label: "PM", start: 14, end: 15.5 },
   { label: "Close", start: 15.5, end: 16.25 }
 ] as const;
+
+function heatmapBucketRangeLabel(label: string) {
+  const bucket = mistakeBuckets.find((item) => item.label === label);
+  return bucket ? `${formatSessionHour(bucket.start)}-${formatSessionHour(bucket.end)}` : "";
+}
+
+function formatSessionHour(hourValue: number) {
+  const hour = Math.floor(hourValue);
+  const minutes = Math.round((hourValue - hour) * 60);
+  const period = hour >= 12 ? "PM" : "AM";
+  const hour12 = hour % 12 === 0 ? 12 : hour % 12;
+  return `${hour12}:${String(minutes).padStart(2, "0")}${period}`;
+}
 
 function buildMistakeHeatmap(trades: NormalizedTrade[]): MistakeHeatmapOutput {
   const cells = new Map<string, MistakeHeatmapCell>();
