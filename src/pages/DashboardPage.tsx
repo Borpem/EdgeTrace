@@ -2698,7 +2698,7 @@ const mistakeBuckets = [
   { label: "AM", start: 10.5, end: 12 },
   { label: "Mid", start: 12, end: 14 },
   { label: "PM", start: 14, end: 15.5 },
-  { label: "Close", start: 15.5, end: 16.25 }
+  { label: "Close", start: 15.5, end: 16 }
 ] as const;
 
 function heatmapBucketRangeLabel(label: string) {
