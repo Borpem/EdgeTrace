@@ -127,10 +127,20 @@ type MistakeHeatmapCell = {
   bucket: string;
   score: number;
   trades: number;
+  losingTrades: number;
+  winningTrades: number;
   loss: number;
   gain: number;
   costs: number;
   level: number;
+};
+type HeatmapSummary = {
+  trades: number;
+  losingTrades: number;
+  winningTrades: number;
+  loss: number;
+  gain: number;
+  costs: number;
 };
 type MistakeHeatmapRank = {
   label: string;
@@ -1947,11 +1957,11 @@ function MistakeHeatmapPanel({ heatmap }: { heatmap: MistakeHeatmapOutput }) {
           </div>
           <div className="EdgeTrace-mistake-heatmap-stats">
             <div className="EdgeTrace-mistake-heatmap-stat">
-              <span>Total loss</span>
+              <span>Net downside</span>
               <strong className="is-red">{formatHeatCurrency(heatmap.totalMistakeCost, "red")}</strong>
             </div>
             <div className="EdgeTrace-mistake-heatmap-stat">
-              <span>Total wins</span>
+              <span>Net upside</span>
               <strong className="is-green">{formatHeatCurrency(heatmap.totalEdgeValue, "green")}</strong>
             </div>
             <div className="EdgeTrace-mistake-heatmap-stat">
@@ -1963,7 +1973,7 @@ function MistakeHeatmapPanel({ heatmap }: { heatmap: MistakeHeatmapOutput }) {
               <strong className="is-green">{heatmap.edgeTrades}</strong>
             </div>
             <div className="EdgeTrace-mistake-heatmap-stat">
-              <span>Loss rate</span>
+              <span>Losing share</span>
               <strong className="is-red">{percent.format(heatmap.mistakeRate)}</strong>
             </div>
             <div className="EdgeTrace-mistake-heatmap-stat">
@@ -1983,7 +1993,7 @@ function MistakeHeatmapPanel({ heatmap }: { heatmap: MistakeHeatmapOutput }) {
         <div className="EdgeTrace-mistake-heatmap-stage">
           <HeatmapBlock
             title="Leak map"
-            subtitle="Where losing trades cluster by weekday and session."
+            subtitle="Where losses outweigh gains by weekday and session."
             tone="red"
             weekdays={weekdays}
             buckets={buckets}
@@ -1991,7 +2001,7 @@ function MistakeHeatmapPanel({ heatmap }: { heatmap: MistakeHeatmapOutput }) {
           />
           <HeatmapBlock
             title="Edge map"
-            subtitle="Where profitable trades are clustering."
+            subtitle="Where gains outweigh losses by weekday and session."
             tone="green"
             weekdays={weekdays}
             buckets={buckets}
@@ -1999,12 +2009,12 @@ function MistakeHeatmapPanel({ heatmap }: { heatmap: MistakeHeatmapOutput }) {
           />
         </div>
         <div className="EdgeTrace-mistake-heatmap-rail">
-          <MistakeHeatmapList title="Edge clusters" labelTitle="Window" metricTitle="Upside" tone="green" items={heatmap.topEdgeClusters} />
-          <MistakeHeatmapList title="Strong symbols" labelTitle="Symbol" metricTitle="Upside" tone="green" items={heatmap.topEdgeSymbols} />
-          <MistakeHeatmapList title="Best sessions" labelTitle="Session" metricTitle="Upside" tone="green" items={heatmap.topEdgeSessions} />
-          <MistakeHeatmapList title="Leak clusters" labelTitle="Window" metricTitle="Downside" tone="red" items={heatmap.topClusters} />
-          <MistakeHeatmapList title="Weak symbols" labelTitle="Symbol" metricTitle="Downside" tone="red" items={heatmap.topSymbols} />
-          <MistakeHeatmapList title="Worst sessions" labelTitle="Session" metricTitle="Downside" tone="red" items={heatmap.topSessions} />
+          <MistakeHeatmapList title="Edge clusters" labelTitle="Window" metricTitle="Net upside" tone="green" items={heatmap.topEdgeClusters} />
+          <MistakeHeatmapList title="Strong symbols" labelTitle="Symbol" metricTitle="Net upside" tone="green" items={heatmap.topEdgeSymbols} />
+          <MistakeHeatmapList title="Best sessions" labelTitle="Session" metricTitle="Net upside" tone="green" items={heatmap.topEdgeSessions} />
+          <MistakeHeatmapList title="Leak clusters" labelTitle="Window" metricTitle="Net downside" tone="red" items={heatmap.topClusters} />
+          <MistakeHeatmapList title="Weak symbols" labelTitle="Symbol" metricTitle="Net downside" tone="red" items={heatmap.topSymbols} />
+          <MistakeHeatmapList title="Worst sessions" labelTitle="Session" metricTitle="Net downside" tone="red" items={heatmap.topSessions} />
         </div>
       </div>
     </article>
@@ -2122,6 +2132,8 @@ function MistakeHeatmapRow({
           bucket,
           score: 0,
           trades: 0,
+          losingTrades: 0,
+          winningTrades: 0,
           loss: 0,
           gain: 0,
           costs: 0,
@@ -2129,9 +2141,8 @@ function MistakeHeatmapRow({
         };
         const valueLabel =
           tone === "green"
-            ? `${formatHeatCurrency(cell.gain, "green")} upside`
-            : `${formatHeatCurrency(cell.loss, "red")} downside`;
-        const visibleValue = tone === "green" ? cell.gain : cell.loss;
+            ? `${formatHeatCurrency(cell.score, "green")} net upside`
+            : `${formatHeatCurrency(cell.score, "red")} net downside`;
         return (
           <span
             key={cell.id}
@@ -2140,10 +2151,10 @@ function MistakeHeatmapRow({
             title={`${weekday} ${bucket}: ${cell.trades} trade${cell.trades === 1 ? "" : "s"}, ${valueLabel}`}
             aria-label={`${weekday} ${bucket}, ${cell.trades} trade${cell.trades === 1 ? "" : "s"}, ${valueLabel}`}
           >
-            {cell.trades > 0 ? (
+            {cell.score > 0 ? (
               <>
-                <strong>{formatHeatCurrency(visibleValue, tone)}</strong>
-                <em>{cell.trades} trade{cell.trades === 1 ? "" : "s"}</em>
+                <strong>{formatHeatCurrency(cell.score, tone)}</strong>
+                <em>{cell.winningTrades}W / {cell.losingTrades}L</em>
               </>
             ) : null}
           </span>
@@ -2689,15 +2700,32 @@ const mistakeBuckets = [
 function buildMistakeHeatmap(trades: NormalizedTrade[]): MistakeHeatmapOutput {
   const cells = new Map<string, MistakeHeatmapCell>();
   const edgeCells = new Map<string, MistakeHeatmapCell>();
-  const symbols = new Map<string, { score: number; trades: number; loss: number; costs: number }>();
-  const sessions = new Map<string, { score: number; trades: number; loss: number; costs: number }>();
-  const edgeSymbols = new Map<string, { score: number; trades: number; loss: number; costs: number }>();
-  const edgeSessions = new Map<string, { score: number; trades: number; loss: number; costs: number }>();
+  const symbols = new Map<string, HeatmapSummary>();
+  const sessions = new Map<string, HeatmapSummary>();
   let mistakeTrades = 0;
   let edgeTrades = 0;
   let totalLoss = 0;
   let totalGain = 0;
   let totalCosts = 0;
+  const emptySummary = (): HeatmapSummary => ({
+    trades: 0,
+    losingTrades: 0,
+    winningTrades: 0,
+    loss: 0,
+    gain: 0,
+    costs: 0
+  });
+  const updateSummary = (map: Map<string, HeatmapSummary>, key: string, loss: number, gain: number, costs: number) => {
+    const summary = map.get(key) ?? emptySummary();
+    summary.trades += 1;
+    summary.loss += loss;
+    summary.gain += gain;
+    summary.costs += costs;
+    if (loss > 0) summary.losingTrades += 1;
+    if (gain > 0) summary.winningTrades += 1;
+    map.set(key, summary);
+  };
+
   mistakeWeekdays.forEach((weekday) => {
     mistakeBuckets.forEach((bucket) => {
       const emptyCell = {
@@ -2706,6 +2734,8 @@ function buildMistakeHeatmap(trades: NormalizedTrade[]): MistakeHeatmapOutput {
         bucket: bucket.label,
         score: 0,
         trades: 0,
+        losingTrades: 0,
+        winningTrades: 0,
         loss: 0,
         gain: 0,
         costs: 0,
@@ -2716,8 +2746,7 @@ function buildMistakeHeatmap(trades: NormalizedTrade[]): MistakeHeatmapOutput {
     });
   });
   mistakeBuckets.forEach((bucket) => {
-    sessions.set(bucket.label, { score: 0, trades: 0, loss: 0, costs: 0 });
-    edgeSessions.set(bucket.label, { score: 0, trades: 0, loss: 0, costs: 0 });
+    sessions.set(bucket.label, emptySummary());
   });
 
   trades.forEach((trade) => {
@@ -2733,66 +2762,44 @@ function buildMistakeHeatmap(trades: NormalizedTrade[]): MistakeHeatmapOutput {
     const loss = Math.max(0, -trade.netPnl);
     const gain = Math.max(0, trade.netPnl);
     const costs = getTradeCosts(trade);
-    const isMistakeCandidate = loss > 0;
-    const isEdgeCandidate = gain > 0;
+    if (loss <= 0 && gain <= 0) return;
 
-    if (isMistakeCandidate) {
-      cell.trades += 1;
-      cell.loss += loss;
-      cell.costs += costs;
-      const score = loss;
-      cell.score += score;
+    [cell, edgeCell].forEach((target) => {
+      target.trades += 1;
+      target.loss += loss;
+      target.gain += gain;
+      target.costs += costs;
+      if (loss > 0) target.losingTrades += 1;
+      if (gain > 0) target.winningTrades += 1;
+    });
+
+    if (loss > 0) {
       mistakeTrades += 1;
       totalLoss += loss;
       totalCosts += costs;
-
-      const symbol = trade.symbol || "Unspecified";
-      const symbolSummary = symbols.get(symbol) ?? { score: 0, trades: 0, loss: 0, costs: 0 };
-      symbolSummary.score += score;
-      symbolSummary.trades += 1;
-      symbolSummary.loss += loss;
-      symbolSummary.costs += costs;
-      symbols.set(symbol, symbolSummary);
-
-      const sessionSummary = sessions.get(bucket) ?? { score: 0, trades: 0, loss: 0, costs: 0 };
-      sessionSummary.score += score;
-      sessionSummary.trades += 1;
-      sessionSummary.loss += loss;
-      sessionSummary.costs += costs;
-      sessions.set(bucket, sessionSummary);
     }
-
-    if (isEdgeCandidate) {
-      edgeCell.trades += 1;
-      edgeCell.gain += gain;
-      edgeCell.costs += costs;
-      edgeCell.score += gain;
+    if (gain > 0) {
       edgeTrades += 1;
       totalGain += gain;
-
-      const symbol = trade.symbol || "Unspecified";
-      const symbolSummary = edgeSymbols.get(symbol) ?? { score: 0, trades: 0, loss: 0, costs: 0 };
-      symbolSummary.score += gain;
-      symbolSummary.trades += 1;
-      symbolSummary.loss += gain;
-      symbolSummary.costs += costs;
-      edgeSymbols.set(symbol, symbolSummary);
-
-      const sessionSummary = edgeSessions.get(bucket) ?? { score: 0, trades: 0, loss: 0, costs: 0 };
-      sessionSummary.score += gain;
-      sessionSummary.trades += 1;
-      sessionSummary.loss += gain;
-      sessionSummary.costs += costs;
-      edgeSessions.set(bucket, sessionSummary);
     }
+
+    const symbol = trade.symbol || "Unspecified";
+    updateSummary(symbols, symbol, loss, gain, costs);
+    updateSummary(sessions, bucket, loss, gain, costs);
   });
 
   const scoredCells = [...cells.values()];
+  scoredCells.forEach((cell) => {
+    cell.score = Math.max(cell.loss - cell.gain, 0);
+  });
   const maxScore = Math.max(...scoredCells.map((cell) => cell.score), 0);
   scoredCells.forEach((cell) => {
     cell.level = maxScore > 0 ? cell.score / maxScore : 0;
   });
   const scoredEdgeCells = [...edgeCells.values()];
+  scoredEdgeCells.forEach((cell) => {
+    cell.score = Math.max(cell.gain - cell.loss, 0);
+  });
   const maxEdgeScore = Math.max(...scoredEdgeCells.map((cell) => cell.score), 0);
   scoredEdgeCells.forEach((cell) => {
     cell.level = maxEdgeScore > 0 ? cell.score / maxEdgeScore : 0;
@@ -2809,7 +2816,7 @@ function buildMistakeHeatmap(trades: NormalizedTrade[]): MistakeHeatmapOutput {
     .map((cell) => ({
       label: `${cell.weekday} ${cell.bucket}`,
       value: cell.score,
-      detail: `${cell.trades} losing trade${cell.trades === 1 ? "" : "s"} / ${currency.format(cell.costs)} costs`,
+      detail: `${cell.losingTrades} losing vs ${cell.winningTrades} winning trades`,
       level: cell.level
     }));
   const topEdgeClusters = [...scoredEdgeCells]
@@ -2819,28 +2826,28 @@ function buildMistakeHeatmap(trades: NormalizedTrade[]): MistakeHeatmapOutput {
     .map((cell) => ({
       label: `${cell.weekday} ${cell.bucket}`,
       value: cell.score,
-      detail: `${cell.trades} winning trade${cell.trades === 1 ? "" : "s"} / ${currency.format(cell.costs)} costs`,
+      detail: `${cell.winningTrades} winning vs ${cell.losingTrades} losing trades`,
       level: cell.level
     }));
-  const topSymbols = rankedMistakeSummaries(symbols, totalMistakeCost, (label) => label);
-  const topSessions = rankedMistakeSummaries(sessions, totalMistakeCost, (label) => `${label} session`);
-  const topEdgeSymbols = rankedMistakeSummaries(edgeSymbols, totalEdgeValue, (label) => label);
-  const topEdgeSessions = rankedMistakeSummaries(edgeSessions, totalEdgeValue, (label) => `${label} session`);
+  const topSymbols = rankedNetHeatmapSummaries(symbols, "red", (label) => label);
+  const topSessions = rankedNetHeatmapSummaries(sessions, "red", (label) => `${label} session`);
+  const topEdgeSymbols = rankedNetHeatmapSummaries(symbols, "green", (label) => label);
+  const topEdgeSessions = rankedNetHeatmapSummaries(sessions, "green", (label) => `${label} session`);
 
   return {
     cells: scoredCells,
     edgeCells: scoredEdgeCells,
-    peakLabel: peak && peak.score > 0 ? `${peak.weekday} ${peak.bucket} is the hottest leak.` : "No losing-trade cluster detected.",
+    peakLabel: peak && peak.score > 0 ? `${peak.weekday} ${peak.bucket} is the biggest net leak.` : "No net losing cluster detected.",
     peakDetail:
       peak && peak.score > 0
-        ? `${peak.trades} losing trade${peak.trades === 1 ? "" : "s"} explain ${formatHeatCurrency(peak.loss, "red")} of downside and ${currency.format(peak.costs)} in costs.`
-        : "This report does not show a concentrated losing-trade weekday/session pattern yet.",
+        ? `${peak.losingTrades} losing vs ${peak.winningTrades} winning trades, for ${formatHeatCurrency(peak.score, "red")} net downside.`
+        : "This report does not show a concentrated net losing weekday/session pattern yet.",
     edgePeakLabel:
-      edgePeak && edgePeak.score > 0 ? `${edgePeak.weekday} ${edgePeak.bucket} is producing the most edge.` : "No winning cluster detected yet.",
+      edgePeak && edgePeak.score > 0 ? `${edgePeak.weekday} ${edgePeak.bucket} is producing the most net edge.` : "No net winning cluster detected yet.",
     edgePeakDetail:
       edgePeak && edgePeak.score > 0
-        ? `${edgePeak.trades} winning trade${edgePeak.trades === 1 ? "" : "s"} produced ${formatHeatCurrency(edgePeak.gain, "green")} after costs.`
-        : "This report does not show a concentrated winning weekday/session pattern yet.",
+        ? `${edgePeak.winningTrades} winning vs ${edgePeak.losingTrades} losing trades, for ${formatHeatCurrency(edgePeak.score, "green")} net upside.`
+        : "This report does not show a concentrated net winning weekday/session pattern yet.",
     totalMistakeCost,
     totalEdgeValue,
     mistakeTrades,
@@ -2861,21 +2868,30 @@ function buildMistakeHeatmap(trades: NormalizedTrade[]): MistakeHeatmapOutput {
   };
 }
 
-function rankedMistakeSummaries(
-  summaries: Map<string, { score: number; trades: number; loss: number; costs: number }>,
-  totalScore: number,
+function rankedNetHeatmapSummaries(
+  summaries: Map<string, HeatmapSummary>,
+  tone: "red" | "green",
   labelFormatter: (label: string) => string
 ): MistakeHeatmapRank[] {
-  return [...summaries.entries()]
-    .filter(([, summary]) => summary.score > 0)
-    .sort((left, right) => right[1].score - left[1].score)
-    .slice(0, 3)
+  const ranked = [...summaries.entries()]
     .map(([label, summary]) => ({
-      label: labelFormatter(label),
-      value: summary.score,
-      detail: `${summary.trades} trade${summary.trades === 1 ? "" : "s"} / ${percent.format(totalScore > 0 ? summary.score / totalScore : 0)} of heat`,
-      level: totalScore > 0 ? summary.score / totalScore : 0
-    }));
+      label,
+      summary,
+      value: tone === "green" ? Math.max(summary.gain - summary.loss, 0) : Math.max(summary.loss - summary.gain, 0)
+    }))
+    .filter((item) => item.value > 0)
+    .sort((left, right) => right.value - left.value)
+    .slice(0, 3);
+  const maxValue = Math.max(...ranked.map((item) => item.value), 0);
+  return ranked.map(({ label, summary, value }) => ({
+    label: labelFormatter(label),
+    value,
+    detail:
+      tone === "green"
+        ? `${summary.winningTrades} winning vs ${summary.losingTrades} losing trades`
+        : `${summary.losingTrades} losing vs ${summary.winningTrades} winning trades`,
+    level: maxValue > 0 ? value / maxValue : 0
+  }));
 }
 
 function parseTradeDate(value: string | undefined) {
