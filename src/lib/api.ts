@@ -4,6 +4,9 @@ import type {
   CollectionReviewStateInput,
   DiagnosticsResult,
   ActivationSummary,
+  FeedbackInput,
+  FeedbackItem,
+  FeedbackStatus,
   NormalizedTrade,
   ReportCollectionDetail,
   ReportCollectionSummary,
@@ -139,6 +142,38 @@ export async function postUserEvent(eventName: string, properties?: Record<strin
   });
   if (!response.ok) throw new Error(await readApiError(response, "Unable to track event"));
   return response.json() as Promise<{ event: { id: string; eventName: string; createdAt: string } }>;
+}
+
+export async function submitFeedback(input: FeedbackInput) {
+  const response = await fetch(apiUrl("/api/feedback"), {
+    method: "POST",
+    headers: await apiHeaders({ "Content-Type": "application/json" }),
+    body: JSON.stringify(input)
+  });
+  if (!response.ok) throw new Error(await readApiError(response, "Unable to submit feedback"));
+  return response.json() as Promise<{ feedback: FeedbackItem }>;
+}
+
+export async function getAdminStatus() {
+  const response = await fetch(apiUrl("/api/admin/me"), { headers: await apiHeaders() });
+  if (!response.ok) return { isAdmin: false };
+  return response.json() as Promise<{ isAdmin: boolean }>;
+}
+
+export async function listAdminFeedback() {
+  const response = await fetch(apiUrl("/api/admin/feedback"), { headers: await apiHeaders() });
+  if (!response.ok) throw new Error(await readApiError(response, "Unable to load feedback"));
+  return response.json() as Promise<{ feedback: FeedbackItem[] }>;
+}
+
+export async function updateAdminFeedbackStatus(id: string, status: FeedbackStatus) {
+  const response = await fetch(apiUrl(`/api/admin/feedback/${encodeURIComponent(id)}`), {
+    method: "PATCH",
+    headers: await apiHeaders({ "Content-Type": "application/json" }),
+    body: JSON.stringify({ status })
+  });
+  if (!response.ok) throw new Error(await readApiError(response, "Unable to update feedback"));
+  return response.json() as Promise<{ feedback: FeedbackItem }>;
 }
 
 export async function updateMyPlan(planId: PlanId) {

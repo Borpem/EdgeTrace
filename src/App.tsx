@@ -15,6 +15,7 @@ import {
   setApiAuth
 } from "./lib/api";
 import { AccountPage } from "./pages/AccountPage";
+import { AdminFeedbackPage } from "./pages/AdminFeedbackPage";
 import { ComparePage } from "./pages/ComparePage";
 import { CompareDrilldownPage } from "./pages/CompareDrilldownPage";
 import { CollectionAttributionPage } from "./pages/CollectionAttributionPage";
@@ -24,6 +25,7 @@ import { CollectionsPage } from "./pages/CollectionsPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { DrilldownPage } from "./pages/DrilldownPage";
 import { FeatureEducationPage } from "./pages/FeatureEducationPage";
+import { FeedbackPage } from "./pages/FeedbackPage";
 import { HomePage } from "./pages/HomePage";
 import { LoginPage } from "./pages/LoginPage";
 import { PricingPage } from "./pages/PricingPage";
@@ -34,7 +36,7 @@ import { StrategyDashboardPage } from "./pages/StrategyDashboardPage";
 import { UploadPage } from "./pages/UploadPage";
 import type { DiagnosticsResult, ReportSummary, UserProfile } from "./types";
 
-type Page = "home" | "pricing" | "login" | "signup" | "strategyDashboard" | "upload" | "reports" | "collections" | "collectionDetail" | "collectionAttribution" | "collectionReviewWorkspace" | "compare" | "features" | "account" | "dashboard" | "drilldown" | "compareDrilldown" | "reconstructionAudit";
+type Page = "home" | "pricing" | "login" | "signup" | "strategyDashboard" | "upload" | "reports" | "collections" | "collectionDetail" | "collectionAttribution" | "collectionReviewWorkspace" | "compare" | "features" | "feedback" | "adminFeedback" | "account" | "dashboard" | "drilldown" | "compareDrilldown" | "reconstructionAudit";
 type DrilldownSelection = { dimension: BreakdownDimension; group: string };
 type CompareDrilldownSelection = {
   reportA: DiagnosticsResult;
@@ -104,6 +106,10 @@ export function App() {
         return "/app/compare";
       case "features":
         return "/app/how-it-works";
+      case "feedback":
+        return "/app/feedback";
+      case "adminFeedback":
+        return "/app/admin/feedback";
       case "account":
         return "/app/account";
       default:
@@ -316,6 +322,14 @@ export function App() {
       setPage("features");
       return;
     }
+    if (pathname === "/app/feedback") {
+      setPage("feedback");
+      return;
+    }
+    if (pathname === "/app/admin/feedback") {
+      setPage("adminFeedback");
+      return;
+    }
     if (pathname === "/app/account") {
       setPage("account");
       return;
@@ -471,7 +485,8 @@ export function App() {
     { target: "reports", label: "Reports" },
     { target: "collections", label: "Strategy Sets" },
     { target: "compare", label: "Compare" },
-    { target: "features", label: "How It Works" }
+    { target: "features", label: "How It Works" },
+    { target: "feedback", label: "Feedback" }
   ];
   const useReportDashboardShell = page === "dashboard" && Boolean(result);
   const useAuthenticatedAppShell = isAuthenticated && !useReportDashboardShell && isAuthenticatedAppPage(page);
@@ -506,6 +521,7 @@ export function App() {
             navigate("compare");
           }}
           onFeatures={() => navigate("features", "/app/how-it-works")}
+          onFeedback={() => navigate("feedback")}
           onAccount={() => navigate("account")}
           onSignOut={handleSignOut}
         />
@@ -663,6 +679,12 @@ export function App() {
           onAnalyze={() => navigate("upload")}
           onPricing={() => navigate("pricing", "/pricing")}
         />
+      )}
+      {page === "feedback" && isAuthenticated && (
+        <FeedbackPage profile={userProfile} />
+      )}
+      {page === "adminFeedback" && isAuthenticated && (
+        <AdminFeedbackPage />
       )}
       {page === "login" && (
         <LoginPage
@@ -856,6 +878,7 @@ export function App() {
           onOpenDashboard={() => navigate("dashboard", `/app/dashboard/report/${result.id}`)}
           onOpenCollections={() => navigate("collections")}
           onOpenFeatures={() => navigate("features")}
+          onFeedback={() => navigate("feedback")}
           accountControl={
             <AccountUtility
               userName={user?.name}
@@ -928,6 +951,7 @@ function AuthenticatedTopbar({
   onCollections,
   onCompare,
   onFeatures,
+  onFeedback,
   onAccount,
   onSignOut
 }: {
@@ -942,6 +966,7 @@ function AuthenticatedTopbar({
   onCollections: () => void;
   onCompare: () => void;
   onFeatures: () => void;
+  onFeedback: () => void;
   onAccount: () => void;
   onSignOut: () => void;
 }) {
@@ -951,7 +976,8 @@ function AuthenticatedTopbar({
     { target: "reports", label: "Reports", action: onReports },
     { target: "collections", label: "Strategy Sets", action: onCollections },
     { target: "compare", label: "Compare", action: onCompare },
-    { target: "features", label: "How It Works", action: onFeatures }
+    { target: "features", label: "How It Works", action: onFeatures },
+    { target: "feedback", label: "Feedback", action: onFeedback }
   ];
 
   return (
@@ -1098,6 +1124,8 @@ function isAuthenticatedAppPage(page: Page) {
     "collectionReviewWorkspace",
     "compare",
     "features",
+    "feedback",
+    "adminFeedback",
     "account",
     "dashboard",
     "drilldown",
@@ -1117,6 +1145,8 @@ function labelForPage(page: Page) {
     collectionReviewWorkspace: "Review Workspace",
     compare: "Compare",
     features: "How It Works",
+    feedback: "Feedback",
+    adminFeedback: "Admin Feedback",
     account: "Account",
     dashboard: "Dashboard",
     drilldown: "Drilldown",

@@ -189,6 +189,7 @@ type DashboardPageProps = {
   onOpenDashboard?: () => void;
   onOpenCollections?: () => void;
   onOpenFeatures?: () => void;
+  onFeedback?: () => void;
   accountControl?: ReactNode;
   reportJustCreated?: boolean;
   onDismissCreatedBanner?: () => void;
@@ -207,6 +208,7 @@ export function DashboardPage({
   onOpenDashboard,
   onOpenCollections,
   onOpenFeatures,
+  onFeedback,
   accountControl,
   reportJustCreated,
   onDismissCreatedBanner
@@ -672,7 +674,8 @@ export function DashboardPage({
     { label: "Reports", action: onViewReports },
     { label: "Strategy Sets", action: onOpenCollections },
     { label: "Compare", action: handleSidebarCompare },
-    { label: "How It Works", action: onOpenFeatures }
+    { label: "How It Works", action: onOpenFeatures },
+    { label: "Feedback", action: onFeedback }
   ];
 
   return (

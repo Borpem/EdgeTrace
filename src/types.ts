@@ -248,6 +248,27 @@ export type UserEvent = {
   createdAt: string;
 };
 
+export type FeedbackType = "bug" | "suggestion" | "other";
+
+export type FeedbackStatus = "new" | "reviewed" | "closed";
+
+export type FeedbackInput = {
+  type: FeedbackType;
+  message: string;
+  pageUrl?: string;
+  userAgent?: string;
+};
+
+export type FeedbackItem = FeedbackInput & {
+  id: string;
+  userId: string;
+  userEmail?: string;
+  userName?: string;
+  status: FeedbackStatus;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type ActivationSummary = {
   hasUploadedCsv: boolean;
   hasCreatedReport: boolean;

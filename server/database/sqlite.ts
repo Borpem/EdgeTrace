@@ -9,6 +9,9 @@ import type {
   CollectionReviewStateInput,
   DiagnosticsResult,
   ActivationSummary,
+  FeedbackInput,
+  FeedbackItem,
+  FeedbackStatus,
   ReportCollectionDetail,
   ReportCollectionSummary,
   ReportSummary,
@@ -141,6 +144,20 @@ db.exec(`
     event_properties_json TEXT,
     created_at TEXT NOT NULL
   );
+
+  CREATE TABLE IF NOT EXISTS feedback (
+    id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    user_email TEXT,
+    user_name TEXT,
+    type TEXT NOT NULL,
+    message TEXT NOT NULL,
+    page_url TEXT,
+    user_agent TEXT,
+    status TEXT NOT NULL DEFAULT 'new',
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+  );
 `);
 
 for (const table of ["report_collections", "collection_reports", "saved_comparisons", "collection_review_states"]) {
@@ -157,6 +174,8 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_user_events_user_id ON user_events(user_id);
   CREATE INDEX IF NOT EXISTS idx_user_events_user_event ON user_events(user_id, event_name);
   CREATE INDEX IF NOT EXISTS idx_user_events_created_at ON user_events(created_at);
+  CREATE INDEX IF NOT EXISTS idx_feedback_created_at ON feedback(created_at);
+  CREATE INDEX IF NOT EXISTS idx_feedback_status ON feedback(status);
 `);
 
 for (const table of [
@@ -203,6 +222,20 @@ type UserProfileRow = {
   stripe_subscription_status: string | null;
   stripe_price_id: string | null;
   current_period_end: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+type FeedbackRow = {
+  id: string;
+  user_id: string;
+  user_email: string | null;
+  user_name: string | null;
+  type: string;
+  message: string;
+  page_url: string | null;
+  user_agent: string | null;
+  status: string;
   created_at: string;
   updated_at: string;
 };
@@ -1061,6 +1094,47 @@ export function getActivationSummary(userId: string): ActivationSummary {
   };
 }
 
+export function saveFeedback(
+  userId: string,
+  input: FeedbackInput & { userEmail?: string; userName?: string }
+): FeedbackItem {
+  getOrCreateUserProfile(userId);
+  const now = new Date().toISOString();
+  const id = randomUUID();
+  db.prepare(
+    `INSERT INTO feedback (
+       id, user_id, user_email, user_name, type, message, page_url, user_agent, status, created_at, updated_at
+     ) VALUES (
+       @id, @userId, @userEmail, @userName, @type, @message, @pageUrl, @userAgent, 'new', @createdAt, @updatedAt
+     )`
+  ).run({
+    id,
+    userId,
+    userEmail: input.userEmail ?? "",
+    userName: input.userName ?? "",
+    type: normalizeFeedbackType(input.type),
+    message: input.message,
+    pageUrl: input.pageUrl ?? "",
+    userAgent: input.userAgent ?? "",
+    createdAt: now,
+    updatedAt: now
+  });
+  return mapFeedback(db.prepare("SELECT * FROM feedback WHERE id = ?").get(id) as FeedbackRow);
+}
+
+export function listFeedback(): FeedbackItem[] {
+  const rows = db.prepare("SELECT * FROM feedback ORDER BY created_at DESC").all() as FeedbackRow[];
+  return rows.map(mapFeedback);
+}
+
+export function updateFeedbackStatus(id: string, status: FeedbackStatus): FeedbackItem | null {
+  const normalizedStatus = normalizeFeedbackStatus(status);
+  const updatedAt = new Date().toISOString();
+  db.prepare("UPDATE feedback SET status = ?, updated_at = ? WHERE id = ?").run(normalizedStatus, updatedAt, id);
+  const row = db.prepare("SELECT * FROM feedback WHERE id = ?").get(id) as FeedbackRow | undefined;
+  return row ? mapFeedback(row) : null;
+}
+
 function mapCollectionSummary(row: CollectionRow): ReportCollectionSummary {
   return {
     id: row.id,
@@ -1146,6 +1220,32 @@ function mapUserEvent(row: UserEventRow): UserEvent {
     properties: parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : undefined,
     createdAt: row.created_at
   };
+}
+
+function mapFeedback(row: FeedbackRow): FeedbackItem {
+  return {
+    id: row.id,
+    userId: row.user_id,
+    userEmail: row.user_email ?? "",
+    userName: row.user_name ?? "",
+    type: normalizeFeedbackType(row.type),
+    message: row.message,
+    pageUrl: row.page_url ?? "",
+    userAgent: row.user_agent ?? "",
+    status: normalizeFeedbackStatus(row.status),
+    createdAt: row.created_at,
+    updatedAt: row.updated_at
+  };
+}
+
+function normalizeFeedbackType(value: string): FeedbackInput["type"] {
+  if (value === "bug" || value === "suggestion" || value === "other") return value;
+  return "other";
+}
+
+function normalizeFeedbackStatus(value: string): FeedbackStatus {
+  if (value === "reviewed" || value === "closed") return value;
+  return "new";
 }
 
 function isDemoReportLike(row: { name: string | null; tags_json: string | null; strategy_label: string | null }) {

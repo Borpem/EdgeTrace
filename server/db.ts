@@ -5,6 +5,8 @@ import type {
   CollectionInput,
   CollectionReviewStateInput,
   DiagnosticsResult,
+  FeedbackInput,
+  FeedbackStatus,
   ReportUpdateInput,
   SavedComparisonInput
 } from "../src/types";
@@ -170,4 +172,19 @@ export async function trackUserEvent(userId: string, input: UserEventInput) {
 
 export async function getActivationSummary(userId: string) {
   return adapter.getActivationSummary(userId);
+}
+
+export async function saveFeedback(
+  userId: string,
+  input: FeedbackInput & { userEmail?: string; userName?: string }
+) {
+  return adapter.saveFeedback(userId, input);
+}
+
+export async function listFeedback() {
+  return adapter.listFeedback();
+}
+
+export async function updateFeedbackStatus(id: string, status: FeedbackStatus) {
+  return adapter.updateFeedbackStatus(id, status);
 }

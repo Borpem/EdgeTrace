@@ -7,6 +7,9 @@ import type {
   CollectionReviewStateInput,
   DiagnosticsResult,
   ActivationSummary,
+  FeedbackInput,
+  FeedbackItem,
+  FeedbackStatus,
   ReportCollectionDetail,
   ReportCollectionSummary,
   ReportSummary,
@@ -110,6 +113,20 @@ type UserEventRow = {
   event_name: string;
   event_properties_json: string | null;
   created_at: string;
+};
+
+type FeedbackRow = {
+  id: string;
+  user_id: string;
+  user_email: string | null;
+  user_name: string | null;
+  type: string;
+  message: string;
+  page_url: string | null;
+  user_agent: string | null;
+  status: string;
+  created_at: string;
+  updated_at: string;
 };
 
 const allowedReportTypes = new Set<ReportType>(["backtest", "paper", "live", "imported", "unknown"]);
@@ -229,6 +246,20 @@ async function initializeSchema() {
       created_at TEXT NOT NULL
     );
 
+    CREATE TABLE IF NOT EXISTS feedback (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      user_email TEXT,
+      user_name TEXT,
+      type TEXT NOT NULL,
+      message TEXT NOT NULL,
+      page_url TEXT,
+      user_agent TEXT,
+      status TEXT NOT NULL DEFAULT 'new',
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+
     CREATE INDEX IF NOT EXISTS idx_diagnostic_reports_user_id ON diagnostic_reports(user_id);
     CREATE INDEX IF NOT EXISTS idx_report_collections_user_id ON report_collections(user_id);
     CREATE INDEX IF NOT EXISTS idx_collection_reports_user_id ON collection_reports(user_id);
@@ -238,6 +269,8 @@ async function initializeSchema() {
     CREATE INDEX IF NOT EXISTS idx_user_events_user_id ON user_events(user_id);
     CREATE INDEX IF NOT EXISTS idx_user_events_user_event ON user_events(user_id, event_name);
     CREATE INDEX IF NOT EXISTS idx_user_events_created_at ON user_events(created_at);
+    CREATE INDEX IF NOT EXISTS idx_feedback_created_at ON feedback(created_at);
+    CREATE INDEX IF NOT EXISTS idx_feedback_status ON feedback(status);
   `);
   await db.query("ALTER TABLE diagnostic_reports ADD COLUMN IF NOT EXISTS import_provenance_json TEXT");
 }
@@ -923,6 +956,51 @@ export async function getActivationSummary(userId: string): Promise<ActivationSu
   };
 }
 
+export async function saveFeedback(
+  userId: string,
+  input: FeedbackInput & { userEmail?: string; userName?: string }
+): Promise<FeedbackItem> {
+  await getOrCreateUserProfile(userId);
+  const id = randomUUID();
+  const now = new Date().toISOString();
+  const row = await getOne<FeedbackRow>(
+    `INSERT INTO feedback (
+       id, user_id, user_email, user_name, type, message, page_url, user_agent, status, created_at, updated_at
+     ) VALUES (
+       $1, $2, $3, $4, $5, $6, $7, $8, 'new', $9, $9
+     )
+     RETURNING *`,
+    [
+      id,
+      userId,
+      input.userEmail ?? "",
+      input.userName ?? "",
+      normalizeFeedbackType(input.type),
+      input.message,
+      input.pageUrl ?? "",
+      input.userAgent ?? "",
+      now
+    ]
+  );
+  return mapFeedback(row);
+}
+
+export async function listFeedback(): Promise<FeedbackItem[]> {
+  const result = await query<FeedbackRow>("SELECT * FROM feedback ORDER BY created_at DESC");
+  return result.rows.map(mapFeedback);
+}
+
+export async function updateFeedbackStatus(id: string, status: FeedbackStatus): Promise<FeedbackItem | null> {
+  const row = await getOne<FeedbackRow>(
+    `UPDATE feedback
+     SET status = $2, updated_at = $3
+     WHERE id = $1
+     RETURNING *`,
+    [id, normalizeFeedbackStatus(status), new Date().toISOString()]
+  );
+  return row ? mapFeedback(row) : null;
+}
+
 async function touchCollection(userId: string, collectionId: string) {
   await query("UPDATE report_collections SET updated_at = $1 WHERE id = $2 AND user_id = $3", [
     new Date().toISOString(),
@@ -1023,6 +1101,32 @@ function mapUserEvent(row: UserEventRow): UserEvent {
     properties: parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : undefined,
     createdAt: row.created_at
   };
+}
+
+function mapFeedback(row: FeedbackRow): FeedbackItem {
+  return {
+    id: row.id,
+    userId: row.user_id,
+    userEmail: row.user_email ?? "",
+    userName: row.user_name ?? "",
+    type: normalizeFeedbackType(row.type),
+    message: row.message,
+    pageUrl: row.page_url ?? "",
+    userAgent: row.user_agent ?? "",
+    status: normalizeFeedbackStatus(row.status),
+    createdAt: row.created_at,
+    updatedAt: row.updated_at
+  };
+}
+
+function normalizeFeedbackType(value: string): FeedbackInput["type"] {
+  if (value === "bug" || value === "suggestion" || value === "other") return value;
+  return "other";
+}
+
+function normalizeFeedbackStatus(value: string): FeedbackStatus {
+  if (value === "reviewed" || value === "closed") return value;
+  return "new";
 }
 
 function normalizeReportType(value: string | null | undefined): ReportType {

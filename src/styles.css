@@ -5068,6 +5068,55 @@ body {
   color: #f2fbff;
 }
 
+.EdgeTrace-command-primary:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+.EdgeTrace-feedback-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.45rem;
+  border: 1px solid rgba(52, 78, 94, 0.86);
+  border-radius: 999px;
+  background: rgba(5, 13, 19, 0.78);
+  padding: 0 0.58rem;
+  font-size: 0.68rem;
+  font-weight: 720;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.EdgeTrace-feedback-chip.tone-bug,
+.EdgeTrace-feedback-chip.status-new,
+.EdgeTrace-feedback-count.tone-red strong {
+  color: var(--command-red);
+}
+
+.EdgeTrace-feedback-chip.tone-suggestion,
+.EdgeTrace-feedback-chip.status-reviewed,
+.EdgeTrace-feedback-count.tone-yellow strong {
+  color: var(--command-yellow);
+}
+
+.EdgeTrace-feedback-chip.tone-other,
+.EdgeTrace-feedback-chip.status-closed,
+.EdgeTrace-feedback-count.tone-green strong {
+  color: var(--command-green);
+}
+
+.EdgeTrace-feedback-count.tone-red {
+  border-color: rgba(255, 83, 114, 0.28);
+}
+
+.EdgeTrace-feedback-count.tone-yellow {
+  border-color: rgba(245, 191, 69, 0.28);
+}
+
+.EdgeTrace-feedback-count.tone-green {
+  border-color: rgba(106, 213, 139, 0.28);
+}
+
 .EdgeTrace-command-dashboard .EdgeTrace-dashboard-account-control .EdgeTrace-account-utility {
   gap: 0.42rem;
 }

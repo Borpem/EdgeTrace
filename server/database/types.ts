@@ -4,6 +4,9 @@ import type {
   CollectionReviewStateInput,
   DiagnosticsResult,
   ActivationSummary,
+  FeedbackInput,
+  FeedbackItem,
+  FeedbackStatus,
   ReportCollectionDetail,
   ReportCollectionSummary,
   ReportSummary,
@@ -72,4 +75,10 @@ export type DatabaseAdapter = {
   deleteCollectionReviewState: (userId: string, collectionId: string, previousReportId: string, currentReportId: string) => boolean | Promise<boolean>;
   trackUserEvent: (userId: string, input: UserEventInput) => UserEvent | Promise<UserEvent>;
   getActivationSummary: (userId: string) => ActivationSummary | Promise<ActivationSummary>;
+  saveFeedback: (
+    userId: string,
+    input: FeedbackInput & { userEmail?: string; userName?: string }
+  ) => FeedbackItem | Promise<FeedbackItem>;
+  listFeedback: () => FeedbackItem[] | Promise<FeedbackItem[]>;
+  updateFeedbackStatus: (id: string, status: FeedbackStatus) => FeedbackItem | null | Promise<FeedbackItem | null>;
 };

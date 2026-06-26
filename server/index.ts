@@ -22,6 +22,7 @@ import {
   getCollection,
   getActivationSummary,
   getOrCreateUserProfile,
+  listFeedback,
   getSavedComparison,
   initDb,
   listBenchmarkReports,
@@ -32,11 +33,13 @@ import {
   removeReportFromCollection,
   reorderCollectionReports,
   saveDiagnosticReport,
+  saveFeedback,
   trackUserEvent,
   updateCollection,
   upsertCollectionReviewState,
   updateSavedComparison,
   updateDiagnosticReport,
+  updateFeedbackStatus,
   updateUserPlan
 } from "./db";
 import {
@@ -62,7 +65,7 @@ import {
   getPlanConfig
 } from "../src/lib/entitlements";
 import { normalizePlanId } from "../src/lib/plans";
-import type { ImportProvenance } from "../src/types";
+import type { FeedbackStatus, ImportProvenance } from "../src/types";
 import {
   planUpgradeResponse,
   sanitizeCollectionForUser,
@@ -385,6 +388,38 @@ function getUserId(req: express.Request) {
   return (req as EdgeTraceRequest).edgeTraceUserId ?? "";
 }
 
+function parseAdminList(...names: string[]) {
+  return names
+    .flatMap((name) => (process.env[name] ?? "").split(","))
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+async function isAdminRequest(req: express.Request) {
+  const userId = getUserId(req);
+  if (!userId) return false;
+  const profile = await getOrCreateUserProfile(userId);
+  const allowedIds = parseAdminList("EDGETRACE_ADMIN_USER_IDS", "ADMIN_USER_IDS");
+  const allowedEmails = parseAdminList("EDGETRACE_ADMIN_EMAILS", "ADMIN_EMAILS").map((email) => email.toLowerCase());
+  if (!isProduction && allowedIds.length === 0 && allowedEmails.length === 0 && userId === DEFAULT_USER_ID) {
+    return true;
+  }
+  return allowedIds.includes(userId) || Boolean(profile.email && allowedEmails.includes(profile.email.toLowerCase()));
+}
+
+function sanitizeFeedbackType(value: unknown): "bug" | "suggestion" | "other" {
+  return value === "bug" || value === "suggestion" || value === "other" ? value : "other";
+}
+
+function sanitizeFeedbackStatus(value: unknown): FeedbackStatus | null {
+  if (value === "new" || value === "reviewed" || value === "closed") return value;
+  return null;
+}
+
+function sanitizeFeedbackText(value: unknown, maxLength: number) {
+  return typeof value === "string" ? value.replace(/\s+\n/g, "\n").trim().slice(0, maxLength) : "";
+}
+
 app.use(
   "/api",
   createRateLimiter({
@@ -473,6 +508,73 @@ app.post("/api/events", async (req, res) => {
       message: "Activation event could not be stored."
     });
   }
+});
+
+app.post("/api/feedback", async (req, res) => {
+  const message = sanitizeFeedbackText(req.body?.message, 4000);
+  if (message.length < 5) {
+    res.status(400).json({
+      error: "INVALID_FEEDBACK",
+      message: "Feedback needs a short description before it can be submitted."
+    });
+    return;
+  }
+
+  try {
+    const profile = await getOrCreateUserProfile(getUserId(req));
+    const feedback = await saveFeedback(getUserId(req), {
+      type: sanitizeFeedbackType(req.body?.type),
+      message,
+      pageUrl: sanitizeFeedbackText(req.body?.pageUrl, 800),
+      userAgent: sanitizeFeedbackText(req.body?.userAgent || req.get("user-agent"), 500),
+      userEmail: profile.email,
+      userName: profile.name
+    });
+    await trackUserEvent(getUserId(req), { eventName: "feedback_submitted", properties: { type: feedback.type } });
+    res.status(201).json({ feedback });
+  } catch (err) {
+    console.error(`[feedback] Unable to store feedback for user=${getUserId(req)}`, err);
+    res.status(422).json({
+      error: "FEEDBACK_NOT_STORED",
+      message: safeApiErrorMessage(err, "Feedback could not be submitted. Try again in a moment.")
+    });
+  }
+});
+
+app.get("/api/admin/me", async (req, res) => {
+  res.json({ isAdmin: await isAdminRequest(req) });
+});
+
+app.get("/api/admin/feedback", async (req, res) => {
+  if (!(await isAdminRequest(req))) {
+    res.status(404).json({ error: "NOT_FOUND" });
+    return;
+  }
+
+  res.json({ feedback: await listFeedback() });
+});
+
+app.patch("/api/admin/feedback/:id", async (req, res) => {
+  if (!(await isAdminRequest(req))) {
+    res.status(404).json({ error: "NOT_FOUND" });
+    return;
+  }
+
+  const status = sanitizeFeedbackStatus(req.body?.status);
+  if (!status) {
+    res.status(400).json({
+      error: "INVALID_FEEDBACK_STATUS",
+      message: "Feedback status must be new, reviewed, or closed."
+    });
+    return;
+  }
+
+  const feedback = await updateFeedbackStatus(String(req.params.id ?? ""), status);
+  if (!feedback) {
+    res.status(404).json({ error: "FEEDBACK_NOT_FOUND" });
+    return;
+  }
+  res.json({ feedback });
 });
 
 app.patch("/api/me/plan", async (req, res) => {
