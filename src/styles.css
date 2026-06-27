@@ -8641,8 +8641,6 @@ textarea:focus-visible {
 
 .how-hero,
 .how-feature-strip,
-.how-workflow-intro,
-.how-process-row,
 .how-section,
 .how-final-cta {
   width: min(100%, 1440px);
@@ -8666,8 +8664,7 @@ textarea:focus-visible {
 }
 
 .how-eyebrow,
-.how-kicker,
-.how-step-index {
+.how-kicker {
   color: var(--how-blue);
   font-size: 0.74rem;
   font-weight: 760;
@@ -8777,14 +8774,6 @@ textarea:focus-visible {
   line-height: 1.68;
 }
 
-.how-workflow-intro {
-  display: grid;
-  justify-items: center;
-  padding: clamp(4.5rem, 7vw, 6.5rem) 0 2.8rem;
-  text-align: center;
-}
-
-.how-workflow-intro h2,
 .how-final-cta h2 {
   margin-top: 0.6rem;
   color: var(--how-text);
@@ -8794,56 +8783,12 @@ textarea:focus-visible {
   line-height: 1.04;
 }
 
-.how-workflow-intro p:not(.how-eyebrow),
 .how-final-cta p:not(.how-eyebrow) {
   margin-top: 1rem;
   max-width: 42rem;
   color: var(--how-muted);
   font-size: 1rem;
   line-height: 1.75;
-}
-
-.how-process-row {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 0.85rem;
-  padding-bottom: clamp(3.5rem, 6vw, 5.5rem);
-}
-
-.how-process-step {
-  position: relative;
-  min-height: 13.5rem;
-  border: 1px solid var(--how-line);
-  border-radius: 0.125rem;
-  background:
-    linear-gradient(145deg, rgba(16, 25, 33, 0.72), rgba(5, 10, 15, 0.96)),
-    var(--how-panel-deep);
-  padding: 1rem;
-}
-
-.how-step-icon {
-  display: grid;
-  width: 2.7rem;
-  height: 2.7rem;
-  margin-top: 1rem;
-  place-items: center;
-  border: 1px solid rgba(97, 184, 211, 0.28);
-  background: rgba(97, 184, 211, 0.06);
-  color: var(--how-blue);
-}
-
-.how-process-step h3 {
-  margin-top: 1.15rem;
-  color: var(--how-text);
-  font-size: 1rem;
-  font-weight: 680;
-}
-
-.how-process-step p {
-  margin-top: 0.55rem;
-  color: var(--how-muted);
-  font-size: 0.86rem;
-  line-height: 1.65;
 }
 
 .how-section-stack {
@@ -9082,7 +9027,6 @@ textarea:focus-visible {
   line-height: 0.94;
 }
 
-.EdgeTrace-auth-framed .EdgeTrace-auth-education .how-workflow-intro h2,
 .EdgeTrace-auth-framed .EdgeTrace-auth-education .how-section-title,
 .EdgeTrace-auth-framed .EdgeTrace-auth-education .how-final-cta h2 {
   font-weight: 650;
@@ -9092,10 +9036,8 @@ textarea:focus-visible {
 
 .EdgeTrace-auth-framed .EdgeTrace-auth-education .how-body,
 .EdgeTrace-auth-framed .EdgeTrace-auth-education .how-section-body,
-.EdgeTrace-auth-framed .EdgeTrace-auth-education .how-workflow-intro p:not(.how-eyebrow),
 .EdgeTrace-auth-framed .EdgeTrace-auth-education .how-final-cta p:not(.how-eyebrow),
-.EdgeTrace-auth-framed .EdgeTrace-auth-education .how-feature-item p,
-.EdgeTrace-auth-framed .EdgeTrace-auth-education .how-process-step p {
+.EdgeTrace-auth-framed .EdgeTrace-auth-education .how-feature-item p {
   color: var(--how-muted);
 }
 
@@ -9132,9 +9074,6 @@ textarea:focus-visible {
     border-top: 1px solid rgba(247, 247, 243, 0.07);
   }
 
-  .how-process-row {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
 @media (max-width: 680px) {
@@ -9154,7 +9093,6 @@ textarea:focus-visible {
   }
 
   .how-feature-strip,
-  .how-process-row,
   .how-diagnostic-grid {
     grid-template-columns: 1fr;
   }

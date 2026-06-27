@@ -26,7 +26,6 @@ import { DashboardPage } from "./pages/DashboardPage";
 import { DrilldownPage } from "./pages/DrilldownPage";
 import { FeatureEducationPage } from "./pages/FeatureEducationPage";
 import { FeedbackPage } from "./pages/FeedbackPage";
-import { HomePage } from "./pages/HomePage";
 import { LoginPage } from "./pages/LoginPage";
 import { PricingPage } from "./pages/PricingPage";
 import { ReconstructionAuditPage } from "./pages/ReconstructionAuditPage";
@@ -268,7 +267,7 @@ export function App() {
       return;
     }
     if (pathname === "/how-it-works") {
-      setPage("features");
+      navigate("home", "/", true);
       return;
     }
     if (pathname === "/demo") {
@@ -581,13 +580,7 @@ export function App() {
             <nav className="flex flex-wrap items-center justify-center gap-6 text-sm lg:ml-auto lg:justify-end">
               <button
                 className={`EdgeTrace-nav-link ${page === "home" ? "EdgeTrace-nav-link-active" : ""}`}
-                onClick={() => navigate("home")}
-              >
-                Product
-              </button>
-              <button
-                className={`EdgeTrace-nav-link ${page === "features" ? "EdgeTrace-nav-link-active" : ""}`}
-                onClick={() => navigate("features", "/how-it-works")}
+                onClick={() => navigate("home", "/")}
               >
                 How It Works
               </button>
@@ -658,9 +651,23 @@ export function App() {
       )}
 
       {page === "home" && (
-        <HomePage
-          onStart={() => navigate(isAuthenticated ? "upload" : "signup", isAuthenticated ? "/app/upload" : "/signup?next=/app/upload")}
-          onLearn={() => navigate("features", "/how-it-works")}
+        <FeatureEducationPage
+          profile={userProfile}
+          isAuthenticated={isAuthenticated}
+          onAnalyze={() => navigate(isAuthenticated ? "upload" : "signup", isAuthenticated ? "/app/upload" : "/signup?next=/app/upload")}
+          onPricing={() => navigate("pricing", "/pricing")}
+          onSignup={() => navigate("signup", "/signup?next=/app/upload")}
+          onOpenReport={async (reportId) => {
+            try {
+              const report = await getReport(reportId);
+              setResult(report);
+              setCreatedReportId(null);
+              navigate("dashboard", `/app/dashboard/report/${report.id}`);
+            } catch {
+              navigate("reports");
+            }
+          }}
+          onCreateStrategySet={() => navigate("collections")}
         />
       )}
       {page === "pricing" && (

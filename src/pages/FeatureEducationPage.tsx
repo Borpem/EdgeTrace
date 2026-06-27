@@ -5,10 +5,7 @@ import {
   BarChart3,
   Check,
   FileSearch,
-  Layers,
   ShieldCheck,
-  Target,
-  Upload,
   type LucideIcon
 } from "lucide-react";
 import { PageShell } from "../components/ui/Primitives";
@@ -40,14 +37,6 @@ type HowSection = {
   reverse?: boolean;
   visual: ReactNode;
 };
-
-const workflowSteps: FeatureItem[] = [
-  { icon: Upload, title: "Import Trades", body: "Upload broker exports or a generic CSV." },
-  { icon: FileSearch, title: "Diagnostic Report", body: "See expectancy, cost drag, R-capture, and health." },
-  { icon: Layers, title: "Drilldowns", body: "Break performance down by symbol, strategy, and time." },
-  { icon: Target, title: "Recommended Actions", body: "Prioritize the next fixes to inspect or retest." },
-  { icon: Activity, title: "Review Loop", body: "Track whether edge is strengthening or deteriorating." }
-];
 
 const valueStrip: FeatureItem[] = [
   { icon: BarChart3, title: "Aggregate intelligence", body: "Trade history becomes sharper diagnostics and benchmark insight." },
@@ -178,14 +167,6 @@ export function FeatureEducationPage({
         </div>
       </section>
 
-      <section className="how-workflow-intro" id="how-workflow">
-        <p className="how-eyebrow">Workflow</p>
-        <h2>From trades to clarity.</h2>
-        <p>A complete workflow for understanding what changed, what leaked, and what deserves attention next.</p>
-      </section>
-
-      <ProcessRow />
-
       <div className="how-section-stack">
         {howSections.map((section) => (
           <HowEditorialSection key={section.id} section={section} />
@@ -219,23 +200,6 @@ function FeatureStrip({ items, className = "" }: { items: FeatureItem[]; classNa
             <h2>{title}</h2>
             <p>{body}</p>
           </div>
-        </article>
-      ))}
-    </section>
-  );
-}
-
-function ProcessRow() {
-  return (
-    <section className="how-process-row" aria-label="EdgeTrace workflow steps">
-      {workflowSteps.map(({ icon: Icon, title, body }, index) => (
-        <article className="how-process-step" key={title}>
-          <div className="how-step-index">0{index + 1}</div>
-          <div className="how-step-icon">
-            <Icon aria-hidden="true" size={20} strokeWidth={1.8} />
-          </div>
-          <h3>{title}</h3>
-          <p>{body}</p>
         </article>
       ))}
     </section>
