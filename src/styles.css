@@ -8763,8 +8763,8 @@ textarea:focus-visible {
 .how-feature-item h2 {
   color: var(--how-text);
   font-size: 0.95rem;
-  font-weight: 650;
-  letter-spacing: -0.012em;
+  font-weight: 580;
+  letter-spacing: -0.004em;
 }
 
 .how-feature-item p {
@@ -8777,10 +8777,10 @@ textarea:focus-visible {
 .how-final-cta h2 {
   margin-top: 0.6rem;
   color: var(--how-text);
-  font-size: clamp(2.35rem, 4vw, 4rem);
-  font-weight: 650;
-  letter-spacing: -0.048em;
-  line-height: 1.04;
+  font-size: clamp(2.15rem, 3.55vw, 3.55rem);
+  font-weight: 560;
+  letter-spacing: -0.034em;
+  line-height: 1.1;
 }
 
 .how-final-cta p:not(.how-eyebrow) {
@@ -8820,10 +8820,10 @@ textarea:focus-visible {
 .how-section-title {
   margin-top: 0.75rem;
   color: var(--how-text);
-  font-size: clamp(2.25rem, 4.2vw, 4.75rem);
-  font-weight: 650;
-  letter-spacing: -0.052em;
-  line-height: 1;
+  font-size: clamp(2.15rem, 3.75vw, 4.15rem);
+  font-weight: 560;
+  letter-spacing: -0.036em;
+  line-height: 1.08;
 }
 
 .how-section-body {
@@ -8898,7 +8898,8 @@ textarea:focus-visible {
 .how-diagnostic-header strong {
   color: var(--how-text);
   font-size: clamp(1.45rem, 2.5vw, 2rem);
-  letter-spacing: -0.035em;
+  font-weight: 580;
+  letter-spacing: -0.018em;
 }
 
 .how-diagnostic-grid {
@@ -8920,9 +8921,9 @@ textarea:focus-visible {
   margin-top: 0.85rem;
   color: var(--how-text);
   font-size: clamp(1.55rem, 3vw, 2.25rem);
-  font-weight: 650;
-  letter-spacing: -0.04em;
-  line-height: 1;
+  font-weight: 580;
+  letter-spacing: -0.022em;
+  line-height: 1.08;
 }
 
 .how-diagnostic-card small {
@@ -9029,9 +9030,9 @@ textarea:focus-visible {
 
 .EdgeTrace-auth-framed .EdgeTrace-auth-education .how-section-title,
 .EdgeTrace-auth-framed .EdgeTrace-auth-education .how-final-cta h2 {
-  font-weight: 650;
-  letter-spacing: -0.05em;
-  line-height: 1.04;
+  font-weight: 560;
+  letter-spacing: -0.036em;
+  line-height: 1.08;
 }
 
 .EdgeTrace-auth-framed .EdgeTrace-auth-education .how-body,
