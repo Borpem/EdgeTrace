@@ -149,11 +149,11 @@ export function FeatureEducationPage({
     <PageShell className={`${isAuthenticated ? "EdgeTrace-auth-education" : ""} how-page relative z-10`}>
       <section className="how-hero">
         <div className="how-hero-copy">
-          <p className="how-eyebrow">How It Works</p>
-          <h1 className="how-title">From completed trades to clear next steps.</h1>
+          <p className="how-eyebrow">Trading Diagnostics</p>
+          <h1 className="how-title">Your trade history already knows what to fix next.</h1>
           <p className="how-body">
-            EdgeTrace turns your trade history into a diagnostic workflow: import your data, identify what is degrading
-            performance, drill into weak segments, and track whether your fixes actually improve the next report.
+            EdgeTrace turns completed trades into a diagnostic workflow that exposes hidden leaks, shows where your
+            edge is working, and tells you what to prove on the next upload.
           </p>
           <div className="how-cta-row">
             <button className="EdgeTrace-primary-button" onClick={accountAction}>
