@@ -8674,12 +8674,12 @@ textarea:focus-visible {
 
 .how-title {
   margin-top: 0.75rem;
-  max-width: 56rem;
+  max-width: 64rem;
   color: var(--how-text);
-  font-size: clamp(3.9rem, 7.2vw, 7.2rem);
-  font-weight: 650;
-  letter-spacing: -0.06em;
-  line-height: 0.94;
+  font-size: clamp(3.35rem, 6.35vw, 6.35rem);
+  font-weight: 560;
+  letter-spacing: -0.045em;
+  line-height: 1.03;
 }
 
 .how-body {
@@ -9021,10 +9021,10 @@ textarea:focus-visible {
 }
 
 .EdgeTrace-auth-framed .EdgeTrace-auth-education .how-title {
-  font-size: clamp(3.6rem, 6.8vw, 7rem);
-  font-weight: 650;
-  letter-spacing: -0.06em;
-  line-height: 0.94;
+  font-size: clamp(3.25rem, 6.15vw, 6.1rem);
+  font-weight: 560;
+  letter-spacing: -0.045em;
+  line-height: 1.03;
 }
 
 .EdgeTrace-auth-framed .EdgeTrace-auth-education .how-section-title,
