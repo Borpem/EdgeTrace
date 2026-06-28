@@ -11,31 +11,14 @@ import {
 import { confirmCheckoutSession, createBillingPortalSession, createCheckoutSession, getMe } from "../lib/api";
 import { trackEvent } from "../lib/analytics";
 import { getPlanConfig } from "../lib/entitlements";
-import { planConfigs, planOrder, type PlanId } from "../lib/plans";
+import { planOrder, type PlanId } from "../lib/plans";
 import type { UserProfile } from "../types";
 
-type PricingPlan = {
-  id: PlanId;
-  eyebrow?: string;
-  summary: string;
-  accent: "cyan" | "purple" | "amber";
-  recommended?: boolean;
+const planSummaries: Record<PlanId, string> = {
+  free: "Complete reporting and analysis workflow.",
+  pro: "Review loop, mistake heatmaps, benchmark percentiles, and clear targets for the next upload.",
+  advanced: "Legacy access with all paid review features."
 };
-
-const pricingPlans: PricingPlan[] = [
-  {
-    id: "free",
-    summary: "For traders who want the complete reporting and analysis workflow.",
-    accent: "cyan"
-  },
-  {
-    id: "pro",
-    eyebrow: "Most Popular",
-    summary: "For traders who want twice-weekly check-ins, mistake heatmaps, benchmark percentiles, and clear targets for the next upload.",
-    accent: "purple",
-    recommended: true
-  }
-];
 
 const featureRows: Array<{ label: string; access: Record<PlanId, string> }> = [
   { label: "Full diagnostic reports", access: { free: "Unlimited", pro: "Unlimited", advanced: "Unlimited" } },
@@ -72,7 +55,7 @@ const faqs = [
   {
     question: "Can I use Free long term?",
     answer:
-      "Yes. The core product stays free. Pro is for traders who want a reason to check in regularly and measure whether each new upload improved."
+      "Yes. The core product stays free. Pro is for traders who want a recurring review layer that measures whether each new upload improved."
   },
   {
     question: "Is my data secure?",
@@ -317,25 +300,18 @@ export function PricingPage({
         <p className="EdgeTrace-pricing-eyebrow">Pricing</p>
         <h1>Simple pricing. Serious edge.</h1>
         <p>
-          Use the full EdgeTrace reporting workflow for free. Upgrade to Pro when you want a twice-weekly review loop,
+          Use the full EdgeTrace reporting workflow for free. Upgrade to Pro when you want the recurring review loop,
           mistake heatmaps, benchmark percentiles, and next-upload targets.
         </p>
       </section>
 
       <StatusMessages billingConfigured={billingConfigured} notice={notice} error={error} />
 
-      <section className="EdgeTrace-pricing-cards" aria-label="Pricing plans">
-        {pricingPlans.map((plan) => (
-          <PlanCard key={plan.id} plan={plan} isCurrent={Boolean(profile) && currentPlanId === plan.id} action={renderPlanAction(plan.id)} />
-        ))}
-      </section>
-
-      <div className="EdgeTrace-pricing-footnote">
-        <ShieldCheck size={18} aria-hidden="true" />
-        <span>Core analytics are free. Pro adds mistake heatmaps, the recurring review loop, and aggregate benchmark context for $9.99/month.</span>
-      </div>
-
-      <FeatureComparison currentPlanId={highlightedPlanId} />
+      <FeatureComparison
+        activePlanId={highlightedPlanId}
+        currentPlanId={Boolean(profile) ? currentPlanId : undefined}
+        renderPlanAction={renderPlanAction}
+      />
       <TrustSection />
       <FaqSection />
       <FinalCta onStart={onStart} onPro={handleProCta} activeAction={activeAction} profile={profile} isAuthenticated={isAuthenticated} />
@@ -365,66 +341,39 @@ function StatusMessages({
   );
 }
 
-function PlanCard({
-  plan,
-  isCurrent,
-  action
+function FeatureComparison({
+  activePlanId,
+  currentPlanId,
+  renderPlanAction
 }: {
-  plan: PricingPlan;
-  isCurrent: boolean;
-  action: ReactNode;
+  activePlanId: PlanId;
+  currentPlanId?: PlanId;
+  renderPlanAction: (planId: PlanId) => ReactNode;
 }) {
-  const config = planConfigs[plan.id];
-  const toneClass = toneClasses[plan.accent];
-
-  return (
-    <article id={`pricing-plan-${plan.id}`} className={`EdgeTrace-pricing-plan ${plan.recommended ? "featured" : ""} ${toneClass.card}`}>
-      {plan.eyebrow && <div className={`EdgeTrace-pricing-ribbon ${toneClass.ribbon}`}>{plan.eyebrow}</div>}
-      <div className="EdgeTrace-pricing-plan-inner">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <h2>{config.displayName}</h2>
-            <p>{plan.summary}</p>
-          </div>
-          {isCurrent && <span className="EdgeTrace-pricing-current">Current</span>}
-        </div>
-        <div className="EdgeTrace-pricing-price">
-          {config.monthlyPriceLabel === "Coming Soon" ? (
-            <strong>Coming Soon</strong>
-          ) : (
-            <>
-              <strong>{config.monthlyPriceLabel.replace("/month", "")}</strong>
-              {config.monthlyPriceLabel.includes("/month") && <span>/mo</span>}
-            </>
-          )}
-        </div>
-        <div className="EdgeTrace-pricing-action">{action}</div>
-        <ul>
-          {config.featureBullets.map((feature) => (
-            <li key={feature}>
-              <Check size={16} aria-hidden="true" />
-              <span>{feature}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </article>
-  );
-}
-
-function FeatureComparison({ currentPlanId }: { currentPlanId: PlanId }) {
   return (
     <section className="EdgeTrace-pricing-compare">
-      <h2>Compare plans</h2>
+      <div className="EdgeTrace-pricing-compare-heading">
+        <div>
+          <h2>Free vs Pro</h2>
+          <p>Core reporting stays free. Pro adds the recurring review layer and benchmark context.</p>
+        </div>
+        <div className="EdgeTrace-pricing-footnote">
+          <ShieldCheck size={18} aria-hidden="true" />
+          <span>Pro is $9.99/month.</span>
+        </div>
+      </div>
       <div className="EdgeTrace-pricing-table-wrap">
         <table>
           <thead>
             <tr>
               <th>Feature</th>
               {planOrder.map((planId) => (
-                <th key={planId} className={currentPlanId === planId ? "active" : ""}>
-                  {getPlanConfig(planId).displayName}
-                  {planId === "pro" && <small>Most Popular</small>}
+                <th key={planId} className={activePlanId === planId ? "active" : ""}>
+                  <PlanColumnHeader
+                    planId={planId}
+                    isCurrent={currentPlanId === planId}
+                    action={renderPlanAction(planId)}
+                  />
                 </th>
               ))}
             </tr>
@@ -434,7 +383,7 @@ function FeatureComparison({ currentPlanId }: { currentPlanId: PlanId }) {
               <tr key={row.label}>
                 <td>{row.label}</td>
                 {planOrder.map((planId) => (
-                  <td key={planId} className={currentPlanId === planId ? "active" : ""}>
+                  <td key={planId} className={activePlanId === planId ? "active" : ""}>
                     <AccessValue value={row.access[planId]} planId={planId} />
                   </td>
                 ))}
@@ -444,6 +393,35 @@ function FeatureComparison({ currentPlanId }: { currentPlanId: PlanId }) {
         </table>
       </div>
     </section>
+  );
+}
+
+function PlanColumnHeader({
+  planId,
+  isCurrent,
+  action
+}: {
+  planId: PlanId;
+  isCurrent: boolean;
+  action: ReactNode;
+}) {
+  const config = getPlanConfig(planId);
+  const price = config.monthlyPriceLabel.replace("/month", "");
+
+  return (
+    <div className="EdgeTrace-pricing-column-head">
+      <div className="EdgeTrace-pricing-column-title">
+        <span>{config.displayName}</span>
+        {planId === "pro" && <small>Most Popular</small>}
+        {isCurrent && <em>Current</em>}
+      </div>
+      <p>{planSummaries[planId]}</p>
+      <div className="EdgeTrace-pricing-column-price">
+        <strong>{price}</strong>
+        {config.monthlyPriceLabel.includes("/month") && <span>/mo</span>}
+      </div>
+      <div>{action}</div>
+    </div>
   );
 }
 
@@ -503,7 +481,7 @@ function FinalCta({
       </div>
       <div>
         <h2>Ready to gain the edge?</h2>
-        <p>Start with the free workflow, then upgrade to Pro when you want EdgeTrace to check your process twice a week and flag what changed.</p>
+        <p>Start with the free workflow, then upgrade to Pro when you want recurring review targets, heatmaps, and benchmark context.</p>
       </div>
       <div>
         <button className="EdgeTrace-pricing-primary" onClick={onPro}>

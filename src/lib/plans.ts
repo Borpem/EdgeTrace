@@ -114,7 +114,7 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
     featureBullets: [
       "Everything in Free",
       "Weekly Edge Review loop",
-      "Twice-weekly check-in workflow",
+      "Recurring review workflow",
       "Aggregate benchmark percentiles",
       "Mistake heatmap",
       "Next-review checklist",
@@ -156,7 +156,7 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
     featureBullets: [
       "Everything in Free",
       "Weekly Edge Review loop",
-      "Twice-weekly check-in workflow",
+      "Recurring review workflow",
       "Aggregate benchmark percentiles",
       "Mistake heatmap",
       "Next-review checklist",

@@ -485,7 +485,7 @@ function accessItems(planId: PlanId) {
     },
     {
       title: "Review loop",
-      body: pro ? "Weekly Edge Reviews and next-review checklists are active." : "Upgrade for twice-weekly process reviews.",
+      body: pro ? "Weekly Edge Reviews and next-review checklists are active." : "Upgrade for recurring process reviews.",
       enabled: pro
     },
     {

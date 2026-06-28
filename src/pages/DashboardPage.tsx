@@ -3196,7 +3196,7 @@ function reviewCadence(daysSinceLatest: number | undefined, reportCount: number)
   if (daysSinceLatest <= 2) {
     return {
       label: "Cadence on track",
-      detail: "Next check in 1-2 days",
+      detail: "Next review in 1-2 days",
       tone: "green"
     };
   }

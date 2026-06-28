@@ -53,9 +53,6 @@ export function FeatureEducationPage({
 }: FeatureEducationPageProps) {
   const accountAction = isAuthenticated ? onAnalyze : onSignup ?? onAnalyze;
   const accountLabel = isAuthenticated ? "Create a Report" : "Create Free Account";
-  const sampleAction = () => {
-    document.getElementById("how-diagnose")?.scrollIntoView({ behavior: "smooth", block: "center" });
-  };
 
   const howSections: HowSection[] = [
     {
@@ -135,7 +132,7 @@ export function FeatureEducationPage({
       kicker: "06 / Review Loop",
       title: "Measure whether the fix worked.",
       body:
-        "Pro adds the recurring review layer: mistake heatmaps, benchmark movement, next-upload targets, and check-in prompts that make EdgeTrace useful after every new report.",
+        "Pro adds the recurring review layer: mistake heatmaps, benchmark movement, next-upload targets, and review prompts that make EdgeTrace useful after every new report.",
       points: ["Mistake heatmap", "Review targets", "Benchmark movement", "Recurring improvement loop"],
       reverse: true,
       visual: (
@@ -174,9 +171,6 @@ export function FeatureEducationPage({
             <button className="EdgeTrace-primary-button" onClick={accountAction}>
               {accountLabel}
               <ArrowRight size={16} />
-            </button>
-            <button className="EdgeTrace-secondary-button" onClick={sampleAction}>
-              View Sample Report
             </button>
           </div>
         </div>
