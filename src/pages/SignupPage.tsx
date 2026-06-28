@@ -28,8 +28,8 @@ export function SignupPage({
             <div className="mt-8 grid max-w-xl gap-3">
               {[
                 "Full reporting workflow on Free",
-                "Unlimited reports, imports, drilldowns, compare, and strategy sets",
-                "Upgrade to Pro for weekly Edge Reviews, benchmark percentiles, and next-review checklists"
+                "Unlimited reports, imports, dashboard diagnosis, compare, and strategy sets",
+                "Upgrade to Pro for drilldowns, heatmaps, benchmark percentiles, and next-review checklists"
               ].map((item) => (
                 <div key={item} className="flex items-center gap-3 text-sm text-muted">
                   <Check className="text-cyan" size={16} strokeWidth={1.7} />

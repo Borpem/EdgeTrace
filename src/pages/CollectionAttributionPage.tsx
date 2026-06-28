@@ -11,8 +11,10 @@ import {
 import { breakdownLabels, type BreakdownDimension } from "../lib/breakdowns";
 import { getCollection } from "../lib/api";
 import { getAttributionRow } from "../lib/collectionAttribution";
+import { PaywallGate } from "../components/PaywallGate";
 import { TableContainer } from "../components/ui/Primitives";
-import type { ReportCollectionDetail } from "../types";
+import { canUseFeature, getPlanConfig } from "../lib/entitlements";
+import type { ReportCollectionDetail, UserProfile } from "../types";
 
 const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
 const percent = new Intl.NumberFormat("en-US", { style: "percent", maximumFractionDigits: 1 });
@@ -21,26 +23,46 @@ export function CollectionAttributionPage({
   collectionId,
   dimension,
   group,
+  profile,
   onBack
 }: {
   collectionId: string;
   dimension: BreakdownDimension;
   group: string;
+  profile?: UserProfile | null;
   onBack: () => void;
 }) {
   const [collection, setCollection] = useState<ReportCollectionDetail | null>(null);
   const [error, setError] = useState("");
+  const plan = getPlanConfig(profile?.planId);
 
   useEffect(() => {
+    if (!canUseFeature(plan, "collection_attribution")) return;
     getCollection(collectionId)
       .then(setCollection)
       .catch((err) => setError(err instanceof Error ? err.message : "Unable to load attribution"));
-  }, [collectionId]);
+  }, [collectionId, plan]);
 
   const attribution = useMemo(
     () => (collection ? getAttributionRow(collection, dimension, group) : undefined),
     [collection, dimension, group]
   );
+
+  if (!canUseFeature(plan, "collection_attribution")) {
+    return (
+      <main className="EdgeTrace-shell py-10">
+        <button className="mb-6 text-sm text-muted hover:text-accent" onClick={onBack}>
+          Back to Strategy Set
+        </button>
+        <PaywallGate
+          feature="collection_attribution"
+          accessLevel="locked"
+          title="Upgrade to Pro to unlock strategy-set drilldowns."
+          description="Pro opens the symbol, strategy, and time-bucket attribution behind each strategy set."
+        />
+      </main>
+    );
+  }
 
   return (
     <main className="EdgeTrace-shell py-10">

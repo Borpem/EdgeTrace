@@ -24,7 +24,8 @@ import {
 } from "../lib/leakAnalysis";
 import { PaywallGate } from "../components/PaywallGate";
 import { TableContainer } from "../components/ui/Primitives";
-import type { DiagnosticsResult, NormalizedTrade } from "../types";
+import { canViewFullDrilldown, getPlanConfig } from "../lib/entitlements";
+import type { DiagnosticsResult, NormalizedTrade, UserProfile } from "../types";
 
 const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
 const percent = new Intl.NumberFormat("en-US", { style: "percent", maximumFractionDigits: 1 });
@@ -47,11 +48,13 @@ export function DrilldownPage({
   result,
   dimension,
   group,
+  profile,
   onBack
 }: {
   result: DiagnosticsResult;
   dimension: BreakdownDimension;
   group: string;
+  profile?: UserProfile | null;
   onBack: () => void;
 }) {
   const [sortKey, setSortKey] = useState<TradeSortKey>("netPnl");
@@ -94,7 +97,14 @@ export function DrilldownPage({
     }
   };
 
-  if ((result.lockedSections ?? []).includes("full_drilldowns") || result.accessLevel === "preview" || result.accessLevel === "locked") {
+  const plan = getPlanConfig(profile?.planId);
+  const drilldownsLocked =
+    !canViewFullDrilldown(plan) ||
+    (result.lockedSections ?? []).includes("full_drilldowns") ||
+    result.accessLevel === "preview" ||
+    result.accessLevel === "locked";
+
+  if (drilldownsLocked) {
     return (
       <main className="EdgeTrace-shell py-10">
         <button className="mb-6 inline-flex items-center gap-2 text-sm text-accent" onClick={onBack}>

@@ -23,7 +23,8 @@ import {
 import { createManualPair, pairTrades, type MatchedTradePair } from "../lib/tradePairing";
 import { PaywallGate } from "../components/PaywallGate";
 import { TableContainer } from "../components/ui/Primitives";
-import type { DiagnosticsResult, NormalizedTrade } from "../types";
+import { canViewFullDrilldown, getPlanConfig } from "../lib/entitlements";
+import type { DiagnosticsResult, NormalizedTrade, UserProfile } from "../types";
 
 const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
 const percent = new Intl.NumberFormat("en-US", { style: "percent", maximumFractionDigits: 1 });
@@ -47,12 +48,14 @@ export function CompareDrilldownPage({
   reportB,
   dimension,
   group,
+  profile,
   onBack
 }: {
   reportA: DiagnosticsResult;
   reportB: DiagnosticsResult;
   dimension: BreakdownDimension;
   group: string;
+  profile?: UserProfile | null;
   onBack: () => void;
 }) {
   const [sortKey, setSortKey] = useState<TradeSortKey>("entryTime");
@@ -136,21 +139,24 @@ export function CompareDrilldownPage({
     ["Net/Gross", summaryA?.netToGrossPct, summaryB?.netToGrossPct, "percent"]
   ] as const;
 
-  if (
+  const plan = getPlanConfig(profile?.planId);
+  const drilldownsLocked =
+    !canViewFullDrilldown(plan) ||
     reportA.accessLevel === "preview" ||
     reportA.accessLevel === "locked" ||
     reportB.accessLevel === "preview" ||
     reportB.accessLevel === "locked" ||
     (reportA.lockedSections ?? []).includes("full_drilldowns") ||
-    (reportB.lockedSections ?? []).includes("full_drilldowns")
-  ) {
+    (reportB.lockedSections ?? []).includes("full_drilldowns");
+
+  if (drilldownsLocked) {
     return (
       <main className="EdgeTrace-shell py-10">
         <button className="mb-6 inline-flex items-center gap-2 text-sm text-accent" onClick={onBack}>
           <ArrowLeft size={16} /> Back to Compare
         </button>
         <PaywallGate
-          feature="full_compare"
+          feature="full_drilldowns"
           accessLevel="locked"
           title="Upgrade to Pro to unlock comparison drilldowns."
           description="Pro shows the exact segment and trade-level changes between two diagnostic reports."

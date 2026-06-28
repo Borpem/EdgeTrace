@@ -126,7 +126,7 @@ export function planUpgradeResponse(feature: EntitlementFeature, requiredPlan: P
 
 export function upgradeMessageForFeature(feature: EntitlementFeature, _requiredPlan: PlanId = "pro") {
   const messages: Partial<Record<EntitlementFeature, string>> = {
-    full_drilldowns: "Full drilldowns are included on Free.",
+    full_drilldowns: "Upgrade to Pro to unlock full drilldowns.",
     reconstruction_audit: "Reconstruction audit is included on Free.",
     audit_exports: "Audit exports are included on Free.",
     full_compare: "Report compare is included on Free.",

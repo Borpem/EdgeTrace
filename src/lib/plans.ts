@@ -55,14 +55,14 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
       broker_imports: true,
       reconstruction_audit: true,
       export_audit: true,
-      collection_attribution: true,
+      collection_attribution: false,
       review_workspace: true,
       saved_comparisons: true,
       collections: true,
       full_report_access: true,
       preview_reports: true,
-      advanced_attribution: true,
-      full_drilldowns: true,
+      advanced_attribution: false,
+      full_drilldowns: false,
       full_compare: true,
       strategy_sets: true,
       audit_exports: true,
@@ -74,7 +74,7 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
     featureBullets: [
       "Unlimited full diagnostic reports",
       "Broker and generic CSV imports",
-      "Full attribution, drilldowns, and compare",
+      "Dashboard diagnosis, top drivers, and compare",
       "Strategy sets, reconstruction audit, and exports",
       "Strategy health monitoring"
     ]
@@ -113,6 +113,7 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
     },
     featureBullets: [
       "Everything in Free",
+      "Full drilldowns by symbol, session, setup, and time",
       "Weekly Edge Review loop",
       "Recurring review workflow",
       "Aggregate benchmark percentiles",
@@ -155,6 +156,7 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
     },
     featureBullets: [
       "Everything in Free",
+      "Full drilldowns by symbol, session, setup, and time",
       "Weekly Edge Review loop",
       "Recurring review workflow",
       "Aggregate benchmark percentiles",

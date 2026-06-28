@@ -289,7 +289,7 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
         <InfoTile
           icon={FileText}
           title="Core analytics"
-          body="Free includes unlimited reports, attribution, drilldowns, compare, strategy sets, audits, exports, and monitoring."
+          body="Free includes unlimited reports, dashboard diagnosis, top drivers, compare, strategy sets, audits, exports, and monitoring."
           accent="cyan"
         />
         <InfoTile
@@ -475,8 +475,10 @@ function accessItems(planId: PlanId) {
     },
     {
       title: "Full drilldowns",
-      body: "Unlocked across report attribution.",
-      enabled: true
+      body: pro
+        ? "Unlocked across symbols, sessions, setups, and time buckets."
+        : "Upgrade to inspect the exact segment behind each report issue.",
+      enabled: pro
     },
     {
       title: "Compare and strategy sets",

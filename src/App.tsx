@@ -811,6 +811,7 @@ export function App() {
         <CollectionAttributionPage
           collectionId={collectionId}
           {...collectionAttributionSelection}
+          profile={userProfile}
           onBack={() => {
             navigate("collectionDetail", `/app/collections/${collectionId}`);
           }}
@@ -921,6 +922,7 @@ export function App() {
           result={result}
           dimension={drilldownSelection.dimension}
           group={drilldownSelection.group}
+          profile={userProfile}
           onBack={() => {
             navigate("dashboard", `/app/dashboard/report/${result.id}`);
           }}
@@ -929,6 +931,7 @@ export function App() {
       {page === "compareDrilldown" && compareDrilldownSelection && (
         <CompareDrilldownPage
           {...compareDrilldownSelection}
+          profile={userProfile}
           onBack={() => {
             navigate("compare");
           }}

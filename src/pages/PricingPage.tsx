@@ -23,12 +23,13 @@ const planSummaries: Record<PlanId, string> = {
 const featureRows: Array<{ label: string; access: Record<PlanId, string> }> = [
   { label: "Full diagnostic reports", access: { free: "Unlimited", pro: "Unlimited", advanced: "Unlimited" } },
   { label: "Broker and generic CSV imports", access: { free: "Included", pro: "Included", advanced: "Included" } },
-  { label: "Full attribution and drilldowns", access: { free: "Included", pro: "Included", advanced: "Included" } },
+  { label: "Dashboard diagnosis and top drivers", access: { free: "Included", pro: "Included", advanced: "Included" } },
   { label: "Compare reports", access: { free: "Included", pro: "Included", advanced: "Included" } },
   { label: "Strategy sets", access: { free: "Included", pro: "Included", advanced: "Included" } },
   { label: "Reconstruction audit", access: { free: "Included", pro: "Included", advanced: "Included" } },
   { label: "Exports", access: { free: "Included", pro: "Included", advanced: "Included" } },
   { label: "Strategy health monitoring", access: { free: "Included", pro: "Included", advanced: "Included" } },
+  { label: "Full drilldowns by symbol, session, setup, and time", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Weekly Edge Review loop", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Regression / improvement tracking", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Benchmark percentile cards", access: { free: "-", pro: "Included", advanced: "Included" } },
@@ -45,12 +46,12 @@ const faqs = [
   {
     question: "What is included on Free?",
     answer:
-      "Free includes the complete current EdgeTrace workflow: unlimited reports, broker and CSV imports, attribution, drilldowns, compare, strategy sets, audits, exports, and monitoring."
+      "Free includes unlimited reports, broker and CSV imports, dashboard diagnosis, top drivers, compare, strategy sets, audits, exports, and monitoring."
   },
   {
     question: "What does Pro unlock?",
     answer:
-      "Pro is the $9.99/month review loop: weekly Edge Reviews, mistake heatmaps, benchmark percentile cards, next-review checklists, review cadence status, and regression / improvement tracking."
+      "Pro is the $9.99/month investigation and review layer: full drilldowns, weekly Edge Reviews, mistake heatmaps, benchmark percentile cards, next-review checklists, review cadence status, and regression / improvement tracking."
   },
   {
     question: "Can I use Free long term?",

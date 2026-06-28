@@ -86,10 +86,10 @@ export function FeatureEducationPage({
     },
     {
       id: "how-drilldowns",
-      kicker: "03 / Drilldowns",
+      kicker: "03 / Pro drilldowns",
       title: "Drill into the segment behind the report.",
       body:
-        "Move from the dashboard into symbol and segment readouts to understand whether the leak is coming from costs, weak net PnL, risk capture, or a concentrated pocket of losses.",
+        "Pro opens the symbol and segment readouts behind the dashboard so you can see whether the leak is coming from costs, weak net PnL, risk capture, or a concentrated pocket of losses.",
       points: ["Symbol-level readouts", "Cost and net PnL context", "Diagnostic flags for weak segments"],
       visual: (
         <HowGraphic

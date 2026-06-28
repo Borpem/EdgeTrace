@@ -56,16 +56,16 @@ export function PaywallGate({
   }
 
   return (
-    <section className={`relative overflow-hidden border border-cyan/25 bg-white/[0.025] ${className}`}>
-      <div className="pointer-events-none max-h-[360px] overflow-hidden blur-[1.5px] saturate-[0.65]">
-        <div className="opacity-45">{children}</div>
+    <section className={`EdgeTrace-paywall-preview relative overflow-hidden border border-cyan/25 bg-white/[0.025] ${className}`}>
+      <div className="EdgeTrace-paywall-preview-content pointer-events-none max-h-[460px] overflow-hidden">
+        <div>{children}</div>
       </div>
-      <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/70 to-black/90" />
-      <div className="absolute inset-x-0 bottom-0 border-t border-cyan/25 bg-black/90 p-6">
+      <div className="EdgeTrace-paywall-preview-scrim absolute inset-0" />
+      <div className="EdgeTrace-paywall-preview-card absolute left-1/2 top-1/2 w-[min(92%,34rem)] -translate-x-1/2 -translate-y-1/2 border border-cyan/30 bg-black/90 p-6 text-center shadow-[0_22px_70px_-36px_rgba(88,214,255,0.72)]">
         <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan">Preview unlocked</p>
         <h3 className="mt-2 text-xl font-semibold tracking-[-0.04em] text-ink">{title}</h3>
-        <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">{description}</p>
-        <div className="mt-4 flex flex-wrap gap-3">
+        <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-muted">{description}</p>
+        <div className="mt-4 flex flex-wrap justify-center gap-3">
           <button className="EdgeTrace-primary-button" type="button" onClick={goToPricing}>
             Upgrade to Pro
           </button>

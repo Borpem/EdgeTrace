@@ -3062,6 +3062,27 @@
     margin-top: 0;
   }
 
+  .EdgeTrace-paywall-preview {
+    min-height: 26rem;
+  }
+
+  .EdgeTrace-paywall-preview-content {
+    filter: blur(5.5px) saturate(0.52) contrast(0.86);
+    opacity: 0.28;
+    transform: scale(1.015);
+    transform-origin: center;
+  }
+
+  .EdgeTrace-paywall-preview-scrim {
+    background:
+      radial-gradient(circle at 50% 50%, rgba(4, 8, 15, 0.66), rgba(4, 8, 15, 0.9) 58%, rgba(0, 0, 0, 0.96)),
+      rgba(0, 0, 0, 0.62);
+  }
+
+  .EdgeTrace-paywall-preview-card {
+    z-index: 2;
+  }
+
   .EdgeTrace-dashboard-link {
     display: inline-flex;
     align-items: center;
