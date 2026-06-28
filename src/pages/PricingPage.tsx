@@ -357,40 +357,40 @@ function FeatureComparison({
           <h2>Free vs Pro</h2>
           <p>Core reporting stays free. Pro adds the recurring review layer and benchmark context.</p>
         </div>
-        <div className="EdgeTrace-pricing-footnote">
-          <ShieldCheck size={18} aria-hidden="true" />
-          <span>Pro is $9.99/month.</span>
-        </div>
       </div>
-      <div className="EdgeTrace-pricing-table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Feature</th>
-              {planOrder.map((planId) => (
-                <th key={planId} className={activePlanId === planId ? "active" : ""}>
-                  <PlanColumnHeader
-                    planId={planId}
-                    isCurrent={currentPlanId === planId}
-                    action={renderPlanAction(planId)}
-                  />
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {featureRows.map((row) => (
-              <tr key={row.label}>
-                <td>{row.label}</td>
-                {planOrder.map((planId) => (
-                  <td key={planId} className={activePlanId === planId ? "active" : ""}>
-                    <AccessValue value={row.access[planId]} planId={planId} />
-                  </td>
-                ))}
-              </tr>
+      <div className="EdgeTrace-pricing-board">
+        <div className="EdgeTrace-pricing-board-label plan-intro">
+          <div>
+            <ShieldCheck size={18} aria-hidden="true" />
+            <span>Plans</span>
+          </div>
+          <p>Free covers the reporting workflow. Pro adds the review loop, heatmaps, and benchmark context.</p>
+        </div>
+        {planOrder.map((planId) => (
+          <PlanColumnHeader
+            key={planId}
+            planId={planId}
+            isActive={activePlanId === planId}
+            isCurrent={currentPlanId === planId}
+            action={renderPlanAction(planId)}
+          />
+        ))}
+        <div className="EdgeTrace-pricing-board-label feature-label">Feature access</div>
+        {planOrder.map((planId) => (
+          <div key={planId} className={`EdgeTrace-pricing-feature-column-label ${activePlanId === planId ? "active" : ""}`}>
+            {getPlanConfig(planId).displayName}
+          </div>
+        ))}
+        {featureRows.map((row) => (
+          <div className="EdgeTrace-pricing-feature-row" key={row.label}>
+            <div className="EdgeTrace-pricing-feature-name">{row.label}</div>
+            {planOrder.map((planId) => (
+              <div key={planId} className={`EdgeTrace-pricing-feature-access ${activePlanId === planId ? "active" : ""}`}>
+                <AccessValue value={row.access[planId]} planId={planId} />
+              </div>
             ))}
-          </tbody>
-        </table>
+          </div>
+        ))}
       </div>
     </section>
   );
@@ -398,10 +398,12 @@ function FeatureComparison({
 
 function PlanColumnHeader({
   planId,
+  isActive,
   isCurrent,
   action
 }: {
   planId: PlanId;
+  isActive: boolean;
   isCurrent: boolean;
   action: ReactNode;
 }) {
@@ -409,7 +411,7 @@ function PlanColumnHeader({
   const price = config.monthlyPriceLabel.replace("/month", "");
 
   return (
-    <div className="EdgeTrace-pricing-column-head">
+    <div className={`EdgeTrace-pricing-column-head ${isActive ? "active" : ""}`}>
       <div className="EdgeTrace-pricing-column-title">
         <span>{config.displayName}</span>
         {planId === "pro" && <small>Most Popular</small>}

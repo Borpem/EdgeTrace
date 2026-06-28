@@ -7708,6 +7708,213 @@ textarea:focus-visible {
   color: #dff8ff;
 }
 
+.EdgeTrace-pricing-board {
+  display: grid;
+  grid-template-columns: minmax(15rem, 0.78fr) repeat(2, minmax(0, 1fr));
+  overflow: hidden;
+  border: 1px solid rgba(247, 247, 243, 0.12);
+  background:
+    linear-gradient(180deg, rgba(247, 247, 243, 0.035), transparent 10rem),
+    rgba(7, 13, 23, 0.72);
+}
+
+.EdgeTrace-pricing-board-label {
+  display: grid;
+  min-height: 100%;
+  align-content: start;
+  gap: 0.75rem;
+  border-right: 1px solid rgba(247, 247, 243, 0.08);
+  border-bottom: 1px solid rgba(247, 247, 243, 0.1);
+  padding: 1.15rem 1rem;
+  color: rgba(247, 247, 243, 0.72);
+  font-size: 0.78rem;
+  font-weight: 820;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.EdgeTrace-pricing-board-label > div {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.EdgeTrace-pricing-board-label svg {
+  color: #8aa3b6;
+}
+
+.EdgeTrace-pricing-board-label p {
+  max-width: 17rem;
+  margin: 0;
+  color: rgba(247, 247, 243, 0.6);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.45;
+  text-transform: none;
+}
+
+.EdgeTrace-pricing-board-label.feature-label {
+  min-height: auto;
+  align-items: center;
+  background: rgba(247, 247, 243, 0.025);
+  color: #f7f7f3;
+  padding-block: 0.85rem;
+}
+
+.EdgeTrace-pricing-column-head {
+  display: grid;
+  align-content: start;
+  gap: 0.82rem;
+  min-height: 0;
+  border-bottom: 1px solid rgba(247, 247, 243, 0.1);
+  border-left: 1px solid rgba(247, 247, 243, 0.08);
+  padding: 1.15rem 1rem 1rem;
+  text-align: left;
+}
+
+.EdgeTrace-pricing-column-head.active {
+  background:
+    linear-gradient(180deg, rgba(88, 214, 255, 0.07), rgba(247, 247, 243, 0.018)),
+    rgba(88, 214, 255, 0.035);
+}
+
+.EdgeTrace-pricing-column-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.EdgeTrace-pricing-column-title span {
+  color: #f7f7f3;
+  font-size: 1.18rem;
+  font-weight: 760;
+}
+
+.EdgeTrace-pricing-column-title small {
+  color: #58d6ff;
+  font-size: 0.64rem;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.EdgeTrace-pricing-column-title em {
+  border: 1px solid rgba(88, 214, 255, 0.35);
+  background: rgba(88, 214, 255, 0.08);
+  padding: 0.18rem 0.44rem;
+  color: #58d6ff;
+  font-size: 0.62rem;
+  font-style: normal;
+  font-weight: 820;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.EdgeTrace-pricing-column-head p {
+  max-width: 32rem;
+  margin: 0;
+  color: rgba(247, 247, 243, 0.66);
+  font-size: 0.84rem;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.EdgeTrace-pricing-column-price {
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+}
+
+.EdgeTrace-pricing-column-price strong {
+  color: #f7f7f3;
+  font-size: 2rem;
+  font-weight: 720;
+  line-height: 1;
+}
+
+.EdgeTrace-pricing-column-price span {
+  color: rgba(247, 247, 243, 0.68);
+  font-size: 0.9rem;
+  font-weight: 650;
+}
+
+.EdgeTrace-pricing-column-head :is(.EdgeTrace-pricing-primary, .EdgeTrace-pricing-secondary) {
+  width: min(100%, 25rem);
+  min-height: 2.6rem;
+  margin-top: 0 !important;
+  white-space: normal;
+}
+
+.EdgeTrace-pricing-column-head .mt-7 {
+  margin-top: 0 !important;
+}
+
+.EdgeTrace-pricing-feature-column-label {
+  border-bottom: 1px solid rgba(247, 247, 243, 0.1);
+  border-left: 1px solid rgba(247, 247, 243, 0.08);
+  background: rgba(247, 247, 243, 0.025);
+  padding: 0.85rem 1rem;
+  color: rgba(247, 247, 243, 0.72);
+  font-size: 0.75rem;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.EdgeTrace-pricing-feature-column-label.active {
+  color: #58d6ff;
+}
+
+.EdgeTrace-pricing-feature-row {
+  display: contents;
+}
+
+.EdgeTrace-pricing-feature-name,
+.EdgeTrace-pricing-feature-access {
+  display: flex;
+  min-height: 3rem;
+  align-items: center;
+  border-bottom: 1px solid rgba(247, 247, 243, 0.085);
+  padding: 0.78rem 1rem;
+}
+
+.EdgeTrace-pricing-feature-name {
+  color: #f7f7f3;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.EdgeTrace-pricing-feature-access {
+  justify-content: center;
+  border-left: 1px solid rgba(247, 247, 243, 0.08);
+  color: rgba(247, 247, 243, 0.78);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.EdgeTrace-pricing-feature-access.active {
+  background: rgba(247, 247, 243, 0.035);
+}
+
+.EdgeTrace-pricing-feature-row:last-child .EdgeTrace-pricing-feature-name,
+.EdgeTrace-pricing-feature-row:last-child .EdgeTrace-pricing-feature-access {
+  border-bottom: 0;
+}
+
+.EdgeTrace-pricing-feature-access .included {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #dff8ff;
+}
+
+.EdgeTrace-pricing-feature-access .included svg {
+  color: #58d6ff;
+}
+
 .EdgeTrace-pricing-table-wrap .muted,
 .EdgeTrace-pricing-page .muted {
   color: rgba(247, 247, 243, 0.46);
@@ -7942,18 +8149,49 @@ textarea:focus-visible {
     letter-spacing: 0.08em;
   }
 
+  .EdgeTrace-pricing-board {
+    grid-template-columns: minmax(7.75rem, 0.72fr) repeat(2, minmax(0, 1fr));
+  }
+
+  .EdgeTrace-pricing-board-label {
+    gap: 0.45rem;
+    padding: 0.75rem 0.55rem;
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+  }
+
+  .EdgeTrace-pricing-board-label > div {
+    gap: 0.35rem;
+  }
+
+  .EdgeTrace-pricing-board-label svg {
+    width: 0.9rem;
+    height: 0.9rem;
+  }
+
+  .EdgeTrace-pricing-board-label p {
+    display: none;
+  }
+
   .EdgeTrace-pricing-column-head {
-    min-height: 12rem;
-    gap: 0.55rem;
+    gap: 0.45rem;
+    padding: 0.75rem 0.55rem;
   }
 
   .EdgeTrace-pricing-column-title span {
-    font-size: 1rem;
+    font-size: 0.92rem;
+    line-height: 1.1;
+  }
+
+  .EdgeTrace-pricing-column-title small,
+  .EdgeTrace-pricing-column-title em {
+    font-size: 0.48rem;
+    letter-spacing: 0.07em;
   }
 
   .EdgeTrace-pricing-column-head p {
-    font-size: 0.68rem;
-    line-height: 1.35;
+    font-size: 0.62rem;
+    line-height: 1.3;
   }
 
   .EdgeTrace-pricing-column-price {
@@ -7975,9 +8213,23 @@ textarea:focus-visible {
   }
 
   .EdgeTrace-pricing-column-head :is(.EdgeTrace-pricing-primary, .EdgeTrace-pricing-secondary) {
-    min-height: 2.35rem;
-    padding-inline: 0.4rem;
-    font-size: 0.7rem;
+    min-height: 2.2rem;
+    padding-inline: 0.35rem;
+    font-size: 0.62rem;
+  }
+
+  .EdgeTrace-pricing-feature-column-label {
+    padding: 0.65rem 0.5rem;
+    font-size: 0.58rem;
+    letter-spacing: 0.08em;
+  }
+
+  .EdgeTrace-pricing-feature-name,
+  .EdgeTrace-pricing-feature-access {
+    min-height: 2.75rem;
+    padding: 0.65rem 0.5rem;
+    font-size: 0.68rem;
+    line-height: 1.25;
   }
 
   .EdgeTrace-pricing-footnote {
