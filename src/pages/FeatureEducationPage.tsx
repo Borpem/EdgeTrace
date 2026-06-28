@@ -117,12 +117,27 @@ export function FeatureEducationPage({
       )
     },
     {
+      id: "how-heatmaps",
+      kicker: "05 / Heatmaps",
+      title: "Spot when your best and worst trades repeat.",
+      body:
+        "Pro heatmaps separate leak clusters from edge clusters by weekday, session, and symbol, so you can see when money is being lost, where money is being made, and which patterns deserve the next review.",
+      points: ["Leak and edge maps by day and session", "Strong and weak symbol clusters", "Winning and losing trade context"],
+      visual: (
+        <HowGraphic
+          src="/graphics/edgetrace-how-trade-pattern-heatmaps.png"
+          alt="EdgeTrace trade pattern heatmaps showing leak map, edge map, symbol clusters, and session performance."
+        />
+      )
+    },
+    {
       id: "how-review-loop",
-      kicker: "05 / Review Loop",
+      kicker: "06 / Review Loop",
       title: "Measure whether the fix worked.",
       body:
         "Pro adds the recurring review layer: mistake heatmaps, benchmark movement, next-upload targets, and check-in prompts that make EdgeTrace useful after every new report.",
       points: ["Mistake heatmap", "Review targets", "Benchmark movement", "Recurring improvement loop"],
+      reverse: true,
       visual: (
         <HowGraphic
           src="/graphics/edgetrace-how-pro-review-loop-thin-gauge.png"
