@@ -150,10 +150,10 @@ export function FeatureEducationPage({
       <section className="how-hero">
         <div className="how-hero-copy">
           <p className="how-eyebrow">Trading Diagnostics</p>
-          <h1 className="how-title">Your trade history already knows what to fix next.</h1>
+          <h1 className="how-title">Stop guessing why your trades are losing money.</h1>
           <p className="how-body">
-            EdgeTrace turns completed trades into a diagnostic workflow that exposes hidden leaks, shows where your
-            edge is working, and tells you what to prove on the next upload.
+            Upload your trades and EdgeTrace shows where money is being lost, where you're making money, and what to
+            look at next.
           </p>
           <div className="how-cta-row">
             <button className="EdgeTrace-primary-button" onClick={accountAction}>
