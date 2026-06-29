@@ -527,10 +527,10 @@ export function App() {
       )}
 
       {!useReportDashboardShell && !useAuthenticatedAppShell && (
-      <header className="EdgeTrace-topbar sticky top-0 z-40">
-        <div className="EdgeTrace-shell relative flex h-auto flex-col items-center gap-4 py-4 lg:h-16 lg:flex-row lg:justify-between lg:py-0">
+      <header className={`EdgeTrace-topbar sticky top-0 z-40 ${!isAuthenticated ? "EdgeTrace-public-topbar" : ""}`}>
+        <div className="EdgeTrace-shell EdgeTrace-public-topbar-inner relative flex h-auto flex-col items-center gap-4 py-4 lg:h-16 lg:flex-row lg:justify-end lg:py-0">
           <button
-            className="flex shrink-0 items-center justify-center lg:justify-start"
+            className="EdgeTrace-public-logo-button flex shrink-0 items-center justify-center lg:justify-start"
             onClick={() => {
               if (isAuthenticated) {
                 void openLatestReportDashboard();
@@ -577,7 +577,7 @@ export function App() {
               })}
             </nav>
           ) : (
-            <nav className="flex flex-wrap items-center justify-center gap-6 text-sm lg:ml-auto lg:justify-end">
+            <nav className="EdgeTrace-public-nav flex flex-wrap items-center justify-center gap-6 text-sm lg:ml-auto lg:justify-end">
               <button
                 className={`EdgeTrace-nav-link ${page === "home" ? "EdgeTrace-nav-link-active" : ""}`}
                 onClick={() => navigate("home", "/")}
