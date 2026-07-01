@@ -55,9 +55,12 @@ export function PaywallGate({
     );
   }
 
+  const showGeneratedPreview = shouldUseGeneratedPreview(feature);
+
   return (
     <section className={`EdgeTrace-paywall-preview relative overflow-hidden border border-cyan/25 bg-white/[0.025] ${className}`}>
       <div className="EdgeTrace-paywall-preview-content pointer-events-none max-h-[460px] overflow-hidden">
+        {showGeneratedPreview ? <FeaturePaywallTeaser feature={feature} /> : null}
         <div>{children}</div>
       </div>
       <div className="EdgeTrace-paywall-preview-scrim absolute inset-0" />
@@ -75,6 +78,70 @@ export function PaywallGate({
         </div>
       </div>
     </section>
+  );
+}
+
+function FeaturePaywallTeaser({ feature }: { feature: FeatureKey | string }) {
+  const kind = String(feature).includes("heatmap") ? "heatmap" : "review";
+
+  if (kind === "heatmap") {
+    return (
+      <div className="EdgeTrace-paywall-teaser EdgeTrace-paywall-teaser-heatmap" aria-hidden="true">
+        <div className="EdgeTrace-paywall-teaser-summary">
+          <span>Biggest net leak</span>
+          <strong>Tue AM cluster</strong>
+          <em>-1,161.98</em>
+        </div>
+        <div className="EdgeTrace-paywall-teaser-grid is-red">
+          {Array.from({ length: 25 }).map((_, index) => (
+            <i key={`red-${index}`} style={{ opacity: [0.34, 0.56, 0.78, 0.95, 0.42][index % 5] }} />
+          ))}
+        </div>
+        <div className="EdgeTrace-paywall-teaser-grid is-green">
+          {Array.from({ length: 25 }).map((_, index) => (
+            <i key={`green-${index}`} style={{ opacity: [0.42, 0.72, 0.38, 0.9, 0.58][index % 5] }} />
+          ))}
+        </div>
+        <div className="EdgeTrace-paywall-teaser-strip">
+          <b />
+          <b />
+          <b />
+          <b />
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="EdgeTrace-paywall-teaser EdgeTrace-paywall-teaser-review" aria-hidden="true">
+      <div className="EdgeTrace-paywall-teaser-status">
+        <span>Review status</span>
+        <strong>Follow-up required</strong>
+        <em>3 issues to verify</em>
+      </div>
+      <div className="EdgeTrace-paywall-teaser-gauge">
+        <strong>38th</strong>
+        <span>Cost drag percentile</span>
+      </div>
+      <div className="EdgeTrace-paywall-teaser-gauge is-blue">
+        <strong>59th</strong>
+        <span>R-capture benchmark</span>
+      </div>
+      <div className="EdgeTrace-paywall-teaser-gauge is-blue">
+        <strong>63rd</strong>
+        <span>Expectancy benchmark</span>
+      </div>
+      <div className="EdgeTrace-paywall-teaser-list">
+        <b />
+        <b />
+        <b />
+      </div>
+      <div className="EdgeTrace-paywall-teaser-list is-targets">
+        <b />
+        <b />
+        <b />
+      </div>
+    </div>
   );
 }
 
@@ -105,4 +172,9 @@ function featureParam(feature: FeatureKey | string) {
     broker_imports: "broker-imports"
   };
   return aliases[value] ?? value.replace(/_/g, "-");
+}
+
+function shouldUseGeneratedPreview(feature: FeatureKey | string) {
+  const value = String(feature);
+  return value === "review_cadence" || value === "aggregate_benchmarks" || value === "mistake_heatmap";
 }

@@ -3064,23 +3064,226 @@
 
   .EdgeTrace-paywall-preview {
     min-height: 26rem;
+    background:
+      radial-gradient(circle at 52% 46%, rgba(97, 184, 211, 0.08), transparent 28rem),
+      rgba(0, 3, 6, 0.9);
   }
 
   .EdgeTrace-paywall-preview-content {
-    filter: blur(5.5px) saturate(0.52) contrast(0.86);
-    opacity: 0.28;
-    transform: scale(1.015);
+    filter: blur(10px) saturate(0.72) contrast(0.92);
+    opacity: 0.54;
+    transform: scale(1.025);
     transform-origin: center;
   }
 
   .EdgeTrace-paywall-preview-scrim {
     background:
-      radial-gradient(circle at 50% 50%, rgba(4, 8, 15, 0.66), rgba(4, 8, 15, 0.9) 58%, rgba(0, 0, 0, 0.96)),
-      rgba(0, 0, 0, 0.62);
+      radial-gradient(circle at 50% 50%, rgba(1, 4, 7, 0.34), rgba(1, 4, 7, 0.58) 52%, rgba(0, 0, 0, 0.74)),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.44), transparent 28%, transparent 72%, rgba(0, 0, 0, 0.44));
   }
 
   .EdgeTrace-paywall-preview-card {
     z-index: 2;
+    backdrop-filter: blur(10px);
+  }
+
+  .EdgeTrace-paywall-teaser {
+    display: grid;
+    gap: 1rem;
+    min-height: 28rem;
+    padding: clamp(1.1rem, 2vw, 2rem);
+  }
+
+  .EdgeTrace-paywall-teaser-review {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-content: start;
+  }
+
+  .EdgeTrace-paywall-teaser-status,
+  .EdgeTrace-paywall-teaser-gauge,
+  .EdgeTrace-paywall-teaser-list,
+  .EdgeTrace-paywall-teaser-summary,
+  .EdgeTrace-paywall-teaser-grid,
+  .EdgeTrace-paywall-teaser-strip {
+    border: 1px solid rgba(97, 184, 211, 0.26);
+    border-radius: 7px;
+    background:
+      linear-gradient(135deg, rgba(13, 25, 33, 0.86), rgba(3, 8, 12, 0.74)),
+      rgba(3, 8, 12, 0.72);
+  }
+
+  .EdgeTrace-paywall-teaser-status {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.5rem 1rem;
+    border-left: 4px solid var(--dash-danger);
+    padding: 1.05rem 1.2rem;
+  }
+
+  .EdgeTrace-paywall-teaser-status span,
+  .EdgeTrace-paywall-teaser-summary span,
+  .EdgeTrace-paywall-teaser-gauge span {
+    color: var(--dash-muted);
+    font-size: 0.7rem;
+    font-weight: 720;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .EdgeTrace-paywall-teaser-status strong,
+  .EdgeTrace-paywall-teaser-summary strong {
+    color: var(--dash-text);
+    font-size: clamp(1.35rem, 2.2vw, 2rem);
+    font-weight: 680;
+  }
+
+  .EdgeTrace-paywall-teaser-status em,
+  .EdgeTrace-paywall-teaser-summary em {
+    align-self: center;
+    color: var(--dash-danger);
+    font-size: 1.25rem;
+    font-style: normal;
+    font-weight: 720;
+  }
+
+  .EdgeTrace-paywall-teaser-gauge {
+    min-height: 9rem;
+    padding: 1rem;
+    border-top-color: rgba(226, 184, 79, 0.68);
+  }
+
+  .EdgeTrace-paywall-teaser-gauge::before {
+    content: "";
+    display: block;
+    width: 4.4rem;
+    height: 4.4rem;
+    margin-bottom: 0.75rem;
+    border: 0.55rem solid rgba(226, 184, 79, 0.28);
+    border-right-color: var(--dash-warning);
+    border-radius: 50%;
+  }
+
+  .EdgeTrace-paywall-teaser-gauge.is-blue {
+    border-top-color: rgba(73, 183, 217, 0.68);
+  }
+
+  .EdgeTrace-paywall-teaser-gauge.is-blue::before {
+    border-color: rgba(73, 183, 217, 0.22);
+    border-right-color: var(--dash-accent);
+    border-bottom-color: var(--dash-accent);
+  }
+
+  .EdgeTrace-paywall-teaser-gauge strong {
+    display: block;
+    color: var(--dash-warning);
+    font-size: clamp(2rem, 3.4vw, 3.25rem);
+    font-weight: 700;
+    letter-spacing: -0.055em;
+    line-height: 0.9;
+  }
+
+  .EdgeTrace-paywall-teaser-gauge.is-blue strong {
+    color: var(--dash-accent-strong);
+  }
+
+  .EdgeTrace-paywall-teaser-list {
+    grid-column: span 2;
+    display: grid;
+    gap: 0.72rem;
+    padding: 1rem;
+  }
+
+  .EdgeTrace-paywall-teaser-list.is-targets {
+    grid-column: span 1;
+  }
+
+  .EdgeTrace-paywall-teaser-list b {
+    display: block;
+    height: 3.25rem;
+    border: 1px solid rgba(226, 184, 79, 0.32);
+    border-left: 4px solid var(--dash-warning);
+    border-radius: 6px;
+    background: rgba(0, 5, 9, 0.76);
+  }
+
+  .EdgeTrace-paywall-teaser-list.is-targets b:last-child {
+    border-color: rgba(111, 199, 138, 0.36);
+    border-left-color: var(--dash-success);
+  }
+
+  .EdgeTrace-paywall-teaser-heatmap {
+    grid-template-columns: minmax(14rem, 0.72fr) repeat(2, minmax(0, 1fr));
+    align-content: stretch;
+  }
+
+  .EdgeTrace-paywall-teaser-summary {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.6rem;
+    border-left: 4px solid var(--dash-danger);
+    padding: 1.25rem;
+  }
+
+  .EdgeTrace-paywall-teaser-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-auto-rows: minmax(3.2rem, 1fr);
+    gap: 0.46rem;
+    padding: 1rem;
+  }
+
+  .EdgeTrace-paywall-teaser-grid i {
+    display: block;
+    border-radius: 5px;
+    background: linear-gradient(135deg, rgba(244, 91, 114, 0.88), rgba(112, 47, 27, 0.82));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  .EdgeTrace-paywall-teaser-grid.is-green i {
+    background: linear-gradient(135deg, rgba(111, 199, 138, 0.88), rgba(20, 87, 57, 0.84));
+  }
+
+  .EdgeTrace-paywall-teaser-strip {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.85rem;
+    padding: 1rem;
+  }
+
+  .EdgeTrace-paywall-teaser-strip b {
+    height: 3.6rem;
+    border: 1px solid rgba(97, 184, 211, 0.2);
+    border-left: 4px solid var(--dash-accent);
+    border-radius: 6px;
+    background: rgba(0, 5, 9, 0.78);
+  }
+
+  @media (max-width: 900px) {
+    .EdgeTrace-paywall-preview {
+      min-height: 30rem;
+    }
+
+    .EdgeTrace-paywall-teaser {
+      min-height: 30rem;
+    }
+
+    .EdgeTrace-paywall-teaser-review,
+    .EdgeTrace-paywall-teaser-heatmap {
+      grid-template-columns: 1fr;
+    }
+
+    .EdgeTrace-paywall-teaser-list,
+    .EdgeTrace-paywall-teaser-list.is-targets,
+    .EdgeTrace-paywall-teaser-strip {
+      grid-column: 1 / -1;
+    }
+
+    .EdgeTrace-paywall-teaser-grid {
+      grid-auto-rows: minmax(2.35rem, 1fr);
+    }
   }
 
   .EdgeTrace-dashboard-link {
