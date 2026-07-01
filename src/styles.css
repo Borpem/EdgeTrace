@@ -9312,6 +9312,7 @@ textarea:focus-visible {
 
 .how-hero-copy {
   display: grid;
+  width: 100%;
   justify-items: center;
   max-width: 92rem;
 }
@@ -9327,13 +9328,14 @@ textarea:focus-visible {
 
 .how-title {
   margin: 0.75rem auto 0;
-  width: max-content;
+  width: 100%;
   max-width: 100%;
   color: var(--how-text);
   font-size: clamp(3.35rem, 4.95vw, 6.5rem);
   font-weight: 560;
   letter-spacing: -0.045em;
   line-height: 1.03;
+  text-align: center;
 }
 
 .how-title span {
@@ -9678,6 +9680,20 @@ textarea:focus-visible {
 
 .EdgeTrace-auth-framed .EdgeTrace-auth-education.how-page > section {
   border-radius: 0;
+}
+
+.EdgeTrace-auth-framed .EdgeTrace-auth-education.how-page > .how-hero {
+  width: 100vw;
+  max-width: none;
+  margin-left: 50%;
+  transform: translateX(-50%);
+  padding-right: max(1rem, calc((100vw - 1500px) / 2 + 1rem));
+  padding-left: max(1rem, calc((100vw - 1500px) / 2 + 1rem));
+}
+
+.EdgeTrace-auth-framed .EdgeTrace-auth-education .how-hero-copy {
+  width: min(100%, 1500px);
+  max-width: 1500px;
 }
 
 .EdgeTrace-auth-framed .EdgeTrace-auth-education .how-title {
