@@ -9326,11 +9326,11 @@ textarea:focus-visible {
 }
 
 .how-title {
-  margin-top: 0.75rem;
-  width: min(92vw, 92rem);
-  max-width: 92rem;
+  margin: 0.75rem auto 0;
+  width: max-content;
+  max-width: 100%;
   color: var(--how-text);
-  font-size: clamp(3.35rem, 5.35vw, 7rem);
+  font-size: clamp(3.35rem, 4.95vw, 6.5rem);
   font-weight: 560;
   letter-spacing: -0.045em;
   line-height: 1.03;
@@ -9715,6 +9715,14 @@ textarea:focus-visible {
   .how-hero-copy,
   .how-section-copy {
     max-width: 48rem;
+  }
+
+  .how-title {
+    width: auto;
+  }
+
+  .how-title span {
+    white-space: normal;
   }
 
   .how-graphic--hero {
