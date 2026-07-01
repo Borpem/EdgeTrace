@@ -3070,16 +3070,16 @@
   }
 
   .EdgeTrace-paywall-preview-content {
-    filter: blur(10px) saturate(0.72) contrast(0.92);
-    opacity: 0.54;
+    filter: blur(6px) saturate(0.82) contrast(0.94);
+    opacity: 0.68;
     transform: scale(1.025);
     transform-origin: center;
   }
 
   .EdgeTrace-paywall-preview-scrim {
     background:
-      radial-gradient(circle at 50% 50%, rgba(1, 4, 7, 0.34), rgba(1, 4, 7, 0.58) 52%, rgba(0, 0, 0, 0.74)),
-      linear-gradient(90deg, rgba(0, 0, 0, 0.44), transparent 28%, transparent 72%, rgba(0, 0, 0, 0.44));
+      radial-gradient(circle at 50% 50%, rgba(1, 4, 7, 0.28), rgba(1, 4, 7, 0.46) 52%, rgba(0, 0, 0, 0.64)),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.34), transparent 28%, transparent 72%, rgba(0, 0, 0, 0.34));
   }
 
   .EdgeTrace-paywall-preview-card {
