@@ -9672,10 +9672,20 @@ textarea:focus-visible {
   padding: clamp(1.5rem, 3vw, 2.4rem);
 }
 
+.EdgeTrace-auth-framed > main.EdgeTrace-shell.EdgeTrace-auth-education.how-page {
+  width: 100%;
+  max-width: none;
+  padding-right: 0;
+  padding-left: 0;
+}
+
 .EdgeTrace-auth-framed .EdgeTrace-auth-education.how-page {
-  max-width: min(100% - 2rem, 1500px);
   padding-top: 1.75rem;
   padding-bottom: 4rem;
+}
+
+.EdgeTrace-auth-framed .EdgeTrace-auth-education.how-page > :is(.how-hero, .how-feature-strip, .how-section, .how-final-cta) {
+  width: min(calc(100% - 2rem), 1440px);
 }
 
 .EdgeTrace-auth-framed .EdgeTrace-auth-education.how-page > section {
