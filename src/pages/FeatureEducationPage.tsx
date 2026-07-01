@@ -161,7 +161,10 @@ export function FeatureEducationPage({
     <PageShell className={`${isAuthenticated ? "EdgeTrace-auth-education" : ""} how-page relative z-10`}>
       <section className="how-hero">
         <div className="how-hero-copy">
-          <h1 className="how-title">Stop guessing why your trades are losing money.</h1>
+          <h1 className="how-title">
+            <span>Stop guessing why your</span>
+            <span>trades are losing money.</span>
+          </h1>
           <p className="how-body">
             Upload your trades and EdgeTrace shows where money is being lost, where you're making money, and what to
             look at next.

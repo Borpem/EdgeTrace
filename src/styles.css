@@ -9313,7 +9313,7 @@ textarea:focus-visible {
 .how-hero-copy {
   display: grid;
   justify-items: center;
-  max-width: 58rem;
+  max-width: 92rem;
 }
 
 .how-eyebrow,
@@ -9327,12 +9327,16 @@ textarea:focus-visible {
 
 .how-title {
   margin-top: 0.75rem;
-  max-width: 64rem;
+  max-width: 92rem;
   color: var(--how-text);
-  font-size: clamp(3.35rem, 6.35vw, 6.35rem);
+  font-size: clamp(3.35rem, 5.35vw, 7rem);
   font-weight: 560;
   letter-spacing: -0.045em;
   line-height: 1.03;
+}
+
+.how-title span {
+  display: block;
 }
 
 .how-body {
