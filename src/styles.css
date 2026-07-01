@@ -9302,9 +9302,8 @@ textarea:focus-visible {
 }
 
 .how-hero {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
+  display: grid;
+  place-items: start center;
   padding: clamp(4rem, 7vw, 7rem) 0 clamp(3.2rem, 5vw, 4.8rem);
   border-bottom: 1px solid rgba(247, 247, 243, 0.08);
   text-align: center;
@@ -9312,9 +9311,10 @@ textarea:focus-visible {
 
 .how-hero-copy {
   display: grid;
-  width: 100%;
+  width: min(100%, 92rem);
+  margin-right: auto;
+  margin-left: auto;
   justify-items: center;
-  max-width: 92rem;
 }
 
 .how-eyebrow,
@@ -9682,18 +9682,10 @@ textarea:focus-visible {
   border-radius: 0;
 }
 
-.EdgeTrace-auth-framed .EdgeTrace-auth-education.how-page > .how-hero {
-  width: 100vw;
-  max-width: none;
-  margin-left: 50%;
-  transform: translateX(-50%);
-  padding-right: max(1rem, calc((100vw - 1500px) / 2 + 1rem));
-  padding-left: max(1rem, calc((100vw - 1500px) / 2 + 1rem));
-}
-
 .EdgeTrace-auth-framed .EdgeTrace-auth-education .how-hero-copy {
-  width: min(100%, 1500px);
-  max-width: 1500px;
+  width: min(100%, 92rem);
+  margin-right: auto;
+  margin-left: auto;
 }
 
 .EdgeTrace-auth-framed .EdgeTrace-auth-education .how-title {
