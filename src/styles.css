@@ -9327,6 +9327,7 @@ textarea:focus-visible {
 
 .how-title {
   margin-top: 0.75rem;
+  width: min(92vw, 92rem);
   max-width: 92rem;
   color: var(--how-text);
   font-size: clamp(3.35rem, 5.35vw, 7rem);
@@ -9337,6 +9338,7 @@ textarea:focus-visible {
 
 .how-title span {
   display: block;
+  white-space: nowrap;
 }
 
 .how-body {
@@ -9746,8 +9748,13 @@ textarea:focus-visible {
 
   .how-title,
   .EdgeTrace-auth-framed .EdgeTrace-auth-education .how-title {
+    width: auto;
     font-size: clamp(2.85rem, 14vw, 4.4rem);
     line-height: 0.98;
+  }
+
+  .how-title span {
+    white-space: normal;
   }
 
   .how-feature-strip,
