@@ -467,7 +467,30 @@ export function DashboardPage({
     setGuideStep((current) => Math.max(current - 1, 0));
   };
 
+  const showFullDrilldownPrompt = () => {
+    onLockedFeature?.({
+      feature: "full_drilldowns",
+      title: "Upgrade to Pro to unlock full drilldowns.",
+      description: "Pro shows the exact symbols, strategies, time windows, and trades behind the primary leak.",
+      learnPath: "drilldowns"
+    });
+  };
+
+  const showAttributionBreakdownPrompt = () => {
+    onLockedFeature?.({
+      feature: "advanced_attribution",
+      title: "Upgrade to Pro to unlock the full attribution breakdown.",
+      description: "Pro shows which symbols, strategies, and time windows contributed most to this report.",
+      learnPath: "drilldowns"
+    });
+  };
+
   const openDetailTab = (tab: DashboardTab) => {
+    if (tab === "breakdown" && !fullAttributionAccess) {
+      showAttributionBreakdownPrompt();
+      return;
+    }
+
     setExpandedDashboardSections((current) => (current.includes("details") ? current : [...current, "details"]));
     setActiveTab(tab);
     trackEvent("report_tab_opened", { reportId: result.id, tab, source: "dashboard_action" });
@@ -478,12 +501,7 @@ export function DashboardPage({
 
   const inspectPrimarySegment = () => {
     if (!canInspectFullDrilldown) {
-      onLockedFeature?.({
-        feature: "full_drilldowns",
-        title: "Upgrade to Pro to unlock full drilldowns.",
-        description: "Pro shows the exact symbols, strategies, time windows, and trades behind the primary leak.",
-        learnPath: "drilldowns"
-      });
+      showFullDrilldownPrompt();
       return;
     }
 
