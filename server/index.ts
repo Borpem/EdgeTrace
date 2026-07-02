@@ -1,6 +1,6 @@
 import cors from "cors";
 import express from "express";
-import { clerkMiddleware, getAuth } from "@clerk/express";
+import { clerkClient, clerkMiddleware, getAuth } from "@clerk/express";
 import { randomUUID } from "node:crypto";
 import { getAllowedFrontendOrigins, validateServerEnvironment } from "./env";
 import {
@@ -65,7 +65,7 @@ import {
   getPlanConfig
 } from "../src/lib/entitlements";
 import { normalizePlanId } from "../src/lib/plans";
-import type { FeedbackStatus, ImportProvenance } from "../src/types";
+import type { FeedbackItem, FeedbackStatus, ImportProvenance } from "../src/types";
 import {
   planUpgradeResponse,
   sanitizeCollectionForUser,
@@ -267,10 +267,7 @@ async function requireEdgeTraceUser(req: express.Request, res: express.Response,
   (req as EdgeTraceRequest).edgeTraceUserId = userId;
   const claims = auth.sessionClaims as Record<string, unknown> | undefined;
   try {
-    await getOrCreateUserProfile(userId, {
-      email: firstString(claims?.email, claims?.email_address, claims?.primary_email_address),
-      name: firstString(claims?.name, claims?.full_name)
-    });
+    await prepareAuthenticatedUserProfile(userId, claims);
   } catch (err) {
     console.error(`[auth] Unable to prepare profile for user=${userId}`, err);
     res.status(500).json({
@@ -551,7 +548,7 @@ app.get("/api/admin/feedback", async (req, res) => {
     return;
   }
 
-  res.json({ feedback: await listFeedback() });
+  res.json({ feedback: await enrichFeedbackContacts(await listFeedback()) });
 });
 
 app.patch("/api/admin/feedback/:id", async (req, res) => {
@@ -574,7 +571,8 @@ app.patch("/api/admin/feedback/:id", async (req, res) => {
     res.status(404).json({ error: "FEEDBACK_NOT_FOUND" });
     return;
   }
-  res.json({ feedback });
+  const [enrichedFeedback] = await enrichFeedbackContacts([feedback]);
+  res.json({ feedback: enrichedFeedback ?? feedback });
 });
 
 app.patch("/api/me/plan", async (req, res) => {
@@ -1189,6 +1187,99 @@ function firstString(...values: unknown[]) {
   return values.find((value): value is string => typeof value === "string" && value.trim().length > 0)?.trim();
 }
 
+type UserContactIdentity = {
+  email?: string;
+  name?: string;
+};
+
+async function prepareAuthenticatedUserProfile(userId: string, claims: Record<string, unknown> | undefined) {
+  const claimIdentity = getSessionClaimIdentity(claims);
+  let profile = await getOrCreateUserProfile(userId, claimIdentity);
+  if (profile.email && profile.name) return profile;
+
+  const clerkIdentity = await getClerkUserIdentity(userId);
+  if (!clerkIdentity.email && !clerkIdentity.name) return profile;
+
+  profile = await getOrCreateUserProfile(userId, {
+    email: profile.email || claimIdentity.email || clerkIdentity.email,
+    name: profile.name || claimIdentity.name || clerkIdentity.name
+  });
+  return profile;
+}
+
+function getSessionClaimIdentity(claims: Record<string, unknown> | undefined): UserContactIdentity {
+  return {
+    email: firstString(claims?.email, claims?.email_address, claims?.primary_email_address),
+    name: firstString(claims?.name, claims?.full_name)
+  };
+}
+
+async function enrichFeedbackContacts(feedback: FeedbackItem[]) {
+  if (feedback.length === 0) return feedback;
+
+  const cache = new Map<string, UserContactIdentity>();
+  const enriched: FeedbackItem[] = [];
+
+  for (const item of feedback) {
+    if (item.userEmail && item.userName) {
+      enriched.push(item);
+      continue;
+    }
+
+    const identity = await getFeedbackContactIdentity(item.userId, cache);
+    enriched.push({
+      ...item,
+      userEmail: item.userEmail || identity.email || "",
+      userName: item.userName || identity.name || ""
+    });
+  }
+
+  return enriched;
+}
+
+async function getFeedbackContactIdentity(userId: string, cache: Map<string, UserContactIdentity>) {
+  if (cache.has(userId)) return cache.get(userId) ?? {};
+
+  const profile = await getOrCreateUserProfile(userId);
+  const profileIdentity = {
+    email: profile.email || undefined,
+    name: profile.name || undefined
+  };
+  if (profileIdentity.email && profileIdentity.name) {
+    cache.set(userId, profileIdentity);
+    return profileIdentity;
+  }
+
+  const clerkIdentity = await getClerkUserIdentity(userId);
+  const identity = {
+    email: profileIdentity.email || clerkIdentity.email,
+    name: profileIdentity.name || clerkIdentity.name
+  };
+  cache.set(userId, identity);
+  return identity;
+}
+
+async function getClerkUserIdentity(userId: string): Promise<UserContactIdentity> {
+  if (authMode !== "clerk" || !process.env.CLERK_SECRET_KEY) return {};
+
+  try {
+    const user = await clerkClient.users.getUser(userId);
+    const email = firstString(
+      user.primaryEmailAddress?.emailAddress,
+      user.emailAddresses.find((address) => address.id === user.primaryEmailAddressId)?.emailAddress,
+      user.emailAddresses[0]?.emailAddress
+    );
+    const name = firstString(
+      user.fullName,
+      [user.firstName, user.lastName].filter(Boolean).join(" "),
+      user.username
+    );
+    return { email, name };
+  } catch (err) {
+    console.warn(`[auth] Unable to resolve Clerk contact for user=${userId}: ${sanitizeDebugException(err)}`);
+    return {};
+  }
+}
 function safeApiErrorMessage(err: unknown, fallback: string) {
   if (isProduction) return fallback;
   return err instanceof Error ? err.message : fallback;

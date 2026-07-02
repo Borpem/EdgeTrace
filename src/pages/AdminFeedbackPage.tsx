@@ -115,46 +115,63 @@ export function AdminFeedbackPage() {
           {feedback.length === 0 ? (
             <div className="rounded-md border border-line bg-black/[0.28] p-5 text-sm text-muted">No feedback submitted yet.</div>
           ) : (
-            feedback.map((item) => (
-              <article key={item.id} className="rounded-md border border-line bg-black/[0.32] p-5">
-                <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-                  <div>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className={`EdgeTrace-feedback-chip tone-${item.type}`}>{typeLabels[item.type]}</span>
-                      <span className={`EdgeTrace-feedback-chip status-${item.status}`}>{statusLabels[item.status]}</span>
-                      <span className="text-xs text-muted">{formatDate(item.createdAt)}</span>
+            feedback.map((item) => {
+              const contactName = item.userName?.trim();
+              const contactEmail = item.userEmail?.trim();
+
+              return (
+                <article key={item.id} className="rounded-md border border-line bg-black/[0.32] p-5">
+                  <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className={`EdgeTrace-feedback-chip tone-${item.type}`}>{typeLabels[item.type]}</span>
+                        <span className={`EdgeTrace-feedback-chip status-${item.status}`}>{statusLabels[item.status]}</span>
+                        <span className="text-xs text-muted">{formatDate(item.createdAt)}</span>
+                      </div>
+                      <p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-ink">{item.message}</p>
+                      <div className="mt-4 grid gap-3 text-xs text-muted">
+                        <div className="grid gap-1 rounded-md border border-line bg-black/[0.22] p-3">
+                          <span className="text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-sky">Contact</span>
+                          <strong className="break-words text-sm font-semibold text-ink">
+                            {contactName || contactEmail || "Contact unavailable"}
+                          </strong>
+                          {contactEmail ? (
+                            <a className="break-all text-sky hover:text-cyan" href={`mailto:${contactEmail}`}>
+                              {contactEmail}
+                            </a>
+                          ) : (
+                            <span className="text-warning">Email unavailable. Search this Clerk ID in Clerk.</span>
+                          )}
+                          <span className="break-all text-[0.68rem] text-muted">Clerk ID: {item.userId}</span>
+                        </div>
+                        {item.pageUrl && (
+                          <a className="break-all text-sky hover:text-cyan" href={item.pageUrl} target="_blank" rel="noreferrer">
+                            {item.pageUrl}
+                          </a>
+                        )}
+                      </div>
                     </div>
-                    <p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-ink">{item.message}</p>
-                    <div className="mt-4 grid gap-2 text-xs text-muted">
-                      <span>{item.userName || item.userEmail || item.userId}</span>
-                      {item.userEmail && <span>{item.userEmail}</span>}
-                      {item.pageUrl && (
-                        <a className="break-all text-sky hover:text-cyan" href={item.pageUrl} target="_blank" rel="noreferrer">
-                          {item.pageUrl}
-                        </a>
-                      )}
+                    <div className="flex flex-wrap gap-2 md:justify-end">
+                      {(["new", "reviewed", "closed"] as FeedbackStatus[]).map((status) => (
+                        <button
+                          key={status}
+                          type="button"
+                          className={`rounded-md border px-3 py-2 text-xs font-semibold ${
+                            item.status === status
+                              ? "border-cyan/60 bg-cyan/[0.1] text-cyan"
+                              : "border-line bg-black/[0.2] text-muted hover:border-cyan/40 hover:text-ink"
+                          }`}
+                          disabled={updatingId === item.id}
+                          onClick={() => void updateStatus(item, status)}
+                        >
+                          {statusLabels[status]}
+                        </button>
+                      ))}
                     </div>
                   </div>
-                  <div className="flex flex-wrap gap-2 md:justify-end">
-                    {(["new", "reviewed", "closed"] as FeedbackStatus[]).map((status) => (
-                      <button
-                        key={status}
-                        type="button"
-                        className={`rounded-md border px-3 py-2 text-xs font-semibold ${
-                          item.status === status
-                            ? "border-cyan/60 bg-cyan/[0.1] text-cyan"
-                            : "border-line bg-black/[0.2] text-muted hover:border-cyan/40 hover:text-ink"
-                        }`}
-                        disabled={updatingId === item.id}
-                        onClick={() => void updateStatus(item, status)}
-                      >
-                        {statusLabels[status]}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </article>
-            ))
+                </article>
+              );
+            })
           )}
         </div>
       </section>
