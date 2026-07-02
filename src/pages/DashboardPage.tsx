@@ -467,8 +467,16 @@ export function DashboardPage({
     setGuideStep((current) => Math.max(current - 1, 0));
   };
 
+  const openDetailTab = (tab: DashboardTab) => {
+    setExpandedDashboardSections((current) => (current.includes("details") ? current : [...current, "details"]));
+    setActiveTab(tab);
+    trackEvent("report_tab_opened", { reportId: result.id, tab, source: "dashboard_action" });
+    window.requestAnimationFrame(() => {
+      document.getElementById("dashboard-detail-dock")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  };
+
   const inspectPrimarySegment = () => {
-    if (!primaryInspection) return;
     if (!canInspectFullDrilldown) {
       onLockedFeature?.({
         feature: "full_drilldowns",
@@ -478,21 +486,18 @@ export function DashboardPage({
       });
       return;
     }
+
+    if (!primaryInspection) {
+      openDetailTab("breakdown");
+      return;
+    }
+
     trackEvent("drilldown_opened", {
       reportId: result.id,
       dimension: primaryInspection.dimension,
       group: primaryInspection.group
     });
     onDrillDown?.({ dimension: primaryInspection.dimension, group: primaryInspection.group });
-  };
-
-  const openDetailTab = (tab: DashboardTab) => {
-    setExpandedDashboardSections((current) => (current.includes("details") ? current : [...current, "details"]));
-    setActiveTab(tab);
-    trackEvent("report_tab_opened", { reportId: result.id, tab, source: "dashboard_action" });
-    window.requestAnimationFrame(() => {
-      document.getElementById("dashboard-detail-dock")?.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
   };
 
   const toggleDashboardSection = (sectionId: DashboardDisclosureId) => {
