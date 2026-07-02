@@ -9328,8 +9328,10 @@ textarea:focus-visible {
 
 .how-title {
   margin: 0.75rem auto 0;
-  width: 100%;
+  display: grid;
+  width: fit-content;
   max-width: 100%;
+  justify-items: center;
   color: var(--how-text);
   font-size: clamp(3.35rem, 4.95vw, 6.5rem);
   font-weight: 560;
@@ -9339,7 +9341,10 @@ textarea:focus-visible {
 }
 
 .how-title span {
-  display: block;
+  display: flex;
+  width: max-content;
+  max-width: 100%;
+  justify-content: center;
   white-space: nowrap;
 }
 
