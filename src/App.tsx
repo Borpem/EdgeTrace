@@ -6,8 +6,11 @@ import {
   UserCircle
 } from "lucide-react";
 import { useAuth } from "./context/AuthContext";
+import { ProFeaturePrompt } from "./components/ProFeaturePrompt";
 import { trackEvent } from "./lib/analytics";
 import type { BreakdownDimension } from "./lib/breakdowns";
+import { canUseFeature, getPlanConfig } from "./lib/entitlements";
+import type { FeatureKey } from "./lib/plans";
 import {
   getMe,
   getReport,
@@ -44,6 +47,45 @@ type CompareDrilldownSelection = {
   group: string;
 };
 type CollectionAttributionSelection = { dimension: BreakdownDimension; group: string };
+type ProFeaturePromptState = {
+  feature: FeatureKey;
+  title: string;
+  description: string;
+  learnPath: string;
+};
+
+const proFeaturePrompts: Partial<Record<FeatureKey, Omit<ProFeaturePromptState, "feature">>> = {
+  full_drilldowns: {
+    title: "Upgrade to Pro to unlock drilldowns.",
+    description: "Pro shows the exact symbols, strategies, time windows, and trades behind the primary leak.",
+    learnPath: "drilldowns"
+  },
+  collection_attribution: {
+    title: "Upgrade to Pro to unlock strategy-set attribution.",
+    description: "Pro shows which symbols, strategies, and time buckets are driving improvement or degradation across reports.",
+    learnPath: "strategy-sets"
+  },
+  advanced_attribution: {
+    title: "Upgrade to Pro to unlock full attribution.",
+    description: "Pro explains the report-to-report drivers behind performance changes and where to inspect next.",
+    learnPath: "drilldowns"
+  },
+  aggregate_benchmarks: {
+    title: "Upgrade to Pro to unlock benchmark intelligence.",
+    description: "Pro compares this report against eligible aggregate cohorts so you can see where your edge lags or leads.",
+    learnPath: "how-review-loop"
+  },
+  mistake_heatmap: {
+    title: "Upgrade to Pro to unlock the mistake heatmap.",
+    description: "Pro shows where losses, cost drag, and weak trade clusters repeat by weekday and session.",
+    learnPath: "how-review-loop"
+  },
+  review_cadence: {
+    title: "Upgrade to Pro to unlock the review loop.",
+    description: "Pro turns repeated imports into recurring edge reviews, benchmarks, and next-upload targets.",
+    learnPath: "how-review-loop"
+  }
+};
 
 export function App() {
   const { authMode, user, isAuthenticated, isLoading: authLoading, login, signup, logout, getAccessToken } = useAuth();
@@ -59,6 +101,7 @@ export function App() {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [createdReportId, setCreatedReportId] = useState<string | null>(null);
   const [isRouteResolving, setIsRouteResolving] = useState(true);
+  const [proFeaturePrompt, setProFeaturePrompt] = useState<ProFeaturePromptState | null>(null);
 
   useEffect(() => {
     if ("scrollRestoration" in window.history) {
@@ -121,6 +164,60 @@ export function App() {
     if (window.location.pathname + window.location.search !== path) {
       window.history[replace ? "replaceState" : "pushState"](null, "", path);
     }
+  };
+
+  const buildProFeaturePrompt = (
+    feature: FeatureKey,
+    override?: Partial<Omit<ProFeaturePromptState, "feature">>
+  ): ProFeaturePromptState => {
+    const base = proFeaturePrompts[feature] ?? {
+      title: "Upgrade to Pro to unlock this feature.",
+      description: "This workflow is included with Pro.",
+      learnPath: feature.replace(/_/g, "-")
+    };
+    return { feature, ...base, ...override };
+  };
+
+  const showProFeaturePrompt = (prompt: ProFeaturePromptState) => {
+    setProFeaturePrompt(prompt);
+    trackEvent("plan_feature_prompt_opened", { feature: prompt.feature, requiredPlan: "pro" });
+  };
+
+  const requireFeature = (
+    feature: FeatureKey,
+    override?: Partial<Omit<ProFeaturePromptState, "feature">>
+  ) => {
+    if (canUseFeature(getPlanConfig(userProfile?.planId), feature)) return true;
+    showProFeaturePrompt(buildProFeaturePrompt(feature, override));
+    return false;
+  };
+
+  const closeProFeaturePrompt = () => {
+    setProFeaturePrompt(null);
+  };
+
+  const upgradeFromProFeaturePrompt = () => {
+    if (proFeaturePrompt) {
+      trackEvent("plan_feature_cta_clicked", {
+        feature: proFeaturePrompt.feature,
+        requiredPlan: "pro",
+        source: "pro_feature_prompt"
+      });
+    }
+    setProFeaturePrompt(null);
+    navigate("pricing", "/pricing");
+  };
+
+  const learnFromProFeaturePrompt = () => {
+    if (!proFeaturePrompt) return;
+    trackEvent("paywall_learn_more_clicked", {
+      feature: proFeaturePrompt.feature,
+      requiredPlan: "pro",
+      source: "pro_feature_prompt"
+    });
+    const path = `/app/how-it-works?feature=${encodeURIComponent(proFeaturePrompt.learnPath)}`;
+    setProFeaturePrompt(null);
+    navigate("features", path);
   };
 
   const signIntoApp = (fallbackPath = "/app/dashboard", mode: "login" | "signup" = "login") => {
@@ -715,6 +812,7 @@ export function App() {
             navigate("dashboard", `/app/dashboard/report/${diagnostics.id}`);
           }}
           onDrillDown={(diagnostics, selection) => {
+            if (!requireFeature("full_drilldowns")) return;
             setResult(diagnostics);
             setCreatedReportId(null);
             setDrilldownSelection(selection);
@@ -775,6 +873,7 @@ export function App() {
             openCompare(reportAId, reportBId);
           }}
           onAttribution={(selection) => {
+            if (!requireFeature("collection_attribution")) return;
             setCollectionAttributionSelection(selection);
             if (collectionId) {
               const params = new URLSearchParams({ dimension: selection.dimension, group: selection.group });
@@ -801,6 +900,7 @@ export function App() {
             navigate("dashboard", `/app/dashboard/report/${diagnostics.id}`);
           }}
           onAttribution={(selection) => {
+            if (!requireFeature("collection_attribution")) return;
             setCollectionAttributionSelection(selection);
             const params = new URLSearchParams({ dimension: selection.dimension, group: selection.group });
             navigate("collectionAttribution", `/app/collections/${collectionId}/attribution?${params.toString()}`);
@@ -825,6 +925,10 @@ export function App() {
           initialReportAId={initialComparePair?.reportAId}
           initialReportBId={initialComparePair?.reportBId}
           onDrillDown={(selection) => {
+            if (!requireFeature("full_drilldowns", {
+              title: "Upgrade to Pro to unlock comparison drilldowns.",
+              description: "Pro shows the exact segment and trade-level changes between two diagnostic reports."
+            })) return;
             setCompareDrilldownSelection(selection);
             const params = new URLSearchParams({
               reportAId: selection.reportA.id,
@@ -863,6 +967,7 @@ export function App() {
           reportJustCreated={createdReportId === result.id}
           onDismissCreatedBanner={() => setCreatedReportId(null)}
           onDrillDown={(selection) => {
+            if (!requireFeature("full_drilldowns")) return;
             setDrilldownSelection(selection);
             const params = new URLSearchParams({
               dimension: selection.dimension,
@@ -887,6 +992,7 @@ export function App() {
           onOpenCollections={() => navigate("collections")}
           onOpenFeatures={() => navigate("features")}
           onFeedback={() => navigate("feedback")}
+          onLockedFeature={(prompt) => showProFeaturePrompt(buildProFeaturePrompt(prompt.feature, prompt))}
           accountControl={
             <AccountUtility
               userName={user?.name}
@@ -943,6 +1049,16 @@ export function App() {
           onBack={() => {
             navigate("dashboard", `/app/dashboard/report/${result.id}`);
           }}
+        />
+      )}
+      {proFeaturePrompt && (
+        <ProFeaturePrompt
+          feature={proFeaturePrompt.feature}
+          title={proFeaturePrompt.title}
+          description={proFeaturePrompt.description}
+          onClose={closeProFeaturePrompt}
+          onUpgrade={upgradeFromProFeaturePrompt}
+          onLearn={learnFromProFeaturePrompt}
         />
       )}
     </div>

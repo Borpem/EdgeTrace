@@ -43,6 +43,7 @@ import {
 import { costDragSortValue } from "../lib/costDrag";
 import { NO_LOSS_PROFIT_FACTOR, normalizePortfolioMetrics } from "../lib/diagnostics";
 import { canUseFeature, canViewFullDrilldown, getPlanConfig, getReportAccessLevel } from "../lib/entitlements";
+import type { FeatureKey } from "../lib/plans";
 import { buildReportIntelligence, type MetricStatus } from "../lib/reportIntelligence";
 import type {
   ActivationSummary,
@@ -193,6 +194,14 @@ type DashboardPageProps = {
   accountControl?: ReactNode;
   reportJustCreated?: boolean;
   onDismissCreatedBanner?: () => void;
+  onLockedFeature?: (prompt: LockedFeaturePrompt) => void;
+};
+
+type LockedFeaturePrompt = {
+  feature: FeatureKey;
+  title: string;
+  description: string;
+  learnPath?: string;
 };
 
 export function DashboardPage({
@@ -211,7 +220,8 @@ export function DashboardPage({
   onFeedback,
   accountControl,
   reportJustCreated,
-  onDismissCreatedBanner
+  onDismissCreatedBanner,
+  onLockedFeature
 }: DashboardPageProps) {
   const [sortKey, setSortKey] = useState<SortKey>("entryTime");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
@@ -460,8 +470,12 @@ export function DashboardPage({
   const inspectPrimarySegment = () => {
     if (!primaryInspection) return;
     if (!canInspectFullDrilldown) {
-      window.history.pushState(null, "", "/pricing");
-      window.dispatchEvent(new PopStateEvent("popstate"));
+      onLockedFeature?.({
+        feature: "full_drilldowns",
+        title: "Upgrade to Pro to unlock full drilldowns.",
+        description: "Pro shows the exact symbols, strategies, time windows, and trades behind the primary leak.",
+        learnPath: "drilldowns"
+      });
       return;
     }
     trackEvent("drilldown_opened", {
@@ -497,8 +511,12 @@ export function DashboardPage({
 
   const handleAudit = () => {
     if (!canViewReconstructionAudit) {
-      window.history.pushState(null, "", "/pricing");
-      window.dispatchEvent(new PopStateEvent("popstate"));
+      onLockedFeature?.({
+        feature: "reconstruction_audit",
+        title: "Upgrade to Pro to review reconstruction lineage.",
+        description: "Pro unlocks the audit showing which source executions created each completed trade and enables audit exports.",
+        learnPath: "reconstruction-audit"
+      });
       return;
     }
     trackEvent("reconstruction_audit_opened", { reportId: result.id });
