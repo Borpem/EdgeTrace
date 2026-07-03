@@ -47,28 +47,43 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
   const planToneClass = planTone(currentPlanId);
   const isPaid = currentPlanId !== "free";
   const hasStripeCustomer = Boolean(effectiveProfile?.stripeCustomerId);
-  const billingLinkProblem = /could not find.*customer|live customer or subscription|billing link/i.test(
-    `${billingActionError} ${error}`
+  const billingLinkStatus = effectiveProfile?.billingLinkStatus;
+  const billingLinkMessage = effectiveProfile?.billingLinkMessage || "";
+  const billingLinkProblem = billingLinkStatus === "needs_repair" || /could not find.*customer|live customer or subscription|billing link/i.test(
+    `${billingLinkMessage} ${billingActionError} ${error}`
   );
+  const hasVerifiedStripeCustomer = hasStripeCustomer && !billingLinkProblem;
   const periodEndLabel = formatDate(effectiveProfile?.currentPeriodEnd);
   const cancellationScheduled = isPaid && Boolean(effectiveProfile?.stripeCancelAtPeriodEnd);
   const cancellationEndLabel = periodEndLabel || "the current billing period end";
-  const renewalLabel = periodEndLabel || "Not available";
+  const renewalLabel = billingLinkProblem ? "Unverified" : periodEndLabel || "Not available";
+  const planChipDetail =
+    billingLinkProblem && isPaid
+      ? "Billing unverified"
+      : cancellationScheduled
+        ? `Access until ${cancellationEndLabel}`
+        : isPaid && periodEndLabel
+          ? `Renews ${periodEndLabel}`
+          : plan.monthlyPriceLabel;
   const subscriptionLabel =
-    cancellationScheduled
+    billingLinkProblem
+      ? "Billing link unverified"
+      : cancellationScheduled
       ? `Cancels on ${cancellationEndLabel}`
       : effectiveProfile?.stripeSubscriptionStatus
         ? formatSubscriptionStatus(effectiveProfile.stripeSubscriptionStatus)
         : "No active paid subscription";
   const paidAccessDetail =
-    cancellationScheduled
+    billingLinkProblem
+      ? "Pro access is set locally, but Stripe billing could not be verified."
+      : cancellationScheduled
       ? `Pro access remains active until ${cancellationEndLabel}.`
       : periodEndLabel
         ? `Pro is active. Next renewal is ${periodEndLabel}.`
       : `${plan.monthlyPriceLabel} - ${plan.description}`;
   const billingCardDetail =
     billingLinkProblem
-      ? "Stripe could not verify the saved billing customer. Refresh account details, then try again."
+      ? billingLinkMessage || "Stripe could not verify the saved billing customer. Refresh account details, then try again."
       : cancellationScheduled
       ? `Cancellation is scheduled. Pro access remains until ${cancellationEndLabel}.`
       : isPaid
@@ -158,6 +173,13 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
     setNotice("");
     setError("");
     setBillingActionError("");
+    if (billingLinkProblem) {
+      const message = billingLinkMessage || "Stripe could not verify the saved billing link for this account. Refresh account details, then try again.";
+      setError(message);
+      setBillingActionError(message);
+      setBillingActionMessage("");
+      return;
+    }
     setBillingActionMessage("Opening Stripe billing portal...");
     setActiveAction("portal");
     try {
@@ -181,6 +203,13 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
     setNotice("");
     setError("");
     setBillingActionError("");
+    if (billingLinkProblem) {
+      const message = billingLinkMessage || "Stripe could not verify the saved billing link for this account. Refresh account details, then try again.";
+      setError(message);
+      setBillingActionError(message);
+      setBillingActionMessage("");
+      return;
+    }
     setBillingActionMessage("Opening Stripe cancellation flow...");
     setActiveAction("cancel");
     try {
@@ -209,7 +238,7 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
     }
   };
 
-  const hasCancelableSubscription = isPaid && hasStripeCustomer && Boolean(effectiveProfile?.stripeSubscriptionId);
+  const hasCancelableSubscription = isPaid && hasVerifiedStripeCustomer && Boolean(effectiveProfile?.stripeSubscriptionId);
 
   return (
     <main className="EdgeTrace-account-page EdgeTrace-shell py-8 md:py-12">
@@ -223,7 +252,7 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
           <div className="EdgeTrace-account-plan-chip">
             <span>Current plan</span>
             <strong className={planToneClass.text}>{plan.displayName}</strong>
-            <span>{cancellationScheduled ? `Access until ${cancellationEndLabel}` : isPaid && periodEndLabel ? `Renews ${periodEndLabel}` : plan.monthlyPriceLabel}</span>
+            <span>{planChipDetail}</span>
           </div>
         </div>
         <div className="EdgeTrace-account-actions">
@@ -258,17 +287,17 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
           label="Current access"
           value={plan.displayName}
           detail={isPaid ? paidAccessDetail : `${plan.monthlyPriceLabel} - ${plan.description}`}
-          badge={cancellationScheduled ? "Cancelling" : isPaid ? "Active" : "Free"}
+          badge={billingLinkProblem && isPaid ? "Unverified" : cancellationScheduled ? "Cancelling" : isPaid ? "Active" : "Free"}
         />
         <AccountSummaryCard
           icon={Lock}
-          accent={billingLinkProblem ? "amber" : hasStripeCustomer ? "cyan" : "amber"}
+          accent={billingLinkProblem ? "amber" : hasVerifiedStripeCustomer ? "cyan" : "amber"}
           label="Billing"
-          value={billingLinkProblem ? "Stripe link needs repair" : hasStripeCustomer ? "Stripe connected" : isPaid ? "Refresh needed" : "No paid subscription"}
+          value={billingLinkProblem ? "Stripe link needs repair" : hasVerifiedStripeCustomer ? "Stripe connected" : isPaid ? "Refresh needed" : "No paid subscription"}
           detail={
             billingLinkProblem
               ? "Stripe could not verify the saved billing customer for this account."
-              : hasStripeCustomer
+              : hasVerifiedStripeCustomer
                 ? "Manage payment method and invoices through Stripe."
                 : "Upgrade to Pro to create a Stripe billing profile."
           }
@@ -291,7 +320,7 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
             <p>{isPaid ? "Subscription" : "Recommended"}</p>
             <h3>{isPaid ? "Manage billing" : "Upgrade to Pro"}</h3>
             <span>{billingCardDetail}</span>
-            {isPaid && !hasStripeCustomer ? (
+            {isPaid && (billingLinkProblem || !hasVerifiedStripeCustomer) ? (
               <button className="EdgeTrace-pricing-secondary mt-5 w-full" disabled={activeAction === "refresh"} onClick={() => void refreshProfile()}>
                 <RefreshCw size={16} /> {activeAction === "refresh" ? "Refreshing..." : "Refresh billing status"}
               </button>
@@ -340,12 +369,17 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
             )}
             {billingActionMessage && <small className="text-cyan">{billingActionMessage}</small>}
             {billingActionError && <small className="text-loss">{billingActionError}</small>}
-            {isPaid && !hasStripeCustomer && (
+            {isPaid && !billingLinkProblem && !hasVerifiedStripeCustomer && (
               <small>
                 Pro access is active, but no Stripe billing customer is linked yet. Refresh after checkout completes.
               </small>
             )}
-            {isPaid && hasStripeCustomer && !hasCancelableSubscription && (
+            {isPaid && billingLinkProblem && (
+              <small className="text-warning">
+                Stripe actions are unavailable until the backend can verify the customer or subscription for this account.
+              </small>
+            )}
+            {isPaid && hasVerifiedStripeCustomer && !hasCancelableSubscription && (
               <small>
                 Subscription cancellation will appear after Stripe links the active subscription. Refresh account details or use Manage Billing.
               </small>
@@ -365,6 +399,7 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
               planId={planId}
               currentPlanId={currentPlanId}
               billingConfigured={billingConfigured}
+              billingLinkProblem={billingLinkProblem}
               activeAction={activeAction}
               onStartPro={() => void startProCheckout()}
               onManage={() => void openPortal()}
@@ -386,12 +421,12 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
                 <DetailRow
                   label="Subscription"
                   value={subscriptionLabel}
-                  valueClass={cancellationScheduled ? "text-warning" : "text-ink"}
+                  valueClass={billingLinkProblem || cancellationScheduled ? "text-warning" : "text-ink"}
                 />
                 <DetailRow
                   label="Stripe customer"
-                  value={hasStripeCustomer ? "Connected" : "Not linked"}
-                  valueClass={hasStripeCustomer ? "text-cyan" : "text-warning"}
+                  value={billingLinkProblem ? "Needs repair" : hasVerifiedStripeCustomer ? "Connected" : "Not linked"}
+                  valueClass={billingLinkProblem ? "text-warning" : hasVerifiedStripeCustomer ? "text-cyan" : "text-warning"}
                 />
                 <DetailRow label={cancellationScheduled ? "Access ends" : isPaid ? "Next renewal" : "Current period"} value={renewalLabel} />
               </dl>
@@ -473,6 +508,7 @@ function AccountPlanCard({
   planId,
   currentPlanId,
   billingConfigured,
+  billingLinkProblem,
   activeAction,
   onStartPro,
   onManage
@@ -480,6 +516,7 @@ function AccountPlanCard({
   planId: PlanId;
   currentPlanId: PlanId;
   billingConfigured: boolean;
+  billingLinkProblem: boolean;
   activeAction: string | null;
   onStartPro: () => void;
   onManage: () => void;
@@ -509,8 +546,8 @@ function AccountPlanCard({
     }
     if (isCurrent || (canManagePaid && isPro)) {
       return (
-        <button className="EdgeTrace-pricing-secondary" disabled={isBusy} onClick={onManage}>
-          {activeAction === "portal" ? "Opening..." : isCurrent ? "Manage Billing" : "Included"}
+        <button className="EdgeTrace-pricing-secondary" disabled={isBusy || billingLinkProblem} onClick={onManage}>
+          {billingLinkProblem ? "Billing Link Unavailable" : activeAction === "portal" ? "Opening..." : isCurrent ? "Manage Billing" : "Included"}
         </button>
       );
     }
@@ -648,6 +685,9 @@ function formatDate(value: string | undefined) {
 
 function accountRefreshNotice(profile: UserProfile) {
   const periodEnd = formatDate(profile.currentPeriodEnd);
+  if (profile.billingLinkStatus === "needs_repair") {
+    return profile.billingLinkMessage || "Stripe could not verify the saved billing link for this account.";
+  }
   if (profile.stripeCancelAtPeriodEnd) {
     return `Cancellation detected. Pro access ends on ${periodEnd || "the current billing period end"}.`;
   }
@@ -661,6 +701,9 @@ function accountRefreshNotice(profile: UserProfile) {
 
 function cancellationCheckNotice(profile: UserProfile) {
   const periodEnd = formatDate(profile.currentPeriodEnd);
+  if (profile.billingLinkStatus === "needs_repair") {
+    return profile.billingLinkMessage || "Stripe could not verify the saved billing link after checking cancellation status.";
+  }
   if (profile.stripeCancelAtPeriodEnd) {
     return `Cancellation confirmed. Pro access remains available until ${periodEnd || "the current billing period end"}.`;
   }

@@ -1,6 +1,7 @@
 import Stripe from "stripe";
 import type { PlanId } from "../src/lib/plans";
 import { normalizePlanId } from "../src/lib/plans";
+import type { UserProfile } from "../src/types";
 import {
   getOrCreateUserProfile,
   getUserProfileByStripeCustomerId,
@@ -55,6 +56,49 @@ type BillingPortalReference = {
   customerId: string;
   subscriptionId?: string;
 };
+
+type BillingLinkStatus = NonNullable<UserProfile["billingLinkStatus"]>;
+type SyncedUserProfile = UserProfile & {
+  billingLinkStatus: BillingLinkStatus;
+  billingLinkMessage?: string;
+};
+
+const BILLING_LINK_REPAIR_MESSAGE =
+  "Stripe could not verify the saved billing customer or subscription for this account.";
+
+function withBillingLinkStatus(
+  profile: UserProfile,
+  billingLinkStatus: BillingLinkStatus,
+  billingLinkMessage = ""
+): SyncedUserProfile {
+  return {
+    ...profile,
+    billingLinkStatus,
+    billingLinkMessage
+  };
+}
+
+async function syncBillingReferenceByEmail(
+  stripe: InstanceType<typeof Stripe>,
+  profile: UserProfile,
+  userId: string
+): Promise<SyncedUserProfile | null> {
+  const emailReference = await resolveBillingReferenceByEmail(stripe, profile, userId);
+  if (!emailReference) return null;
+
+  const refreshed = await getOrCreateUserProfile(userId);
+  if (emailReference.subscriptionId) {
+    return withBillingLinkStatus(refreshed, "verified");
+  }
+
+  return withBillingLinkStatus(
+    refreshed,
+    refreshed.planId === "free" ? "verified" : "needs_repair",
+    refreshed.planId === "free"
+      ? ""
+      : "Stripe found this billing customer, but no active subscription was found for cancellation."
+  );
+}
 
 async function resolveSubscriptionCustomerId(
   stripe: InstanceType<typeof Stripe>,
@@ -369,14 +413,49 @@ export async function createSubscriptionCancellationSession(userId: string, orig
 
 export async function syncUserBillingFromStripe(userId: string) {
   const profile = await getOrCreateUserProfile(userId);
-  if (!envValue("STRIPE_SECRET_KEY") || !profile.stripeSubscriptionId) return profile;
+  if (!envValue("STRIPE_SECRET_KEY")) {
+    return withBillingLinkStatus(profile, "not_linked", "Billing is not configured in this environment.");
+  }
+
+  const stripe = getStripe();
+
+  if (!profile.stripeSubscriptionId) {
+    const emailSynced = await syncBillingReferenceByEmail(stripe, profile, userId);
+    if (emailSynced) return emailSynced;
+
+    if (profile.stripeCustomerId) {
+      try {
+        await retrieveLiveCustomer(stripe, profile.stripeCustomerId);
+        return withBillingLinkStatus(
+          profile,
+          profile.planId === "free" ? "verified" : "needs_repair",
+          profile.planId === "free"
+            ? ""
+            : "Stripe found this billing customer, but no active subscription was found for cancellation."
+        );
+      } catch (err) {
+        if (!isMissingStripeResource(err)) throw err;
+      }
+    }
+
+    return withBillingLinkStatus(
+      profile,
+      profile.planId === "free" ? "not_linked" : "needs_repair",
+      profile.planId === "free" ? "" : BILLING_LINK_REPAIR_MESSAGE
+    );
+  }
 
   try {
-    const subscription = await getStripe().subscriptions.retrieve(profile.stripeSubscriptionId);
-    return (await updateUserPlanFromSubscription(subscription, userId)) ?? profile;
+    const subscription = await stripe.subscriptions.retrieve(profile.stripeSubscriptionId);
+    const updated = (await updateUserPlanFromSubscription(subscription, userId)) ?? profile;
+    return withBillingLinkStatus(updated, "verified");
   } catch (err) {
     console.warn(`[stripe] Unable to sync subscription ${profile.stripeSubscriptionId} for user=${userId}.`, err);
-    return profile;
+    if (isMissingStripeResource(err)) {
+      const emailSynced = await syncBillingReferenceByEmail(stripe, profile, userId);
+      if (emailSynced) return emailSynced;
+    }
+    return withBillingLinkStatus(profile, "needs_repair", BILLING_LINK_REPAIR_MESSAGE);
   }
 }
 

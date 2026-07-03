@@ -237,6 +237,8 @@ export type UserProfile = {
   stripeCancelAtPeriodEnd?: boolean;
   stripePriceId?: string;
   currentPeriodEnd?: string;
+  billingLinkStatus?: "verified" | "needs_repair" | "not_linked";
+  billingLinkMessage?: string;
   billingConfigured?: boolean;
   createdAt: string;
   updatedAt: string;
