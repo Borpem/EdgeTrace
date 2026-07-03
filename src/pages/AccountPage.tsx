@@ -42,6 +42,27 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
   const displayName = user?.name || effectiveProfile?.name || "EdgeTrace user";
   const displayEmail = user?.email || effectiveProfile?.email || "Email unavailable";
   const planToneClass = planTone(currentPlanId);
+  const isPaid = currentPlanId !== "free";
+  const hasStripeCustomer = Boolean(effectiveProfile?.stripeCustomerId);
+  const periodEndLabel = formatDate(effectiveProfile?.currentPeriodEnd);
+  const cancellationScheduled = isPaid && Boolean(effectiveProfile?.stripeCancelAtPeriodEnd);
+  const cancellationEndLabel = periodEndLabel || "the current billing period end";
+  const subscriptionLabel =
+    cancellationScheduled
+      ? `Cancels on ${cancellationEndLabel}`
+      : effectiveProfile?.stripeSubscriptionStatus
+        ? formatSubscriptionStatus(effectiveProfile.stripeSubscriptionStatus)
+        : "No active paid subscription";
+  const paidAccessDetail =
+    cancellationScheduled
+      ? `Pro access remains active until ${cancellationEndLabel}.`
+      : `${plan.monthlyPriceLabel} - ${plan.description}`;
+  const billingCardDetail =
+    cancellationScheduled
+      ? `Cancellation is scheduled. Pro access remains until ${cancellationEndLabel}.`
+      : isPaid
+        ? "Open Stripe for payment methods, invoices, and cancellation settings."
+        : "Activate the recurring review loop that checks new imports and flags what changed.";
 
   useEffect(() => {
     setLocalProfile(profile);
@@ -82,8 +103,11 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
         if (cancelled) return;
         setLocalProfile(refreshed);
         onPlanChanged(refreshed);
+        const refreshedPeriodEnd = formatDate(refreshed.currentPeriodEnd);
         setNotice(
-          refreshed.planId === "free"
+          refreshed.stripeCancelAtPeriodEnd
+            ? `Your Pro subscription is scheduled to cancel on ${refreshedPeriodEnd || "the current billing period end"}. You still have Pro access until then.`
+            : refreshed.planId === "free"
             ? "Your Pro subscription has been cancelled."
             : "Cancellation submitted. Pro access may remain active until the current billing period ends."
         );
@@ -153,8 +177,6 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
     }
   };
 
-  const isPaid = currentPlanId !== "free";
-  const hasStripeCustomer = Boolean(effectiveProfile?.stripeCustomerId);
   const hasCancelableSubscription = isPaid && hasStripeCustomer && Boolean(effectiveProfile?.stripeSubscriptionId);
 
   return (
@@ -169,7 +191,7 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
           <div className="EdgeTrace-account-plan-chip">
             <span>Current plan</span>
             <strong className={planToneClass.text}>{plan.displayName}</strong>
-            <span>{plan.monthlyPriceLabel}</span>
+            <span>{cancellationScheduled ? `Access until ${cancellationEndLabel}` : plan.monthlyPriceLabel}</span>
           </div>
         </div>
         <div className="EdgeTrace-account-actions">
@@ -203,8 +225,8 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
           accent={currentPlanId === "advanced" ? "amber" : currentPlanId === "pro" ? "purple" : "cyan"}
           label="Current access"
           value={plan.displayName}
-          detail={`${plan.monthlyPriceLabel} - ${plan.description}`}
-          badge={isPaid ? "Active" : "Free"}
+          detail={isPaid ? paidAccessDetail : `${plan.monthlyPriceLabel} - ${plan.description}`}
+          badge={cancellationScheduled ? "Cancelling" : isPaid ? "Active" : "Free"}
         />
         <AccountSummaryCard
           icon={Lock}
@@ -230,11 +252,7 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
           <div className="EdgeTrace-account-billing-card">
             <p>{isPaid ? "Subscription" : "Recommended"}</p>
             <h3>{isPaid ? "Manage billing" : "Upgrade to Pro"}</h3>
-            <span>
-              {isPaid
-                ? "Open Stripe for payment methods, invoices, and cancellation settings."
-                : "Activate the recurring review loop that checks new imports and flags what changed."}
-            </span>
+            <span>{billingCardDetail}</span>
             {isPaid && !hasStripeCustomer ? (
               <button className="EdgeTrace-pricing-secondary mt-5 w-full" disabled={activeAction === "refresh"} onClick={() => void refreshProfile()}>
                 <RefreshCw size={16} /> {activeAction === "refresh" ? "Refreshing..." : "Refresh billing status"}
@@ -258,10 +276,16 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
                 {isPaid && (
                   <button
                     className="EdgeTrace-pricing-secondary w-full border-loss/50 text-loss hover:border-loss disabled:cursor-not-allowed disabled:opacity-60"
-                    disabled={!billingConfigured || !hasCancelableSubscription || activeAction === "cancel" || activeAction === "portal"}
+                    disabled={
+                      !billingConfigured ||
+                      !hasCancelableSubscription ||
+                      cancellationScheduled ||
+                      activeAction === "cancel" ||
+                      activeAction === "portal"
+                    }
                     onClick={() => void openCancellation()}
                   >
-                    {activeAction === "cancel" ? "Opening cancellation..." : "Cancel subscription"} <XCircle size={16} />
+                    {cancellationScheduled ? "Cancellation scheduled" : activeAction === "cancel" ? "Opening cancellation..." : "Cancel subscription"} <XCircle size={16} />
                   </button>
                 )}
               </div>
@@ -311,18 +335,15 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
                 <DetailRow label="Plan" value={plan.displayName} valueClass={planToneClass.text} />
                 <DetailRow
                   label="Subscription"
-                  value={
-                    effectiveProfile?.stripeSubscriptionStatus
-                      ? formatSubscriptionStatus(effectiveProfile.stripeSubscriptionStatus)
-                      : "No active paid subscription"
-                  }
+                  value={subscriptionLabel}
+                  valueClass={cancellationScheduled ? "text-warning" : "text-ink"}
                 />
                 <DetailRow
                   label="Stripe customer"
                   value={hasStripeCustomer ? "Connected" : "Not linked"}
                   valueClass={hasStripeCustomer ? "text-cyan" : "text-warning"}
                 />
-                <DetailRow label="Current period" value={formatDate(effectiveProfile?.currentPeriodEnd) || "Not available"} />
+                <DetailRow label={cancellationScheduled ? "Access ends" : "Current period"} value={periodEndLabel || "Not available"} />
               </dl>
             </article>
 

@@ -63,6 +63,7 @@ type UserProfileRow = {
   stripe_customer_id: string | null;
   stripe_subscription_id: string | null;
   stripe_subscription_status: string | null;
+  stripe_cancel_at_period_end: boolean | null;
   stripe_price_id: string | null;
   current_period_end: string | null;
   created_at: string;
@@ -232,6 +233,7 @@ async function initializeSchema() {
       stripe_customer_id TEXT,
       stripe_subscription_id TEXT,
       stripe_subscription_status TEXT,
+      stripe_cancel_at_period_end BOOLEAN NOT NULL DEFAULT false,
       stripe_price_id TEXT,
       current_period_end TEXT,
       created_at TEXT,
@@ -273,6 +275,7 @@ async function initializeSchema() {
     CREATE INDEX IF NOT EXISTS idx_feedback_status ON feedback(status);
   `);
   await db.query("ALTER TABLE diagnostic_reports ADD COLUMN IF NOT EXISTS import_provenance_json TEXT");
+  await db.query("ALTER TABLE user_profiles ADD COLUMN IF NOT EXISTS stripe_cancel_at_period_end BOOLEAN NOT NULL DEFAULT false");
 }
 
 async function query<T extends pg.QueryResultRow>(sql: string, params: unknown[] = []) {
@@ -369,9 +372,10 @@ export async function updateUserBillingState(userId: string, input: BillingState
      SET plan_id = $2,
        stripe_subscription_id = $3,
        stripe_subscription_status = $4,
-       stripe_price_id = $5,
-       current_period_end = $6,
-       updated_at = $7
+       stripe_cancel_at_period_end = $5,
+       stripe_price_id = $6,
+       current_period_end = $7,
+       updated_at = $8
      WHERE user_id = $1
      RETURNING *`,
     [
@@ -379,6 +383,7 @@ export async function updateUserBillingState(userId: string, input: BillingState
       normalizePlanId(input.planId),
       input.stripeSubscriptionId ?? null,
       input.stripeSubscriptionStatus ?? null,
+      Boolean(input.stripeCancelAtPeriodEnd),
       input.stripePriceId ?? null,
       input.currentPeriodEnd ?? null,
       updatedAt
@@ -1086,6 +1091,7 @@ function mapUserProfile(row: UserProfileRow): UserProfile {
     stripeCustomerId: row.stripe_customer_id ?? "",
     stripeSubscriptionId: row.stripe_subscription_id ?? "",
     stripeSubscriptionStatus: row.stripe_subscription_status ?? "",
+    stripeCancelAtPeriodEnd: Boolean(row.stripe_cancel_at_period_end),
     stripePriceId: row.stripe_price_id ?? "",
     currentPeriodEnd: row.current_period_end ?? "",
     createdAt: row.created_at,

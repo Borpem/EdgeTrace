@@ -53,6 +53,7 @@ import {
   isStripeConfigured,
   isStripeWebhookConfigured,
   normalizePaidPlan,
+  syncUserBillingFromStripe,
   updateUserPlanFromSubscription
 } from "./stripe";
 import { runDiagnostics } from "../src/lib/diagnostics";
@@ -457,9 +458,12 @@ app.use(
 
 app.get("/api/me", async (req, res) => {
   try {
+    const profile = isStripeConfigured()
+      ? await syncUserBillingFromStripe(getUserId(req))
+      : await getOrCreateUserProfile(getUserId(req));
     res.json({
       profile: {
-        ...(await getOrCreateUserProfile(getUserId(req))),
+        ...profile,
         billingConfigured: isStripeConfigured()
       }
     });

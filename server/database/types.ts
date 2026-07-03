@@ -23,6 +23,7 @@ export type BillingStateInput = {
   planId: string;
   stripeSubscriptionId?: string | null;
   stripeSubscriptionStatus?: string | null;
+  stripeCancelAtPeriodEnd?: boolean | null;
   stripePriceId?: string | null;
   currentPeriodEnd?: string | null;
 };

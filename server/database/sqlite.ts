@@ -131,6 +131,7 @@ db.exec(`
     stripe_customer_id TEXT,
     stripe_subscription_id TEXT,
     stripe_subscription_status TEXT,
+    stripe_cancel_at_period_end INTEGER NOT NULL DEFAULT 0,
     stripe_price_id TEXT,
     current_period_end TEXT,
     created_at TEXT,
@@ -167,6 +168,7 @@ for (const table of ["report_collections", "collection_reports", "saved_comparis
 addColumnIfMissing("user_profiles", "stripe_customer_id", "TEXT");
 addColumnIfMissing("user_profiles", "stripe_subscription_id", "TEXT");
 addColumnIfMissing("user_profiles", "stripe_subscription_status", "TEXT");
+addColumnIfMissing("user_profiles", "stripe_cancel_at_period_end", "INTEGER NOT NULL DEFAULT 0");
 addColumnIfMissing("user_profiles", "stripe_price_id", "TEXT");
 addColumnIfMissing("user_profiles", "current_period_end", "TEXT");
 
@@ -220,6 +222,7 @@ type UserProfileRow = {
   stripe_customer_id: string | null;
   stripe_subscription_id: string | null;
   stripe_subscription_status: string | null;
+  stripe_cancel_at_period_end: number | null;
   stripe_price_id: string | null;
   current_period_end: string | null;
   created_at: string;
@@ -326,6 +329,7 @@ export function updateUserBillingState(
     planId: string;
     stripeSubscriptionId?: string | null;
     stripeSubscriptionStatus?: string | null;
+    stripeCancelAtPeriodEnd?: boolean | null;
     stripePriceId?: string | null;
     currentPeriodEnd?: string | null;
   }
@@ -337,6 +341,7 @@ export function updateUserBillingState(
      SET plan_id = @planId,
        stripe_subscription_id = @stripeSubscriptionId,
        stripe_subscription_status = @stripeSubscriptionStatus,
+       stripe_cancel_at_period_end = @stripeCancelAtPeriodEnd,
        stripe_price_id = @stripePriceId,
        current_period_end = @currentPeriodEnd,
        updated_at = @updatedAt
@@ -346,6 +351,7 @@ export function updateUserBillingState(
     planId: normalizePlanId(input.planId),
     stripeSubscriptionId: input.stripeSubscriptionId ?? "",
     stripeSubscriptionStatus: input.stripeSubscriptionStatus ?? "",
+    stripeCancelAtPeriodEnd: input.stripeCancelAtPeriodEnd ? 1 : 0,
     stripePriceId: input.stripePriceId ?? "",
     currentPeriodEnd: input.currentPeriodEnd ?? "",
     updatedAt
@@ -1205,6 +1211,7 @@ function mapUserProfile(row: UserProfileRow): UserProfile {
     stripeCustomerId: row.stripe_customer_id ?? "",
     stripeSubscriptionId: row.stripe_subscription_id ?? "",
     stripeSubscriptionStatus: row.stripe_subscription_status ?? "",
+    stripeCancelAtPeriodEnd: Boolean(row.stripe_cancel_at_period_end),
     stripePriceId: row.stripe_price_id ?? "",
     currentPeriodEnd: row.current_period_end ?? "",
     createdAt: row.created_at,

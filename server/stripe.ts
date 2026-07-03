@@ -148,6 +148,18 @@ export async function createSubscriptionCancellationSession(userId: string, orig
   });
 }
 
+export async function syncUserBillingFromStripe(userId: string) {
+  const profile = await getOrCreateUserProfile(userId);
+  if (!envValue("STRIPE_SECRET_KEY") || !profile.stripeSubscriptionId) return profile;
+
+  try {
+    const subscription = await getStripe().subscriptions.retrieve(profile.stripeSubscriptionId);
+    return (await updateUserPlanFromSubscription(subscription)) ?? profile;
+  } catch (err) {
+    console.warn(`[stripe] Unable to sync subscription ${profile.stripeSubscriptionId} for user=${userId}.`, err);
+    return profile;
+  }
+}
 export function constructStripeWebhookEvent(rawBody: Buffer, signature: string | string[] | undefined) {
   const webhookSecret = envValue("STRIPE_WEBHOOK_SECRET");
   if (!webhookSecret) {
@@ -185,17 +197,19 @@ export async function updateUserPlanFromSubscription(subscription: any) {
     console.info(`[stripe] Subscription ${subscription.id} status ${subscription.status}; setting plan to free.`);
   }
   const currentPeriodEndSeconds = subscription.current_period_end as number | undefined;
+  const cancelAtPeriodEnd = Boolean(subscription.cancel_at_period_end);
 
   const updated = await updateUserBillingState(profile.userId, {
     planId,
     stripeSubscriptionId: subscription.id,
     stripeSubscriptionStatus: subscription.status,
+    stripeCancelAtPeriodEnd: cancelAtPeriodEnd,
     stripePriceId: priceId,
     currentPeriodEnd: currentPeriodEndSeconds
       ? new Date(currentPeriodEndSeconds * 1000).toISOString()
       : ""
   });
-  console.info(`[stripe] Updated billing profile for customer ${customerId}: plan=${planId}, status=${subscription.status}.`);
+  console.info(`[stripe] Updated billing profile for customer ${customerId}: plan=${planId}, status=${subscription.status}, cancelAtPeriodEnd=${cancelAtPeriodEnd}.`);
   return updated;
 }
 
