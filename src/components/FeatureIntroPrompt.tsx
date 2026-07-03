@@ -78,9 +78,6 @@ export function FeatureIntroPrompt({ intro, onClose }: FeatureIntroPromptProps) 
           <button className="EdgeTrace-primary-button" type="button" onClick={() => onClose(doNotShowAgain)}>
             Got it
           </button>
-          <button className="EdgeTrace-secondary-button" type="button" onClick={() => onClose(true)}>
-            Do not show again
-          </button>
         </div>
       </section>
     </div>
