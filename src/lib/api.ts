@@ -215,6 +215,15 @@ export async function createBillingPortalSession() {
   return response.json() as Promise<{ url: string }>;
 }
 
+export async function createSubscriptionCancellationSession() {
+  const response = await fetch(apiUrl("/api/billing/create-cancel-session"), {
+    method: "POST",
+    headers: await apiHeaders({ "Content-Type": "application/json" })
+  });
+  if (!response.ok) throw new Error(await readApiError(response, "Unable to open subscription cancellation"));
+  return response.json() as Promise<{ url: string }>;
+}
+
 export async function uploadTrades(rows: unknown[]) {
   const normalizedTrades = normalizeTrades(rows);
   return {

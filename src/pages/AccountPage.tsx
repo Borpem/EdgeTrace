@@ -9,10 +9,11 @@ import {
   RefreshCw,
   ShieldCheck,
   Sparkles,
+  XCircle,
   UserCircle
 } from "lucide-react";
 import type { AuthUser } from "../context/AuthContext";
-import { createBillingPortalSession, createCheckoutSession, getMe } from "../lib/api";
+import { createBillingPortalSession, createCheckoutSession, createSubscriptionCancellationSession, getMe } from "../lib/api";
 import { getPlanConfig } from "../lib/entitlements";
 import type { PlanId, UserProfile } from "../types";
 
@@ -69,6 +70,35 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
     }
   };
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("billing") !== "cancelled") return;
+
+    let cancelled = false;
+    setError("");
+    setNotice("Cancellation submitted. Refreshing account details...");
+    void getMe()
+      .then(({ profile: refreshed }) => {
+        if (cancelled) return;
+        setLocalProfile(refreshed);
+        onPlanChanged(refreshed);
+        setNotice(
+          refreshed.planId === "free"
+            ? "Your Pro subscription has been cancelled."
+            : "Cancellation submitted. Pro access may remain active until the current billing period ends."
+        );
+        window.history.replaceState(null, "", window.location.pathname);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        setError(err instanceof Error ? err.message : "Cancellation submitted, but account details could not be refreshed yet.");
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [onPlanChanged]);
+
   const startProCheckout = async () => {
     setNotice("");
     setError("");
@@ -105,8 +135,27 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
     }
   };
 
+  const openCancellation = async () => {
+    setNotice("");
+    setError("");
+    setActiveAction("cancel");
+    try {
+      const { url } = await createSubscriptionCancellationSession();
+      window.location.href = url;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Unable to open subscription cancellation.";
+      setError(
+        message.includes("billing service") || message.includes("EdgeTrace service")
+          ? "Cancellation could not open. Refresh account details, then try again from Manage Billing."
+          : message
+      );
+      setActiveAction(null);
+    }
+  };
+
   const isPaid = currentPlanId !== "free";
   const hasStripeCustomer = Boolean(effectiveProfile?.stripeCustomerId);
+  const hasCancelableSubscription = isPaid && hasStripeCustomer && Boolean(effectiveProfile?.stripeSubscriptionId);
 
   return (
     <main className="EdgeTrace-account-page EdgeTrace-shell py-8 md:py-12">
@@ -191,24 +240,40 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
                 <RefreshCw size={16} /> {activeAction === "refresh" ? "Refreshing..." : "Refresh billing status"}
               </button>
             ) : (
-              <button
-                className="EdgeTrace-pricing-primary mt-5 w-full"
-                disabled={!billingConfigured || activeAction === "pro" || activeAction === "portal"}
-                onClick={() => void (isPaid ? openPortal() : startProCheckout())}
-              >
-                {activeAction === "pro"
-                  ? "Opening Checkout..."
-                  : activeAction === "portal"
-                    ? "Opening Portal..."
-                    : isPaid
-                      ? "Manage Billing"
-                      : "Upgrade to Pro"}{" "}
-                <ArrowRight size={16} />
-              </button>
+              <div className="mt-5 grid gap-3">
+                <button
+                  className="EdgeTrace-pricing-primary w-full"
+                  disabled={!billingConfigured || activeAction === "pro" || activeAction === "portal" || activeAction === "cancel"}
+                  onClick={() => void (isPaid ? openPortal() : startProCheckout())}
+                >
+                  {activeAction === "pro"
+                    ? "Opening Checkout..."
+                    : activeAction === "portal"
+                      ? "Opening Portal..."
+                      : isPaid
+                        ? "Manage Billing"
+                        : "Upgrade to Pro"}{" "}
+                  <ArrowRight size={16} />
+                </button>
+                {isPaid && (
+                  <button
+                    className="EdgeTrace-pricing-secondary w-full border-loss/50 text-loss hover:border-loss disabled:cursor-not-allowed disabled:opacity-60"
+                    disabled={!billingConfigured || !hasCancelableSubscription || activeAction === "cancel" || activeAction === "portal"}
+                    onClick={() => void openCancellation()}
+                  >
+                    {activeAction === "cancel" ? "Opening cancellation..." : "Cancel subscription"} <XCircle size={16} />
+                  </button>
+                )}
+              </div>
             )}
             {isPaid && !hasStripeCustomer && (
               <small>
                 Pro access is active, but no Stripe billing customer is linked yet. Refresh after checkout completes.
+              </small>
+            )}
+            {isPaid && hasStripeCustomer && !hasCancelableSubscription && (
+              <small>
+                Subscription cancellation will appear after Stripe links the active subscription. Refresh account details or use Manage Billing.
               </small>
             )}
             {effectiveProfile?.stripeCustomerId && !isPaid && (

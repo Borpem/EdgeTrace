@@ -115,6 +115,39 @@ export async function createBillingPortalSession(userId: string, origin: string)
   });
 }
 
+export async function createSubscriptionCancellationSession(userId: string, origin: string) {
+  if (!envValue("STRIPE_SECRET_KEY")) {
+    throw new Error("Billing is not configured in this environment.");
+  }
+
+  const stripe = getStripe();
+  const profile = await getOrCreateUserProfile(userId);
+  if (!profile.stripeCustomerId) {
+    throw new Error("No Stripe customer exists for this account yet.");
+  }
+  if (!profile.stripeSubscriptionId) {
+    throw new Error("No Stripe subscription is linked to this account yet.");
+  }
+
+  const returnUrl = `${origin}/app/account?billing=cancelled`;
+  return stripe.billingPortal.sessions.create({
+    customer: profile.stripeCustomerId,
+    return_url: returnUrl,
+    flow_data: {
+      type: "subscription_cancel",
+      subscription_cancel: {
+        subscription: profile.stripeSubscriptionId
+      },
+      after_completion: {
+        type: "redirect",
+        redirect: {
+          return_url: returnUrl
+        }
+      }
+    }
+  });
+}
+
 export function constructStripeWebhookEvent(rawBody: Buffer, signature: string | string[] | undefined) {
   const webhookSecret = envValue("STRIPE_WEBHOOK_SECRET");
   if (!webhookSecret) {

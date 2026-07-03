@@ -47,6 +47,7 @@ import {
   confirmCheckoutSessionForUser,
   createBillingPortalSession,
   createCheckoutSession,
+  createSubscriptionCancellationSession,
   handleCheckoutSessionCompleted,
   handleInvoicePaymentFailed,
   isStripeConfigured,
@@ -680,6 +681,33 @@ app.post("/api/billing/create-portal-session", async (req, res) => {
       error: "BILLING_PORTAL_FAILED",
       stage,
       message: billingApiErrorMessage(err, "Unable to open billing portal.")
+    });
+  }
+});
+
+app.post("/api/billing/create-cancel-session", async (req, res) => {
+  let stage = "validate_request";
+  try {
+    if (!isStripeConfigured()) {
+      res.status(503).json({
+        error: "BILLING_NOT_CONFIGURED",
+        stage,
+        message: "Billing is not configured in this environment."
+      });
+      return;
+    }
+
+    stage = "create_stripe_cancel_session";
+    const session = await createSubscriptionCancellationSession(getUserId(req), getRequestOrigin(req));
+    stage = "track_billing_cancellation_opened";
+    await trackUserEvent(getUserId(req), { eventName: "billing_cancellation_opened" });
+    res.json({ url: session.url });
+  } catch (err) {
+    console.error(`[billing] Cancellation portal creation failed at ${stage}`, err);
+    res.status(422).json({
+      error: "BILLING_CANCELLATION_FAILED",
+      stage,
+      message: billingApiErrorMessage(err, "Unable to open subscription cancellation.")
     });
   }
 });
