@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { AddToStrategySetDialog } from "../components/AddToStrategySetDialog";
 import { PaywallGate } from "../components/PaywallGate";
+import { ProFeaturePrompt } from "../components/ProFeaturePrompt";
 import { formatReportType, ReportDetailsEditor } from "../components/ReportDetailsEditor";
 import { TableContainer } from "../components/ui/Primitives";
 import { trackEvent } from "../lib/analytics";
@@ -233,6 +234,7 @@ export function DashboardPage({
   const [isAddingToStrategySet, setIsAddingToStrategySet] = useState(false);
   const [isGuideOpen, setIsGuideOpen] = useState(false);
   const [guideStep, setGuideStep] = useState(0);
+  const [lockedFeaturePrompt, setLockedFeaturePrompt] = useState<LockedFeaturePrompt | null>(null);
   const [activation, setActivation] = useState<ActivationSummary | null>(null);
   const [benchmarks, setBenchmarks] = useState<AggregateBenchmarkSnapshot | null>(null);
   const [benchmarksLoading, setBenchmarksLoading] = useState(false);
@@ -467,8 +469,46 @@ export function DashboardPage({
     setGuideStep((current) => Math.max(current - 1, 0));
   };
 
+  const showLockedFeaturePrompt = (prompt: LockedFeaturePrompt) => {
+    setLockedFeaturePrompt(prompt);
+    trackEvent("plan_feature_prompt_opened", { feature: prompt.feature, requiredPlan: "pro", source: "dashboard" });
+  };
+
+  const closeLockedFeaturePrompt = () => {
+    setLockedFeaturePrompt(null);
+  };
+
+  const upgradeFromLockedFeaturePrompt = () => {
+    if (lockedFeaturePrompt) {
+      trackEvent("plan_feature_cta_clicked", {
+        feature: lockedFeaturePrompt.feature,
+        requiredPlan: "pro",
+        source: "dashboard_prompt"
+      });
+    }
+    setLockedFeaturePrompt(null);
+    window.history.pushState(null, "", "/pricing");
+    window.dispatchEvent(new PopStateEvent("popstate"));
+  };
+
+  const learnFromLockedFeaturePrompt = () => {
+    if (!lockedFeaturePrompt) return;
+    trackEvent("paywall_learn_more_clicked", {
+      feature: lockedFeaturePrompt.feature,
+      requiredPlan: "pro",
+      source: "dashboard_prompt"
+    });
+    setLockedFeaturePrompt(null);
+    window.history.pushState(
+      null,
+      "",
+      `/app/how-it-works?feature=${encodeURIComponent(lockedFeaturePrompt.learnPath ?? lockedFeaturePrompt.feature.replace(/_/g, "-"))}`
+    );
+    window.dispatchEvent(new PopStateEvent("popstate"));
+  };
+
   const showFullDrilldownPrompt = () => {
-    onLockedFeature?.({
+    showLockedFeaturePrompt({
       feature: "full_drilldowns",
       title: "Upgrade to Pro to unlock full drilldowns.",
       description: "Pro shows the exact symbols, strategies, time windows, and trades behind the primary leak.",
@@ -477,7 +517,7 @@ export function DashboardPage({
   };
 
   const showAttributionBreakdownPrompt = () => {
-    onLockedFeature?.({
+    showLockedFeaturePrompt({
       feature: "advanced_attribution",
       title: "Upgrade to Pro to unlock the full attribution breakdown.",
       description: "Pro shows which symbols, strategies, and time windows contributed most to this report.",
@@ -815,7 +855,13 @@ export function DashboardPage({
                 <div className="EdgeTrace-drilldown-stripe tone-red"><span>Est. Impact</span><strong className="is-red">{currency.format(-Math.abs(driverImpact))}</strong></div>
                 <div className={`EdgeTrace-drilldown-stripe tone-${healthTone}`}><span>Diagnosis Strength</span><strong>{diagnosisStrength(intelligence.strategyHealthScore)}</strong></div>
               </div>
-              <button onClick={inspectPrimarySegment}>View breakdown <ArrowRight size={15} aria-hidden="true" /></button>
+              <button
+                type="button"
+                onMouseDown={!canInspectFullDrilldown ? showFullDrilldownPrompt : undefined}
+                onClick={inspectPrimarySegment}
+              >
+                View breakdown <ArrowRight size={15} aria-hidden="true" />
+              </button>
             </article>
 
             <article className="EdgeTrace-command-card EdgeTrace-command-health" data-testid="dashboard-health-card">
@@ -964,7 +1010,11 @@ export function DashboardPage({
                         <strong>{item.title}</strong>
                         <p>{item.title === "Review Primary Leak" ? intelligence.primaryLeak.recommendedInspection : item.impact}</p>
                       </div>
-                      <button onClick={inspectPrimarySegment}>
+                      <button
+                        type="button"
+                        onMouseDown={!canInspectFullDrilldown ? showFullDrilldownPrompt : undefined}
+                        onClick={inspectPrimarySegment}
+                      >
                         <span>Take Action</span>
                         <ArrowRight size={14} aria-hidden="true" />
                       </button>
@@ -1335,10 +1385,8 @@ export function DashboardPage({
               <button
                 key={tab}
                 className={activeTab === tab ? "active" : ""}
-                onClick={() => {
-                  setActiveTab(tab);
-                  trackEvent("report_tab_opened", { reportId: result.id, tab });
-                }}
+                type="button"
+                onClick={() => openDetailTab(tab)}
               >
                 {tab}
               </button>
@@ -1568,6 +1616,16 @@ export function DashboardPage({
           onBack={goToPreviousWalkthroughStep}
           onClose={closeWalkthrough}
           onNext={goToNextWalkthroughStep}
+        />
+      )}
+      {lockedFeaturePrompt && (
+        <ProFeaturePrompt
+          feature={lockedFeaturePrompt.feature}
+          title={lockedFeaturePrompt.title}
+          description={lockedFeaturePrompt.description}
+          onClose={closeLockedFeaturePrompt}
+          onUpgrade={upgradeFromLockedFeaturePrompt}
+          onLearn={learnFromLockedFeaturePrompt}
         />
       )}
     </main>
