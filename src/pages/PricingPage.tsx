@@ -14,6 +14,8 @@ import { getPlanConfig } from "../lib/entitlements";
 import { planOrder, type PlanId } from "../lib/plans";
 import type { UserProfile } from "../types";
 
+const proMonthlyPriceLabel = getPlanConfig("pro").monthlyPriceLabel;
+
 const planSummaries: Record<PlanId, string> = {
   free: "Complete reporting and analysis workflow.",
   pro: "Review loop, mistake heatmaps, benchmark percentiles, and clear targets for the next upload.",
@@ -50,8 +52,7 @@ const faqs = [
   },
   {
     question: "What does Pro unlock?",
-    answer:
-      "Pro is the $9.99/month investigation and review layer: full drilldowns, weekly Edge Reviews, mistake heatmaps, benchmark percentile cards, next-review checklists, review cadence status, and regression / improvement tracking."
+    answer: `Pro is the ${proMonthlyPriceLabel} investigation and review layer: full drilldowns, weekly Edge Reviews, mistake heatmaps, benchmark percentile cards, next-review checklists, review cadence status, and regression / improvement tracking.`
   },
   {
     question: "Can I use Free long term?",

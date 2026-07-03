@@ -120,7 +120,7 @@ https://your-vercel-domain.vercel.app/app/dashboard
 
 ## Configure Stripe
 
-1. Confirm the Pro monthly recurring price exists.
+1. Confirm the Pro monthly recurring price exists at $19.99/month.
 2. Set the Pro price ID in Railway:
 
 ```env

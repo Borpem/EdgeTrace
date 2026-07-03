@@ -36,6 +36,7 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
   const effectiveProfile = localProfile ?? profile;
   const currentPlanId = effectiveProfile?.planId ?? "free";
   const plan = getPlanConfig(currentPlanId);
+  const proPlan = getPlanConfig("pro");
   const billingConfigured = !effectiveProfile || effectiveProfile.billingConfigured === true;
   const displayName = user?.name || effectiveProfile?.name || "EdgeTrace user";
   const displayEmail = user?.email || effectiveProfile?.email || "Email unavailable";
@@ -174,7 +175,7 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
             </div>
             <p>
               Free includes the full core workflow. Pro adds weekly Edge Reviews, regression alerts,
-              benchmark context, next-review checklists, review status, and aggregate context for $9.99/month.
+              benchmark context, next-review checklists, review status, and aggregate context for {proPlan.monthlyPriceLabel}.
             </p>
           </div>
           <div className="EdgeTrace-account-billing-card">

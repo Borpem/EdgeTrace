@@ -82,7 +82,7 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
   pro: {
     id: "pro",
     displayName: "Pro",
-    monthlyPriceLabel: "$9.99/month",
+    monthlyPriceLabel: "$19.99/month",
     description: "Recurring reviews, mistake heatmaps, benchmark percentiles, and next-upload targets.",
     limits: {
       maxReports: "unlimited",
