@@ -27,6 +27,7 @@ type AccountPageProps = {
 
 type Tone = "cyan" | "purple" | "amber";
 const accountPlanOrder: PlanId[] = ["free", "pro"];
+const cancellationCheckKey = "edgetrace:billing-cancellation-check";
 
 export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing }: AccountPageProps) {
   const [localProfile, setLocalProfile] = useState<UserProfile | null>(profile);
@@ -47,6 +48,7 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
   const periodEndLabel = formatDate(effectiveProfile?.currentPeriodEnd);
   const cancellationScheduled = isPaid && Boolean(effectiveProfile?.stripeCancelAtPeriodEnd);
   const cancellationEndLabel = periodEndLabel || "the current billing period end";
+  const renewalLabel = periodEndLabel || "Not available";
   const subscriptionLabel =
     cancellationScheduled
       ? `Cancels on ${cancellationEndLabel}`
@@ -56,12 +58,16 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
   const paidAccessDetail =
     cancellationScheduled
       ? `Pro access remains active until ${cancellationEndLabel}.`
+      : periodEndLabel
+        ? `Pro is active. Next renewal is ${periodEndLabel}.`
       : `${plan.monthlyPriceLabel} - ${plan.description}`;
   const billingCardDetail =
     cancellationScheduled
       ? `Cancellation is scheduled. Pro access remains until ${cancellationEndLabel}.`
       : isPaid
-        ? "Open Stripe for payment methods, invoices, and cancellation settings."
+        ? periodEndLabel
+          ? `Stripe reports this subscription as active. Next renewal: ${periodEndLabel}.`
+          : "Stripe reports this subscription as active."
         : "Activate the recurring review loop that checks new imports and flags what changed.";
 
   useEffect(() => {
@@ -83,7 +89,7 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
       const { profile: refreshed } = await getMe();
       setLocalProfile(refreshed);
       onPlanChanged(refreshed);
-      setNotice("Account details refreshed.");
+      setNotice(accountRefreshNotice(refreshed));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to refresh account details.");
     } finally {
@@ -93,24 +99,20 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    if (params.get("billing") !== "cancelled") return;
+    const shouldCheckCancellation =
+      params.get("billing") === "cancelled" || window.sessionStorage.getItem(cancellationCheckKey) === "1";
+    if (!shouldCheckCancellation) return;
 
     let cancelled = false;
+    window.sessionStorage.removeItem(cancellationCheckKey);
     setError("");
-    setNotice("Cancellation submitted. Refreshing account details...");
+    setNotice("Checking Stripe cancellation status...");
     void getMe()
       .then(({ profile: refreshed }) => {
         if (cancelled) return;
         setLocalProfile(refreshed);
         onPlanChanged(refreshed);
-        const refreshedPeriodEnd = formatDate(refreshed.currentPeriodEnd);
-        setNotice(
-          refreshed.stripeCancelAtPeriodEnd
-            ? `Your Pro subscription is scheduled to cancel on ${refreshedPeriodEnd || "the current billing period end"}. You still have Pro access until then.`
-            : refreshed.planId === "free"
-            ? "Your Pro subscription has been cancelled."
-            : "Cancellation submitted. Pro access may remain active until the current billing period ends."
-        );
+        setNotice(cancellationCheckNotice(refreshed));
         window.history.replaceState(null, "", window.location.pathname);
       })
       .catch((err) => {
@@ -165,6 +167,7 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
     setActiveAction("cancel");
     try {
       const { url } = await createSubscriptionCancellationSession();
+      window.sessionStorage.setItem(cancellationCheckKey, "1");
       window.location.href = url;
     } catch (err) {
       const message = err instanceof Error ? err.message : "Unable to open subscription cancellation.";
@@ -191,7 +194,7 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
           <div className="EdgeTrace-account-plan-chip">
             <span>Current plan</span>
             <strong className={planToneClass.text}>{plan.displayName}</strong>
-            <span>{cancellationScheduled ? `Access until ${cancellationEndLabel}` : plan.monthlyPriceLabel}</span>
+            <span>{cancellationScheduled ? `Access until ${cancellationEndLabel}` : isPaid && periodEndLabel ? `Renews ${periodEndLabel}` : plan.monthlyPriceLabel}</span>
           </div>
         </div>
         <div className="EdgeTrace-account-actions">
@@ -285,10 +288,20 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
                     }
                     onClick={() => void openCancellation()}
                   >
-                    {cancellationScheduled ? "Cancellation scheduled" : activeAction === "cancel" ? "Opening cancellation..." : "Cancel subscription"} <XCircle size={16} />
+                    {cancellationScheduled
+                      ? "Cancellation scheduled"
+                      : activeAction === "cancel"
+                        ? "Opening Stripe..."
+                        : "Open cancellation in Stripe"}{" "}
+                    <XCircle size={16} />
                   </button>
                 )}
               </div>
+            )}
+            {isPaid && hasCancelableSubscription && !cancellationScheduled && (
+              <small>
+                This opens Stripe. Your subscription is still active until Stripe confirms cancellation.
+              </small>
             )}
             {isPaid && !hasStripeCustomer && (
               <small>
@@ -343,7 +356,7 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
                   value={hasStripeCustomer ? "Connected" : "Not linked"}
                   valueClass={hasStripeCustomer ? "text-cyan" : "text-warning"}
                 />
-                <DetailRow label={cancellationScheduled ? "Access ends" : "Current period"} value={periodEndLabel || "Not available"} />
+                <DetailRow label={cancellationScheduled ? "Access ends" : isPaid ? "Next renewal" : "Current period"} value={renewalLabel} />
               </dl>
             </article>
 
@@ -594,6 +607,32 @@ function formatDate(value: string | undefined) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "";
   return date.toLocaleDateString();
+}
+
+function accountRefreshNotice(profile: UserProfile) {
+  const periodEnd = formatDate(profile.currentPeriodEnd);
+  if (profile.stripeCancelAtPeriodEnd) {
+    return `Cancellation detected. Pro access ends on ${periodEnd || "the current billing period end"}.`;
+  }
+  if (profile.planId === "free") {
+    return "You are on Free. No active Pro subscription is linked to this account.";
+  }
+  return periodEnd
+    ? `Stripe reports Pro as active. Next renewal is ${periodEnd}.`
+    : "Stripe reports Pro as active. Next renewal date is not available yet.";
+}
+
+function cancellationCheckNotice(profile: UserProfile) {
+  const periodEnd = formatDate(profile.currentPeriodEnd);
+  if (profile.stripeCancelAtPeriodEnd) {
+    return `Cancellation confirmed. Pro access remains available until ${periodEnd || "the current billing period end"}.`;
+  }
+  if (profile.planId === "free") {
+    return "Cancellation confirmed. This account is now on Free.";
+  }
+  return periodEnd
+    ? `Cancellation was not detected. Stripe still reports this subscription as active and renewing on ${periodEnd}. Open the Stripe cancellation flow and confirm the final step.`
+    : "Cancellation was not detected. Stripe still reports this subscription as active. Open the Stripe cancellation flow and confirm the final step.";
 }
 
 function formatSubscriptionStatus(status: string) {
