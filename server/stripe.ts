@@ -43,10 +43,116 @@ export function mapStripePriceToPlan(priceId: string | null | undefined): PlanId
   return "free";
 }
 
+type BillingPortalReference = {
+  customerId: string;
+  subscriptionId?: string;
+};
+
+async function resolveSubscriptionCustomerId(
+  stripe: InstanceType<typeof Stripe>,
+  subscriptionId: string | undefined,
+  userId: string
+) {
+  if (!subscriptionId) return "";
+
+  try {
+    const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+    const customerId = subscriptionCustomerId(subscription);
+    if (!customerId) return "";
+
+    await updateUserPlanFromSubscription(subscription, userId);
+    return customerId;
+  } catch (err) {
+    if (isMissingStripeResource(err)) {
+      console.warn(`[stripe] Saved subscription ${subscriptionId} for user=${userId} was not found.`);
+      return "";
+    }
+    throw err;
+  }
+}
+
+async function resolveBillingPortalReference(
+  stripe: InstanceType<typeof Stripe>,
+  userId: string
+): Promise<BillingPortalReference> {
+  const profile = await getOrCreateUserProfile(userId);
+
+  if (profile.stripeSubscriptionId) {
+    const customerId = await resolveSubscriptionCustomerId(stripe, profile.stripeSubscriptionId, userId);
+    if (customerId) {
+      return { customerId, subscriptionId: profile.stripeSubscriptionId };
+    }
+  }
+
+  if (!profile.stripeCustomerId) {
+    throw new Error("No Stripe customer exists for this account yet.");
+  }
+
+  try {
+    await retrieveLiveCustomer(stripe, profile.stripeCustomerId);
+    return {
+      customerId: profile.stripeCustomerId,
+      subscriptionId: profile.stripeSubscriptionId || undefined
+    };
+  } catch (err) {
+    if (isMissingStripeResource(err)) {
+      throw new Error("Stripe could not find a live customer or subscription linked to this account.");
+    }
+    throw err;
+  }
+}
+
+async function retrieveLiveCustomer(stripe: InstanceType<typeof Stripe>, customerId: string) {
+  const customer = await stripe.customers.retrieve(customerId);
+  if ("deleted" in customer && customer.deleted) {
+    const err = new Error("Stripe customer was deleted.");
+    (err as { code?: string }).code = "resource_missing";
+    throw err;
+  }
+  return customer;
+}
+
+function subscriptionCustomerId(subscription: any) {
+  return typeof subscription.customer === "string" ? subscription.customer : subscription.customer?.id ?? "";
+}
+
+function isMissingStripeResource(err: unknown) {
+  const details = stripeErrorDetails(err);
+  return details.code === "resource_missing" || /No such (customer|subscription)/i.test(details.message);
+}
+
+function stripeErrorDetails(err: unknown) {
+  if (!err || typeof err !== "object") return { code: "", message: "" };
+  const input = err as {
+    code?: string;
+    message?: string;
+    raw?: { code?: string; message?: string };
+  };
+  return {
+    code: input.code ?? input.raw?.code ?? "",
+    message: input.message ?? input.raw?.message ?? ""
+  };
+}
+
+function firstString(...values: unknown[]) {
+  return values.find((value): value is string => typeof value === "string" && value.trim().length > 0)?.trim();
+}
+
 export async function getOrCreateStripeCustomer(userId: string) {
   const stripe = getStripe();
   const profile = await getOrCreateUserProfile(userId);
-  if (profile.stripeCustomerId) return profile.stripeCustomerId;
+  const subscriptionCustomerId = await resolveSubscriptionCustomerId(stripe, profile.stripeSubscriptionId, userId);
+  if (subscriptionCustomerId) return subscriptionCustomerId;
+
+  if (profile.stripeCustomerId) {
+    try {
+      await retrieveLiveCustomer(stripe, profile.stripeCustomerId);
+      return profile.stripeCustomerId;
+    } catch (err) {
+      if (!isMissingStripeResource(err)) throw err;
+      console.warn(`[stripe] Saved customer ${profile.stripeCustomerId} for user=${userId} was not found. Creating a new customer.`);
+    }
+  }
 
   const customer = await stripe.customers.create({
     email: profile.email || undefined,
@@ -105,13 +211,10 @@ export async function createBillingPortalSession(userId: string, origin: string)
   }
 
   const stripe = getStripe();
-  const profile = await getOrCreateUserProfile(userId);
-  if (!profile.stripeCustomerId) {
-    throw new Error("No Stripe customer exists for this account yet.");
-  }
+  const billingReference = await resolveBillingPortalReference(stripe, userId);
 
   return stripe.billingPortal.sessions.create({
-    customer: profile.stripeCustomerId,
+    customer: billingReference.customerId,
     return_url: `${origin}/pricing`
   });
 }
@@ -170,23 +273,20 @@ export async function createSubscriptionCancellationSession(userId: string, orig
   }
 
   const stripe = getStripe();
-  const profile = await getOrCreateUserProfile(userId);
-  if (!profile.stripeCustomerId) {
-    throw new Error("No Stripe customer exists for this account yet.");
-  }
-  if (!profile.stripeSubscriptionId) {
+  const billingReference = await resolveBillingPortalReference(stripe, userId);
+  if (!billingReference.subscriptionId) {
     throw new Error("No Stripe subscription is linked to this account yet.");
   }
 
   const returnUrl = `${origin}/app/account?billing=cancelled`;
   return stripe.billingPortal.sessions.create({
-    customer: profile.stripeCustomerId,
+    customer: billingReference.customerId,
     configuration: await getCancellationPortalConfigurationId(stripe, origin),
     return_url: returnUrl,
     flow_data: {
       type: "subscription_cancel",
       subscription_cancel: {
-        subscription: profile.stripeSubscriptionId
+        subscription: billingReference.subscriptionId
       },
       after_completion: {
         type: "redirect",
@@ -204,12 +304,13 @@ export async function syncUserBillingFromStripe(userId: string) {
 
   try {
     const subscription = await getStripe().subscriptions.retrieve(profile.stripeSubscriptionId);
-    return (await updateUserPlanFromSubscription(subscription)) ?? profile;
+    return (await updateUserPlanFromSubscription(subscription, userId)) ?? profile;
   } catch (err) {
     console.warn(`[stripe] Unable to sync subscription ${profile.stripeSubscriptionId} for user=${userId}.`, err);
     return profile;
   }
 }
+
 export function constructStripeWebhookEvent(rawBody: Buffer, signature: string | string[] | undefined) {
   const webhookSecret = envValue("STRIPE_WEBHOOK_SECRET");
   if (!webhookSecret) {
@@ -224,17 +325,25 @@ export function constructStripeWebhookEvent(rawBody: Buffer, signature: string |
   return getStripe().webhooks.constructEvent(rawBody, sig, webhookSecret);
 }
 
-export async function updateUserPlanFromSubscription(subscription: any) {
+export async function updateUserPlanFromSubscription(subscription: any, fallbackUserId?: string) {
   const customerId = typeof subscription.customer === "string" ? subscription.customer : subscription.customer?.id;
   if (!customerId) {
     console.warn(`[stripe] Subscription ${subscription.id ?? "unknown"} did not include a customer id.`);
     return null;
   }
 
-  const profile = await getUserProfileByStripeCustomerId(customerId);
+  let profile = await getUserProfileByStripeCustomerId(customerId);
+  const metadataUserId = firstString(subscription.metadata?.edgeTraceUserId, subscription.metadata?.userId);
+  const userId = profile?.userId || fallbackUserId || metadataUserId;
   if (!profile) {
-    console.warn(`[stripe] No EdgeTrace profile found for Stripe customer ${customerId}.`);
-    return null;
+    if (!userId) {
+      console.warn(`[stripe] No EdgeTrace profile found for Stripe customer ${customerId}.`);
+      return null;
+    }
+    await setStripeCustomerId(userId, customerId);
+    profile = await getOrCreateUserProfile(userId);
+  } else if (fallbackUserId && profile.userId === fallbackUserId && profile.stripeCustomerId !== customerId) {
+    profile = await setStripeCustomerId(fallbackUserId, customerId);
   }
 
   const priceId = subscription.items.data[0]?.price.id ?? "";

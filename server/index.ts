@@ -1334,6 +1334,9 @@ function billingApiErrorMessage(err: unknown, fallback: string) {
   if (/No Stripe customer exists/i.test(details.message)) {
     return "No Stripe billing customer is linked to this account yet. Use Upgrade to Pro to start checkout, or refresh after checkout completes.";
   }
+  if (/live customer or subscription linked/i.test(details.message)) {
+    return "Stripe could not verify the saved billing link for this account. Refresh account details, then try again.";
+  }
   if (/billing portal|customer portal|portal configuration|No configuration provided/i.test(details.message)) {
     return "Stripe Customer Portal is not configured yet. Enable the customer portal in Stripe to manage billing.";
   }

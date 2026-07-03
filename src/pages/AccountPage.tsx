@@ -47,6 +47,9 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
   const planToneClass = planTone(currentPlanId);
   const isPaid = currentPlanId !== "free";
   const hasStripeCustomer = Boolean(effectiveProfile?.stripeCustomerId);
+  const billingLinkProblem = /could not find.*customer|live customer or subscription|billing link/i.test(
+    `${billingActionError} ${error}`
+  );
   const periodEndLabel = formatDate(effectiveProfile?.currentPeriodEnd);
   const cancellationScheduled = isPaid && Boolean(effectiveProfile?.stripeCancelAtPeriodEnd);
   const cancellationEndLabel = periodEndLabel || "the current billing period end";
@@ -257,10 +260,16 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
         />
         <AccountSummaryCard
           icon={Lock}
-          accent={hasStripeCustomer ? "cyan" : "amber"}
+          accent={billingLinkProblem ? "amber" : hasStripeCustomer ? "cyan" : "amber"}
           label="Billing"
-          value={hasStripeCustomer ? "Stripe connected" : isPaid ? "Refresh needed" : "No paid subscription"}
-          detail={hasStripeCustomer ? "Manage payment method and invoices through Stripe." : "Upgrade to Pro to create a Stripe billing profile."}
+          value={billingLinkProblem ? "Stripe link needs repair" : hasStripeCustomer ? "Stripe connected" : isPaid ? "Refresh needed" : "No paid subscription"}
+          detail={
+            billingLinkProblem
+              ? "Stripe could not verify the saved billing customer for this account."
+              : hasStripeCustomer
+                ? "Manage payment method and invoices through Stripe."
+                : "Upgrade to Pro to create a Stripe billing profile."
+          }
         />
       </section>
 
