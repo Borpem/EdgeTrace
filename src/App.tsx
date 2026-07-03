@@ -6,10 +6,17 @@ import {
   UserCircle
 } from "lucide-react";
 import { useAuth } from "./context/AuthContext";
+import { FeatureIntroPrompt } from "./components/FeatureIntroPrompt";
 import { ProFeaturePrompt } from "./components/ProFeaturePrompt";
 import { trackEvent } from "./lib/analytics";
 import type { BreakdownDimension } from "./lib/breakdowns";
 import { canUseFeature, getPlanConfig } from "./lib/entitlements";
+import {
+  featureIntros,
+  hideFeatureIntroForUser,
+  isFeatureIntroHidden,
+  type FeatureIntroId
+} from "./lib/featureIntros";
 import type { FeatureKey } from "./lib/plans";
 import {
   getMe,
@@ -102,6 +109,8 @@ export function App() {
   const [createdReportId, setCreatedReportId] = useState<string | null>(null);
   const [isRouteResolving, setIsRouteResolving] = useState(true);
   const [proFeaturePrompt, setProFeaturePrompt] = useState<ProFeaturePromptState | null>(null);
+  const [activeFeatureIntro, setActiveFeatureIntro] = useState<FeatureIntroId | null>(null);
+  const [sessionDismissedFeatureIntros, setSessionDismissedFeatureIntros] = useState<FeatureIntroId[]>([]);
 
   useEffect(() => {
     if ("scrollRestoration" in window.history) {
@@ -220,6 +229,17 @@ export function App() {
     navigate("features", path);
   };
 
+  const closeFeatureIntroPrompt = (doNotShowAgain: boolean) => {
+    if (!activeFeatureIntro) return;
+    const introId = activeFeatureIntro;
+    if (doNotShowAgain && user?.id) hideFeatureIntroForUser(user.id, introId);
+    setSessionDismissedFeatureIntros((current) =>
+      current.includes(introId) ? current : [...current, introId]
+    );
+    setActiveFeatureIntro(null);
+    trackEvent("feature_intro_closed", { feature: introId, doNotShowAgain });
+  };
+
   const signIntoApp = (fallbackPath = "/app/dashboard", mode: "login" | "signup" = "login") => {
     if (authMode === "clerk") {
       if (mode === "signup") signup();
@@ -256,6 +276,27 @@ export function App() {
       .then(({ profile }) => setUserProfile(profile))
       .catch(() => setUserProfile(null));
   }, [authMode, getAccessToken, isAuthenticated, user?.id]);
+
+  useEffect(() => {
+    setActiveFeatureIntro(null);
+    setSessionDismissedFeatureIntros([]);
+  }, [user?.id]);
+
+  useEffect(() => {
+    if (authLoading || !isAuthenticated || !user?.id) {
+      setActiveFeatureIntro(null);
+      return;
+    }
+
+    const introId = featureIntroForPage(page);
+    if (!introId || sessionDismissedFeatureIntros.includes(introId) || isFeatureIntroHidden(user.id, introId)) {
+      setActiveFeatureIntro(null);
+      return;
+    }
+
+    setActiveFeatureIntro(introId);
+    trackEvent("feature_intro_opened", { feature: introId });
+  }, [authLoading, isAuthenticated, page, sessionDismissedFeatureIntros, user?.id]);
 
   const applyReportSummary = (summary: ReportSummary) => {
     setResult((current) =>
@@ -1061,8 +1102,19 @@ export function App() {
           onLearn={learnFromProFeaturePrompt}
         />
       )}
+      {activeFeatureIntro && (
+        <FeatureIntroPrompt intro={featureIntros[activeFeatureIntro]} onClose={closeFeatureIntroPrompt} />
+      )}
     </div>
   );
+}
+
+function featureIntroForPage(page: Page): FeatureIntroId | null {
+  if (page === "upload") return "upload";
+  if (page === "reports") return "reports";
+  if (page === "collections") return "collections";
+  if (page === "compare") return "compare";
+  return null;
 }
 
 function AuthenticatedTopbar({
