@@ -18,13 +18,13 @@ test.describe.serial("EdgeTrace happy path", () => {
   test("Home CTA flow", async ({ page }) => {
     await page.goto("/");
 
-    await expect(page.getByText(/Know exactly why your strategy wins or fails/i)).toBeVisible();
-    await expect(page.getByRole("button", { name: "Product" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Stop guessing why your trades are losing money/i })).toBeVisible();
     await expect(page.getByRole("button", { name: "How It Works" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Pricing" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Login" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Sign Up" })).toBeVisible();
     await expect(page.getByRole("button", { name: /demo/i })).toHaveCount(0);
-    await page.getByRole("button", { name: "Import My Trades", exact: true }).click();
+    await page.getByRole("button", { name: "Create Free Account", exact: true }).click();
 
     await expect(page.getByText("Create a strategy diagnostics workspace.")).toBeVisible();
     await page.getByRole("button", { name: "Create Account" }).click();
@@ -48,7 +48,6 @@ test.describe.serial("EdgeTrace happy path", () => {
     await expect(topbar).toBeVisible();
     await expect(page.getByRole("heading", { name: "Simple pricing. Serious edge." })).toBeVisible();
     await expect(page.locator(".EdgeTrace-pricing-nav")).toHaveCount(0);
-    await expect(topbar.getByRole("button", { name: "Product" })).toBeVisible();
     await expect(topbar.getByRole("button", { name: "How It Works" })).toBeVisible();
     await expect(topbar.getByRole("button", { name: "Pricing" })).toHaveClass(/EdgeTrace-nav-link-active/);
     await expect(topbar.getByRole("button", { name: "Login" })).toBeVisible();
@@ -61,6 +60,7 @@ test.describe.serial("EdgeTrace happy path", () => {
     await page.goto("/app/upload");
     await expect(page).toHaveURL(/\/login\?next=/);
     await page.getByRole("button", { name: "Continue to App" }).click();
+    await dismissFeatureIntro(page);
 
     await page.getByTestId("upload-input").setInputFiles("public/sample-trades.csv");
     await expect(page.getByText("Detected Source", { exact: true })).toBeVisible();
@@ -95,6 +95,7 @@ test.describe.serial("EdgeTrace happy path", () => {
 
     await page.getByRole("navigation").getByRole("button", { name: "Compare" }).click();
     await expect(page.getByTestId("compare-page")).toBeVisible();
+    await dismissFeatureIntro(page);
     await page.getByTestId("report-a-select").selectOption(reports[0].id);
     await page.getByTestId("report-b-select").selectOption(reports[1].id);
 
@@ -182,6 +183,15 @@ async function login(page: Page, nextPath = "/app/dashboard") {
   } else {
     await expect(page).toHaveURL(new RegExp(nextPath.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
+  await dismissFeatureIntro(page);
+}
+
+async function dismissFeatureIntro(page: Page) {
+  const overlay = page.locator(".EdgeTrace-feature-intro-overlay");
+  await overlay.waitFor({ state: "visible", timeout: 1000 }).catch(() => undefined);
+  if (!(await overlay.isVisible())) return;
+  await overlay.getByRole("button", { name: "Got it" }).click();
+  await expect(overlay).toHaveCount(0);
 }
 
 async function listReports(request: APIRequestContext): Promise<Array<{ id: string; name: string }>> {

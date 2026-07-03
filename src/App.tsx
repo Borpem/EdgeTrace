@@ -18,6 +18,7 @@ import {
   type FeatureIntroId
 } from "./lib/featureIntros";
 import type { FeatureKey } from "./lib/plans";
+import { buildProFeaturePrompt, type ProFeaturePromptState } from "./lib/proFeaturePrompts";
 import {
   getMe,
   getReport,
@@ -54,45 +55,6 @@ type CompareDrilldownSelection = {
   group: string;
 };
 type CollectionAttributionSelection = { dimension: BreakdownDimension; group: string };
-type ProFeaturePromptState = {
-  feature: FeatureKey;
-  title: string;
-  description: string;
-  learnPath: string;
-};
-
-const proFeaturePrompts: Partial<Record<FeatureKey, Omit<ProFeaturePromptState, "feature">>> = {
-  full_drilldowns: {
-    title: "Upgrade to Pro to unlock drilldowns.",
-    description: "Pro shows the exact symbols, strategies, time windows, and trades behind the primary leak.",
-    learnPath: "drilldowns"
-  },
-  collection_attribution: {
-    title: "Upgrade to Pro to unlock strategy-set attribution.",
-    description: "Pro shows which symbols, strategies, and time buckets are driving improvement or degradation across reports.",
-    learnPath: "strategy-sets"
-  },
-  advanced_attribution: {
-    title: "Upgrade to Pro to unlock full attribution.",
-    description: "Pro explains the report-to-report drivers behind performance changes and where to inspect next.",
-    learnPath: "drilldowns"
-  },
-  aggregate_benchmarks: {
-    title: "Upgrade to Pro to unlock benchmark intelligence.",
-    description: "Pro compares this report against eligible aggregate cohorts so you can see where your edge lags or leads.",
-    learnPath: "how-review-loop"
-  },
-  mistake_heatmap: {
-    title: "Upgrade to Pro to unlock the mistake heatmap.",
-    description: "Pro shows where losses, cost drag, and weak trade clusters repeat by weekday and session.",
-    learnPath: "how-review-loop"
-  },
-  review_cadence: {
-    title: "Upgrade to Pro to unlock the review loop.",
-    description: "Pro turns repeated imports into recurring edge reviews, benchmarks, and next-upload targets.",
-    learnPath: "how-review-loop"
-  }
-};
 
 export function App() {
   const { authMode, user, isAuthenticated, isLoading: authLoading, login, signup, logout, getAccessToken } = useAuth();
@@ -173,18 +135,6 @@ export function App() {
     if (window.location.pathname + window.location.search !== path) {
       window.history[replace ? "replaceState" : "pushState"](null, "", path);
     }
-  };
-
-  const buildProFeaturePrompt = (
-    feature: FeatureKey,
-    override?: Partial<Omit<ProFeaturePromptState, "feature">>
-  ): ProFeaturePromptState => {
-    const base = proFeaturePrompts[feature] ?? {
-      title: "Upgrade to Pro to unlock this feature.",
-      description: "This workflow is included with Pro.",
-      learnPath: feature.replace(/_/g, "-")
-    };
-    return { feature, ...base, ...override };
   };
 
   const showProFeaturePrompt = (prompt: ProFeaturePromptState) => {

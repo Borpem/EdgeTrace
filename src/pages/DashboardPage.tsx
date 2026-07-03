@@ -28,7 +28,6 @@ import {
 } from "lucide-react";
 import { AddToStrategySetDialog } from "../components/AddToStrategySetDialog";
 import { PaywallGate } from "../components/PaywallGate";
-import { ProFeaturePrompt } from "../components/ProFeaturePrompt";
 import { formatReportType, ReportDetailsEditor } from "../components/ReportDetailsEditor";
 import { TableContainer } from "../components/ui/Primitives";
 import { trackEvent } from "../lib/analytics";
@@ -44,7 +43,7 @@ import {
 import { costDragSortValue } from "../lib/costDrag";
 import { NO_LOSS_PROFIT_FACTOR, normalizePortfolioMetrics } from "../lib/diagnostics";
 import { canUseFeature, canViewFullDrilldown, getPlanConfig, getReportAccessLevel } from "../lib/entitlements";
-import type { FeatureKey } from "../lib/plans";
+import type { ProFeaturePromptInput } from "../lib/proFeaturePrompts";
 import { buildReportIntelligence, type MetricStatus } from "../lib/reportIntelligence";
 import type {
   ActivationSummary,
@@ -195,14 +194,7 @@ type DashboardPageProps = {
   accountControl?: ReactNode;
   reportJustCreated?: boolean;
   onDismissCreatedBanner?: () => void;
-  onLockedFeature?: (prompt: LockedFeaturePrompt) => void;
-};
-
-type LockedFeaturePrompt = {
-  feature: FeatureKey;
-  title: string;
-  description: string;
-  learnPath?: string;
+  onLockedFeature?: (prompt: ProFeaturePromptInput) => void;
 };
 
 export function DashboardPage({
@@ -234,7 +226,6 @@ export function DashboardPage({
   const [isAddingToStrategySet, setIsAddingToStrategySet] = useState(false);
   const [isGuideOpen, setIsGuideOpen] = useState(false);
   const [guideStep, setGuideStep] = useState(0);
-  const [lockedFeaturePrompt, setLockedFeaturePrompt] = useState<LockedFeaturePrompt | null>(null);
   const [activation, setActivation] = useState<ActivationSummary | null>(null);
   const [benchmarks, setBenchmarks] = useState<AggregateBenchmarkSnapshot | null>(null);
   const [benchmarksLoading, setBenchmarksLoading] = useState(false);
@@ -469,60 +460,16 @@ export function DashboardPage({
     setGuideStep((current) => Math.max(current - 1, 0));
   };
 
-  const showLockedFeaturePrompt = (prompt: LockedFeaturePrompt) => {
-    setLockedFeaturePrompt(prompt);
-    trackEvent("plan_feature_prompt_opened", { feature: prompt.feature, requiredPlan: "pro", source: "dashboard" });
-  };
-
-  const closeLockedFeaturePrompt = () => {
-    setLockedFeaturePrompt(null);
-  };
-
-  const upgradeFromLockedFeaturePrompt = () => {
-    if (lockedFeaturePrompt) {
-      trackEvent("plan_feature_cta_clicked", {
-        feature: lockedFeaturePrompt.feature,
-        requiredPlan: "pro",
-        source: "dashboard_prompt"
-      });
-    }
-    setLockedFeaturePrompt(null);
-    window.history.pushState(null, "", "/pricing");
-    window.dispatchEvent(new PopStateEvent("popstate"));
-  };
-
-  const learnFromLockedFeaturePrompt = () => {
-    if (!lockedFeaturePrompt) return;
-    trackEvent("paywall_learn_more_clicked", {
-      feature: lockedFeaturePrompt.feature,
-      requiredPlan: "pro",
-      source: "dashboard_prompt"
-    });
-    setLockedFeaturePrompt(null);
-    window.history.pushState(
-      null,
-      "",
-      `/app/how-it-works?feature=${encodeURIComponent(lockedFeaturePrompt.learnPath ?? lockedFeaturePrompt.feature.replace(/_/g, "-"))}`
-    );
-    window.dispatchEvent(new PopStateEvent("popstate"));
+  const showLockedFeaturePrompt = (prompt: ProFeaturePromptInput) => {
+    onLockedFeature?.(prompt);
   };
 
   const showFullDrilldownPrompt = () => {
-    showLockedFeaturePrompt({
-      feature: "full_drilldowns",
-      title: "Upgrade to Pro to unlock full drilldowns.",
-      description: "Pro shows the exact symbols, strategies, time windows, and trades behind the primary leak.",
-      learnPath: "drilldowns"
-    });
+    showLockedFeaturePrompt({ feature: "full_drilldowns" });
   };
 
   const showAttributionBreakdownPrompt = () => {
-    showLockedFeaturePrompt({
-      feature: "advanced_attribution",
-      title: "Upgrade to Pro to unlock the full attribution breakdown.",
-      description: "Pro shows which symbols, strategies, and time windows contributed most to this report.",
-      learnPath: "drilldowns"
-    });
+    showLockedFeaturePrompt({ feature: "advanced_attribution" });
   };
 
   const openDetailTab = (tab: DashboardTab) => {
@@ -574,12 +521,7 @@ export function DashboardPage({
 
   const handleAudit = () => {
     if (!canViewReconstructionAudit) {
-      onLockedFeature?.({
-        feature: "reconstruction_audit",
-        title: "Upgrade to Pro to review reconstruction lineage.",
-        description: "Pro unlocks the audit showing which source executions created each completed trade and enables audit exports.",
-        learnPath: "reconstruction-audit"
-      });
+      showLockedFeaturePrompt({ feature: "reconstruction_audit" });
       return;
     }
     trackEvent("reconstruction_audit_opened", { reportId: result.id });
@@ -1616,16 +1558,6 @@ export function DashboardPage({
           onBack={goToPreviousWalkthroughStep}
           onClose={closeWalkthrough}
           onNext={goToNextWalkthroughStep}
-        />
-      )}
-      {lockedFeaturePrompt && (
-        <ProFeaturePrompt
-          feature={lockedFeaturePrompt.feature}
-          title={lockedFeaturePrompt.title}
-          description={lockedFeaturePrompt.description}
-          onClose={closeLockedFeaturePrompt}
-          onUpgrade={upgradeFromLockedFeaturePrompt}
-          onLearn={learnFromLockedFeaturePrompt}
         />
       )}
     </main>

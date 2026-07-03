@@ -67,13 +67,15 @@ export function CollectionsPage({
             Plan usage: {collections.length} of {formatLimit(plan.limits.maxCollections)} strategy sets
           </p>
           {!canCreateMoreCollections && <p className="mt-2 text-xs text-warning">Free strategy set limit reached.</p>}
-          <button
-            className="EdgeTrace-primary-button mt-5 w-full disabled:cursor-not-allowed disabled:opacity-50"
-            disabled={!canCreateMoreCollections}
-            onClick={() => setEditing("new")}
-          >
-            Create Strategy Set
-          </button>
+          {collections.length > 0 && (
+            <button
+              className="EdgeTrace-primary-button mt-5 w-full disabled:cursor-not-allowed disabled:opacity-50"
+              disabled={!canCreateMoreCollections}
+              onClick={() => setEditing("new")}
+            >
+              Create Strategy Set
+            </button>
+          )}
         </div>
       </div>
 

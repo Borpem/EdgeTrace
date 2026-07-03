@@ -112,9 +112,9 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
       <section className="EdgeTrace-account-hero">
         <div>
           <p className="EdgeTrace-account-eyebrow">Account & billing</p>
-          <h1>Simple pricing. Serious edge.</h1>
+          <h1>Manage your account and billing.</h1>
           <p>
-            Manage your plan, Stripe billing access, and the diagnostic workflow available to this workspace.
+            Review your profile, current plan, Stripe billing access, and the diagnostic workflow available to this workspace.
           </p>
           <div className="EdgeTrace-account-plan-chip">
             <span>Current plan</span>
