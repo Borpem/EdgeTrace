@@ -10,6 +10,7 @@ import {
 } from "./db";
 
 let stripeClient: InstanceType<typeof Stripe> | null = null;
+let cancellationPortalConfigurationId: string | null = null;
 
 export function isStripeConfigured() {
   return Boolean(envValue("STRIPE_SECRET_KEY") && envValue("STRIPE_PRO_PRICE_ID"));
@@ -115,6 +116,54 @@ export async function createBillingPortalSession(userId: string, origin: string)
   });
 }
 
+async function getCancellationPortalConfigurationId(stripe: InstanceType<typeof Stripe>, origin: string) {
+  if (cancellationPortalConfigurationId) return cancellationPortalConfigurationId;
+
+  const purpose = "subscription_cancel_at_period_end";
+  const existingConfigurations = await stripe.billingPortal.configurations.list({
+    active: true,
+    limit: 100
+  });
+  const existing = existingConfigurations.data.find(
+    (configuration) => configuration.metadata?.edgeTracePurpose === purpose
+  );
+  if (existing) {
+    cancellationPortalConfigurationId = existing.id;
+    return cancellationPortalConfigurationId;
+  }
+
+  const configuration = await stripe.billingPortal.configurations.create({
+    name: "EdgeTrace cancellation flow",
+    default_return_url: `${origin}/app/account`,
+    business_profile: {
+      headline: "Manage your EdgeTrace subscription"
+    },
+    features: {
+      invoice_history: {
+        enabled: true
+      },
+      payment_method_update: {
+        enabled: true
+      },
+      subscription_cancel: {
+        enabled: true,
+        mode: "at_period_end",
+        proration_behavior: "none",
+        cancellation_reason: {
+          enabled: true,
+          options: ["too_expensive", "missing_features", "unused", "other"]
+        }
+      }
+    },
+    metadata: {
+      edgeTracePurpose: purpose
+    }
+  });
+
+  cancellationPortalConfigurationId = configuration.id;
+  return cancellationPortalConfigurationId;
+}
+
 export async function createSubscriptionCancellationSession(userId: string, origin: string) {
   if (!envValue("STRIPE_SECRET_KEY")) {
     throw new Error("Billing is not configured in this environment.");
@@ -132,6 +181,7 @@ export async function createSubscriptionCancellationSession(userId: string, orig
   const returnUrl = `${origin}/app/account?billing=cancelled`;
   return stripe.billingPortal.sessions.create({
     customer: profile.stripeCustomerId,
+    configuration: await getCancellationPortalConfigurationId(stripe, origin),
     return_url: returnUrl,
     flow_data: {
       type: "subscription_cancel",

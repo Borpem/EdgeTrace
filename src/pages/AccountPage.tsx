@@ -34,6 +34,8 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
   const [activeAction, setActiveAction] = useState<string | null>(null);
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
+  const [billingActionMessage, setBillingActionMessage] = useState("");
+  const [billingActionError, setBillingActionError] = useState("");
 
   const effectiveProfile = localProfile ?? profile;
   const currentPlanId = effectiveProfile?.planId ?? "free";
@@ -84,6 +86,8 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
   const refreshProfile = async () => {
     setError("");
     setNotice("");
+    setBillingActionError("");
+    setBillingActionMessage("");
     setActiveAction("refresh");
     try {
       const { profile: refreshed } = await getMe();
@@ -128,6 +132,8 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
   const startProCheckout = async () => {
     setNotice("");
     setError("");
+    setBillingActionError("");
+    setBillingActionMessage("");
     setActiveAction("pro");
     try {
       const { url } = await createCheckoutSession("pro");
@@ -146,9 +152,12 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
   const openPortal = async () => {
     setNotice("");
     setError("");
+    setBillingActionError("");
+    setBillingActionMessage("Opening Stripe billing portal...");
     setActiveAction("portal");
     try {
       const { url } = await createBillingPortalSession();
+      if (!url) throw new Error("Stripe did not return a billing portal URL.");
       window.location.href = url;
     } catch (err) {
       const message = err instanceof Error ? err.message : "Unable to open the billing portal.";
@@ -157,6 +166,8 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
           ? "Billing portal could not open. Refresh account details and confirm Stripe Customer Portal is configured."
           : message
       );
+      setBillingActionError("Billing portal could not open. Refresh account details and try again.");
+      setBillingActionMessage("");
       setActiveAction(null);
     }
   };
@@ -164,19 +175,32 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
   const openCancellation = async () => {
     setNotice("");
     setError("");
+    setBillingActionError("");
+    setBillingActionMessage("Opening Stripe cancellation flow...");
     setActiveAction("cancel");
     try {
       const { url } = await createSubscriptionCancellationSession();
+      if (!url) throw new Error("Stripe did not return a cancellation URL.");
       window.sessionStorage.setItem(cancellationCheckKey, "1");
       window.location.href = url;
     } catch (err) {
       const message = err instanceof Error ? err.message : "Unable to open subscription cancellation.";
-      setError(
-        message.includes("billing service") || message.includes("EdgeTrace service")
-          ? "Cancellation could not open. Refresh account details, then try again from Manage Billing."
-          : message
-      );
-      setActiveAction(null);
+      setBillingActionMessage("Direct cancellation did not open. Trying the Stripe billing portal...");
+      try {
+        const { url } = await createBillingPortalSession();
+        if (!url) throw new Error("Stripe did not return a billing portal URL.");
+        window.sessionStorage.setItem(cancellationCheckKey, "1");
+        window.location.href = url;
+      } catch {
+        const displayMessage =
+          message.includes("billing service") || message.includes("EdgeTrace service")
+            ? "Cancellation could not open. Refresh account details, then try Manage Billing."
+            : message;
+        setError(displayMessage);
+        setBillingActionError(displayMessage);
+        setBillingActionMessage("");
+        setActiveAction(null);
+      }
     }
   };
 
@@ -303,6 +327,8 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
                 This opens Stripe. Your subscription is still active until Stripe confirms cancellation.
               </small>
             )}
+            {billingActionMessage && <small className="text-cyan">{billingActionMessage}</small>}
+            {billingActionError && <small className="text-loss">{billingActionError}</small>}
             {isPaid && !hasStripeCustomer && (
               <small>
                 Pro access is active, but no Stripe billing customer is linked yet. Refresh after checkout completes.
