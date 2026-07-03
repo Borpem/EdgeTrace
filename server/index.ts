@@ -1329,7 +1329,7 @@ function billingApiErrorMessage(err: unknown, fallback: string) {
     return "The configured Pro Stripe price ID could not be found. Check STRIPE_PRO_PRICE_ID and make sure it matches the Stripe key mode.";
   }
   if (details.code === "resource_missing" && /customer/i.test(details.message)) {
-    return "Stripe could not find the customer linked to this account. Refresh the account page and try checkout again.";
+    return "Stripe could not verify the saved billing link for this account. Refresh account details, then try again.";
   }
   if (/No Stripe customer exists/i.test(details.message)) {
     return "No Stripe billing customer is linked to this account yet. Use Upgrade to Pro to start checkout, or refresh after checkout completes.";

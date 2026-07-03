@@ -67,7 +67,9 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
         ? `Pro is active. Next renewal is ${periodEndLabel}.`
       : `${plan.monthlyPriceLabel} - ${plan.description}`;
   const billingCardDetail =
-    cancellationScheduled
+    billingLinkProblem
+      ? "Stripe could not verify the saved billing customer. Refresh account details, then try again."
+      : cancellationScheduled
       ? `Cancellation is scheduled. Pro access remains until ${cancellationEndLabel}.`
       : isPaid
         ? periodEndLabel

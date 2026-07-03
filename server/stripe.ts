@@ -38,9 +38,17 @@ function priceIdForPlan(planId: PlanId) {
 
 export function mapStripePriceToPlan(priceId: string | null | undefined): PlanId {
   const normalizedPriceId = priceId?.trim();
-  if (normalizedPriceId && normalizedPriceId === envValue("STRIPE_PRO_PRICE_ID")) return "pro";
+  if (normalizedPriceId && stripePriceIdsForPlan("pro").includes(normalizedPriceId)) return "pro";
   if (normalizedPriceId && normalizedPriceId === envValue("STRIPE_ADVANCED_PRICE_ID")) return "advanced";
   return "free";
+}
+
+function stripePriceIdsForPlan(planId: PlanId) {
+  if (planId === "pro") {
+    return [envValue("STRIPE_PRO_PRICE_ID"), ...envList("STRIPE_LEGACY_PRO_PRICE_IDS")].filter(Boolean);
+  }
+  if (planId === "advanced") return [envValue("STRIPE_ADVANCED_PRICE_ID")].filter(Boolean);
+  return [];
 }
 
 type BillingPortalReference = {
@@ -84,6 +92,9 @@ async function resolveBillingPortalReference(
     }
   }
 
+  const emailReference = await resolveBillingReferenceByEmail(stripe, profile, userId);
+  if (emailReference) return emailReference;
+
   if (!profile.stripeCustomerId) {
     throw new Error("No Stripe customer exists for this account yet.");
   }
@@ -100,6 +111,64 @@ async function resolveBillingPortalReference(
     }
     throw err;
   }
+}
+
+async function resolveBillingReferenceByEmail(
+  stripe: InstanceType<typeof Stripe>,
+  profile: Awaited<ReturnType<typeof getOrCreateUserProfile>>,
+  userId: string
+): Promise<BillingPortalReference | null> {
+  if (!profile.email) return null;
+
+  const customers = await stripe.customers.list({
+    email: profile.email,
+    limit: 10
+  });
+  let customerWithoutSubscription = "";
+
+  for (const customer of customers.data) {
+    if ("deleted" in customer && customer.deleted) continue;
+    customerWithoutSubscription ||= customer.id;
+
+    const subscription = await findManageableSubscriptionForCustomer(stripe, customer.id);
+    if (!subscription) continue;
+
+    await setStripeCustomerId(userId, customer.id);
+    await updateUserPlanFromSubscription(subscription, userId);
+    return {
+      customerId: customer.id,
+      subscriptionId: subscription.id
+    };
+  }
+
+  if (customerWithoutSubscription) {
+    await setStripeCustomerId(userId, customerWithoutSubscription);
+    return { customerId: customerWithoutSubscription };
+  }
+
+  return null;
+}
+
+async function findManageableSubscriptionForCustomer(stripe: InstanceType<typeof Stripe>, customerId: string) {
+  const subscriptions = await stripe.subscriptions.list({
+    customer: customerId,
+    status: "all",
+    limit: 20
+  });
+  return (
+    subscriptions.data.find((subscription) => isManageableSubscription(subscription) && subscriptionMatchesKnownPrice(subscription)) ??
+    subscriptions.data.find(isManageableSubscription) ??
+    null
+  );
+}
+
+function isManageableSubscription(subscription: any) {
+  return ["active", "trialing", "past_due", "unpaid", "incomplete"].includes(subscription.status);
+}
+
+function subscriptionMatchesKnownPrice(subscription: any) {
+  const priceId = subscription.items.data[0]?.price.id ?? "";
+  return mapStripePriceToPlan(priceId) !== "free" || normalizePlanId(firstString(subscription.metadata?.planId)) !== "free";
 }
 
 async function retrieveLiveCustomer(stripe: InstanceType<typeof Stripe>, customerId: string) {
@@ -348,7 +417,8 @@ export async function updateUserPlanFromSubscription(subscription: any, fallback
 
   const priceId = subscription.items.data[0]?.price.id ?? "";
   const active = subscription.status === "active" || subscription.status === "trialing";
-  const planId = active ? mapStripePriceToPlan(priceId) : "free";
+  const metadataPlanId = normalizePlanId(firstString(subscription.metadata?.planId));
+  const planId = active ? metadataPlanId === "free" ? mapStripePriceToPlan(priceId) : metadataPlanId : "free";
   if (active && planId === "free") {
     console.warn(`[stripe] Unknown active price id ${priceId || "missing"} for subscription ${subscription.id}. Downgrading to free.`);
   }
@@ -458,4 +528,11 @@ export function normalizePaidPlan(planId: unknown): PlanId | null {
 
 function envValue(key: string) {
   return process.env[key]?.trim() ?? "";
+}
+
+function envList(key: string) {
+  return envValue(key)
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
 }
