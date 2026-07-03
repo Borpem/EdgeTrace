@@ -12,6 +12,25 @@
     padding-right: 1.25rem;
   }
 
+  .EdgeTrace-feature-intro-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: grid;
+    place-items: center;
+    min-height: 100dvh;
+    padding: 2rem 1rem;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(8px);
+  }
+
+  .EdgeTrace-feature-intro-dialog {
+    width: min(36rem, 100%);
+    max-height: min(720px, calc(100dvh - 4rem));
+    overflow-y: auto;
+  }
+
   .EdgeTrace-page-header {
     position: relative;
     overflow: visible;

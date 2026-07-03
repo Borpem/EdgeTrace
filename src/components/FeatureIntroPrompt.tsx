@@ -1,5 +1,6 @@
 import { CheckCircle2, Sparkles, X } from "lucide-react";
 import { useEffect, useId, useState } from "react";
+import { createPortal } from "react-dom";
 import type { FeatureIntroContent } from "../lib/featureIntros";
 
 type FeatureIntroPromptProps = {
@@ -20,16 +21,16 @@ export function FeatureIntroPrompt({ intro, onClose }: FeatureIntroPromptProps) 
     return () => window.removeEventListener("keydown", closeOnEscape);
   }, [onClose]);
 
-  return (
+  const prompt = (
     <div
-      className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/70 px-4 py-8 backdrop-blur-sm"
+      className="EdgeTrace-feature-intro-overlay"
       role="presentation"
       onMouseDown={() => onClose(false)}
     >
       <section
         aria-labelledby={titleId}
         aria-modal="true"
-        className="w-full max-w-xl border border-cyan/30 bg-graphite p-6 shadow-[0_24px_90px_-48px_rgba(88,214,255,0.78)]"
+        className="EdgeTrace-feature-intro-dialog border border-cyan/30 bg-graphite p-6 shadow-[0_24px_90px_-48px_rgba(88,214,255,0.78)]"
         role="dialog"
         onMouseDown={(event) => event.stopPropagation()}
       >
@@ -84,4 +85,7 @@ export function FeatureIntroPrompt({ intro, onClose }: FeatureIntroPromptProps) 
       </section>
     </div>
   );
+
+  if (typeof document === "undefined") return null;
+  return createPortal(prompt, document.body);
 }
