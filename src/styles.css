@@ -5230,6 +5230,7 @@ body {
   z-index: 120;
   width: min(100%, 1880px);
   margin: 0 auto;
+  background: var(--command-bg-page);
 }
 
 .EdgeTrace-command-nav {
