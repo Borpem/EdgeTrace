@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 import { AddToStrategySetDialog } from "../components/AddToStrategySetDialog";
 import { PaywallGate } from "../components/PaywallGate";
+import { ProFeaturePrompt } from "../components/ProFeaturePrompt";
 import { formatReportType, ReportDetailsEditor } from "../components/ReportDetailsEditor";
 import { TableContainer } from "../components/ui/Primitives";
 import { trackEvent } from "../lib/analytics";
@@ -44,7 +45,11 @@ import {
 import { costDragSortValue } from "../lib/costDrag";
 import { NO_LOSS_PROFIT_FACTOR, normalizePortfolioMetrics } from "../lib/diagnostics";
 import { canUseFeature, canViewFullDrilldown, getPlanConfig, getReportAccessLevel } from "../lib/entitlements";
-import type { ProFeaturePromptInput } from "../lib/proFeaturePrompts";
+import {
+  buildProFeaturePrompt,
+  type ProFeaturePromptInput,
+  type ProFeaturePromptState
+} from "../lib/proFeaturePrompts";
 import { buildReportIntelligence, type MetricStatus } from "../lib/reportIntelligence";
 import type {
   ActivationSummary,
@@ -236,6 +241,7 @@ export function DashboardPage({
   const [reportSelectorError, setReportSelectorError] = useState("");
   const [expandedDashboardSections, setExpandedDashboardSections] = useState<DashboardDisclosureId[]>([]);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const [dashboardProFeaturePrompt, setDashboardProFeaturePrompt] = useState<ProFeaturePromptState | null>(null);
 
   const trades = Array.isArray(result.trades) ? result.trades : [];
   const charts = result.charts ?? { equityCurve: [], pnlBySymbol: [], pnlByHour: [] };
@@ -278,6 +284,7 @@ export function DashboardPage({
   const canUseReviewLoop = canUseFeature(plan, "review_cadence");
   const canViewMistakeHeatmap = canUseFeature(plan, "mistake_heatmap");
   const canInspectFullDrilldown = reportAccessLevel === "full" && canViewFullDrilldown(plan);
+  const shouldGateFullDrilldown = plan.id === "free" || !canInspectFullDrilldown;
   const fullAttributionAccess =
     canInspectFullDrilldown &&
     !(result.lockedSections ?? []).some((section) => ["full_breakdowns", "full_drilldowns"].includes(section));
@@ -463,7 +470,8 @@ export function DashboardPage({
   };
 
   const showLockedFeaturePrompt = (prompt: ProFeaturePromptInput) => {
-    onLockedFeature?.(prompt);
+    const resolvedPrompt = buildProFeaturePrompt(prompt.feature, prompt);
+    setDashboardProFeaturePrompt(resolvedPrompt);
   };
 
   const showFullDrilldownPrompt = () => {
@@ -489,7 +497,7 @@ export function DashboardPage({
   };
 
   const inspectPrimarySegment = () => {
-    if (!canInspectFullDrilldown) {
+    if (shouldGateFullDrilldown) {
       showFullDrilldownPrompt();
       return;
     }
@@ -508,12 +516,42 @@ export function DashboardPage({
   };
 
   const handlePrimarySegmentAction = () => {
-    if (!canInspectFullDrilldown) {
+    if (shouldGateFullDrilldown) {
       showFullDrilldownPrompt();
       return;
     }
 
     inspectPrimarySegment();
+  };
+
+  const closeDashboardProFeaturePrompt = () => {
+    setDashboardProFeaturePrompt(null);
+  };
+
+  const upgradeFromDashboardProFeaturePrompt = () => {
+    if (dashboardProFeaturePrompt) {
+      trackEvent("plan_feature_cta_clicked", {
+        feature: dashboardProFeaturePrompt.feature,
+        requiredPlan: "pro",
+        source: "dashboard_pro_feature_prompt"
+      });
+    }
+    setDashboardProFeaturePrompt(null);
+    window.history.pushState(null, "", "/pricing");
+    window.dispatchEvent(new PopStateEvent("popstate"));
+  };
+
+  const learnFromDashboardProFeaturePrompt = () => {
+    if (!dashboardProFeaturePrompt) return;
+    trackEvent("paywall_learn_more_clicked", {
+      feature: dashboardProFeaturePrompt.feature,
+      requiredPlan: "pro",
+      source: "dashboard_pro_feature_prompt"
+    });
+    const path = `/app/how-it-works?feature=${encodeURIComponent(dashboardProFeaturePrompt.learnPath)}`;
+    setDashboardProFeaturePrompt(null);
+    window.history.pushState(null, "", path);
+    window.dispatchEvent(new PopStateEvent("popstate"));
   };
 
   const toggleDashboardSection = (sectionId: DashboardDisclosureId) => {
@@ -1609,6 +1647,16 @@ export function DashboardPage({
           onBack={goToPreviousWalkthroughStep}
           onClose={closeWalkthrough}
           onNext={goToNextWalkthroughStep}
+        />
+      )}
+      {dashboardProFeaturePrompt && (
+        <ProFeaturePrompt
+          feature={dashboardProFeaturePrompt.feature}
+          title={dashboardProFeaturePrompt.title}
+          description={dashboardProFeaturePrompt.description}
+          onClose={closeDashboardProFeaturePrompt}
+          onUpgrade={upgradeFromDashboardProFeaturePrompt}
+          onLearn={learnFromDashboardProFeaturePrompt}
         />
       )}
     </main>
