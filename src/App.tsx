@@ -982,6 +982,8 @@ export function App() {
           onOpenCollections={() => navigate("collections")}
           onOpenFeatures={() => navigate("features")}
           onFeedback={() => navigate("feedback")}
+          onAccount={() => navigate("account")}
+          onSignOut={handleSignOut}
           onLockedFeature={(prompt) => showProFeaturePrompt(buildProFeaturePrompt(prompt.feature, prompt))}
           accountControl={
             <AccountUtility

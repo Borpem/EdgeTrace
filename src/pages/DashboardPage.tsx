@@ -21,10 +21,12 @@ import {
   ChevronDown,
   ChevronLeft,
   Info,
+  LogOut,
   Menu,
   Lock,
   TrendingDown,
   TrendingUp,
+  UserCircle,
   X
 } from "lucide-react";
 import { AddToStrategySetDialog } from "../components/AddToStrategySetDialog";
@@ -197,6 +199,8 @@ type DashboardPageProps = {
   onOpenCollections?: () => void;
   onOpenFeatures?: () => void;
   onFeedback?: () => void;
+  onAccount?: () => void;
+  onSignOut?: () => void;
   accountControl?: ReactNode;
   reportJustCreated?: boolean;
   onDismissCreatedBanner?: () => void;
@@ -217,6 +221,8 @@ export function DashboardPage({
   onOpenCollections,
   onOpenFeatures,
   onFeedback,
+  onAccount,
+  onSignOut,
   accountControl,
   reportJustCreated,
   onDismissCreatedBanner,
@@ -809,7 +815,7 @@ export function DashboardPage({
                   {isMobileNavOpen ? <X size={18} aria-hidden="true" /> : <Menu size={18} aria-hidden="true" />}
                 </button>
               )}
-              {accountControl && <div className="EdgeTrace-dashboard-account-control">{accountControl}</div>}
+              {accountControl && <div className="EdgeTrace-dashboard-account-control EdgeTrace-dashboard-account-control--nav">{accountControl}</div>}
             </div>
             {isMobileNavigation && (
               <div
@@ -828,6 +834,17 @@ export function DashboardPage({
                       {label}
                     </button>
                   ))}
+                {(onAccount || onSignOut) && <div className="EdgeTrace-mobile-nav-menu-divider" aria-hidden="true" />}
+                {onAccount && (
+                  <button className="EdgeTrace-command-nav-item EdgeTrace-mobile-nav-account-item" onClick={() => handleCommandNavAction(onAccount)}>
+                    Account <UserCircle size={15} aria-hidden="true" />
+                  </button>
+                )}
+                {onSignOut && (
+                  <button className="EdgeTrace-command-nav-item EdgeTrace-mobile-nav-account-item" onClick={() => handleCommandNavAction(onSignOut)}>
+                    Log out <LogOut size={15} aria-hidden="true" />
+                  </button>
+                )}
               </div>
             )}
           </header>
@@ -1179,7 +1196,7 @@ export function DashboardPage({
               </span>
               <CalendarDays size={13} aria-hidden="true" />
             </div>
-            {accountControl && <div className="EdgeTrace-dashboard-account-control">{accountControl}</div>}
+            {accountControl && <div className="EdgeTrace-dashboard-account-control EdgeTrace-dashboard-account-control--meta">{accountControl}</div>}
           </div>
           <div className="EdgeTrace-dashboard-actions">
             <button className="EdgeTrace-results-walkthrough-button" onClick={openWalkthrough}>
