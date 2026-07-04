@@ -21,6 +21,7 @@ import {
   ChevronDown,
   ChevronLeft,
   Info,
+  Menu,
   Lock,
   TrendingDown,
   TrendingUp,
@@ -234,6 +235,7 @@ export function DashboardPage({
   const [reportsLoading, setReportsLoading] = useState(false);
   const [reportSelectorError, setReportSelectorError] = useState("");
   const [expandedDashboardSections, setExpandedDashboardSections] = useState<DashboardDisclosureId[]>([]);
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
   const trades = Array.isArray(result.trades) ? result.trades : [];
   const charts = result.charts ?? { equityCurve: [], pnlBySymbol: [], pnlByHour: [] };
@@ -505,6 +507,15 @@ export function DashboardPage({
     onDrillDown?.({ dimension: primaryInspection.dimension, group: primaryInspection.group });
   };
 
+  const handlePrimarySegmentAction = () => {
+    if (!canInspectFullDrilldown) {
+      showFullDrilldownPrompt();
+      return;
+    }
+
+    inspectPrimarySegment();
+  };
+
   const toggleDashboardSection = (sectionId: DashboardDisclosureId) => {
     setExpandedDashboardSections((current) =>
       current.includes(sectionId) ? current.filter((id) => id !== sectionId) : [...current, sectionId]
@@ -700,27 +711,69 @@ export function DashboardPage({
     { label: "How It Works", action: onOpenFeatures },
     { label: "Feedback", action: onFeedback }
   ];
+  const activeCommandNavLabel = commandNavItems.find((item) => item.active)?.label ?? "Dashboard";
+
+  const handleCommandNavAction = (action: (() => void) | undefined) => {
+    setIsMobileNavOpen(false);
+    if (action) action();
+  };
 
   return (
     <main className={`EdgeTrace-report-dashboard EdgeTrace-command-dashboard ${walkthroughOpen ? "has-walkthrough-open" : ""}`}>
       <section className="EdgeTrace-dashboard-main" aria-hidden={walkthroughOpen}>
         <div className="EdgeTrace-command-shell">
-          <header className="EdgeTrace-command-nav">
+          <header
+            className={[
+              "EdgeTrace-command-nav",
+              isMobileNavOpen ? "is-mobile-open" : ""
+            ]
+              .filter(Boolean)
+              .join(" ")}
+          >
             <button className="EdgeTrace-command-brand" onClick={onOpenDashboard} aria-label="EdgeTrace dashboard">
               <img src="/brand/edgetrace_icon_monochrome_white_transparent.png" alt="" aria-hidden="true" />
               <img src="/brand/edgetrace_wordmark_monochrome_white.png" alt="EdgeTrace" />
             </button>
             <nav aria-label="Dashboard navigation">
               {commandNavItems.map(({ label, action, active }) => (
-                <button key={label} className={active ? "active" : ""} onClick={action}>
+                <button
+                  key={label}
+                  className={`EdgeTrace-command-nav-item ${active ? "active" : ""}`}
+                  onClick={() => handleCommandNavAction(action)}
+                >
                   {label}
                 </button>
               ))}
             </nav>
             <div className="EdgeTrace-command-nav-actions">
               <button className="EdgeTrace-command-primary" onClick={onCreateReport}>+ New Report</button>
+              <button
+                className="EdgeTrace-mobile-nav-toggle"
+                type="button"
+                aria-expanded={isMobileNavOpen}
+                aria-label={isMobileNavOpen ? "Close section menu" : "Open section menu"}
+                onClick={() => setIsMobileNavOpen((open) => !open)}
+              >
+                {isMobileNavOpen ? <X size={18} aria-hidden="true" /> : <Menu size={18} aria-hidden="true" />}
+              </button>
               {accountControl && <div className="EdgeTrace-dashboard-account-control">{accountControl}</div>}
             </div>
+            <nav
+              aria-label="Dashboard navigation (all sections)"
+              className="EdgeTrace-mobile-nav-menu EdgeTrace-command-mobile-nav-menu"
+            >
+              {commandNavItems
+                .filter((item) => item.label !== activeCommandNavLabel)
+                .map(({ label, action }) => (
+                  <button
+                    key={label}
+                    className="EdgeTrace-command-nav-item"
+                    onClick={() => handleCommandNavAction(action)}
+                  >
+                    {label}
+                  </button>
+                ))}
+            </nav>
           </header>
 
           <section className="EdgeTrace-command-card EdgeTrace-command-card-1">
@@ -799,8 +852,7 @@ export function DashboardPage({
               </div>
               <button
                 type="button"
-                onMouseDown={!canInspectFullDrilldown ? showFullDrilldownPrompt : undefined}
-                onClick={inspectPrimarySegment}
+                onClick={handlePrimarySegmentAction}
               >
                 View breakdown <ArrowRight size={15} aria-hidden="true" />
               </button>
@@ -954,8 +1006,7 @@ export function DashboardPage({
                       </div>
                       <button
                         type="button"
-                        onMouseDown={!canInspectFullDrilldown ? showFullDrilldownPrompt : undefined}
-                        onClick={inspectPrimarySegment}
+                        onClick={handlePrimarySegmentAction}
                       >
                         <span>Take Action</span>
                         <ArrowRight size={14} aria-hidden="true" />

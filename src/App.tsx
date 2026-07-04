@@ -3,6 +3,7 @@ import { UserButton } from "@clerk/clerk-react";
 import {
   LogOut,
   Menu,
+  X,
   UserCircle
 } from "lucide-react";
 import { useAuth } from "./context/AuthContext";
@@ -1098,6 +1099,7 @@ function AuthenticatedTopbar({
   onAccount: () => void;
   onSignOut: () => void;
 }) {
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const navItems: Array<{ target: Page; label: string; action: () => void }> = [
     { target: "strategyDashboard", label: "Dashboard", action: onDashboard },
     { target: "upload", label: "Import Trades", action: onAnalyze },
@@ -1108,16 +1110,33 @@ function AuthenticatedTopbar({
     { target: "feedback", label: "Feedback", action: onFeedback }
   ];
 
+  const handleNavAction = (action: () => void) => {
+    setIsMobileNavOpen(false);
+    action();
+  };
+
+  const topbarClassName = [
+    "EdgeTrace-auth-topbar",
+    "EdgeTrace-command-nav",
+    isMobileNavOpen ? "is-mobile-open" : ""
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
     <div className="EdgeTrace-auth-topbar-shell EdgeTrace-command-shell">
-      <header className="EdgeTrace-auth-topbar EdgeTrace-command-nav">
+      <header className={topbarClassName}>
         <button className="EdgeTrace-command-brand" onClick={onDashboard} aria-label="EdgeTrace dashboard">
           <img src="/brand/edgetrace_icon_monochrome_white_transparent.png" alt="" aria-hidden="true" />
           <img src="/brand/edgetrace_wordmark_monochrome_white.png" alt="EdgeTrace" />
         </button>
         <nav aria-label="Application navigation" className="EdgeTrace-auth-command-nav">
           {navItems.map(({ target, label, action }) => (
-            <button key={label} className={activeNavPage === target ? "active" : ""} onClick={action}>
+            <button
+              key={label}
+              className={`EdgeTrace-auth-command-nav-item ${activeNavPage === target ? "active" : ""}`}
+              onClick={() => handleNavAction(action)}
+            >
               {label}
             </button>
           ))}
@@ -1125,6 +1144,15 @@ function AuthenticatedTopbar({
         <div className="EdgeTrace-auth-topbar-actions EdgeTrace-command-nav-actions">
           <button className="EdgeTrace-auth-topbar-primary EdgeTrace-command-primary" onClick={onAnalyze}>
             + New Report
+          </button>
+          <button
+            className="EdgeTrace-mobile-nav-toggle"
+            type="button"
+            aria-expanded={isMobileNavOpen}
+            aria-label={isMobileNavOpen ? "Close section menu" : "Open section menu"}
+            onClick={() => setIsMobileNavOpen((open) => !open)}
+          >
+            {isMobileNavOpen ? <X size={18} aria-hidden="true" /> : <Menu size={18} aria-hidden="true" />}
           </button>
           <AccountUtility
             userName={userName}
@@ -1134,6 +1162,19 @@ function AuthenticatedTopbar({
             onSignOut={onSignOut}
           />
         </div>
+        <nav aria-label="Application navigation (all sections)" className="EdgeTrace-mobile-nav-menu EdgeTrace-auth-mobile-nav-menu">
+          {navItems
+            .filter(({ target }) => target !== activeNavPage)
+            .map(({ target, label, action }) => (
+              <button
+                key={label}
+                className="EdgeTrace-auth-command-nav-item"
+                onClick={() => handleNavAction(action)}
+              >
+                {label}
+              </button>
+            ))}
+        </nav>
         <div className="EdgeTrace-auth-topbar-context" aria-hidden="true">
           <p>{activeLabel}</p>
           <span>{profile?.planId ? `${profile.planId.toUpperCase()} plan` : "Workspace"}</span>

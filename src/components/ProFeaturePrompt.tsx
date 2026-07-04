@@ -28,11 +28,15 @@ export function ProFeaturePrompt({
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/70 px-4 py-8 backdrop-blur-sm" role="presentation" onMouseDown={onClose}>
+    <div
+      className="EdgeTrace-pro-feature-overlay fixed inset-0 z-[999] flex items-center justify-center bg-black/70 px-4 py-8 backdrop-blur-sm"
+      role="presentation"
+      onMouseDown={onClose}
+    >
       <section
         aria-label={title}
         aria-modal="true"
-        className="w-full max-w-lg border border-cyan/30 bg-graphite p-6 shadow-[0_24px_90px_-48px_rgba(88,214,255,0.78)]"
+        className="EdgeTrace-pro-feature-dialog w-full max-w-lg border border-cyan/30 bg-graphite p-6 shadow-[0_24px_90px_-48px_rgba(88,214,255,0.78)]"
         role="dialog"
         onMouseDown={(event) => event.stopPropagation()}
       >

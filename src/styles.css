@@ -31,6 +31,15 @@
     overflow-y: auto;
   }
 
+  .EdgeTrace-pro-feature-overlay {
+    z-index: 10000;
+  }
+
+  .EdgeTrace-pro-feature-dialog {
+    position: relative;
+    z-index: 10001;
+  }
+
   .EdgeTrace-page-header {
     position: relative;
     overflow: visible;
@@ -5182,6 +5191,7 @@ body {
     linear-gradient(180deg, rgba(255, 255, 255, 0.014), transparent 24rem),
     var(--command-bg-page);
   padding: 0 0.4rem 0.4rem;
+  overflow-x: hidden;
 }
 
 .EdgeTrace-command-dashboard > .EdgeTrace-dashboard-sidebar,
@@ -5211,6 +5221,7 @@ body {
   box-shadow: none;
   color: var(--command-text);
   padding: 0.82rem 1.05rem;
+  overflow-x: hidden;
 }
 
 .EdgeTrace-auth-topbar-shell.EdgeTrace-command-shell {
@@ -5281,11 +5292,44 @@ body {
   background: var(--command-blue);
 }
 
+.EdgeTrace-command-nav-item,
+.EdgeTrace-auth-command-nav-item {
+  position: relative;
+  color: var(--command-text-secondary);
+  font-size: 0.92rem;
+  font-weight: 560;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.EdgeTrace-command-nav-item.active,
+.EdgeTrace-auth-command-nav-item.active {
+  color: var(--command-text);
+}
+
+.EdgeTrace-command-nav-item.active::after,
+.EdgeTrace-auth-command-nav-item.active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.58rem;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--command-blue);
+}
+
 .EdgeTrace-command-nav-actions {
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: 0.8rem;
+}
+
+.EdgeTrace-mobile-nav-toggle,
+.EdgeTrace-command-mobile-nav-menu,
+.EdgeTrace-auth-mobile-nav-menu {
+  display: none;
 }
 
 .EdgeTrace-command-primary {
@@ -7410,6 +7454,261 @@ body {
   .EdgeTrace-title {
     letter-spacing: -0.026em;
     line-height: 1.1;
+  }
+
+  .EdgeTrace-command-shell,
+  .EdgeTrace-auth-topbar-shell.EdgeTrace-command-shell {
+    padding-inline: 0.72rem;
+  }
+
+  .EdgeTrace-command-nav,
+  .EdgeTrace-auth-topbar {
+    width: 100%;
+    min-width: 0;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    max-width: 100%;
+    row-gap: 0.56rem;
+    gap: 0.56rem;
+    align-items: start;
+    overflow-x: hidden;
+    overflow-y: visible;
+    min-height: auto;
+    padding: 0.08rem 0 0.62rem;
+  }
+
+  .EdgeTrace-command-nav .EdgeTrace-command-brand,
+  .EdgeTrace-auth-topbar .EdgeTrace-command-brand {
+    grid-column: 1;
+    grid-row: 1;
+    min-width: 0;
+  }
+
+  .EdgeTrace-command-nav .EdgeTrace-command-brand img:last-child,
+  .EdgeTrace-auth-topbar .EdgeTrace-command-brand img:last-child {
+    width: min(8rem, 32vw);
+    max-width: 100%;
+  }
+
+  .EdgeTrace-command-nav nav,
+  .EdgeTrace-auth-topbar .EdgeTrace-auth-command-nav,
+  .EdgeTrace-command-nav .EdgeTrace-command-mobile-nav-menu,
+  .EdgeTrace-auth-topbar .EdgeTrace-auth-mobile-nav-menu {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    overflow: visible;
+    overflow-x: visible;
+    white-space: nowrap;
+    scrollbar-width: none;
+    min-width: 0;
+  }
+
+  .EdgeTrace-command-nav nav,
+  .EdgeTrace-auth-topbar .EdgeTrace-auth-command-nav {
+    display: flex;
+    justify-self: start;
+    width: min-content;
+    align-items: center;
+    gap: 0.82rem;
+    height: 2.15rem;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap;
+    overflow-x: hidden;
+    overflow-y: visible;
+  }
+
+  .EdgeTrace-command-nav nav .EdgeTrace-command-nav-item:not(.active),
+  .EdgeTrace-auth-topbar .EdgeTrace-auth-command-nav .EdgeTrace-auth-command-nav-item:not(.active) {
+    display: none;
+  }
+
+  .EdgeTrace-command-nav nav .EdgeTrace-command-nav-item.active::after,
+  .EdgeTrace-auth-topbar .EdgeTrace-auth-command-nav .EdgeTrace-auth-command-nav-item.active::after {
+    display: none;
+  }
+
+  .EdgeTrace-command-nav nav button,
+  .EdgeTrace-auth-topbar .EdgeTrace-auth-command-nav button {
+    flex: 0 0 auto;
+  }
+
+  .EdgeTrace-command-nav-actions,
+  .EdgeTrace-auth-topbar-actions,
+  .EdgeTrace-auth-topbar .EdgeTrace-account-utility {
+    grid-column: 2;
+    grid-row: 1;
+    width: auto;
+    justify-self: end;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: nowrap;
+    margin: 0;
+    min-width: 0;
+    gap: 0.55rem;
+    max-width: 100%;
+  }
+
+  .EdgeTrace-command-nav-actions .EdgeTrace-command-primary,
+  .EdgeTrace-auth-topbar .EdgeTrace-auth-topbar-primary {
+    flex: 1 1 auto;
+    min-height: 2.72rem;
+    min-width: 0;
+    max-width: min(100%, calc(100% - 8.8rem));
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .EdgeTrace-mobile-nav-toggle {
+    display: inline-flex;
+    width: 2.72rem;
+    height: 2.72rem;
+    flex: 0 0 auto;
+    border-radius: 6px;
+  }
+
+  .EdgeTrace-dashboard-account-control {
+    margin: 0;
+    flex: 0 0 auto;
+    min-width: 0;
+    justify-content: flex-end;
+  }
+
+  .EdgeTrace-dashboard-account-control .EdgeTrace-account-utility-menu-button {
+    width: 2.72rem;
+    height: 2.72rem;
+  }
+
+  .EdgeTrace-dashboard-account-control .EdgeTrace-account-utility-menu {
+    right: 0;
+    left: auto;
+    width: min(14.5rem, calc(100% - 1rem));
+  }
+
+  .EdgeTrace-auth-topbar .EdgeTrace-account-utility-menu {
+    width: min(14.5rem, calc(100% - 1rem));
+    right: 0;
+    left: auto;
+  }
+
+  .EdgeTrace-command-card-1 {
+    margin-top: 0.36rem;
+    padding: 0.95rem 0.88rem;
+  }
+
+  .EdgeTrace-command-overview-main {
+    gap: 0.95rem;
+    margin-top: 0.4rem;
+  }
+
+  .EdgeTrace-command-report-selector {
+    width: 100%;
+    max-width: 100%;
+    min-height: 2.62rem;
+  }
+
+  .EdgeTrace-command-overview-summary {
+    gap: 0.56rem;
+  }
+
+  .EdgeTrace-command-overview-summary div {
+    min-height: 4.3rem;
+  }
+
+  .EdgeTrace-dashboard-main {
+    padding: 0.88rem 0.8rem 1.25rem;
+  }
+
+  .EdgeTrace-command-overview-copy,
+  .EdgeTrace-command-report-selector-wrap {
+    width: 100%;
+  }
+
+  .EdgeTrace-command-nav .EdgeTrace-command-mobile-nav-menu,
+  .EdgeTrace-auth-topbar .EdgeTrace-auth-mobile-nav-menu,
+  .EdgeTrace-auth-topbar .EdgeTrace-auth-command-nav {
+    width: 100%;
+    margin-top: 0;
+  }
+
+  .EdgeTrace-command-nav.is-mobile-open .EdgeTrace-command-mobile-nav-menu,
+  .EdgeTrace-auth-topbar.is-mobile-open .EdgeTrace-auth-mobile-nav-menu {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 0.22rem;
+    gap: 0.52rem;
+    padding: 0.1rem 0 0.16rem;
+    overflow: hidden;
+  }
+
+  .EdgeTrace-command-nav.is-mobile-open,
+  .EdgeTrace-auth-topbar.is-mobile-open {
+    border-bottom-width: 1px;
+  }
+
+  .EdgeTrace-command-nav.is-mobile-open .EdgeTrace-command-mobile-nav-menu .EdgeTrace-command-nav-item,
+  .EdgeTrace-auth-topbar.is-mobile-open .EdgeTrace-auth-mobile-nav-menu .EdgeTrace-auth-command-nav-item {
+    width: 100%;
+    text-align: left;
+    justify-content: flex-start;
+    background: rgba(5, 14, 21, 0.62);
+    border: 1px solid rgba(36, 53, 66, 0.66);
+    border-radius: 7px;
+    padding: 0.6rem 0.74rem;
+    min-height: 2.5rem;
+  }
+
+  .EdgeTrace-command-overview-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .EdgeTrace-command-card-1 {
+    margin-top: 0.25rem;
+    padding: 0.92rem;
+  }
+
+  .EdgeTrace-dashboard-main {
+    padding-left: 0.78rem;
+    padding-right: 0.78rem;
+    overflow-x: hidden;
+  }
+}
+
+@media (max-width: 430px) {
+  .EdgeTrace-command-nav .EdgeTrace-command-brand img:last-child,
+  .EdgeTrace-auth-topbar .EdgeTrace-command-brand img:last-child {
+    width: min(7.25rem, 31vw);
+  }
+
+  .EdgeTrace-command-nav-actions .EdgeTrace-command-primary,
+  .EdgeTrace-auth-topbar .EdgeTrace-auth-topbar-primary {
+    min-height: 2.58rem;
+    font-size: 0.8rem;
+    padding-inline: 0.58rem;
+    max-width: calc(100% - 6.7rem);
+  }
+
+  .EdgeTrace-mobile-nav-toggle {
+    width: 2.58rem;
+    height: 2.58rem;
+  }
+}
+
+@media (max-width: 390px) {
+  .EdgeTrace-command-nav-actions .EdgeTrace-command-primary,
+  .EdgeTrace-auth-topbar .EdgeTrace-auth-topbar-primary {
+    max-width: calc(100% - 6.1rem);
+    font-size: 0.77rem;
+  }
+
+  .EdgeTrace-mobile-nav-toggle {
+    width: 2.42rem;
+    height: 2.42rem;
   }
 }
 
