@@ -299,7 +299,10 @@ export function PricingPage({
   return (
     <main className="EdgeTrace-pricing-page">
       <section className="EdgeTrace-pricing-hero">
-        <h1>Simple pricing. Serious edge.</h1>
+        <h1>
+          <span>Simple pricing.</span>
+          <span>Serious edge.</span>
+        </h1>
         <p>
           Use the full EdgeTrace reporting workflow for free. Upgrade to Pro when you want the recurring review loop,
           mistake heatmaps, benchmark percentiles, and next-upload targets.

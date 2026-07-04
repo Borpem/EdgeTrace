@@ -7816,7 +7816,7 @@ textarea:focus-visible {
 .EdgeTrace-pricing-hero {
   width: min(100%, 92rem);
   margin: 0 auto;
-  padding: 4.25rem 0 2.05rem;
+  padding: clamp(4rem, 7vw, 7rem) 0 2.05rem;
   text-align: center;
 }
 
@@ -7836,6 +7836,10 @@ textarea:focus-visible {
   font-weight: 560;
   letter-spacing: 0;
   line-height: 1.03;
+}
+
+.EdgeTrace-pricing-hero h1 span {
+  display: block;
 }
 
 .EdgeTrace-pricing-hero > p {
@@ -8648,7 +8652,7 @@ textarea:focus-visible {
   }
 
   .EdgeTrace-pricing-hero {
-    padding-top: 3rem;
+    padding-top: 2.4rem;
   }
 
   .EdgeTrace-pricing-hero h1 {
