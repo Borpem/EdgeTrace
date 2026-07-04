@@ -7534,6 +7534,21 @@ body {
     display: none;
   }
 
+  .EdgeTrace-auth-topbar .EdgeTrace-auth-command-nav {
+    justify-self: stretch;
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: visible;
+  }
+
+  .EdgeTrace-auth-topbar .EdgeTrace-auth-command-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .EdgeTrace-auth-topbar .EdgeTrace-auth-command-nav .EdgeTrace-auth-command-nav-item:not(.active) {
+    display: inline-flex;
+  }
+
   .EdgeTrace-command-nav nav .EdgeTrace-command-nav-item.active::after,
   .EdgeTrace-auth-topbar .EdgeTrace-auth-command-nav .EdgeTrace-auth-command-nav-item.active::after {
     display: none;
