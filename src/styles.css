@@ -5451,6 +5451,26 @@ body {
   border-radius: 6px !important;
 }
 
+.cl-formFieldInput,
+.cl-formFieldInput:focus {
+  background-color: #050505 !important;
+  color: #f7f7f3 !important;
+  caret-color: #f7f7f3 !important;
+}
+
+.cl-formFieldInput::placeholder {
+  color: #8ea0bd !important;
+}
+
+.cl-formFieldInput:-webkit-autofill,
+.cl-formFieldInput:-webkit-autofill:hover,
+.cl-formFieldInput:-webkit-autofill:focus {
+  -webkit-text-fill-color: #f7f7f3 !important;
+  caret-color: #f7f7f3 !important;
+  box-shadow: 0 0 0 1000px #050505 inset !important;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
 .EdgeTrace-command-card {
   position: relative;
   overflow: hidden;

@@ -5,8 +5,8 @@ export const edgeTraceClerkAppearance = {
     colorTextSecondary: "#b8c7df",
     colorPrimary: "#f7f7f3",
     colorDanger: "#ff5d73",
-    colorInputBackground: "#f7f7f3",
-    colorInputText: "#050505",
+    colorInputBackground: "#050505",
+    colorInputText: "#f7f7f3",
     borderRadius: "0.45rem",
     fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif"
   },
@@ -24,8 +24,8 @@ export const edgeTraceClerkAppearance = {
     formFieldLabel: "text-[#b8c7df]",
     formFieldLabelRow: "text-[#b8c7df]",
     formFieldInput:
-      "border-white/[0.14] bg-[#f7f7f3] text-[#050505] placeholder:text-[#677084] focus:border-[#58d6ff] focus:ring-[#58d6ff]",
-    formFieldInputShowPasswordButton: "text-[#677084] hover:text-[#050505]",
+      "border-white/[0.14] bg-[#050505] text-[#f7f7f3] caret-[#f7f7f3] placeholder:text-[#8ea0bd] focus:border-[#58d6ff] focus:ring-[#58d6ff]",
+    formFieldInputShowPasswordButton: "text-[#8ea0bd] hover:text-[#f7f7f3]",
     formFieldHintText: "text-[#8ea0bd]",
     formFieldErrorText: "text-[#ff5d73]",
     formButtonPrimary: "bg-[#f7f7f3] text-[#050505] hover:bg-white",
