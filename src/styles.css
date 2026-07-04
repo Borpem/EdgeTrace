@@ -5169,7 +5169,7 @@ body {
 
 .EdgeTrace-command-dashboard {
   --command-bg-page: #020405;
-  --command-bg-shell: #060b10;
+  --command-bg-shell: #020405;
   --command-bg-card: #0c141c;
   --command-bg-card-soft: #121c25;
   --command-bg-card-elevated: #111d27;
@@ -5187,9 +5187,7 @@ body {
   --command-pro: #7a8cff;
   display: block;
   min-height: 100vh;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.014), transparent 24rem),
-    var(--command-bg-page);
+  background: var(--command-bg-page);
   padding: 0 0.4rem 0.4rem;
   overflow-x: clip;
 }
@@ -5214,10 +5212,7 @@ body {
   position: relative;
   border: 0;
   border-radius: 0;
-  background:
-    radial-gradient(circle at 18% 0%, rgba(97, 184, 211, 0.022), transparent 25rem),
-    radial-gradient(circle at 88% 2%, rgba(122, 140, 255, 0.022), transparent 30rem),
-    var(--command-bg-shell);
+  background: var(--command-bg-page);
   box-shadow: none;
   color: var(--command-text);
   padding: 0.82rem 1.05rem;
