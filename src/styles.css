@@ -5332,6 +5332,11 @@ body {
   display: none;
 }
 
+.EdgeTrace-command-nav .EdgeTrace-command-mobile-nav-menu,
+.EdgeTrace-auth-topbar .EdgeTrace-auth-mobile-nav-menu {
+  display: none;
+}
+
 .EdgeTrace-command-primary {
   min-height: 2.55rem;
   border: 1px solid rgba(90, 132, 158, 0.3);
