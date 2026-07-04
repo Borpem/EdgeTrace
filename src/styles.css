@@ -9643,6 +9643,317 @@ textarea:focus-visible {
   box-shadow: none;
 }
 
+.EdgeTrace-public-footer {
+  border-top: 1px solid rgba(247, 247, 243, 0.08);
+  background: #020405;
+  color: var(--command-text-secondary);
+}
+
+.EdgeTrace-public-footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding-block: 1.4rem;
+}
+
+.EdgeTrace-public-footer strong {
+  display: block;
+  color: var(--command-text);
+  font-weight: 720;
+}
+
+.EdgeTrace-public-footer p {
+  margin: 0.28rem 0 0;
+  max-width: 34rem;
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+
+.EdgeTrace-public-footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.85rem 1.1rem;
+}
+
+.EdgeTrace-public-footer button {
+  color: var(--command-text-secondary);
+  font-size: 0.82rem;
+  font-weight: 650;
+}
+
+.EdgeTrace-public-footer button:hover {
+  color: var(--command-text);
+}
+
+.EdgeTrace-sample-page,
+.EdgeTrace-legal-page {
+  color: var(--command-text);
+}
+
+.EdgeTrace-sample-hero,
+.EdgeTrace-legal-hero {
+  width: min(100%, 980px);
+  margin-inline: auto;
+  padding: clamp(3.2rem, 6vw, 5.8rem) 0 2.2rem;
+  text-align: center;
+}
+
+.EdgeTrace-sample-eyebrow,
+.EdgeTrace-legal-eyebrow {
+  color: var(--command-blue);
+  font-size: 0.74rem;
+  font-weight: 760;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.EdgeTrace-sample-hero h1,
+.EdgeTrace-legal-hero h1 {
+  margin: 0.7rem auto 0;
+  max-width: 58rem;
+  color: var(--command-text);
+  font-size: clamp(2.8rem, 5vw, 5.6rem);
+  font-weight: 560;
+  letter-spacing: 0;
+  line-height: 1.03;
+}
+
+.EdgeTrace-sample-hero > p,
+.EdgeTrace-legal-hero > p {
+  margin: 1.25rem auto 0;
+  max-width: 48rem;
+  color: var(--command-text-secondary);
+  font-size: 1.05rem;
+  line-height: 1.72;
+}
+
+.EdgeTrace-sample-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-top: 1.9rem;
+}
+
+.EdgeTrace-sample-report-card,
+.EdgeTrace-legal-card,
+.EdgeTrace-sample-disclaimer,
+.EdgeTrace-legal-note {
+  width: min(100%, 1180px);
+  margin-inline: auto;
+  border: 1px solid rgba(36, 53, 66, 0.86);
+  border-radius: 7px;
+  background:
+    radial-gradient(circle at 96% 0%, rgba(97, 184, 211, 0.08), transparent 24rem),
+    linear-gradient(135deg, rgba(16, 25, 33, 0.82), rgba(5, 10, 15, 0.97));
+}
+
+.EdgeTrace-sample-report-card {
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+}
+
+.EdgeTrace-sample-report-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid rgba(90, 132, 158, 0.22);
+  padding-bottom: 1rem;
+}
+
+.EdgeTrace-sample-report-head h2 {
+  margin: 0.35rem 0 0;
+  font-size: clamp(1.55rem, 2.5vw, 2.15rem);
+  font-weight: 620;
+  letter-spacing: 0;
+}
+
+.EdgeTrace-sample-report-head > span {
+  border: 1px solid rgba(214, 173, 79, 0.42);
+  color: var(--command-yellow);
+  padding: 0.28rem 0.52rem;
+  font-size: 0.68rem;
+  font-weight: 760;
+  text-transform: uppercase;
+}
+
+.EdgeTrace-sample-metrics {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.72rem;
+  margin-top: 1rem;
+}
+
+.EdgeTrace-sample-metrics article,
+.EdgeTrace-sample-grid article {
+  border: 1px solid rgba(36, 53, 66, 0.86);
+  border-radius: 6px;
+  background: rgba(3, 9, 14, 0.72);
+  padding: 1rem;
+}
+
+.EdgeTrace-sample-metrics span {
+  display: block;
+  color: var(--command-text-muted);
+  font-size: 0.68rem;
+  font-weight: 760;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.EdgeTrace-sample-metrics strong {
+  display: block;
+  margin-top: 0.85rem;
+  font-size: 1.45rem;
+  font-weight: 620;
+}
+
+.EdgeTrace-sample-metrics .tone-loss strong,
+.EdgeTrace-sample-score strong {
+  color: var(--command-red);
+}
+
+.EdgeTrace-sample-metrics .tone-profit strong {
+  color: var(--command-green);
+}
+
+.EdgeTrace-sample-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 0.82rem;
+  margin-top: 0.82rem;
+}
+
+.EdgeTrace-sample-grid h3 {
+  margin: 0.65rem 0 0;
+  font-size: clamp(1.7rem, 3vw, 2.5rem);
+  font-weight: 560;
+  letter-spacing: 0;
+}
+
+.EdgeTrace-sample-grid p,
+.EdgeTrace-sample-findings p,
+.EdgeTrace-legal-card p,
+.EdgeTrace-sample-disclaimer p,
+.EdgeTrace-legal-note p {
+  color: var(--command-text-secondary);
+  line-height: 1.65;
+}
+
+.EdgeTrace-sample-score {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  margin-top: 0.65rem;
+}
+
+.EdgeTrace-sample-score strong {
+  font-size: clamp(3.4rem, 7vw, 5.3rem);
+  font-weight: 560;
+  line-height: 1;
+}
+
+.EdgeTrace-sample-score span {
+  color: var(--command-text-secondary);
+}
+
+.EdgeTrace-sample-findings {
+  display: grid;
+  width: min(100%, 1180px);
+  margin: 1rem auto 0;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.82rem;
+}
+
+.EdgeTrace-sample-findings article {
+  border: 1px solid rgba(36, 53, 66, 0.86);
+  border-radius: 7px;
+  background: rgba(7, 15, 22, 0.84);
+  padding: 1.1rem;
+}
+
+.EdgeTrace-sample-findings svg {
+  color: var(--command-blue);
+}
+
+.EdgeTrace-sample-findings h2,
+.EdgeTrace-legal-card h2 {
+  margin: 0.8rem 0 0;
+  font-size: 1.12rem;
+  font-weight: 680;
+  letter-spacing: 0;
+}
+
+.EdgeTrace-sample-disclaimer,
+.EdgeTrace-legal-note {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 1rem;
+  padding: 1rem 1.1rem;
+}
+
+.EdgeTrace-sample-disclaimer svg,
+.EdgeTrace-legal-note svg {
+  flex: 0 0 auto;
+  color: var(--command-yellow);
+}
+
+.EdgeTrace-legal-card {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  overflow: hidden;
+}
+
+.EdgeTrace-legal-card article {
+  border-bottom: 1px solid rgba(90, 132, 158, 0.18);
+  padding: 1.35rem;
+}
+
+.EdgeTrace-legal-card article:nth-child(odd) {
+  border-right: 1px solid rgba(90, 132, 158, 0.18);
+}
+
+.EdgeTrace-legal-note {
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.EdgeTrace-legal-note p {
+  margin: 0;
+}
+
+@media (max-width: 780px) {
+  .EdgeTrace-public-footer-inner,
+  .EdgeTrace-sample-report-head,
+  .EdgeTrace-legal-note {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .EdgeTrace-public-footer nav {
+    justify-content: flex-start;
+  }
+
+  .EdgeTrace-sample-metrics,
+  .EdgeTrace-sample-grid,
+  .EdgeTrace-sample-findings,
+  .EdgeTrace-legal-card {
+    grid-template-columns: 1fr;
+  }
+
+  .EdgeTrace-legal-card article:nth-child(odd) {
+    border-right: 0;
+  }
+
+  .EdgeTrace-sample-disclaimer {
+    align-items: flex-start;
+  }
+}
+
 .how-page {
   --how-bg: #020405;
   --how-panel: #0b151d;

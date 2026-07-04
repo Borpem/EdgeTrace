@@ -264,7 +264,7 @@ export async function runTradeDiagnostics(
 }
 
 function shouldUseLocalDiagnosticsFallback(response: Response) {
-  return response.status >= 500;
+  return !import.meta.env.PROD && response.status >= 500;
 }
 
 function createLocalDiagnosticReport(

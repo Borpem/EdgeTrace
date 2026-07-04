@@ -486,7 +486,7 @@ function FinalCta({
         <ArrowRight size={28} aria-hidden="true" />
       </div>
       <div>
-        <h2>Ready to gain the edge?</h2>
+        <h2>Ready to review your trading data?</h2>
         <p>Start with the free workflow, then upgrade to Pro when you want recurring review targets, heatmaps, and benchmark context.</p>
       </div>
       <div>

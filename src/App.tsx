@@ -38,16 +38,18 @@ import { DashboardPage } from "./pages/DashboardPage";
 import { DrilldownPage } from "./pages/DrilldownPage";
 import { FeatureEducationPage } from "./pages/FeatureEducationPage";
 import { FeedbackPage } from "./pages/FeedbackPage";
+import { LegalPage, type LegalPageKind } from "./pages/LegalPage";
 import { LoginPage } from "./pages/LoginPage";
 import { PricingPage } from "./pages/PricingPage";
 import { ReconstructionAuditPage } from "./pages/ReconstructionAuditPage";
 import { ReportsPage } from "./pages/ReportsPage";
+import { SampleReportPage } from "./pages/SampleReportPage";
 import { SignupPage } from "./pages/SignupPage";
 import { StrategyDashboardPage } from "./pages/StrategyDashboardPage";
 import { UploadPage } from "./pages/UploadPage";
 import type { DiagnosticsResult, ReportSummary, UserProfile } from "./types";
 
-type Page = "home" | "pricing" | "login" | "signup" | "strategyDashboard" | "upload" | "reports" | "collections" | "collectionDetail" | "collectionAttribution" | "collectionReviewWorkspace" | "compare" | "features" | "feedback" | "adminFeedback" | "account" | "dashboard" | "drilldown" | "compareDrilldown" | "reconstructionAudit";
+type Page = "home" | "sampleReport" | "pricing" | "privacy" | "terms" | "disclaimer" | "login" | "signup" | "strategyDashboard" | "upload" | "reports" | "collections" | "collectionDetail" | "collectionAttribution" | "collectionReviewWorkspace" | "compare" | "features" | "feedback" | "adminFeedback" | "account" | "dashboard" | "drilldown" | "compareDrilldown" | "reconstructionAudit";
 type DrilldownSelection = { dimension: BreakdownDimension; group: string };
 type CompareDrilldownSelection = {
   reportA: DiagnosticsResult;
@@ -104,6 +106,14 @@ export function App() {
         return "/";
       case "pricing":
         return "/pricing";
+      case "sampleReport":
+        return "/sample-report";
+      case "privacy":
+        return "/privacy";
+      case "terms":
+        return "/terms";
+      case "disclaimer":
+        return "/disclaimer";
       case "login":
         return "/login";
       case "signup":
@@ -355,12 +365,28 @@ export function App() {
       setPage("pricing");
       return;
     }
+    if (pathname === "/sample-report") {
+      setPage("sampleReport");
+      return;
+    }
+    if (pathname === "/privacy") {
+      setPage("privacy");
+      return;
+    }
+    if (pathname === "/terms") {
+      setPage("terms");
+      return;
+    }
+    if (pathname === "/disclaimer") {
+      setPage("disclaimer");
+      return;
+    }
     if (pathname === "/how-it-works") {
       navigate("home", "/", true);
       return;
     }
     if (pathname === "/demo") {
-      navigate("home", "/", true);
+      navigate("sampleReport", "/sample-report", true);
       return;
     }
     if (pathname === "/login") {
@@ -578,6 +604,7 @@ export function App() {
   ];
   const useReportDashboardShell = page === "dashboard" && Boolean(result);
   const useAuthenticatedAppShell = isAuthenticated && !useReportDashboardShell && isAuthenticatedAppPage(page);
+  const showPublicFooter = !useReportDashboardShell && !useAuthenticatedAppShell;
 
   const rootClassName = [
     "EdgeTrace-contours min-h-screen text-ink",
@@ -680,6 +707,12 @@ export function App() {
                 Pricing
               </button>
               <button
+                className={`EdgeTrace-nav-link ${page === "sampleReport" ? "EdgeTrace-nav-link-active" : ""}`}
+                onClick={() => navigate("sampleReport")}
+              >
+                Sample Report
+              </button>
+              <button
                 className={`EdgeTrace-nav-link ${page === "login" ? "EdgeTrace-nav-link-active" : ""}`}
                 onClick={() => navigate("login")}
               >
@@ -745,6 +778,7 @@ export function App() {
           isAuthenticated={isAuthenticated}
           onAnalyze={() => navigate(isAuthenticated ? "upload" : "signup", isAuthenticated ? "/app/upload" : "/signup?next=/app/upload")}
           onPricing={() => navigate("pricing", "/pricing")}
+          onViewSampleReport={() => navigate("sampleReport", "/sample-report")}
           onSignup={() => navigate("signup", "/signup?next=/app/upload")}
           onOpenReport={async (reportId) => {
             try {
@@ -766,6 +800,15 @@ export function App() {
           onStart={() => navigate(isAuthenticated ? "upload" : "signup", isAuthenticated ? "/app/upload" : "/signup?next=/app/upload")}
           onPlanChanged={setUserProfile}
         />
+      )}
+      {page === "sampleReport" && (
+        <SampleReportPage
+          onStart={() => navigate(isAuthenticated ? "upload" : "signup", isAuthenticated ? "/app/upload" : "/signup?next=/app/upload")}
+          onPricing={() => navigate("pricing", "/pricing")}
+        />
+      )}
+      {(page === "privacy" || page === "terms" || page === "disclaimer") && (
+        <LegalPage kind={page as LegalPageKind} onContact={() => navigate(isAuthenticated ? "feedback" : "signup", isAuthenticated ? "/app/feedback" : "/signup?next=/app/feedback")} />
       )}
       {page === "account" && isAuthenticated && (
         <AccountPage
@@ -1058,7 +1101,56 @@ export function App() {
       {activeFeatureIntro && (
         <FeatureIntroPrompt intro={featureIntros[activeFeatureIntro]} onClose={closeFeatureIntroPrompt} />
       )}
+      {showPublicFooter && (
+        <PublicFooter
+          onHome={() => navigate("home", "/")}
+          onSample={() => navigate("sampleReport", "/sample-report")}
+          onPricing={() => navigate("pricing", "/pricing")}
+          onPrivacy={() => navigate("privacy", "/privacy")}
+          onTerms={() => navigate("terms", "/terms")}
+          onDisclaimer={() => navigate("disclaimer", "/disclaimer")}
+          onContact={() => navigate(isAuthenticated ? "feedback" : "signup", isAuthenticated ? "/app/feedback" : "/signup?next=/app/feedback")}
+        />
+      )}
     </div>
+  );
+}
+
+function PublicFooter({
+  onHome,
+  onSample,
+  onPricing,
+  onPrivacy,
+  onTerms,
+  onDisclaimer,
+  onContact
+}: {
+  onHome: () => void;
+  onSample: () => void;
+  onPricing: () => void;
+  onPrivacy: () => void;
+  onTerms: () => void;
+  onDisclaimer: () => void;
+  onContact: () => void;
+}) {
+  return (
+    <footer className="EdgeTrace-public-footer">
+      <div className="EdgeTrace-shell EdgeTrace-public-footer-inner">
+        <div>
+          <strong>EdgeTrace</strong>
+          <p>Trade analytics for reviewing completed trade history. Educational and informational use only.</p>
+        </div>
+        <nav aria-label="Footer navigation">
+          <button onClick={onHome}>How It Works</button>
+          <button onClick={onSample}>Sample Report</button>
+          <button onClick={onPricing}>Pricing</button>
+          <button onClick={onContact}>Support</button>
+          <button onClick={onPrivacy}>Privacy</button>
+          <button onClick={onTerms}>Terms</button>
+          <button onClick={onDisclaimer}>Disclaimer</button>
+        </nav>
+      </div>
+    </footer>
   );
 }
 

@@ -31,6 +31,9 @@ import { canCreateReport, canUseBrokerAdapter, formatLimit, getPlanConfig } from
 import type { DiagnosticsResult, ImportProvenance, NormalizedTrade, ReportSummary, UserProfile } from "../types";
 import { listReports, runTradeDiagnostics, uploadHtmlTrades, uploadTrades } from "../lib/api";
 
+const MAX_CLIENT_UPLOAD_BYTES = 8 * 1024 * 1024;
+const SUPPORTED_UPLOAD_EXTENSION = /\.(csv|html?|xhtml)$/i;
+
 export function UploadPage({
   profile,
   onComplete,
@@ -142,6 +145,19 @@ export function UploadPage({
   }, [profile?.userId]);
 
   const parseFile = (file: File) => {
+    if (!SUPPORTED_UPLOAD_EXTENSION.test(file.name)) {
+      setError("Upload a CSV export or an IBKR HTML statement. Other file types are not supported.");
+      setWarning("");
+      setUploadWarning("");
+      return;
+    }
+    if (file.size > MAX_CLIENT_UPLOAD_BYTES) {
+      setError("This upload is too large to process in one request. Export a smaller date range and try again.");
+      setWarning("");
+      setUploadWarning("");
+      return;
+    }
+
     setIsParsing(true);
     setError("");
     setWarning("");
