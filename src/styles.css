@@ -7542,7 +7542,7 @@ body {
   }
 
   .EdgeTrace-auth-topbar .EdgeTrace-auth-command-nav .EdgeTrace-auth-command-nav-item:not(.active) {
-    display: inline-flex;
+    display: none;
   }
 
   .EdgeTrace-command-nav nav .EdgeTrace-command-nav-item.active::after,
@@ -7576,7 +7576,7 @@ body {
     flex: 1 1 auto;
     min-height: 2.72rem;
     min-width: 0;
-    max-width: min(100%, calc(100% - 8.8rem));
+    max-width: min(100%, calc(100% - 3.35rem));
     margin: 0;
     white-space: nowrap;
     overflow: hidden;
@@ -7588,7 +7588,13 @@ body {
     width: 2.72rem;
     height: 2.72rem;
     flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
     border-radius: 6px;
+  }
+
+  .EdgeTrace-auth-topbar .EdgeTrace-account-utility {
+    display: none;
   }
 
   .EdgeTrace-dashboard-account-control {
@@ -7676,7 +7682,8 @@ body {
     background: rgba(90, 132, 158, 0.2);
   }
 
-  .EdgeTrace-command-mobile-nav-menu .EdgeTrace-mobile-nav-account-item {
+  .EdgeTrace-command-mobile-nav-menu .EdgeTrace-mobile-nav-account-item,
+  .EdgeTrace-auth-mobile-nav-menu .EdgeTrace-mobile-nav-account-item {
     display: inline-flex;
     align-items: center;
     justify-content: space-between;
@@ -7701,7 +7708,8 @@ body {
     min-height: 2.32rem;
   }
 
-  .EdgeTrace-command-nav.is-mobile-open .EdgeTrace-command-mobile-nav-menu .EdgeTrace-mobile-nav-account-item {
+  .EdgeTrace-command-nav.is-mobile-open .EdgeTrace-command-mobile-nav-menu .EdgeTrace-mobile-nav-account-item,
+  .EdgeTrace-auth-topbar.is-mobile-open .EdgeTrace-auth-mobile-nav-menu .EdgeTrace-mobile-nav-account-item {
     justify-content: space-between;
   }
 
@@ -7732,7 +7740,7 @@ body {
     min-height: 2.58rem;
     font-size: 0.8rem;
     padding-inline: 0.58rem;
-    max-width: calc(100% - 6.7rem);
+    max-width: calc(100% - 3.15rem);
   }
 
   .EdgeTrace-mobile-nav-toggle {
@@ -7744,7 +7752,7 @@ body {
 @media (max-width: 390px) {
   .EdgeTrace-command-nav-actions .EdgeTrace-command-primary,
   .EdgeTrace-auth-topbar .EdgeTrace-auth-topbar-primary {
-    max-width: calc(100% - 6.1rem);
+    max-width: calc(100% - 3rem);
     font-size: 0.77rem;
   }
 

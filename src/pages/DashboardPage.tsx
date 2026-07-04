@@ -812,7 +812,7 @@ export function DashboardPage({
                   aria-label={isMobileNavOpen ? "Close section menu" : "Open section menu"}
                   onClick={() => setIsMobileNavOpen((open) => !open)}
                 >
-                  {isMobileNavOpen ? <X size={18} aria-hidden="true" /> : <Menu size={18} aria-hidden="true" />}
+                  {isMobileNavOpen ? <X size={24} aria-hidden="true" /> : <Menu size={24} aria-hidden="true" />}
                 </button>
               )}
               {accountControl && <div className="EdgeTrace-dashboard-account-control EdgeTrace-dashboard-account-control--nav">{accountControl}</div>}
