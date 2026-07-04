@@ -2,7 +2,6 @@ import Papa from "papaparse";
 import { UploadCloud } from "lucide-react";
 import { useEffect, useState } from "react";
 import { DisclosurePanel } from "../components/DisclosurePanel";
-import { CommandPath } from "../components/onboarding/CommandPath";
 import { WorkflowPanel } from "../components/ui/Primitives";
 import { WorkflowDiagram } from "../components/visuals/WorkflowDiagram";
 import { trackEvent } from "../lib/analytics";
@@ -372,10 +371,6 @@ export function UploadPage({
     document.getElementById("mapping-review")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  const focusUploadArea = () => {
-    document.getElementById("trade-file-import")?.scrollIntoView({ behavior: "smooth", block: "center" });
-  };
-
   return (
     <main className={`EdgeTrace-shell py-10 ${showStickyActionBar ? "pb-44 md:pb-36" : ""}`}>
       <div className="EdgeTrace-page-header mb-8 grid gap-8 xl:grid-cols-[1fr_420px] xl:items-end">
@@ -466,8 +461,6 @@ export function UploadPage({
           )}
         </div>
       </div>
-
-      <CommandPath className="mb-8" context="upload" onAnalyze={focusUploadArea} />
 
       <label
         id="trade-file-import"
