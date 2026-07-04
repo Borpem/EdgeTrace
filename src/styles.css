@@ -7767,11 +7767,17 @@ textarea:focus-visible {
 .EdgeTrace-pricing-page {
   --pricing-max: 1170px;
   min-height: 100vh;
-  padding: 0 1.5rem 3rem;
+  padding: 2rem 1.5rem 3rem;
   color: #f7f7f3;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.016), transparent 24rem),
     #020405;
+}
+
+@media (min-width: 768px) {
+  .EdgeTrace-pricing-page {
+    padding-top: 3rem;
+  }
 }
 
 .EdgeTrace-pricing-page .EdgeTrace-pricing-primary,
