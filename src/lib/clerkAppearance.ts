@@ -16,12 +16,11 @@ export const edgeTraceClerkAppearance = {
     card: "w-full bg-[#101010] border border-white/[0.12] shadow-none text-[#f7f7f3]",
     headerTitle: "text-[#f7f7f3]",
     headerSubtitle: "text-[#b8c7df]",
-    socialButtons: "hidden",
-    socialButtonsBlockButton: "hidden",
-    socialButtonsBlockButtonText: "hidden",
-    dividerRow: "hidden",
-    dividerLine: "hidden",
-    dividerText: "hidden",
+    socialButtonsBlockButton:
+      "border border-white/[0.14] bg-white/[0.06] text-[#f7f7f3] hover:bg-white/[0.1]",
+    socialButtonsBlockButtonText: "text-[#f7f7f3] font-semibold",
+    dividerLine: "bg-white/[0.12]",
+    dividerText: "text-[#8ea0bd]",
     formFieldLabel: "text-[#b8c7df]",
     formFieldLabelRow: "text-[#b8c7df]",
     formFieldInput:

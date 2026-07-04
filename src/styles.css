@@ -5471,13 +5471,6 @@ body {
   transition: background-color 9999s ease-in-out 0s;
 }
 
-.cl-socialButtons,
-.cl-socialButtonsBlockButton,
-.cl-socialButtonsBlockButtonText,
-.cl-dividerRow {
-  display: none !important;
-}
-
 .EdgeTrace-command-card {
   position: relative;
   overflow: hidden;
