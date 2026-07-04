@@ -38,6 +38,18 @@ const serverIndex = readFileSync(join(root, "server/index.ts"), "utf8");
 for (const route of requiredServerRoutes) {
   if (!serverIndex.includes(route)) failures.push(`Missing expected server route: ${route}`);
 }
+if (!serverIndex.includes("\"worker-src 'self' blob:\"")) {
+  failures.push("Backend CSP must allow first-party blob workers.");
+}
+
+const vercelConfig = JSON.parse(readFileSync(join(root, "vercel.json"), "utf8"));
+const vercelCsp = vercelConfig.headers
+  ?.flatMap((entry) => entry.headers ?? [])
+  ?.find((header) => header.key === "Content-Security-Policy")
+  ?.value;
+if (!vercelCsp?.includes("worker-src 'self' blob:")) {
+  failures.push("Vercel CSP must allow first-party blob workers.");
+}
 
 const appSource = readFileSync(join(root, "src/App.tsx"), "utf8");
 for (const route of requiredClientRoutes) {
