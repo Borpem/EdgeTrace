@@ -5191,7 +5191,7 @@ body {
     linear-gradient(180deg, rgba(255, 255, 255, 0.014), transparent 24rem),
     var(--command-bg-page);
   padding: 0 0.4rem 0.4rem;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 .EdgeTrace-command-dashboard > .EdgeTrace-dashboard-sidebar,
@@ -5221,7 +5221,7 @@ body {
   box-shadow: none;
   color: var(--command-text);
   padding: 0.82rem 1.05rem;
-  overflow-x: hidden;
+  overflow: visible;
 }
 
 .EdgeTrace-auth-topbar-shell.EdgeTrace-command-shell {
@@ -7471,13 +7471,12 @@ body {
     width: 100%;
     min-width: 0;
     grid-template-columns: 1fr auto;
-    grid-template-rows: auto auto;
+    grid-template-rows: auto auto auto;
     max-width: 100%;
     row-gap: 0.56rem;
     gap: 0.56rem;
     align-items: start;
-    overflow-x: hidden;
-    overflow-y: visible;
+    overflow: visible;
     min-height: auto;
     padding: 0.08rem 0 0.62rem;
   }
@@ -7496,9 +7495,7 @@ body {
   }
 
   .EdgeTrace-command-nav nav,
-  .EdgeTrace-auth-topbar .EdgeTrace-auth-command-nav,
-  .EdgeTrace-command-nav .EdgeTrace-command-mobile-nav-menu,
-  .EdgeTrace-auth-topbar .EdgeTrace-auth-mobile-nav-menu {
+  .EdgeTrace-auth-topbar .EdgeTrace-auth-command-nav {
     grid-column: 1 / -1;
     grid-row: 2;
     overflow: visible;
@@ -7506,6 +7503,14 @@ body {
     white-space: nowrap;
     scrollbar-width: none;
     min-width: 0;
+  }
+
+  .EdgeTrace-command-nav .EdgeTrace-command-mobile-nav-menu,
+  .EdgeTrace-auth-topbar .EdgeTrace-auth-mobile-nav-menu {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    min-width: 0;
+    white-space: nowrap;
   }
 
   .EdgeTrace-command-nav nav,
@@ -7521,8 +7526,7 @@ body {
     padding: 0;
     -webkit-overflow-scrolling: touch;
     flex-wrap: nowrap;
-    overflow-x: hidden;
-    overflow-y: visible;
+    overflow: visible;
   }
 
   .EdgeTrace-command-nav nav .EdgeTrace-command-nav-item:not(.active),
@@ -7589,15 +7593,21 @@ body {
   }
 
   .EdgeTrace-dashboard-account-control .EdgeTrace-account-utility-menu {
-    right: 0;
+    position: fixed;
+    top: 4.85rem;
+    right: 0.78rem;
     left: auto;
-    width: min(14.5rem, calc(100% - 1rem));
+    width: min(14.5rem, calc(100vw - 1.56rem));
+    max-width: calc(100vw - 1.56rem);
   }
 
   .EdgeTrace-auth-topbar .EdgeTrace-account-utility-menu {
-    width: min(14.5rem, calc(100% - 1rem));
-    right: 0;
+    position: fixed;
+    top: 4.85rem;
+    right: 0.78rem;
     left: auto;
+    width: min(14.5rem, calc(100vw - 1.56rem));
+    max-width: calc(100vw - 1.56rem);
   }
 
   .EdgeTrace-command-card-1 {
@@ -7680,7 +7690,7 @@ body {
   .EdgeTrace-dashboard-main {
     padding-left: 0.78rem;
     padding-right: 0.78rem;
-    overflow-x: hidden;
+    overflow: visible;
   }
 }
 

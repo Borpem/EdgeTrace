@@ -1264,7 +1264,7 @@ function AccountUtility({
         aria-label="Open account menu"
         onClick={() => setMenuOpen((open) => !open)}
       >
-        <Menu size={18} aria-hidden="true" />
+        <UserCircle size={18} aria-hidden="true" />
       </button>
       {menuOpen && (
         <div className="EdgeTrace-account-utility-menu" role="menu">
