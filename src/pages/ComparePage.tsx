@@ -9,7 +9,6 @@ import {
   XAxis,
   YAxis
 } from "recharts";
-import { CommandPath } from "../components/onboarding/CommandPath";
 import { PaywallGate } from "../components/PaywallGate";
 import { formatReportType } from "../components/ReportDetailsEditor";
 import { SavedComparisonEditor } from "../components/SavedComparisonEditor";
@@ -200,10 +199,6 @@ export function ComparePage({
         ]
       : [];
 
-  const focusComparisonControls = () => {
-    document.querySelector("[data-testid='report-b-select']")?.scrollIntoView({ behavior: "smooth", block: "center" });
-  };
-
   return (
     <main className="EdgeTrace-shell py-10" data-testid="compare-page">
       <div className="EdgeTrace-page-header mb-8 grid gap-8 xl:grid-cols-[1fr_360px] xl:items-end">
@@ -225,8 +220,6 @@ export function ComparePage({
           </button>
         </div>
       </div>
-
-      <CommandPath className="mb-8" context="compare" onAnalyze={onAnalyze} onCompare={focusComparisonControls} />
 
       {error && <div className="mb-5 rounded-md border border-loss/60 bg-loss/10 p-4 text-loss">{error}</div>}
 
