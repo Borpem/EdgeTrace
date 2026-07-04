@@ -796,9 +796,10 @@ export function DashboardPage({
               </button>
               {accountControl && <div className="EdgeTrace-dashboard-account-control">{accountControl}</div>}
             </div>
-            <nav
+            <div
               aria-label="Dashboard navigation (all sections)"
               className="EdgeTrace-mobile-nav-menu EdgeTrace-command-mobile-nav-menu"
+              role="navigation"
             >
               {commandNavItems
                 .filter((item) => item.label !== activeCommandNavLabel)
@@ -811,7 +812,7 @@ export function DashboardPage({
                     {label}
                   </button>
                 ))}
-            </nav>
+            </div>
           </header>
 
           <section className="EdgeTrace-command-card EdgeTrace-command-card-1">

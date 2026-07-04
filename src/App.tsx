@@ -1162,7 +1162,11 @@ function AuthenticatedTopbar({
             onSignOut={onSignOut}
           />
         </div>
-        <nav aria-label="Application navigation (all sections)" className="EdgeTrace-mobile-nav-menu EdgeTrace-auth-mobile-nav-menu">
+        <div
+          aria-label="Application navigation (all sections)"
+          className="EdgeTrace-mobile-nav-menu EdgeTrace-auth-mobile-nav-menu"
+          role="navigation"
+        >
           {navItems
             .filter(({ target }) => target !== activeNavPage)
             .map(({ target, label, action }) => (
@@ -1174,7 +1178,7 @@ function AuthenticatedTopbar({
                 {label}
               </button>
             ))}
-        </nav>
+        </div>
         <div className="EdgeTrace-auth-topbar-context" aria-hidden="true">
           <p>{activeLabel}</p>
           <span>{profile?.planId ? `${profile.planId.toUpperCase()} plan` : "Workspace"}</span>
