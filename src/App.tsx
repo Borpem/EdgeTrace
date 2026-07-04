@@ -1100,6 +1100,7 @@ function AuthenticatedTopbar({
   onSignOut: () => void;
 }) {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const [isMobileNavigation, setIsMobileNavigation] = useState(false);
   const navItems: Array<{ target: Page; label: string; action: () => void }> = [
     { target: "strategyDashboard", label: "Dashboard", action: onDashboard },
     { target: "upload", label: "Import Trades", action: onAnalyze },
@@ -1110,6 +1111,18 @@ function AuthenticatedTopbar({
     { target: "feedback", label: "Feedback", action: onFeedback }
   ];
 
+  useEffect(() => {
+    const query = window.matchMedia("(max-width: 767px)");
+    const updateNavigationMode = () => {
+      setIsMobileNavigation(query.matches);
+      if (!query.matches) setIsMobileNavOpen(false);
+    };
+
+    updateNavigationMode();
+    query.addEventListener("change", updateNavigationMode);
+    return () => query.removeEventListener("change", updateNavigationMode);
+  }, []);
+
   const handleNavAction = (action: () => void) => {
     setIsMobileNavOpen(false);
     action();
@@ -1118,7 +1131,7 @@ function AuthenticatedTopbar({
   const topbarClassName = [
     "EdgeTrace-auth-topbar",
     "EdgeTrace-command-nav",
-    isMobileNavOpen ? "is-mobile-open" : ""
+    isMobileNavigation && isMobileNavOpen ? "is-mobile-open" : ""
   ]
     .filter(Boolean)
     .join(" ");
@@ -1145,15 +1158,17 @@ function AuthenticatedTopbar({
           <button className="EdgeTrace-auth-topbar-primary EdgeTrace-command-primary" onClick={onAnalyze}>
             + New Report
           </button>
-          <button
-            className="EdgeTrace-mobile-nav-toggle"
-            type="button"
-            aria-expanded={isMobileNavOpen}
-            aria-label={isMobileNavOpen ? "Close section menu" : "Open section menu"}
-            onClick={() => setIsMobileNavOpen((open) => !open)}
-          >
-            {isMobileNavOpen ? <X size={18} aria-hidden="true" /> : <Menu size={18} aria-hidden="true" />}
-          </button>
+          {isMobileNavigation && (
+            <button
+              className="EdgeTrace-mobile-nav-toggle"
+              type="button"
+              aria-expanded={isMobileNavOpen}
+              aria-label={isMobileNavOpen ? "Close section menu" : "Open section menu"}
+              onClick={() => setIsMobileNavOpen((open) => !open)}
+            >
+              {isMobileNavOpen ? <X size={18} aria-hidden="true" /> : <Menu size={18} aria-hidden="true" />}
+            </button>
+          )}
           <AccountUtility
             userName={userName}
             profile={profile}
@@ -1162,23 +1177,25 @@ function AuthenticatedTopbar({
             onSignOut={onSignOut}
           />
         </div>
-        <div
-          aria-label="Application navigation (all sections)"
-          className="EdgeTrace-mobile-nav-menu EdgeTrace-auth-mobile-nav-menu"
-          role="navigation"
-        >
-          {navItems
-            .filter(({ target }) => target !== activeNavPage)
-            .map(({ target, label, action }) => (
-              <button
-                key={label}
-                className="EdgeTrace-auth-command-nav-item"
-                onClick={() => handleNavAction(action)}
-              >
-                {label}
-              </button>
-            ))}
-        </div>
+        {isMobileNavigation && (
+          <div
+            aria-label="Application navigation (all sections)"
+            className="EdgeTrace-mobile-nav-menu EdgeTrace-auth-mobile-nav-menu"
+            role="navigation"
+          >
+            {navItems
+              .filter(({ target }) => target !== activeNavPage)
+              .map(({ target, label, action }) => (
+                <button
+                  key={label}
+                  className="EdgeTrace-auth-command-nav-item"
+                  onClick={() => handleNavAction(action)}
+                >
+                  {label}
+                </button>
+              ))}
+          </div>
+        )}
         <div className="EdgeTrace-auth-topbar-context" aria-hidden="true">
           <p>{activeLabel}</p>
           <span>{profile?.planId ? `${profile.planId.toUpperCase()} plan` : "Workspace"}</span>

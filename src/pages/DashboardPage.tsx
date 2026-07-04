@@ -241,6 +241,7 @@ export function DashboardPage({
   const [reportSelectorError, setReportSelectorError] = useState("");
   const [expandedDashboardSections, setExpandedDashboardSections] = useState<DashboardDisclosureId[]>([]);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const [isMobileNavigation, setIsMobileNavigation] = useState(false);
   const [dashboardProFeaturePrompt, setDashboardProFeaturePrompt] = useState<ProFeaturePromptState | null>(null);
 
   const trades = Array.isArray(result.trades) ? result.trades : [];
@@ -439,6 +440,18 @@ export function DashboardPage({
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [walkthroughOpen]);
+
+  useEffect(() => {
+    const query = window.matchMedia("(max-width: 767px)");
+    const updateNavigationMode = () => {
+      setIsMobileNavigation(query.matches);
+      if (!query.matches) setIsMobileNavOpen(false);
+    };
+
+    updateNavigationMode();
+    query.addEventListener("change", updateNavigationMode);
+    return () => query.removeEventListener("change", updateNavigationMode);
+  }, []);
 
   const openWalkthrough = () => {
     setGuideStep(0);
@@ -763,7 +776,7 @@ export function DashboardPage({
           <header
             className={[
               "EdgeTrace-command-nav",
-              isMobileNavOpen ? "is-mobile-open" : ""
+              isMobileNavigation && isMobileNavOpen ? "is-mobile-open" : ""
             ]
               .filter(Boolean)
               .join(" ")}
@@ -785,34 +798,38 @@ export function DashboardPage({
             </nav>
             <div className="EdgeTrace-command-nav-actions">
               <button className="EdgeTrace-command-primary" onClick={onCreateReport}>+ New Report</button>
-              <button
-                className="EdgeTrace-mobile-nav-toggle"
-                type="button"
-                aria-expanded={isMobileNavOpen}
-                aria-label={isMobileNavOpen ? "Close section menu" : "Open section menu"}
-                onClick={() => setIsMobileNavOpen((open) => !open)}
-              >
-                {isMobileNavOpen ? <X size={18} aria-hidden="true" /> : <Menu size={18} aria-hidden="true" />}
-              </button>
+              {isMobileNavigation && (
+                <button
+                  className="EdgeTrace-mobile-nav-toggle"
+                  type="button"
+                  aria-expanded={isMobileNavOpen}
+                  aria-label={isMobileNavOpen ? "Close section menu" : "Open section menu"}
+                  onClick={() => setIsMobileNavOpen((open) => !open)}
+                >
+                  {isMobileNavOpen ? <X size={18} aria-hidden="true" /> : <Menu size={18} aria-hidden="true" />}
+                </button>
+              )}
               {accountControl && <div className="EdgeTrace-dashboard-account-control">{accountControl}</div>}
             </div>
-            <div
-              aria-label="Dashboard navigation (all sections)"
-              className="EdgeTrace-mobile-nav-menu EdgeTrace-command-mobile-nav-menu"
-              role="navigation"
-            >
-              {commandNavItems
-                .filter((item) => item.label !== activeCommandNavLabel)
-                .map(({ label, action }) => (
-                  <button
-                    key={label}
-                    className="EdgeTrace-command-nav-item"
-                    onClick={() => handleCommandNavAction(action)}
-                  >
-                    {label}
-                  </button>
-                ))}
-            </div>
+            {isMobileNavigation && (
+              <div
+                aria-label="Dashboard navigation (all sections)"
+                className="EdgeTrace-mobile-nav-menu EdgeTrace-command-mobile-nav-menu"
+                role="navigation"
+              >
+                {commandNavItems
+                  .filter((item) => item.label !== activeCommandNavLabel)
+                  .map(({ label, action }) => (
+                    <button
+                      key={label}
+                      className="EdgeTrace-command-nav-item"
+                      onClick={() => handleCommandNavAction(action)}
+                    >
+                      {label}
+                    </button>
+                  ))}
+              </div>
+            )}
           </header>
 
           <section className="EdgeTrace-command-card EdgeTrace-command-card-1">
