@@ -604,7 +604,7 @@ export function App() {
   ];
   const useReportDashboardShell = page === "dashboard" && Boolean(result);
   const useAuthenticatedAppShell = isAuthenticated && !useReportDashboardShell && isAuthenticatedAppPage(page);
-  const showPublicFooter = !useReportDashboardShell && !useAuthenticatedAppShell;
+  const showPublicFooter = true;
 
   const rootClassName = [
     "EdgeTrace-contours min-h-screen text-ink",
