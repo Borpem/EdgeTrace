@@ -41,6 +41,9 @@ for (const route of requiredServerRoutes) {
 if (!serverIndex.includes("\"worker-src 'self' blob:\"")) {
   failures.push("Backend CSP must allow first-party blob workers.");
 }
+if (!serverIndex.includes("https://clerk.edgetrace.app")) {
+  failures.push("Backend CSP must allow the production Clerk custom domain.");
+}
 
 const vercelConfig = JSON.parse(readFileSync(join(root, "vercel.json"), "utf8"));
 const vercelCsp = vercelConfig.headers
@@ -50,10 +53,24 @@ const vercelCsp = vercelConfig.headers
 if (!vercelCsp?.includes("worker-src 'self' blob:")) {
   failures.push("Vercel CSP must allow first-party blob workers.");
 }
+if (!vercelCsp?.includes("https://clerk.edgetrace.app")) {
+  failures.push("Vercel CSP must allow the production Clerk custom domain.");
+}
 
 const appSource = readFileSync(join(root, "src/App.tsx"), "utf8");
 for (const route of requiredClientRoutes) {
   if (!appSource.includes(route)) failures.push(`Missing expected client route keyword: ${route}`);
+}
+if (!appSource.includes("canRenderWhileAuthLoads")) {
+  failures.push("Public routes must be able to render while auth bootstrap is loading.");
+}
+
+const authContextSource = readFileSync(join(root, "src/context/AuthContext.tsx"), "utf8");
+if (!authContextSource.includes("clientStartupError")) {
+  failures.push("Missing controlled client startup error for auth misconfiguration.");
+}
+if (!authContextSource.includes("setLoadTimedOut")) {
+  failures.push("Missing Clerk load timeout fallback.");
 }
 
 if (failures.length) {

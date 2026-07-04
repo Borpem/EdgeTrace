@@ -6,10 +6,12 @@ import { edgeTraceClerkAppearance } from "../lib/clerkAppearance";
 
 export function SignupPage({
   onCreateAccount,
-  onLogin
+  onLogin,
+  authError
 }: {
   onCreateAccount: () => void;
   onLogin: () => void;
+  authError?: string;
 }) {
   const { authMode } = useAuth();
 
@@ -49,7 +51,9 @@ export function SignupPage({
                   <p className="text-sm font-semibold text-ink">Create account</p>
                   <p className="mt-1 text-xs text-muted">Start with a free diagnostics workspace.</p>
                 </div>
-                {authMode === "clerk" ? (
+                {authMode === "clerk" && authError ? (
+                  <AuthUnavailableNotice message={authError} />
+                ) : authMode === "clerk" ? (
                   <div className="flex justify-center">
                     <SignUp
                       routing="path"
@@ -75,5 +79,14 @@ export function SignupPage({
         </div>
       </section>
     </PageShell>
+  );
+}
+
+function AuthUnavailableNotice({ message }: { message: string }) {
+  return (
+    <div className="border border-sky/30 bg-sky/10 p-4 text-sm leading-6 text-muted">
+      <p className="font-semibold text-ink">Account creation is temporarily unavailable.</p>
+      <p className="mt-2">{message}</p>
+    </div>
   );
 }

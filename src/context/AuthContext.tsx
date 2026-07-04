@@ -4,7 +4,7 @@ import {
   useUser,
   type ClerkProviderProps
 } from "@clerk/clerk-react";
-import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 
 const AUTH_STORAGE_KEY = "edgetrace.mockAuth";
 const MOCK_USER_ID = "local-demo-user";
@@ -23,6 +23,7 @@ type AuthContextValue = {
   user: AuthUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  authError?: string;
   login: () => void;
   signup: () => void;
   logout: () => void;
@@ -33,13 +34,18 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 
 const publishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY as string | undefined;
 const requestedAuthMode = import.meta.env.VITE_AUTH_MODE as string | undefined;
+const CLIENT_STARTUP_ERROR =
+  "EdgeTrace is temporarily unavailable because authentication is not configured correctly. Please try again later.";
+
+export const clientStartupError =
+  import.meta.env.PROD && (requestedAuthMode !== "clerk" || !publishableKey) ? CLIENT_STARTUP_ERROR : "";
 
 if (import.meta.env.PROD) {
   const missing: string[] = [];
   if (requestedAuthMode !== "clerk") missing.push("VITE_AUTH_MODE=clerk");
   if (!publishableKey) missing.push("VITE_CLERK_PUBLISHABLE_KEY");
   if (missing.length > 0) {
-    throw new Error(`EdgeTrace production client env is incomplete: ${missing.join(", ")}`);
+    console.error(`EdgeTrace production client env is incomplete: ${missing.join(", ")}`);
   }
 }
 
@@ -89,8 +95,23 @@ export function ClerkAuthProvider({ children }: { children: ReactNode }) {
   const clerk = useClerk();
   const { isLoaded, isSignedIn, getToken } = useClerkSession();
   const { user: clerkUser, isLoaded: isUserLoaded } = useUser();
+  const [loadTimedOut, setLoadTimedOut] = useState(false);
+
+  useEffect(() => {
+    if (isLoaded && isUserLoaded) {
+      setLoadTimedOut(false);
+      return;
+    }
+
+    const timeout = window.setTimeout(() => setLoadTimedOut(true), 8000);
+    return () => window.clearTimeout(timeout);
+  }, [isLoaded, isUserLoaded]);
 
   const value = useMemo<AuthContextValue>(() => {
+    const authError =
+      loadTimedOut && (!isLoaded || !isUserLoaded)
+        ? "Authentication is taking longer than expected. Public pages are still available, but sign in may be temporarily unavailable."
+        : undefined;
     const user: AuthUser | null =
       isSignedIn && clerkUser
         ? {
@@ -105,13 +126,14 @@ export function ClerkAuthProvider({ children }: { children: ReactNode }) {
       authMode: "clerk",
       user,
       isAuthenticated: Boolean(user),
-      isLoading: !isLoaded || !isUserLoaded,
+      isLoading: !loadTimedOut && (!isLoaded || !isUserLoaded),
+      authError,
       login: () => clerk.openSignIn({ fallbackRedirectUrl: "/app/dashboard" }),
       signup: () => clerk.openSignUp({ fallbackRedirectUrl: "/app/dashboard" }),
       logout: () => void clerk.signOut({ redirectUrl: "/" }),
       getAccessToken: () => getToken()
     };
-  }, [clerk, clerkUser, getToken, isLoaded, isSignedIn, isUserLoaded]);
+  }, [clerk, clerkUser, getToken, isLoaded, isSignedIn, isUserLoaded, loadTimedOut]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

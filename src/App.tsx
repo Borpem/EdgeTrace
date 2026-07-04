@@ -60,8 +60,8 @@ type CompareDrilldownSelection = {
 type CollectionAttributionSelection = { dimension: BreakdownDimension; group: string };
 
 export function App() {
-  const { authMode, user, isAuthenticated, isLoading: authLoading, login, signup, logout, getAccessToken } = useAuth();
-  const [page, setPage] = useState<Page>("home");
+  const { authMode, user, isAuthenticated, isLoading: authLoading, authError, login, signup, logout, getAccessToken } = useAuth();
+  const [page, setPage] = useState<Page>(() => initialPageFromPath(window.location.pathname));
   const [result, setResult] = useState<DiagnosticsResult | null>(null);
   const [drilldownSelection, setDrilldownSelection] = useState<DrilldownSelection | null>(null);
   const [compareDrilldownSelection, setCompareDrilldownSelection] =
@@ -552,7 +552,7 @@ export function App() {
   };
 
   useEffect(() => {
-    if (authLoading) return;
+    if (authLoading && !isPublicPath(window.location.pathname)) return;
 
     let cancelled = false;
     const resolveCurrentRoute = async () => {
@@ -614,7 +614,9 @@ export function App() {
     .filter(Boolean)
     .join(" ");
 
-  if (authLoading || isRouteResolving) {
+  const canRenderWhileAuthLoads = authLoading && isPublicPage(page);
+
+  if ((authLoading && !canRenderWhileAuthLoads) || isRouteResolving) {
     return <RouteLoadingShell isAuthenticated={isAuthenticated} />;
   }
 
@@ -830,12 +832,14 @@ export function App() {
           nextPath={new URLSearchParams(window.location.search).get("next") ?? undefined}
           onContinue={() => signIntoApp()}
           onSignup={() => navigate("signup")}
+          authError={authError}
         />
       )}
       {page === "signup" && (
         <SignupPage
           onCreateAccount={() => signIntoApp("/app/dashboard", "signup")}
           onLogin={() => navigate("login")}
+          authError={authError}
         />
       )}
       {page === "strategyDashboard" && (
@@ -1378,6 +1382,35 @@ function RouteLoadingShell({ isAuthenticated }: { isAuthenticated: boolean }) {
       </main>
     </div>
   );
+}
+
+function initialPageFromPath(pathname: string): Page {
+  if (pathname === "/pricing") return "pricing";
+  if (pathname === "/sample-report" || pathname === "/demo") return "sampleReport";
+  if (pathname === "/privacy") return "privacy";
+  if (pathname === "/terms") return "terms";
+  if (pathname === "/disclaimer") return "disclaimer";
+  if (pathname === "/login") return "login";
+  if (pathname === "/signup") return "signup";
+  return "home";
+}
+
+function isPublicPath(pathname: string) {
+  return [
+    "/",
+    "/pricing",
+    "/sample-report",
+    "/demo",
+    "/privacy",
+    "/terms",
+    "/disclaimer",
+    "/login",
+    "/signup"
+  ].includes(pathname);
+}
+
+function isPublicPage(page: Page) {
+  return ["home", "pricing", "sampleReport", "privacy", "terms", "disclaimer", "login", "signup"].includes(page);
 }
 
 function isAuthenticatedAppPage(page: Page) {

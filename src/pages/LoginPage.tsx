@@ -7,11 +7,13 @@ import { edgeTraceClerkAppearance } from "../lib/clerkAppearance";
 export function LoginPage({
   nextPath,
   onContinue,
-  onSignup
+  onSignup,
+  authError
 }: {
   nextPath?: string;
   onContinue: () => void;
   onSignup: () => void;
+  authError?: string;
 }) {
   const { authMode } = useAuth();
 
@@ -56,7 +58,9 @@ export function LoginPage({
                   <p className="text-sm font-semibold text-ink">Sign in</p>
                   <p className="mt-1 text-xs text-muted">Continue to your private workspace.</p>
                 </div>
-                {authMode === "clerk" ? (
+                {authMode === "clerk" && authError ? (
+                  <AuthUnavailableNotice message={authError} />
+                ) : authMode === "clerk" ? (
                   <div className="flex justify-center">
                     <SignIn
                       routing="path"
@@ -82,5 +86,14 @@ export function LoginPage({
         </div>
       </section>
     </PageShell>
+  );
+}
+
+function AuthUnavailableNotice({ message }: { message: string }) {
+  return (
+    <div className="border border-sky/30 bg-sky/10 p-4 text-sm leading-6 text-muted">
+      <p className="font-semibold text-ink">Sign in is temporarily unavailable.</p>
+      <p className="mt-2">{message}</p>
+    </div>
   );
 }

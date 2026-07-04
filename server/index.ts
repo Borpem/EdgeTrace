@@ -1651,10 +1651,10 @@ function contentSecurityPolicy() {
     "img-src 'self' data: blob: https:",
     "font-src 'self' data:",
     "style-src 'self' 'unsafe-inline'",
-    "script-src 'self' 'unsafe-inline' https://*.clerk.accounts.dev https://*.clerk.com https://js.stripe.com https://va.vercel-scripts.com",
+    "script-src 'self' 'unsafe-inline' https://*.clerk.accounts.dev https://*.clerk.com https://clerk.edgetrace.app https://js.stripe.com https://va.vercel-scripts.com",
     "worker-src 'self' blob:",
-    "connect-src 'self' https://edgetrace-production.up.railway.app https://*.clerk.accounts.dev https://*.clerk.com https://api.clerk.com https://*.stripe.com https://api.stripe.com https://vitals.vercel-insights.com",
-    "frame-src https://js.stripe.com https://hooks.stripe.com https://*.clerk.accounts.dev https://*.clerk.com",
+    "connect-src 'self' https://edgetrace-production.up.railway.app https://*.clerk.accounts.dev https://*.clerk.com https://clerk.edgetrace.app https://api.clerk.com https://*.stripe.com https://api.stripe.com https://vitals.vercel-insights.com",
+    "frame-src https://js.stripe.com https://hooks.stripe.com https://*.clerk.accounts.dev https://*.clerk.com https://clerk.edgetrace.app",
     "form-action 'self' https://*.stripe.com",
     "upgrade-insecure-requests"
   ].join("; ");
