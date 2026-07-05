@@ -8363,6 +8363,23 @@ textarea:focus-visible {
   gap: 0.55rem;
 }
 
+.EdgeTrace-pricing-board-label.plan-intro {
+  align-content: center;
+  justify-items: center;
+  text-align: center;
+}
+
+.EdgeTrace-pricing-board-label.plan-intro > div {
+  justify-content: center;
+  font-size: 1.45rem;
+  letter-spacing: 0.04em;
+}
+
+.EdgeTrace-pricing-board-label.plan-intro svg {
+  width: 1.35rem;
+  height: 1.35rem;
+}
+
 .EdgeTrace-pricing-board-label svg {
   color: #8aa3b6;
 }
@@ -8791,9 +8808,19 @@ textarea:focus-visible {
     gap: 0.35rem;
   }
 
+  .EdgeTrace-pricing-board-label.plan-intro > div {
+    font-size: 1rem;
+    letter-spacing: 0.04em;
+  }
+
   .EdgeTrace-pricing-board-label svg {
     width: 0.9rem;
     height: 0.9rem;
+  }
+
+  .EdgeTrace-pricing-board-label.plan-intro svg {
+    width: 1rem;
+    height: 1rem;
   }
 
   .EdgeTrace-pricing-board-label p {

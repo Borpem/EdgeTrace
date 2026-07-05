@@ -346,11 +346,6 @@ function FeatureComparison({
 }) {
   return (
     <section className="EdgeTrace-pricing-compare">
-      <div className="EdgeTrace-pricing-compare-heading">
-        <div>
-          <h2>Free vs Pro</h2>
-        </div>
-      </div>
       <div className="EdgeTrace-pricing-board">
         <div className="EdgeTrace-pricing-board-label plan-intro">
           <div>
