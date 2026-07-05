@@ -251,6 +251,38 @@ export type UserEvent = {
   createdAt: string;
 };
 
+export type AnalyticsCount = {
+  label: string;
+  count: number;
+};
+
+export type AnalyticsConversion = {
+  from: string;
+  to: string;
+  fromCount: number;
+  toCount: number;
+  percent: number;
+};
+
+export type AnalyticsRecentEvent = {
+  id: string;
+  eventName: string;
+  userId: string;
+  properties: Record<string, unknown>;
+  createdAt: string;
+};
+
+export type AnalyticsSummary = {
+  generatedAt: string;
+  eventCounts: AnalyticsCount[];
+  funnelCounts: AnalyticsCount[];
+  conversionRates: AnalyticsConversion[];
+  uploadFailures: AnalyticsCount[];
+  reportFailures: AnalyticsCount[];
+  dailyCounts: AnalyticsCount[];
+  recentEvents: AnalyticsRecentEvent[];
+};
+
 export type FeedbackType = "bug" | "suggestion" | "other";
 
 export type FeedbackStatus = "new" | "reviewed" | "closed";

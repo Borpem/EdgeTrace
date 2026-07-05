@@ -7,6 +7,7 @@ import type {
   FeedbackInput,
   FeedbackItem,
   FeedbackStatus,
+  AnalyticsSummary,
   NormalizedTrade,
   ReportCollectionDetail,
   ReportCollectionSummary,
@@ -23,11 +24,12 @@ import { runDiagnostics } from "./diagnostics";
 import { describeNormalizationIssue, normalizeTrades } from "./normalize";
 
 const DEFAULT_USER_ID = "local-demo-user";
-const CONFIGURED_API_BASE_URL = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/$/, "") ?? "";
+const viteEnv = import.meta.env ?? {};
+const CONFIGURED_API_BASE_URL = (viteEnv.VITE_API_BASE_URL as string | undefined)?.replace(/\/$/, "") ?? "";
 const API_BASE_URL = shouldUseSameOriginApi() ? "" : CONFIGURED_API_BASE_URL;
 let currentUserId = DEFAULT_USER_ID;
 let currentAuthMode: "mock" | "clerk" =
-  import.meta.env.PROD || import.meta.env.VITE_AUTH_MODE === "clerk" ? "clerk" : "mock";
+  viteEnv.PROD || viteEnv.VITE_AUTH_MODE === "clerk" ? "clerk" : "mock";
 let accessTokenProvider: (() => Promise<string | null>) | undefined;
 
 export type ReportsDebugEvent = {
@@ -70,7 +72,7 @@ export function isReportsDebugEnabled() {
   if (typeof window === "undefined") return false;
   return (
     new URLSearchParams(window.location.search).get("debugReports") === "1" ||
-    import.meta.env.VITE_REPORTS_DEBUG === "1"
+    viteEnv.VITE_REPORTS_DEBUG === "1"
   );
 }
 
@@ -135,22 +137,13 @@ export async function getActivationSummary() {
   return response.json() as Promise<ActivationSummary>;
 }
 
-export async function postUserEvent(eventName: string, properties?: Record<string, unknown>) {
+export async function postUserEvent(eventName: string, properties?: Record<string, unknown>, options?: { anonymousId?: string }) {
   const headers = await apiHeaders({ "Content-Type": "application/json" });
-  if (currentAuthMode === "clerk" && !("Authorization" in headers)) {
-    return {
-      event: {
-        id: "not-tracked",
-        eventName,
-        createdAt: new Date(0).toISOString()
-      }
-    };
-  }
 
   const response = await fetch(apiUrl("/api/events"), {
     method: "POST",
     headers,
-    body: JSON.stringify({ eventName, properties })
+    body: JSON.stringify({ eventName, properties, anonymousId: options?.anonymousId })
   });
   if (!response.ok) throw new Error(await readApiError(response, "Unable to track event"));
   return response.json() as Promise<{ event: { id: string; eventName: string; createdAt: string } }>;
@@ -176,6 +169,12 @@ export async function listAdminFeedback() {
   const response = await fetch(apiUrl("/api/admin/feedback"), { headers: await apiHeaders() });
   if (!response.ok) throw new Error(await readApiError(response, "Unable to load feedback"));
   return response.json() as Promise<{ feedback: FeedbackItem[] }>;
+}
+
+export async function getAdminAnalytics() {
+  const response = await fetch(apiUrl("/api/admin/analytics"), { headers: await apiHeaders() });
+  if (!response.ok) throw new Error(await readApiError(response, "Unable to load analytics"));
+  return response.json() as Promise<{ analytics: AnalyticsSummary }>;
 }
 
 export async function updateAdminFeedbackStatus(id: string, status: FeedbackStatus) {
@@ -276,7 +275,7 @@ export async function runTradeDiagnostics(
 }
 
 function shouldUseLocalDiagnosticsFallback(response: Response) {
-  return !import.meta.env.PROD && response.status >= 500;
+  return !viteEnv.PROD && response.status >= 500;
 }
 
 function createLocalDiagnosticReport(
@@ -390,7 +389,7 @@ export async function listReports() {
 
     if (!response.ok) {
       const message = readApiErrorText(text, "Unable to load reports");
-      const error = new Error(import.meta.env.DEV ? `GET /api/diagnostics failed: ${message}` : message);
+      const error = new Error(viteEnv.DEV ? `GET /api/diagnostics failed: ${message}` : message);
       emitReportsDebug("GET /api/diagnostics thrown error", {
         endpoint,
         method: "GET",

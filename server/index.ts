@@ -21,6 +21,7 @@ import {
   getDiagnosticReport,
   getCollection,
   getActivationSummary,
+  getAnalyticsSummary,
   getOrCreateUserProfile,
   listFeedback,
   getSavedComparison,
@@ -387,6 +388,31 @@ function getUserId(req: express.Request) {
   return (req as EdgeTraceRequest).edgeTraceUserId ?? "";
 }
 
+function getEventUserId(req: express.Request) {
+  const existingUserId = getUserId(req);
+  if (existingUserId) return existingUserId;
+
+  if (authMode === "mock") {
+    const header = req.get("x-edgetrace-user-id");
+    return header?.trim() || DEFAULT_USER_ID;
+  }
+
+  try {
+    const auth = getAuth(req);
+    if (auth.userId) return auth.userId;
+  } catch {
+    // Anonymous public analytics are allowed for launch-funnel visibility.
+  }
+
+  const anonymousId = sanitizeAnonymousId(req.body?.anonymousId);
+  return anonymousId ? `anonymous:${anonymousId}` : "";
+}
+
+function sanitizeAnonymousId(value: unknown) {
+  if (typeof value !== "string") return "";
+  return value.trim().toLowerCase().replace(/[^a-z0-9-]/g, "").slice(0, 80);
+}
+
 function parseAdminList(...names: string[]) {
   return names
     .flatMap((name) => (process.env[name] ?? "").split(","))
@@ -426,7 +452,13 @@ app.use(
     windowMs: 60_000,
     maxRequests: isProduction ? 120 : 1200
   }),
-  requireEdgeTraceUser
+  (req, res, next) => {
+    if (req.path === "/events") {
+      next();
+      return;
+    }
+    void requireEdgeTraceUser(req, res, next);
+  }
 );
 app.use(
   "/api/events",
@@ -497,11 +529,43 @@ app.post("/api/events", async (req, res) => {
     });
     return;
   }
+  if (!allowedAnalyticsEventNames.has(eventName)) {
+    res.status(400).json({
+      error: "INVALID_EVENT_NAME",
+      message: "Event name is not supported."
+    });
+    return;
+  }
+  if (JSON.stringify(req.body?.properties ?? {}).length > 8_000) {
+    res.status(413).json({
+      error: "EVENT_PAYLOAD_TOO_LARGE",
+      message: "Analytics event properties are too large."
+    });
+    return;
+  }
+
+  const properties = sanitizeEventProperties(req.body?.properties);
+  if (JSON.stringify(properties).length > 4_000) {
+    res.status(413).json({
+      error: "EVENT_PAYLOAD_TOO_LARGE",
+      message: "Analytics event properties are too large."
+    });
+    return;
+  }
 
   try {
-    const event = await trackUserEvent(getUserId(req), {
+    const eventUserId = getEventUserId(req);
+    if (!eventUserId) {
+      res.status(400).json({
+        error: "INVALID_EVENT_USER",
+        message: "Analytics event user context is required."
+      });
+      return;
+    }
+
+    const event = await trackUserEvent(eventUserId, {
       eventName,
-      properties: sanitizeEventProperties(req.body?.properties)
+      properties
     });
     res.status(201).json({ event });
   } catch {
@@ -554,6 +618,15 @@ app.get("/api/admin/feedback", async (req, res) => {
   }
 
   res.json({ feedback: await enrichFeedbackContacts(await listFeedback()) });
+});
+
+app.get("/api/admin/analytics", async (req, res) => {
+  if (!(await isAdminRequest(req))) {
+    res.status(404).json({ error: "NOT_FOUND" });
+    return;
+  }
+
+  res.json({ analytics: await getAnalyticsSummary() });
 });
 
 app.patch("/api/admin/feedback/:id", async (req, res) => {
@@ -1204,12 +1277,20 @@ app.delete("/api/saved-comparisons/:id", async (req, res) => {
 
 app.use(apiErrorHandler);
 
-await initDb();
-console.info(`[db] Database provider: ${getDatabaseProviderName()}`);
+export { app };
 
-app.listen(port, () => {
-  console.log(`EdgeTrace API listening on http://localhost:${port}`);
-});
+export async function startServer() {
+  await initDb();
+  console.info(`[db] Database provider: ${getDatabaseProviderName()}`);
+
+  return app.listen(port, () => {
+    console.log(`EdgeTrace API listening on http://localhost:${port}`);
+  });
+}
+
+if (process.env.EDGETRACE_DISABLE_SERVER_LISTEN !== "1") {
+  await startServer();
+}
 
 function isDemoName(name: string) {
   return name.startsWith("Demo Report") || name.startsWith("ORB Demo");
@@ -1375,6 +1456,62 @@ function getRequestOrigin(req: express.Request) {
   return req.get("origin") || `${req.protocol}://${req.get("host")}`;
 }
 
+const allowedAnalyticsEventNames = new Set([
+  "landing_page_viewed",
+  "landing_primary_cta_clicked",
+  "landing_secondary_cta_clicked",
+  "pricing_page_viewed",
+  "pricing_page_opened",
+  "signup_started",
+  "signup_completed",
+  "login_started",
+  "login_completed",
+  "onboarding_started",
+  "upload_page_opened",
+  "upload_started",
+  "csv_uploaded",
+  "import_source_detected",
+  "upload_completed",
+  "upload_failed",
+  "report_generation_started",
+  "diagnostics_started",
+  "report_generation_completed",
+  "diagnostic_report_created",
+  "created_first_report",
+  "report_generation_failed",
+  "report_viewed",
+  "dashboard_opened",
+  "drilldown_opened",
+  "compare_opened",
+  "comparison_created",
+  "saved_comparison_created",
+  "strategy_set_created",
+  "reconstruction_audit_opened",
+  "review_workspace_opened",
+  "report_tab_opened",
+  "dashboard_report_selector_changed",
+  "dashboard_walkthrough_opened",
+  "dashboard_walkthrough_completed",
+  "dashboard_walkthrough_step_opened",
+  "feature_education_opened",
+  "public_how_it_works_opened",
+  "feature_intro_opened",
+  "feature_intro_closed",
+  "command_path_viewed",
+  "command_path_step_clicked",
+  "upgrade_prompt_viewed",
+  "upgrade_prompt_clicked",
+  "plan_feature_prompt_opened",
+  "plan_feature_cta_clicked",
+  "paywall_learn_more_clicked",
+  "checkout_started",
+  "checkout_completed",
+  "billing_portal_opened",
+  "billing_cancellation_opened",
+  "support_clicked",
+  "feedback_submitted"
+]);
+
 function sanitizeEventName(value: unknown) {
   if (typeof value !== "string") return "";
   return value
@@ -1455,10 +1592,10 @@ function safeConfidenceLabel(value: unknown) {
 }
 
 function sanitizePropertyObject(value: Record<string, unknown>, depth: number): Record<string, unknown> {
-  if (depth > 2) return {};
+  if (depth > 0) return {};
   const output: Record<string, unknown> = {};
-  for (const [rawKey, rawValue] of Object.entries(value).slice(0, 30)) {
-    const key = rawKey.trim().slice(0, 60);
+  for (const [rawKey, rawValue] of Object.entries(value).slice(0, 20)) {
+    const key = rawKey.trim().slice(0, 50);
     if (!key || isSensitiveEventProperty(key)) continue;
     const sanitized = sanitizePropertyValue(rawValue, depth + 1);
     if (sanitized !== undefined) output[key] = sanitized;
@@ -1468,20 +1605,15 @@ function sanitizePropertyObject(value: Record<string, unknown>, depth: number): 
 
 function sanitizePropertyValue(value: unknown, depth: number): unknown {
   if (value === null || typeof value === "boolean" || typeof value === "number") return value;
-  if (typeof value === "string") return value.slice(0, 240);
-  if (Array.isArray(value)) {
-    return value.slice(0, 10).map((item) => sanitizePropertyValue(item, depth)).filter((item) => item !== undefined);
-  }
-  if (value && typeof value === "object") {
-    return sanitizePropertyObject(value as Record<string, unknown>, depth);
-  }
+  if (typeof value === "string") return value.slice(0, 120);
+  if (Array.isArray(value) || (value && typeof value === "object") || depth > 1) return undefined;
   return undefined;
 }
 
 function isSensitiveEventProperty(key: string) {
   const normalized = key.toLowerCase();
   if (normalized.endsWith("count")) return false;
-  return /(trade|trades|row|rows|csv|html|token|secret|password|account|execution|sourceexecution|brokerexecution|payment|card)/i.test(
+  return /(trade|trades|row|rows|csv|html|token|secret|password|account|execution|sourceexecution|brokerexecution|payment|card|symbol|pnl|quantity|notes?|strategy|reportcontent)/i.test(
     key
   );
 }

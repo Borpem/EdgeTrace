@@ -70,4 +70,25 @@ const mixedComparison = await db.createSavedComparison(userB, {
 });
 assert(!mixedComparison, "User B must not create a saved comparison with User A report.");
 
+const { trackEvent } = await import("../src/lib/analytics");
+trackEvent("landing_page_viewed");
+
+await db.trackUserEvent("anonymous:anon-security", {
+  eventName: "upload_failed",
+  properties: {
+    category: "csv_parse",
+    csv: "Symbol,PnL\nAAPL,100",
+    symbol: "AAPL",
+    pnl: 100,
+    route: "/app/upload"
+  }
+});
+const analytics = await db.getAnalyticsSummary();
+const storedEvent = analytics.recentEvents.find((event) => event.eventName === "upload_failed");
+assert(storedEvent, "Stored analytics event should appear in admin summary.");
+assert(storedEvent?.properties.category === "csv_parse", "Safe analytics property should be retained.");
+assert(!("csv" in (storedEvent?.properties ?? {})), "Raw CSV content must not be retained in analytics.");
+assert(!("symbol" in (storedEvent?.properties ?? {})), "Trade symbols must not be retained in analytics.");
+assert(!("pnl" in (storedEvent?.properties ?? {})), "P&L must not be retained in analytics.");
+
 console.log("Security isolation checks passed.");

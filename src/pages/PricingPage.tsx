@@ -110,6 +110,7 @@ export function PricingPage({
 
   useEffect(() => {
     trackEvent("pricing_page_opened");
+    trackEvent("pricing_page_viewed");
     const params = new URLSearchParams(window.location.search);
     const checkout = params.get("checkout");
     if (checkout === "success") {
@@ -135,6 +136,7 @@ export function PricingPage({
       .then(({ profile: refreshedProfile }) => {
         if (cancelled) return;
         setConfirmedSessionId(sessionId);
+        trackEvent("checkout_completed", { plan: refreshedProfile.planId });
         onPlanChanged?.(refreshedProfile);
         setNotice(
           refreshedProfile.planId === "pro"
@@ -160,6 +162,7 @@ export function PricingPage({
   const startCheckout = async (planId: Exclude<PlanId, "free">) => {
     setError("");
     setActiveAction(planId);
+    trackEvent("checkout_started", { plan: planId });
     try {
       const { url } = await createCheckoutSession(planId);
       window.location.href = url;

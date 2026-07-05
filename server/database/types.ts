@@ -14,7 +14,8 @@ import type {
   SavedComparison,
   SavedComparisonInput,
   UserEvent,
-  UserProfile
+  UserProfile,
+  AnalyticsSummary
 } from "../../src/types";
 
 export type UserProfileInput = { email?: string; name?: string };
@@ -76,6 +77,7 @@ export type DatabaseAdapter = {
   deleteCollectionReviewState: (userId: string, collectionId: string, previousReportId: string, currentReportId: string) => boolean | Promise<boolean>;
   trackUserEvent: (userId: string, input: UserEventInput) => UserEvent | Promise<UserEvent>;
   getActivationSummary: (userId: string) => ActivationSummary | Promise<ActivationSummary>;
+  getAnalyticsSummary: () => AnalyticsSummary | Promise<AnalyticsSummary>;
   saveFeedback: (
     userId: string,
     input: FeedbackInput & { userEmail?: string; userName?: string }

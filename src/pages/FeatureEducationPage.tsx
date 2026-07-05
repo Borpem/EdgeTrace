@@ -146,6 +146,7 @@ export function FeatureEducationPage({
 
   useEffect(() => {
     trackEvent(isAuthenticated ? "feature_education_opened" : "public_how_it_works_opened");
+    if (!isAuthenticated) trackEvent("landing_page_viewed");
   }, [isAuthenticated]);
 
   useEffect(() => {
@@ -170,7 +171,13 @@ export function FeatureEducationPage({
             look at next.
           </p>
           <div className="how-cta-row">
-            <button className="EdgeTrace-primary-button" onClick={accountAction}>
+            <button
+              className="EdgeTrace-primary-button"
+              onClick={() => {
+                trackEvent("landing_primary_cta_clicked");
+                accountAction();
+              }}
+            >
               {accountLabel}
               <ArrowRight size={16} />
             </button>
@@ -192,7 +199,13 @@ export function FeatureEducationPage({
           <h2>Build your first diagnostic report.</h2>
           <p>Import completed trades and see the drivers behind your edge.</p>
         </div>
-        <button className="EdgeTrace-primary-button" onClick={accountAction}>
+        <button
+          className="EdgeTrace-primary-button"
+          onClick={() => {
+            trackEvent("landing_secondary_cta_clicked");
+            accountAction();
+          }}
+        >
           Create a Report
           <ArrowRight size={16} />
         </button>

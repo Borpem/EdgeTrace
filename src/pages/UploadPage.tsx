@@ -145,18 +145,21 @@ export function UploadPage({
 
   const parseFile = (file: File) => {
     if (!SUPPORTED_UPLOAD_EXTENSION.test(file.name)) {
+      trackEvent("upload_failed", { category: "unsupported_file_type" });
       setError("Upload a CSV export or an IBKR HTML statement. Other file types are not supported.");
       setWarning("");
       setUploadWarning("");
       return;
     }
     if (file.size > MAX_CLIENT_UPLOAD_BYTES) {
+      trackEvent("upload_failed", { category: "oversized_file" });
       setError("This upload is too large to process in one request. Export a smaller date range and try again.");
       setWarning("");
       setUploadWarning("");
       return;
     }
 
+    trackEvent("upload_started", { fileType: file.name.split(".").pop()?.toLowerCase() ?? "unknown" });
     setIsParsing(true);
     setError("");
     setWarning("");
@@ -183,13 +186,16 @@ export function UploadPage({
           setExecutionTrades(upload.normalizedTrades);
           setNormalizedTrades(upload.normalizedTrades);
           setWarning(upload.warning ?? "");
+          trackEvent("upload_completed", { fileType: "html", normalizedCount: upload.normalizedTrades.length });
         } catch (err) {
+          trackEvent("upload_failed", { category: "html_parse" });
           setError(formatUploadError(err, "html_parse"));
         } finally {
           setIsParsing(false);
         }
       };
       reader.onerror = () => {
+        trackEvent("upload_failed", { category: "file_read" });
         setError("Unable to read HTML file. Try exporting it again from your broker.");
         setIsParsing(false);
       };
@@ -207,12 +213,14 @@ export function UploadPage({
           setRows(data);
           await prepareCsvImport(data, "auto");
         } catch (err) {
+          trackEvent("upload_failed", { category: "csv_parse" });
           setError(formatUploadError(err, "csv_parse"));
         } finally {
           setIsParsing(false);
         }
       },
       error: (err) => {
+        trackEvent("upload_failed", { category: "csv_parse" });
         setError(formatUploadError(err, "csv_parse"));
         setIsParsing(false);
       }
@@ -260,7 +268,9 @@ export function UploadPage({
       setNormalizedTrades(finalTrades.trades);
       setReconstructionResult(finalTrades.reconstruction);
       setWarning(composeWarnings(upload.warning, detection, mappings, upload.normalizedTrades.length, finalTrades.reconstruction, currentExcludedRows, adapter));
+      trackEvent("upload_completed", { fileType: "csv", normalizedCount: finalTrades.trades.length });
     } catch (err) {
+      trackEvent("upload_failed", { category: "normalize" });
       setError(formatUploadError(err, "normalize"));
     }
   };
@@ -317,8 +327,8 @@ export function UploadPage({
         brokerId: activeBrokerId,
         tradeCount: normalizedTrades.length
       });
-      onComplete(
-        await runTradeDiagnostics(normalizedTrades, reportName, {
+      trackEvent("report_generation_started", { brokerId: activeBrokerId, tradeCount: normalizedTrades.length });
+      const result = await runTradeDiagnostics(normalizedTrades, reportName, {
           brokerId: activeBrokerId,
           importProvenance: buildImportProvenance({
             uploadedFilename,
@@ -337,9 +347,11 @@ export function UploadPage({
             reconstructIbkr,
             reconstructionResult
           })
-        })
-      );
+        });
+      trackEvent("report_generation_completed", { brokerId: activeBrokerId, tradeCount: normalizedTrades.length });
+      onComplete(result);
     } catch (err) {
+      trackEvent("report_generation_failed", { category: reportFailureCategory(err) });
       setError(formatUploadError(err, "diagnostics"));
     } finally {
       setIsRunning(false);
@@ -1388,6 +1400,16 @@ function formatUploadError(error: unknown, context: "csv_parse" | "html_parse" |
     return "EdgeTrace could not reach the diagnostics service. Check your connection and try again.";
   }
   return message || "Diagnostics could not run on this upload. Check normalized trades and try again.";
+}
+
+function reportFailureCategory(error: unknown) {
+  const message = error instanceof Error ? error.message : "";
+  if (/missing required fields/i.test(message)) return "missing_required_fields";
+  if (/PLAN_LIMIT_REACHED|free report limit|report limit/i.test(message)) return "plan_limit";
+  if (/broker-specific|import source is not available/i.test(message)) return "plan_feature_locked";
+  if (/network|fetch|failed to fetch/i.test(message)) return "network";
+  if (/No normalized trades|not enough completed trade/i.test(message)) return "no_completed_trades";
+  return "diagnostics_error";
 }
 
 function isDemoReport(report: ReportSummary) {

@@ -174,6 +174,10 @@ export async function getActivationSummary(userId: string) {
   return adapter.getActivationSummary(userId);
 }
 
+export async function getAnalyticsSummary() {
+  return adapter.getAnalyticsSummary();
+}
+
 export async function saveFeedback(
   userId: string,
   input: FeedbackInput & { userEmail?: string; userName?: string }

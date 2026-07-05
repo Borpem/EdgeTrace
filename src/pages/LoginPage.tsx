@@ -1,8 +1,10 @@
 import { SignIn } from "@clerk/clerk-react";
+import { useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { Check } from "lucide-react";
 import { PageShell } from "../components/ui/Primitives";
 import { edgeTraceClerkAppearance } from "../lib/clerkAppearance";
+import { trackEvent } from "../lib/analytics";
 
 export function LoginPage({
   nextPath,
@@ -16,6 +18,10 @@ export function LoginPage({
   authError?: string;
 }) {
   const { authMode } = useAuth();
+
+  useEffect(() => {
+    trackEvent("login_started");
+  }, []);
 
   return (
     <PageShell className="pb-16 md:py-16">

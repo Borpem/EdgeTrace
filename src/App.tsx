@@ -9,7 +9,7 @@ import {
 import { useAuth } from "./context/AuthContext";
 import { FeatureIntroPrompt } from "./components/FeatureIntroPrompt";
 import { ProFeaturePrompt } from "./components/ProFeaturePrompt";
-import { trackEvent } from "./lib/analytics";
+import { setAnalyticsContext, trackEvent } from "./lib/analytics";
 import type { BreakdownDimension } from "./lib/breakdowns";
 import { canUseFeature, getPlanConfig } from "./lib/entitlements";
 import {
@@ -27,6 +27,7 @@ import {
   setApiAuth
 } from "./lib/api";
 import { AccountPage } from "./pages/AccountPage";
+import { AdminAnalyticsPage } from "./pages/AdminAnalyticsPage";
 import { AdminFeedbackPage } from "./pages/AdminFeedbackPage";
 import { ComparePage } from "./pages/ComparePage";
 import { CompareDrilldownPage } from "./pages/CompareDrilldownPage";
@@ -48,7 +49,7 @@ import { StrategyDashboardPage } from "./pages/StrategyDashboardPage";
 import { UploadPage } from "./pages/UploadPage";
 import type { DiagnosticsResult, ReportSummary, UserProfile } from "./types";
 
-type Page = "home" | "pricing" | "privacy" | "terms" | "disclaimer" | "login" | "signup" | "strategyDashboard" | "upload" | "reports" | "collections" | "collectionDetail" | "collectionAttribution" | "collectionReviewWorkspace" | "compare" | "features" | "feedback" | "adminFeedback" | "account" | "dashboard" | "drilldown" | "compareDrilldown" | "reconstructionAudit";
+type Page = "home" | "pricing" | "privacy" | "terms" | "disclaimer" | "login" | "signup" | "strategyDashboard" | "upload" | "reports" | "collections" | "collectionDetail" | "collectionAttribution" | "collectionReviewWorkspace" | "compare" | "features" | "feedback" | "adminFeedback" | "adminAnalytics" | "account" | "dashboard" | "drilldown" | "compareDrilldown" | "reconstructionAudit";
 type DrilldownSelection = { dimension: BreakdownDimension; group: string };
 type CompareDrilldownSelection = {
   reportA: DiagnosticsResult;
@@ -75,6 +76,7 @@ export function App() {
   const [proFeaturePrompt, setProFeaturePrompt] = useState<ProFeaturePromptState | null>(null);
   const [activeFeatureIntro, setActiveFeatureIntro] = useState<FeatureIntroId | null>(null);
   const [sessionDismissedFeatureIntros, setSessionDismissedFeatureIntros] = useState<FeatureIntroId[]>([]);
+  const wasAuthenticatedRef = useRef(false);
 
   useEffect(() => {
     if ("scrollRestoration" in window.history) {
@@ -131,6 +133,8 @@ export function App() {
         return "/app/feedback";
       case "adminFeedback":
         return "/app/admin/feedback";
+      case "adminAnalytics":
+        return "/app/admin/analytics";
       case "account":
         return "/app/account";
       default:
@@ -148,6 +152,7 @@ export function App() {
   const showProFeaturePrompt = (prompt: ProFeaturePromptState) => {
     setProFeaturePrompt(prompt);
     trackEvent("plan_feature_prompt_opened", { feature: prompt.feature, requiredPlan: "pro" });
+    trackEvent("upgrade_prompt_viewed", { feature: prompt.feature });
   };
 
   const requireFeature = (
@@ -170,6 +175,7 @@ export function App() {
         requiredPlan: "pro",
         source: "pro_feature_prompt"
       });
+      trackEvent("upgrade_prompt_clicked", { feature: proFeaturePrompt.feature });
     }
     setProFeaturePrompt(null);
     navigate("pricing", "/pricing");
@@ -225,6 +231,10 @@ export function App() {
 
   useEffect(() => {
     setApiAuth({ userId: user?.id, authMode, getAccessToken });
+    setAnalyticsContext({
+      authenticated: isAuthenticated,
+      plan: userProfile?.planId ?? "unknown"
+    });
     if (!isAuthenticated) {
       setUserProfile(null);
       return;
@@ -233,12 +243,23 @@ export function App() {
     void getMe()
       .then(({ profile }) => setUserProfile(profile))
       .catch(() => setUserProfile(null));
-  }, [authMode, getAccessToken, isAuthenticated, user?.id]);
+  }, [authMode, getAccessToken, isAuthenticated, user?.id, userProfile?.planId]);
 
   useEffect(() => {
     setActiveFeatureIntro(null);
     setSessionDismissedFeatureIntros([]);
   }, [user?.id]);
+
+  useEffect(() => {
+    if (authLoading) return;
+    const wasAuthenticated = wasAuthenticatedRef.current;
+    wasAuthenticatedRef.current = isAuthenticated;
+    if (!isAuthenticated || wasAuthenticated) return;
+
+    const signupStarted = window.sessionStorage.getItem("edgetrace.signupStarted") === "1";
+    trackEvent(signupStarted ? "signup_completed" : "login_completed");
+    window.sessionStorage.removeItem("edgetrace.signupStarted");
+  }, [authLoading, isAuthenticated]);
 
   useEffect(() => {
     if (authLoading || !isAuthenticated || !user?.id) {
@@ -437,6 +458,10 @@ export function App() {
       setPage("adminFeedback");
       return;
     }
+    if (pathname === "/app/admin/analytics") {
+      setPage("adminAnalytics");
+      return;
+    }
     if (pathname === "/app/account") {
       setPage("account");
       return;
@@ -570,7 +595,10 @@ export function App() {
 
   useEffect(() => {
     if (!isAuthenticated || authLoading) return;
-    if (page === "dashboard" || page === "strategyDashboard") trackEvent("dashboard_opened", { reportId: result?.id ?? "" });
+    if (page === "dashboard" || page === "strategyDashboard") {
+      trackEvent("dashboard_opened", { reportId: result?.id ?? "" });
+      if (result?.id) trackEvent("report_viewed", { reportId: result.id });
+    }
     if (page === "drilldown") trackEvent("drilldown_opened", { reportId: result?.id ?? "" });
     if (page === "compareDrilldown") trackEvent("drilldown_opened", { source: "compare" });
     if (page === "reconstructionAudit") trackEvent("reconstruction_audit_opened", { reportId: result?.id ?? "" });
@@ -806,6 +834,9 @@ export function App() {
       )}
       {page === "adminFeedback" && isAuthenticated && (
         <AdminFeedbackPage />
+      )}
+      {page === "adminAnalytics" && isAuthenticated && (
+        <AdminAnalyticsPage />
       )}
       {page === "login" && (
         <LoginPage
@@ -1092,7 +1123,10 @@ export function App() {
           onPrivacy={() => navigate("privacy", "/privacy")}
           onTerms={() => navigate("terms", "/terms")}
           onDisclaimer={() => navigate("disclaimer", "/disclaimer")}
-          onContact={() => navigate(isAuthenticated ? "feedback" : "signup", isAuthenticated ? "/app/feedback" : "/signup?next=/app/feedback")}
+          onContact={() => {
+            trackEvent("support_clicked", { source: "footer" });
+            navigate(isAuthenticated ? "feedback" : "signup", isAuthenticated ? "/app/feedback" : "/signup?next=/app/feedback");
+          }}
         />
       )}
     </div>
@@ -1405,6 +1439,7 @@ function isAuthenticatedAppPage(page: Page) {
     "features",
     "feedback",
     "adminFeedback",
+    "adminAnalytics",
     "account",
     "dashboard",
     "drilldown",
@@ -1426,6 +1461,7 @@ function labelForPage(page: Page) {
     features: "How It Works",
     feedback: "Feedback",
     adminFeedback: "Admin Feedback",
+    adminAnalytics: "Admin Analytics",
     account: "Account",
     dashboard: "Dashboard",
     drilldown: "Drilldown",

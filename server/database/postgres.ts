@@ -18,6 +18,7 @@ import type {
   ReportUpdateInput,
   SavedComparison,
   SavedComparisonInput,
+  AnalyticsSummary,
   UserEvent,
   UserProfile
 } from "../../src/types";
@@ -961,6 +962,11 @@ export async function getActivationSummary(userId: string): Promise<ActivationSu
   };
 }
 
+export async function getAnalyticsSummary(): Promise<AnalyticsSummary> {
+  const events = await query<UserEventRow>("SELECT * FROM user_events ORDER BY created_at DESC");
+  return buildAnalyticsSummary(events.rows.map(mapAnalyticsEventRow));
+}
+
 export async function saveFeedback(
   userId: string,
   input: FeedbackInput & { userEmail?: string; userName?: string }
@@ -1107,6 +1113,119 @@ function mapUserEvent(row: UserEventRow): UserEvent {
     properties: parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : undefined,
     createdAt: row.created_at
   };
+}
+
+type AnalyticsEventRow = {
+  id: string;
+  userId: string;
+  eventName: string;
+  properties: Record<string, unknown>;
+  createdAt: string;
+};
+
+const funnelEventOrder = [
+  "landing_page_viewed",
+  "landing_primary_cta_clicked",
+  "signup_started",
+  "signup_completed",
+  "upload_started",
+  "upload_completed",
+  "report_generation_started",
+  "report_generation_completed",
+  "report_viewed",
+  "upgrade_prompt_viewed",
+  "upgrade_prompt_clicked",
+  "checkout_started",
+  "checkout_completed"
+];
+
+function mapAnalyticsEventRow(row: UserEventRow): AnalyticsEventRow {
+  const parsed = row.event_properties_json ? safeParseJson(row.event_properties_json) : {};
+  return {
+    id: row.id,
+    userId: row.user_id,
+    eventName: row.event_name,
+    properties: parsed && typeof parsed === "object" && !Array.isArray(parsed) ? sanitizeAnalyticsProperties(parsed as Record<string, unknown>) : {},
+    createdAt: row.created_at
+  };
+}
+
+function buildAnalyticsSummary(events: AnalyticsEventRow[]): AnalyticsSummary {
+  return {
+    generatedAt: new Date().toISOString(),
+    eventCounts: countBy(events, (event) => event.eventName),
+    funnelCounts: funnelEventOrder.map((eventName) => ({
+      label: eventName,
+      count: events.filter((event) => event.eventName === eventName).length
+    })),
+    conversionRates: buildConversionRates(events),
+    uploadFailures: countFailures(events, "upload_failed"),
+    reportFailures: countFailures(events, "report_generation_failed"),
+    dailyCounts: countBy(events, (event) => event.createdAt.slice(0, 10)).sort((a, b) => a.label.localeCompare(b.label)),
+    recentEvents: events.slice(0, 100).map((event) => ({
+      id: event.id,
+      eventName: event.eventName,
+      userId: event.userId,
+      properties: event.properties,
+      createdAt: event.createdAt
+    }))
+  };
+}
+
+function buildConversionRates(events: AnalyticsEventRow[]) {
+  const counts = new Map(funnelEventOrder.map((eventName) => [eventName, events.filter((event) => event.eventName === eventName).length]));
+  return funnelEventOrder.slice(0, -1).map((from, index) => {
+    const to = funnelEventOrder[index + 1];
+    const fromCount = counts.get(from) ?? 0;
+    const toCount = counts.get(to) ?? 0;
+    return {
+      from,
+      to,
+      fromCount,
+      toCount,
+      percent: fromCount > 0 ? Math.round((toCount / fromCount) * 1000) / 10 : 0
+    };
+  });
+}
+
+function countFailures(events: AnalyticsEventRow[], eventName: string) {
+  return countBy(
+    events.filter((event) => event.eventName === eventName),
+    (event) => safeAnalyticsLabel(event.properties.category) || "unknown"
+  );
+}
+
+function countBy(events: AnalyticsEventRow[], labelFor: (event: AnalyticsEventRow) => string) {
+  const counts = new Map<string, number>();
+  for (const event of events) {
+    const label = labelFor(event);
+    counts.set(label, (counts.get(label) ?? 0) + 1);
+  }
+  return [...counts.entries()]
+    .map(([label, count]) => ({ label, count }))
+    .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
+}
+
+function sanitizeAnalyticsProperties(input: Record<string, unknown>) {
+  const output: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(input).slice(0, 20)) {
+    if (isSensitiveAnalyticsKey(key)) continue;
+    if (value === null || typeof value === "boolean" || typeof value === "number") output[key] = value;
+    if (typeof value === "string") output[key] = value.slice(0, 120);
+  }
+  return output;
+}
+
+function safeAnalyticsLabel(value: unknown) {
+  return typeof value === "string" ? value.trim().slice(0, 80) : "";
+}
+
+function isSensitiveAnalyticsKey(key: string) {
+  const normalized = key.toLowerCase();
+  if (normalized.endsWith("count")) return false;
+  return /(trade|trades|row|rows|csv|html|token|secret|password|account|execution|sourceexecution|brokerexecution|payment|card|symbol|pnl|quantity|notes?|strategy|reportcontent)/i.test(
+    normalized
+  );
 }
 
 function mapFeedback(row: FeedbackRow): FeedbackItem {

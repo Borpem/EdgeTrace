@@ -1,8 +1,10 @@
 import { SignUp } from "@clerk/clerk-react";
+import { useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { Check } from "lucide-react";
 import { PageShell } from "../components/ui/Primitives";
 import { edgeTraceClerkAppearance } from "../lib/clerkAppearance";
+import { trackEvent } from "../lib/analytics";
 
 export function SignupPage({
   onCreateAccount,
@@ -14,6 +16,11 @@ export function SignupPage({
   authError?: string;
 }) {
   const { authMode } = useAuth();
+
+  useEffect(() => {
+    trackEvent("signup_started");
+    window.sessionStorage.setItem("edgetrace.signupStarted", "1");
+  }, []);
 
   return (
     <PageShell className="pb-16 md:py-16">
