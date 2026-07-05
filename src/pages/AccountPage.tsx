@@ -54,14 +54,26 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
   );
   const hasVerifiedStripeCustomer = hasStripeCustomer && !billingLinkProblem;
   const periodEndLabel = formatDate(effectiveProfile?.currentPeriodEnd);
-  const cancellationScheduled = isPaid && Boolean(effectiveProfile?.stripeCancelAtPeriodEnd);
+  const subscriptionStatus = effectiveProfile?.stripeSubscriptionStatus ?? "";
+  const subscriptionCanceled = isCanceledSubscriptionStatus(subscriptionStatus);
+  const cancellationScheduled = Boolean(effectiveProfile?.stripeCancelAtPeriodEnd);
+  const hasKnownCancellation = cancellationScheduled || subscriptionCanceled;
   const cancellationEndLabel = periodEndLabel || "the current billing period end";
-  const renewalLabel = billingLinkProblem ? "Unverified" : periodEndLabel || "Not available";
+  const cancellationEndedLabel = periodEndLabel || "the Stripe cancellation date";
+  const renewalLabel = billingLinkProblem
+    ? "Unverified"
+    : cancellationScheduled
+      ? cancellationEndLabel
+      : subscriptionCanceled
+        ? cancellationEndedLabel
+        : periodEndLabel || "Not available";
   const planChipDetail =
     billingLinkProblem && isPaid
       ? "Billing unverified"
       : cancellationScheduled
         ? `Access until ${cancellationEndLabel}`
+        : subscriptionCanceled
+          ? "Subscription canceled"
         : isPaid && periodEndLabel
           ? `Renews ${periodEndLabel}`
           : plan.monthlyPriceLabel;
@@ -70,22 +82,32 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
       ? "Billing link unverified"
       : cancellationScheduled
       ? `Cancels on ${cancellationEndLabel}`
-      : effectiveProfile?.stripeSubscriptionStatus
-        ? formatSubscriptionStatus(effectiveProfile.stripeSubscriptionStatus)
+      : subscriptionCanceled
+        ? `Canceled${periodEndLabel ? ` on ${periodEndLabel}` : ""}`
+      : subscriptionStatus
+        ? formatSubscriptionStatus(subscriptionStatus)
         : "No active paid subscription";
-  const paidAccessDetail =
+  const currentAccessDetail =
     billingLinkProblem
       ? "Pro access is set locally, but Stripe billing could not be verified."
       : cancellationScheduled
       ? `Pro access remains active until ${cancellationEndLabel}.`
-      : periodEndLabel
+      : subscriptionCanceled
+      ? `Stripe reports this subscription as canceled. Current access is ${plan.displayName}.`
+      : isPaid
+      ? periodEndLabel
         ? `Pro is active. Next renewal is ${periodEndLabel}.`
-      : `${plan.monthlyPriceLabel} - ${plan.description}`;
+        : `${plan.monthlyPriceLabel} - ${plan.description}`
+      : periodEndLabel
+        ? `Previous billing period ended ${periodEndLabel}. Current access is ${plan.displayName}.`
+        : `${plan.monthlyPriceLabel} - ${plan.description}`;
   const billingCardDetail =
     billingLinkProblem
       ? billingLinkMessage || "Stripe could not verify the saved billing customer. Refresh account details, then try again."
       : cancellationScheduled
       ? `Cancellation is scheduled. Pro access remains until ${cancellationEndLabel}.`
+      : subscriptionCanceled
+      ? `Stripe reports this subscription as canceled${periodEndLabel ? ` as of ${periodEndLabel}` : ""}.`
       : isPaid
         ? periodEndLabel
           ? `Stripe reports this subscription as active. Next renewal: ${periodEndLabel}.`
@@ -238,7 +260,7 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
     }
   };
 
-  const hasCancelableSubscription = isPaid && hasVerifiedStripeCustomer && Boolean(effectiveProfile?.stripeSubscriptionId);
+  const hasCancelableSubscription = isPaid && hasVerifiedStripeCustomer && Boolean(effectiveProfile?.stripeSubscriptionId) && !hasKnownCancellation;
 
   return (
     <main className="EdgeTrace-account-page EdgeTrace-shell py-8 md:py-12">
@@ -267,6 +289,26 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
 
       {notice && <div className="mt-6 border border-cyan/45 bg-cyan/10 p-4 text-sm text-cyan">{notice}</div>}
       {error && <div className="mt-6 border border-loss/60 bg-loss/10 p-4 text-sm text-loss">{error}</div>}
+      {hasKnownCancellation && (
+        <section className="EdgeTrace-account-cancellation-notice" aria-live="polite">
+          <div>
+            <p>{cancellationScheduled ? "Subscription cancellation scheduled" : "Subscription canceled"}</p>
+            <h2>
+              {cancellationScheduled
+                ? `Your Pro access remains active until ${cancellationEndLabel}.`
+                : `Stripe reports this subscription as canceled${periodEndLabel ? ` on ${periodEndLabel}` : ""}.`}
+            </h2>
+            <span>
+              {cancellationScheduled
+                ? "Stripe has marked this subscription to cancel at the end of the current billing period. You can keep using Pro features until that date."
+                : `Your current account access is ${plan.displayName}. Refresh status if you recently changed billing in Stripe.`}
+            </span>
+          </div>
+          <button className="EdgeTrace-pricing-secondary" disabled={activeAction === "refresh"} onClick={() => void refreshProfile()}>
+            <RefreshCw size={16} /> {activeAction === "refresh" ? "Refreshing..." : "Refresh status"}
+          </button>
+        </section>
+      )}
       {!billingConfigured && (
         <div className="mt-6 border border-warning/50 bg-warning/10 p-4 text-sm text-warning">
           Billing is not configured in this environment. Add Stripe keys and the Pro price ID before testing checkout.
@@ -286,8 +328,8 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
           accent={currentPlanId === "advanced" ? "amber" : currentPlanId === "pro" ? "purple" : "cyan"}
           label="Current access"
           value={plan.displayName}
-          detail={isPaid ? paidAccessDetail : `${plan.monthlyPriceLabel} - ${plan.description}`}
-          badge={billingLinkProblem && isPaid ? "Unverified" : cancellationScheduled ? "Cancelling" : isPaid ? "Active" : "Free"}
+          detail={currentAccessDetail}
+          badge={billingLinkProblem && isPaid ? "Unverified" : cancellationScheduled ? "Cancelling" : subscriptionCanceled ? "Canceled" : isPaid ? "Active" : "Free"}
         />
         <AccountSummaryCard
           icon={Lock}
@@ -346,13 +388,15 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
                     disabled={
                       !billingConfigured ||
                       !hasCancelableSubscription ||
-                      cancellationScheduled ||
+                      hasKnownCancellation ||
                       activeAction === "cancel" ||
                       activeAction === "portal"
                     }
                     onClick={() => void openCancellation()}
                   >
-                    {cancellationScheduled
+                    {subscriptionCanceled
+                      ? "Subscription canceled"
+                      : cancellationScheduled
                       ? "Cancellation scheduled"
                       : activeAction === "cancel"
                         ? "Opening Stripe..."
@@ -421,14 +465,14 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
                 <DetailRow
                   label="Subscription"
                   value={subscriptionLabel}
-                  valueClass={billingLinkProblem || cancellationScheduled ? "text-warning" : "text-ink"}
+                  valueClass={billingLinkProblem || hasKnownCancellation ? "text-warning" : "text-ink"}
                 />
                 <DetailRow
                   label="Stripe customer"
                   value={billingLinkProblem ? "Needs repair" : hasVerifiedStripeCustomer ? "Connected" : "Not linked"}
                   valueClass={billingLinkProblem ? "text-warning" : hasVerifiedStripeCustomer ? "text-cyan" : "text-warning"}
                 />
-                <DetailRow label={cancellationScheduled ? "Access ends" : isPaid ? "Next renewal" : "Current period"} value={renewalLabel} />
+                <DetailRow label={cancellationScheduled ? "Access ends" : subscriptionCanceled ? "Canceled date" : isPaid ? "Next renewal" : "Current period"} value={renewalLabel} />
               </dl>
             </article>
 
@@ -691,6 +735,11 @@ function accountRefreshNotice(profile: UserProfile) {
   if (profile.stripeCancelAtPeriodEnd) {
     return `Cancellation detected. Pro access ends on ${periodEnd || "the current billing period end"}.`;
   }
+  if (isCanceledSubscriptionStatus(profile.stripeSubscriptionStatus)) {
+    return periodEnd
+      ? `Subscription canceled. Stripe reports the billing period ended on ${periodEnd}.`
+      : "Subscription canceled. This account is now on Free unless another active subscription is linked.";
+  }
   if (profile.planId === "free") {
     return "You are on Free. No active Pro subscription is linked to this account.";
   }
@@ -707,6 +756,11 @@ function cancellationCheckNotice(profile: UserProfile) {
   if (profile.stripeCancelAtPeriodEnd) {
     return `Cancellation confirmed. Pro access remains available until ${periodEnd || "the current billing period end"}.`;
   }
+  if (isCanceledSubscriptionStatus(profile.stripeSubscriptionStatus)) {
+    return periodEnd
+      ? `Cancellation confirmed. Stripe reports this subscription as canceled as of ${periodEnd}.`
+      : "Cancellation confirmed. Stripe reports this subscription as canceled.";
+  }
   if (profile.planId === "free") {
     return "Cancellation confirmed. This account is now on Free.";
   }
@@ -718,6 +772,11 @@ function cancellationCheckNotice(profile: UserProfile) {
 function formatSubscriptionStatus(status: string) {
   const normalized = status.replace(/_/g, " ");
   return `Subscription ${normalized.charAt(0).toUpperCase()}${normalized.slice(1)}`;
+}
+
+function isCanceledSubscriptionStatus(status: string | undefined) {
+  const normalized = status?.trim().toLowerCase();
+  return normalized === "canceled" || normalized === "cancelled";
 }
 
 const toneClasses = {
