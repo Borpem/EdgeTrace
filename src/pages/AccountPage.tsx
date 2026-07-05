@@ -28,6 +28,7 @@ type AccountPageProps = {
 type Tone = "cyan" | "purple" | "amber";
 const accountPlanOrder: PlanId[] = ["free", "pro"];
 const cancellationCheckKey = "edgetrace:billing-cancellation-check";
+const billingReturnParams = new Set(["cancelled", "portal", "manage"]);
 
 export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing }: AccountPageProps) {
   const [localProfile, setLocalProfile] = useState<UserProfile | null>(profile);
@@ -144,9 +145,30 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
   };
 
   useEffect(() => {
+    if (!effectiveProfile || (!effectiveProfile.stripeCustomerId && !effectiveProfile.stripeSubscriptionId && effectiveProfile.planId === "free")) {
+      return;
+    }
+
+    let cancelled = false;
+    void getMe()
+      .then(({ profile: refreshed }) => {
+        if (cancelled) return;
+        setLocalProfile(refreshed);
+        onPlanChanged(refreshed);
+      })
+      .catch(() => {
+        // The manual Refresh action still surfaces profile errors.
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [effectiveProfile?.stripeCustomerId, effectiveProfile?.stripeSubscriptionId, effectiveProfile?.planId, onPlanChanged]);
+
+  useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const shouldCheckCancellation =
-      params.get("billing") === "cancelled" || window.sessionStorage.getItem(cancellationCheckKey) === "1";
+      billingReturnParams.has(params.get("billing") ?? "") || window.sessionStorage.getItem(cancellationCheckKey) === "1";
     if (!shouldCheckCancellation) return;
 
     let cancelled = false;
@@ -207,6 +229,7 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
     try {
       const { url } = await createBillingPortalSession();
       if (!url) throw new Error("Stripe did not return a billing portal URL.");
+      window.sessionStorage.setItem(cancellationCheckKey, "1");
       window.location.href = url;
     } catch (err) {
       const message = err instanceof Error ? err.message : "Unable to open the billing portal.";

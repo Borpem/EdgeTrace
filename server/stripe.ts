@@ -328,7 +328,7 @@ export async function createBillingPortalSession(userId: string, origin: string)
 
   return stripe.billingPortal.sessions.create({
     customer: billingReference.customerId,
-    return_url: `${origin}/pricing`
+    return_url: `${origin}/app/account?billing=portal`
   });
 }
 
