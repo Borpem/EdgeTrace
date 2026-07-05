@@ -34,6 +34,22 @@ const findings = [
   }
 ];
 
+const heatmapColumns = ["Open", "Midday", "Power Hour", "Overnight"];
+const heatmapRows = [
+  { day: "Mon", values: [2, 1, 3, 0] },
+  { day: "Tue", values: [1, 4, 2, 1] },
+  { day: "Wed", values: [3, 2, 5, 1] },
+  { day: "Thu", values: [2, 1, 4, 2] },
+  { day: "Fri", values: [1, 3, 2, 0] }
+];
+
+const drilldownRows = [
+  { group: "AAPL - Open", trades: "12", netPnl: "-$84.20", expectancy: "-$7.02", issue: "Cost drag", tone: "loss" },
+  { group: "MSFT - Midday", trades: "9", netPnl: "$48.60", expectancy: "$5.40", issue: "Stable winners", tone: "profit" },
+  { group: "TSLA - Power Hour", trades: "8", netPnl: "-$71.15", expectancy: "-$8.89", issue: "Late-session leak", tone: "loss" },
+  { group: "NVDA - Open", trades: "7", netPnl: "$39.00", expectancy: "$5.57", issue: "Positive cluster", tone: "profit" }
+];
+
 export function SampleReportPage({ onStart, onPricing }: SampleReportPageProps) {
   useEffect(() => {
     trackEvent("sample_report_viewed");
@@ -92,6 +108,77 @@ export function SampleReportPage({ onStart, onPricing }: SampleReportPageProps) 
             <p>Composite score from expectancy, payoff quality, costs, stability, win rate, and sample confidence.</p>
           </article>
         </div>
+      </section>
+
+      <section className="EdgeTrace-sample-analysis-grid">
+        <article className="EdgeTrace-sample-analysis-card">
+          <div className="EdgeTrace-sample-report-head">
+            <div>
+              <p className="EdgeTrace-sample-eyebrow">Sample Heatmap</p>
+              <h2>Leak clusters by weekday and session</h2>
+            </div>
+            <span>Pattern view</span>
+          </div>
+          <p className="EdgeTrace-sample-section-copy">
+            Heatmaps group completed trades into reviewable clusters so repeated weak spots are easier to inspect.
+          </p>
+          <div className="EdgeTrace-sample-heatmap" role="img" aria-label="Sample trading heatmap by weekday and session">
+            <span className="EdgeTrace-sample-heatmap-corner" />
+            {heatmapColumns.map((column) => (
+              <span key={column} className="EdgeTrace-sample-heatmap-axis is-column">{column}</span>
+            ))}
+            {heatmapRows.map((row) => (
+              <div className="EdgeTrace-sample-heatmap-row" key={row.day}>
+                <span className="EdgeTrace-sample-heatmap-axis is-row">{row.day}</span>
+                {row.values.map((level, index) => (
+                  <span
+                    key={`${row.day}-${heatmapColumns[index]}`}
+                    className={`EdgeTrace-sample-heatmap-cell level-${level}`}
+                    title={`${row.day} ${heatmapColumns[index]} sample intensity ${level}`}
+                  />
+                ))}
+              </div>
+            ))}
+          </div>
+          <div className="EdgeTrace-sample-heatmap-legend" aria-hidden="true">
+            <span>Lower</span>
+            {[1, 2, 3, 4, 5].map((level) => (
+              <i key={level} className={`level-${level}`} />
+            ))}
+            <span>Higher</span>
+          </div>
+        </article>
+
+        <article className="EdgeTrace-sample-analysis-card">
+          <div className="EdgeTrace-sample-report-head">
+            <div>
+              <p className="EdgeTrace-sample-eyebrow">Sample Drilldown</p>
+              <h2>Symbol and session attribution</h2>
+            </div>
+            <span>Detail view</span>
+          </div>
+          <p className="EdgeTrace-sample-section-copy">
+            Drilldowns break the overview into specific groups, making it clear which completed-trade segments drove the sample result.
+          </p>
+          <div className="EdgeTrace-sample-drilldown-table">
+            <div className="EdgeTrace-sample-drilldown-head">
+              <span>Group</span>
+              <span>Trades</span>
+              <span>Net PnL</span>
+              <span>Expectancy</span>
+              <span>Flag</span>
+            </div>
+            {drilldownRows.map((row) => (
+              <div className={`EdgeTrace-sample-drilldown-row tone-${row.tone}`} key={row.group}>
+                <span>{row.group}</span>
+                <span>{row.trades}</span>
+                <strong>{row.netPnl}</strong>
+                <strong>{row.expectancy}</strong>
+                <em>{row.issue}</em>
+              </div>
+            ))}
+          </div>
+        </article>
       </section>
 
       <section className="EdgeTrace-sample-findings">
