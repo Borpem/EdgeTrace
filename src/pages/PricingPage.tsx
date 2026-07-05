@@ -16,12 +16,6 @@ import type { UserProfile } from "../types";
 
 const proMonthlyPriceLabel = getPlanConfig("pro").monthlyPriceLabel;
 
-const planSummaries: Record<PlanId, string> = {
-  free: "Complete reporting and analysis workflow.",
-  pro: "Review loop, mistake heatmaps, benchmark percentiles, and clear targets for the next upload.",
-  advanced: "Legacy access with all paid review features."
-};
-
 const featureRows: Array<{ label: string; access: Record<PlanId, string> }> = [
   { label: "Full diagnostic reports", access: { free: "Unlimited", pro: "Unlimited", advanced: "Unlimited" } },
   { label: "Broker and generic CSV imports", access: { free: "Included", pro: "Included", advanced: "Included" } },
@@ -303,10 +297,6 @@ export function PricingPage({
           <span>Simple pricing.</span>
           <span>Serious edge.</span>
         </h1>
-        <p>
-          Use the full EdgeTrace reporting workflow for free. Upgrade to Pro when you want the recurring review loop,
-          mistake heatmaps, benchmark percentiles, and next-upload targets.
-        </p>
       </section>
 
       <StatusMessages billingConfigured={billingConfigured} notice={notice} error={error} />
@@ -359,7 +349,6 @@ function FeatureComparison({
       <div className="EdgeTrace-pricing-compare-heading">
         <div>
           <h2>Free vs Pro</h2>
-          <p>Core reporting stays free. Pro adds the recurring review layer and benchmark context.</p>
         </div>
       </div>
       <div className="EdgeTrace-pricing-board">
@@ -368,7 +357,6 @@ function FeatureComparison({
             <ShieldCheck size={18} aria-hidden="true" />
             <span>Plans</span>
           </div>
-          <p>Free covers the reporting workflow. Pro adds the review loop, heatmaps, and benchmark context.</p>
         </div>
         {planOrder.map((planId) => (
           <PlanColumnHeader
@@ -421,7 +409,6 @@ function PlanColumnHeader({
         {planId === "pro" && <small>Most Popular</small>}
         {isCurrent && <em>Current</em>}
       </div>
-      <p>{planSummaries[planId]}</p>
       <div className="EdgeTrace-pricing-column-price">
         <strong>{price}</strong>
         {config.monthlyPriceLabel.includes("/month") && <span>/mo</span>}
