@@ -26,7 +26,8 @@ const DEFAULT_USER_ID = "local-demo-user";
 const CONFIGURED_API_BASE_URL = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/$/, "") ?? "";
 const API_BASE_URL = shouldUseSameOriginApi() ? "" : CONFIGURED_API_BASE_URL;
 let currentUserId = DEFAULT_USER_ID;
-let currentAuthMode: "mock" | "clerk" = "mock";
+let currentAuthMode: "mock" | "clerk" =
+  import.meta.env.PROD || import.meta.env.VITE_AUTH_MODE === "clerk" ? "clerk" : "mock";
 let accessTokenProvider: (() => Promise<string | null>) | undefined;
 
 export type ReportsDebugEvent = {
@@ -135,9 +136,20 @@ export async function getActivationSummary() {
 }
 
 export async function postUserEvent(eventName: string, properties?: Record<string, unknown>) {
+  const headers = await apiHeaders({ "Content-Type": "application/json" });
+  if (currentAuthMode === "clerk" && !("Authorization" in headers)) {
+    return {
+      event: {
+        id: "not-tracked",
+        eventName,
+        createdAt: new Date(0).toISOString()
+      }
+    };
+  }
+
   const response = await fetch(apiUrl("/api/events"), {
     method: "POST",
-    headers: await apiHeaders({ "Content-Type": "application/json" }),
+    headers,
     body: JSON.stringify({ eventName, properties })
   });
   if (!response.ok) throw new Error(await readApiError(response, "Unable to track event"));
