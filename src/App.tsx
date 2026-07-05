@@ -43,13 +43,12 @@ import { LoginPage } from "./pages/LoginPage";
 import { PricingPage } from "./pages/PricingPage";
 import { ReconstructionAuditPage } from "./pages/ReconstructionAuditPage";
 import { ReportsPage } from "./pages/ReportsPage";
-import { SampleReportPage } from "./pages/SampleReportPage";
 import { SignupPage } from "./pages/SignupPage";
 import { StrategyDashboardPage } from "./pages/StrategyDashboardPage";
 import { UploadPage } from "./pages/UploadPage";
 import type { DiagnosticsResult, ReportSummary, UserProfile } from "./types";
 
-type Page = "home" | "sampleReport" | "pricing" | "privacy" | "terms" | "disclaimer" | "login" | "signup" | "strategyDashboard" | "upload" | "reports" | "collections" | "collectionDetail" | "collectionAttribution" | "collectionReviewWorkspace" | "compare" | "features" | "feedback" | "adminFeedback" | "account" | "dashboard" | "drilldown" | "compareDrilldown" | "reconstructionAudit";
+type Page = "home" | "pricing" | "privacy" | "terms" | "disclaimer" | "login" | "signup" | "strategyDashboard" | "upload" | "reports" | "collections" | "collectionDetail" | "collectionAttribution" | "collectionReviewWorkspace" | "compare" | "features" | "feedback" | "adminFeedback" | "account" | "dashboard" | "drilldown" | "compareDrilldown" | "reconstructionAudit";
 type DrilldownSelection = { dimension: BreakdownDimension; group: string };
 type CompareDrilldownSelection = {
   reportA: DiagnosticsResult;
@@ -106,8 +105,6 @@ export function App() {
         return "/";
       case "pricing":
         return "/pricing";
-      case "sampleReport":
-        return "/sample-report";
       case "privacy":
         return "/privacy";
       case "terms":
@@ -365,10 +362,6 @@ export function App() {
       setPage("pricing");
       return;
     }
-    if (pathname === "/sample-report") {
-      setPage("sampleReport");
-      return;
-    }
     if (pathname === "/privacy") {
       setPage("privacy");
       return;
@@ -385,8 +378,8 @@ export function App() {
       navigate("home", "/", true);
       return;
     }
-    if (pathname === "/demo") {
-      navigate("sampleReport", "/sample-report", true);
+    if (pathname === "/sample-report" || pathname === "/demo") {
+      navigate("home", "/", true);
       return;
     }
     if (isClerkLoginPath(pathname)) {
@@ -709,12 +702,6 @@ export function App() {
                 Pricing
               </button>
               <button
-                className={`EdgeTrace-nav-link ${page === "sampleReport" ? "EdgeTrace-nav-link-active" : ""}`}
-                onClick={() => navigate("sampleReport")}
-              >
-                Sample Report
-              </button>
-              <button
                 className={`EdgeTrace-nav-link ${page === "login" ? "EdgeTrace-nav-link-active" : ""}`}
                 onClick={() => navigate("login")}
               >
@@ -780,7 +767,6 @@ export function App() {
           isAuthenticated={isAuthenticated}
           onAnalyze={() => navigate(isAuthenticated ? "upload" : "signup", isAuthenticated ? "/app/upload" : "/signup?next=/app/upload")}
           onPricing={() => navigate("pricing", "/pricing")}
-          onViewSampleReport={() => navigate("sampleReport", "/sample-report")}
           onSignup={() => navigate("signup", "/signup?next=/app/upload")}
           onOpenReport={async (reportId) => {
             try {
@@ -801,12 +787,6 @@ export function App() {
           isAuthenticated={isAuthenticated}
           onStart={() => navigate(isAuthenticated ? "upload" : "signup", isAuthenticated ? "/app/upload" : "/signup?next=/app/upload")}
           onPlanChanged={setUserProfile}
-        />
-      )}
-      {page === "sampleReport" && (
-        <SampleReportPage
-          onStart={() => navigate(isAuthenticated ? "upload" : "signup", isAuthenticated ? "/app/upload" : "/signup?next=/app/upload")}
-          onPricing={() => navigate("pricing", "/pricing")}
         />
       )}
       {(page === "privacy" || page === "terms" || page === "disclaimer") && (
@@ -1108,7 +1088,6 @@ export function App() {
       {showPublicFooter && (
         <PublicFooter
           onHome={() => navigate("home", "/")}
-          onSample={() => navigate("sampleReport", "/sample-report")}
           onPricing={() => navigate("pricing", "/pricing")}
           onPrivacy={() => navigate("privacy", "/privacy")}
           onTerms={() => navigate("terms", "/terms")}
@@ -1122,7 +1101,6 @@ export function App() {
 
 function PublicFooter({
   onHome,
-  onSample,
   onPricing,
   onPrivacy,
   onTerms,
@@ -1130,7 +1108,6 @@ function PublicFooter({
   onContact
 }: {
   onHome: () => void;
-  onSample: () => void;
   onPricing: () => void;
   onPrivacy: () => void;
   onTerms: () => void;
@@ -1146,7 +1123,6 @@ function PublicFooter({
         </div>
         <nav aria-label="Footer navigation">
           <button onClick={onHome}>How It Works</button>
-          <button onClick={onSample}>Sample Report</button>
           <button onClick={onPricing}>Pricing</button>
           <button onClick={onContact}>Support</button>
           <button onClick={onPrivacy}>Privacy</button>
@@ -1386,7 +1362,6 @@ function RouteLoadingShell({ isAuthenticated }: { isAuthenticated: boolean }) {
 
 function initialPageFromPath(pathname: string): Page {
   if (pathname === "/pricing") return "pricing";
-  if (pathname === "/sample-report" || pathname === "/demo") return "sampleReport";
   if (pathname === "/privacy") return "privacy";
   if (pathname === "/terms") return "terms";
   if (pathname === "/disclaimer") return "disclaimer";
@@ -1399,8 +1374,6 @@ function isPublicPath(pathname: string) {
   return isClerkLoginPath(pathname) || isClerkSignupPath(pathname) || [
     "/",
     "/pricing",
-    "/sample-report",
-    "/demo",
     "/privacy",
     "/terms",
     "/disclaimer"
@@ -1416,7 +1389,7 @@ function isClerkSignupPath(pathname: string) {
 }
 
 function isPublicPage(page: Page) {
-  return ["home", "pricing", "sampleReport", "privacy", "terms", "disclaimer", "login", "signup"].includes(page);
+  return ["home", "pricing", "privacy", "terms", "disclaimer", "login", "signup"].includes(page);
 }
 
 function isAuthenticatedAppPage(page: Page) {

@@ -22,13 +22,9 @@ test.describe.serial("EdgeTrace happy path", () => {
     await expect(page.getByRole("heading", { name: /Stop guessing why your trades are losing money/i })).toBeVisible();
     await expect(publicHeader.getByRole("button", { name: "How It Works" })).toBeVisible();
     await expect(publicHeader.getByRole("button", { name: "Pricing" })).toBeVisible();
-    await expect(publicHeader.getByRole("button", { name: "Sample Report" })).toBeVisible();
+    await expect(publicHeader.getByRole("button", { name: "Sample Report" })).toHaveCount(0);
     await expect(publicHeader.getByRole("button", { name: "Login" })).toBeVisible();
     await expect(publicHeader.getByRole("button", { name: "Sign Up" })).toBeVisible();
-    await publicHeader.getByRole("button", { name: "Sample Report" }).click();
-    await expect(page).toHaveURL(/\/sample-report/);
-    await expect(page.getByRole("heading", { name: /See the diagnostic workflow/i })).toBeVisible();
-    await publicHeader.getByRole("button", { name: "How It Works" }).click();
     await page.getByRole("button", { name: "Create Free Account", exact: true }).click();
 
     await expect(page.getByText("Create a strategy diagnostics workspace.")).toBeVisible();
@@ -36,12 +32,8 @@ test.describe.serial("EdgeTrace happy path", () => {
     await expect(page.getByRole("heading", { name: "Create a Diagnostic Report" })).toBeVisible();
   });
 
-  test("Public sample report and legal routes are reachable", async ({ page }) => {
-    await page.goto("/demo");
-
-    await expect(page).toHaveURL(/\/sample-report/);
-    await expect(page.getByRole("heading", { name: /See the diagnostic workflow/i })).toBeVisible();
-    await expect(page.getByText(/does not provide financial/i)).toBeVisible();
+  test("Public legal routes are reachable", async ({ page }) => {
+    await page.goto("/");
 
     const footer = page.locator("footer.EdgeTrace-public-footer");
     await footer.getByRole("button", { name: "Privacy" }).click();

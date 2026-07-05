@@ -17,7 +17,6 @@ type FeatureEducationPageProps = {
   isAuthenticated?: boolean;
   onAnalyze: () => void;
   onPricing: () => void;
-  onViewSampleReport?: () => void;
   onSignup?: () => void;
   onOpenReport?: (reportId: string) => void;
   onCreateStrategySet?: () => void;
@@ -50,7 +49,6 @@ export function FeatureEducationPage({
   profile,
   isAuthenticated = Boolean(profile),
   onAnalyze,
-  onViewSampleReport,
   onSignup
 }: FeatureEducationPageProps) {
   const accountAction = isAuthenticated ? onAnalyze : onSignup ?? onAnalyze;
@@ -176,12 +174,6 @@ export function FeatureEducationPage({
               {accountLabel}
               <ArrowRight size={16} />
             </button>
-            {onViewSampleReport && (
-              <button className="EdgeTrace-secondary-button" onClick={onViewSampleReport}>
-                View Sample Report
-                <ArrowRight size={16} />
-              </button>
-            )}
           </div>
         </div>
       </section>
