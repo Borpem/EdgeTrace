@@ -57,6 +57,16 @@ test.describe.serial("EdgeTrace happy path", () => {
     await expect(page.getByRole("heading", { name: "Financial and Trading Disclaimer" })).toBeVisible();
   });
 
+  test("Clerk nested auth routes stay on auth pages", async ({ page }) => {
+    await page.goto("/signup/verify-email-address");
+    await expect(page.getByRole("heading", { name: "Create a strategy diagnostics workspace." })).toBeVisible();
+    await expect(page).not.toHaveURL(/\/$/);
+
+    await page.goto("/login/factor-one");
+    await expect(page.getByRole("heading", { name: "Welcome back to EdgeTrace." })).toBeVisible();
+    await expect(page).not.toHaveURL(/\/$/);
+  });
+
   test("Public pricing keeps the shared site header", async ({ page }) => {
     await page.goto("/");
     const topbar = page.locator("header.EdgeTrace-topbar");

@@ -389,7 +389,7 @@ export function App() {
       navigate("sampleReport", "/sample-report", true);
       return;
     }
-    if (pathname === "/login") {
+    if (isClerkLoginPath(pathname)) {
       if (authOverride) {
         const next = new URLSearchParams(search).get("next");
         await routeToPath(next && next.startsWith("/app") ? next : "/app/dashboard", true, true);
@@ -398,7 +398,7 @@ export function App() {
       setPage("login");
       return;
     }
-    if (pathname === "/signup") {
+    if (isClerkSignupPath(pathname)) {
       if (authOverride) {
         const next = new URLSearchParams(search).get("next");
         await routeToPath(next && next.startsWith("/app") ? next : "/app/dashboard", true, true);
@@ -1390,23 +1390,29 @@ function initialPageFromPath(pathname: string): Page {
   if (pathname === "/privacy") return "privacy";
   if (pathname === "/terms") return "terms";
   if (pathname === "/disclaimer") return "disclaimer";
-  if (pathname === "/login") return "login";
-  if (pathname === "/signup") return "signup";
+  if (isClerkLoginPath(pathname)) return "login";
+  if (isClerkSignupPath(pathname)) return "signup";
   return "home";
 }
 
 function isPublicPath(pathname: string) {
-  return [
+  return isClerkLoginPath(pathname) || isClerkSignupPath(pathname) || [
     "/",
     "/pricing",
     "/sample-report",
     "/demo",
     "/privacy",
     "/terms",
-    "/disclaimer",
-    "/login",
-    "/signup"
+    "/disclaimer"
   ].includes(pathname);
+}
+
+function isClerkLoginPath(pathname: string) {
+  return pathname === "/login" || pathname.startsWith("/login/");
+}
+
+function isClerkSignupPath(pathname: string) {
+  return pathname === "/signup" || pathname.startsWith("/signup/");
 }
 
 function isPublicPage(page: Page) {
