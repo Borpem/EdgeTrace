@@ -362,12 +362,6 @@ function FeatureComparison({
             action={renderPlanAction(planId)}
           />
         ))}
-        <div className="EdgeTrace-pricing-board-label feature-label">Feature access</div>
-        {planOrder.map((planId) => (
-          <div key={planId} className={`EdgeTrace-pricing-feature-column-label ${activePlanId === planId ? "active" : ""}`}>
-            {getPlanConfig(planId).displayName}
-          </div>
-        ))}
         {featureRows.map((row) => (
           <div className="EdgeTrace-pricing-feature-row" key={row.label}>
             <div className="EdgeTrace-pricing-feature-name">{row.label}</div>
