@@ -215,6 +215,34 @@ function subscriptionMatchesKnownPrice(subscription: any) {
   return mapStripePriceToPlan(priceId) !== "free" || normalizePlanId(firstString(subscription.metadata?.planId)) !== "free";
 }
 
+function stripeTimestampSeconds(...values: unknown[]) {
+  for (const value of values) {
+    const numeric = typeof value === "number" ? value : Number(value);
+    if (Number.isFinite(numeric) && numeric > 0) return numeric;
+  }
+  return 0;
+}
+
+function subscriptionCurrentPeriodEnd(subscription: any) {
+  return stripeTimestampSeconds(
+    subscription.current_period_end,
+    subscription.cancel_at,
+    subscription.items?.data?.[0]?.current_period_end,
+    subscription.ended_at,
+    subscription.canceled_at
+  );
+}
+
+function subscriptionCancelAtPeriodEnd(subscription: any) {
+  if (subscription.cancel_at_period_end) return true;
+  const cancelAt = stripeTimestampSeconds(subscription.cancel_at);
+  return isActiveSubscriptionStatus(subscription.status) && cancelAt > Math.floor(Date.now() / 1000);
+}
+
+function isActiveSubscriptionStatus(status: unknown) {
+  return status === "active" || status === "trialing";
+}
+
 async function retrieveLiveCustomer(stripe: InstanceType<typeof Stripe>, customerId: string) {
   const customer = await stripe.customers.retrieve(customerId);
   if ("deleted" in customer && customer.deleted) {
@@ -495,7 +523,7 @@ export async function updateUserPlanFromSubscription(subscription: any, fallback
   }
 
   const priceId = subscription.items.data[0]?.price.id ?? "";
-  const active = subscription.status === "active" || subscription.status === "trialing";
+  const active = isActiveSubscriptionStatus(subscription.status);
   const metadataPlanId = normalizePlanId(firstString(subscription.metadata?.planId));
   const planId = active ? metadataPlanId === "free" ? mapStripePriceToPlan(priceId) : metadataPlanId : "free";
   if (active && planId === "free") {
@@ -504,8 +532,8 @@ export async function updateUserPlanFromSubscription(subscription: any, fallback
   if (!active) {
     console.info(`[stripe] Subscription ${subscription.id} status ${subscription.status}; setting plan to free.`);
   }
-  const currentPeriodEndSeconds = subscription.current_period_end as number | undefined;
-  const cancelAtPeriodEnd = Boolean(subscription.cancel_at_period_end);
+  const currentPeriodEndSeconds = subscriptionCurrentPeriodEnd(subscription);
+  const cancelAtPeriodEnd = subscriptionCancelAtPeriodEnd(subscription);
 
   const updated = await updateUserBillingState(profile.userId, {
     planId,
