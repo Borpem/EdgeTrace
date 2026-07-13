@@ -38,7 +38,7 @@ export function SignupPage({
               {[
                 "Full reporting workflow on Free",
                 "Unlimited reports, imports, dashboard diagnosis, compare, and strategy sets",
-                "Upgrade to Pro for drilldowns, heatmaps, benchmark percentiles, and next-review checklists"
+                "Upgrade to Pro for drilldowns, heatmaps, recurring reviews, and next-review checklists"
               ].map((item) => (
                 <div key={item} className="flex items-center gap-3 text-sm text-muted">
                   <Check className="text-cyan" size={16} strokeWidth={1.7} />

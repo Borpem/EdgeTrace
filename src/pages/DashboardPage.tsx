@@ -47,6 +47,7 @@ import {
 import { costDragSortValue } from "../lib/costDrag";
 import { NO_LOSS_PROFIT_FACTOR, normalizePortfolioMetrics } from "../lib/diagnostics";
 import { canUseFeature, canViewFullDrilldown, getPlanConfig, getReportAccessLevel } from "../lib/entitlements";
+import { AGGREGATE_BENCHMARKS_ENABLED } from "../lib/plans";
 import {
   buildProFeaturePrompt,
   type ProFeaturePromptInput,
@@ -287,7 +288,7 @@ export function DashboardPage({
     reportJustCreated || activation?.firstReportCreatedAt === result.createdAt ? 0 : 1,
     result
   );
-  const canViewAggregateBenchmarks = canUseFeature(plan, "aggregate_benchmarks");
+  const canViewAggregateBenchmarks = AGGREGATE_BENCHMARKS_ENABLED && canUseFeature(plan, "aggregate_benchmarks");
   const canUseReviewLoop = canUseFeature(plan, "review_cadence");
   const canViewMistakeHeatmap = canUseFeature(plan, "mistake_heatmap");
   const canInspectFullDrilldown = reportAccessLevel === "full" && canViewFullDrilldown(plan);
@@ -745,7 +746,7 @@ export function DashboardPage({
     normalizedTradeCount,
     availableReports,
     priorReport,
-    benchmarks,
+    benchmarks: AGGREGATE_BENCHMARKS_ENABLED ? benchmarks : null,
     actionItems,
     largestLeak
   });
@@ -1044,7 +1045,7 @@ export function DashboardPage({
               feature="review_cadence"
               accessLevel={canUseReviewLoop ? "full" : "preview"}
               title="Upgrade to Pro to unlock the review loop."
-              description="Pro turns repeated imports into weekly edge reviews, mistake heatmaps, benchmark context, and a checklist for the next upload."
+              description="Pro turns repeated imports into weekly edge reviews, mistake heatmaps, report comparisons, and a checklist for the next upload."
               className="EdgeTrace-command-pro-loop-gate"
             >
               <ProReviewLoopPanel
@@ -1399,12 +1400,14 @@ export function DashboardPage({
               />
             </DashboardDisclosureCard>
 
-            <BenchmarkIntelligencePanel
-              accessLevel={canViewAggregateBenchmarks ? "full" : "locked"}
-              snapshot={benchmarks}
-              isLoading={benchmarksLoading}
-              error={benchmarksError}
-            />
+            {AGGREGATE_BENCHMARKS_ENABLED && (
+              <BenchmarkIntelligencePanel
+                accessLevel={canViewAggregateBenchmarks ? "full" : "locked"}
+                snapshot={benchmarks}
+                isLoading={benchmarksLoading}
+                error={benchmarksError}
+              />
+            )}
 
             <DashboardDisclosureCard
               title="Changes, Actions, and Context"
@@ -2033,24 +2036,26 @@ function ProReviewLoopPanel({
         </div>
       </div>
 
-      <div className="EdgeTrace-review-benchmark-tiles" aria-label="Benchmark scorecards">
-        {review.benchmarkTiles.map((tile) => (
-          <div key={tile.label} className={`tone-${tile.tone}`}>
-            <span>{tile.label}</span>
-            <div
-              className="EdgeTrace-review-percentile-gauge"
-              style={{ "--percentile": `${Math.max(0, Math.min(100, tile.percentile ?? 0)) * 3.6}deg` } as CSSProperties}
-            >
-              <strong>{tile.value}</strong>
-              <em>{tile.percentile === undefined ? "Benchmark" : "Percentile"}</em>
+      {review.benchmarkTiles.length > 0 && (
+        <div className="EdgeTrace-review-benchmark-tiles" aria-label="Benchmark scorecards">
+          {review.benchmarkTiles.map((tile) => (
+            <div key={tile.label} className={`tone-${tile.tone}`}>
+              <span>{tile.label}</span>
+              <div
+                className="EdgeTrace-review-percentile-gauge"
+                style={{ "--percentile": `${Math.max(0, Math.min(100, tile.percentile ?? 0)) * 3.6}deg` } as CSSProperties}
+              >
+                <strong>{tile.value}</strong>
+                <em>{tile.percentile === undefined ? "Benchmark" : "Percentile"}</em>
+              </div>
+              <small>{tile.detail}</small>
+              <i aria-hidden="true">
+                <b style={{ width: `${Math.max(0, Math.min(100, tile.percentile ?? 0))}%` }} />
+              </i>
             </div>
-            <small>{tile.detail}</small>
-            <i aria-hidden="true">
-              <b style={{ width: `${Math.max(0, Math.min(100, tile.percentile ?? 0))}%` }} />
-            </i>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       <div className="EdgeTrace-review-loop-grid">
         <section className="EdgeTrace-review-story">
@@ -3276,7 +3281,7 @@ function buildReviewLoop({
   const daysSinceLatest = latestDate ? Math.max(0, Math.floor((Date.now() - latestDate) / 86_400_000)) : undefined;
   const cadence = reviewCadence(daysSinceLatest, loopReports.length);
   const alerts = buildReviewAlerts(metrics, intelligence, priorReport, largestLeak);
-  const benchmarkTiles = buildBenchmarkTiles(benchmarks);
+  const benchmarkTiles = AGGREGATE_BENCHMARKS_ENABLED ? buildBenchmarkTiles(benchmarks) : [];
   const checklist = buildNextReviewChecklist(actionItems, metrics, largestLeak, priorReport);
   const issueCount = alerts.filter((item) => item.tone === "red" || item.tone === "yellow").length;
   const reviewState = reviewLoopStatus(cadence, issueCount, priorReport);

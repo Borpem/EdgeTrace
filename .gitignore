@@ -8,3 +8,16 @@ test-results/
 playwright-report/
 
 .vercel
+
+# Local runtime state must never enter a release snapshot.
+.dev.err.log
+.dev.out.log
+.dev.pid
+vite.err.log
+vite.log
+debug.log
+data/*.sqlite
+data/*.sqlite-shm
+data/*.sqlite-wal
+logs/*.err
+logs/*.log

@@ -31,8 +31,8 @@ const defaultProFeaturePrompts: Partial<Record<FeatureKey, Omit<ProFeaturePrompt
     learnPath: "drilldowns"
   },
   aggregate_benchmarks: {
-    title: "Upgrade to Pro to unlock benchmark intelligence.",
-    description: "Pro compares this report against eligible aggregate cohorts so you can see where your edge lags or leads.",
+    title: "This feature is unavailable in the current release.",
+    description: "This option is not included in the current launch.",
     learnPath: "how-review-loop"
   },
   mistake_heatmap: {
@@ -42,7 +42,7 @@ const defaultProFeaturePrompts: Partial<Record<FeatureKey, Omit<ProFeaturePrompt
   },
   review_cadence: {
     title: "Upgrade to Pro to unlock the review loop.",
-    description: "Pro turns repeated imports into recurring edge reviews, benchmarks, and next-upload targets.",
+    description: "Pro turns repeated imports into recurring edge reviews and next-upload targets.",
     learnPath: "how-review-loop"
   },
   reconstruction_audit: {

@@ -378,7 +378,7 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
             </div>
             <p>
               Free includes the full core workflow. Pro adds weekly Edge Reviews, regression alerts,
-              benchmark context, next-review checklists, review status, and aggregate context for {proPlan.monthlyPriceLabel}.
+              next-review checklists, review status, and full drilldowns for {proPlan.monthlyPriceLabel}.
             </p>
           </div>
           <div className="EdgeTrace-account-billing-card">
@@ -534,7 +534,7 @@ export function AccountPage({ profile, user, onPlanChanged, onAnalyze, onPricing
         <InfoTile
           icon={Sparkles}
           title="Pro review loop"
-          body="Pro adds weekly Edge Reviews, regression alerts, benchmark context, review status, and next-review checklists."
+          body="Pro adds weekly Edge Reviews, regression alerts, review status, full drilldowns, and next-review checklists."
           accent="purple"
         />
       </section>
@@ -731,11 +731,6 @@ function accessItems(planId: PlanId) {
       body: pro ? "Weekly Edge Reviews and next-review checklists are active." : "Upgrade for recurring process reviews.",
       enabled: pro
     },
-    {
-      title: "Benchmark context",
-      body: pro ? "Benchmark percentiles and cohort context are active." : "Upgrade for benchmark percentiles and cohort context.",
-      enabled: pro
-    }
   ];
 }
 

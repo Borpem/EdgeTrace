@@ -1,7 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { ClerkProvider } from "@clerk/clerk-react";
-import { Analytics } from "@vercel/analytics/react";
 import { App } from "./App";
 import {
   ClerkAuthProvider,
@@ -34,7 +33,6 @@ const app = clientStartupError ? (
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     {app}
-    <Analytics />
   </React.StrictMode>
 );
 

@@ -79,6 +79,19 @@ test.describe.serial("EdgeTrace happy path", () => {
   });
 
   test("Upload sample CSV flow", async ({ page }) => {
+    const analyticsRequests: string[] = [];
+    page.on("request", (request) => {
+      const url = new URL(request.url());
+      if (
+        url.pathname === "/api/events" ||
+        url.pathname.startsWith("/_vercel/insights") ||
+        url.hostname === "va.vercel-scripts.com" ||
+        url.hostname === "vitals.vercel-insights.com"
+      ) {
+        analyticsRequests.push(request.url());
+      }
+    });
+
     await page.goto("/app/upload");
     await expect(page).toHaveURL(/\/login\?next=/);
     await page.getByRole("button", { name: "Continue to App" }).click();
@@ -106,6 +119,22 @@ test.describe.serial("EdgeTrace happy path", () => {
     await expect(page.getByText("Profit Factor", { exact: true }).first()).toBeVisible();
     await expect(page.getByText("Recommended Actions (Next Steps)", { exact: true })).toBeVisible();
     await expect(page.getByText("Supporting Context", { exact: true })).toBeVisible();
+    await expect(page.getByText("EdgeTrace Benchmarks", { exact: true })).toHaveCount(0);
+    await expect(page.getByLabel("Benchmark scorecards")).toHaveCount(0);
+    expect(analyticsRequests).toEqual([]);
+    expect(await page.evaluate(() => window.localStorage.getItem("edgetrace.analyticsId"))).toBeNull();
+  });
+
+  test("Owner-disabled launch features remain unavailable", async ({ request }) => {
+    const benchmarkResponse = await request.get(`${apiBaseUrl}/api/diagnostics/release-disabled/benchmarks`);
+    expect(benchmarkResponse.status()).toBe(404);
+    expect(await benchmarkResponse.json()).toEqual({ error: "NOT_FOUND" });
+
+    const analyticsResponse = await request.post(`${apiBaseUrl}/api/events`, {
+      data: { eventName: "landing_page_viewed", anonymousId: "release-disabled" }
+    });
+    expect(analyticsResponse.status()).toBe(404);
+    expect(await analyticsResponse.json()).toEqual({ error: "NOT_FOUND" });
   });
 
   test("Reports and Compare flow", async ({ page, request }) => {

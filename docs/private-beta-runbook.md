@@ -168,7 +168,7 @@ Run this manually against the deployed app:
 17. Cancel the test subscription if using test mode.
 18. Confirm plan downgrades after webhook delivery.
 
-## Activation Events To Watch
+## Activation Events (Disabled For This Launch)
 
 Primary value event:
 
@@ -189,7 +189,7 @@ Core funnel:
 - `checkout_started`
 - `checkout_completed`
 
-The current app stores product events in `user_events`. For beta review, query counts by `event_name`, conversion from signup to `created_first_report`, and time-to-first-report.
+Non-essential product-event collection is disabled for this launch. The client does not submit these events, `/api/events` returns `404`, and server event writes are blocked. Do not rely on `user_events` for launch measurement.
 
 ## Beta User Plan
 

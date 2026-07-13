@@ -38,6 +38,10 @@ export type PlanConfig = {
   featureBullets: string[];
 };
 
+// Owner-approved launch setting: cross-account aggregate benchmarks remain unavailable
+// until separate privacy/legal approval is documented.
+export const AGGREGATE_BENCHMARKS_ENABLED = false;
+
 export const planConfigs: Record<PlanId, PlanConfig> = {
   free: {
     id: "free",
@@ -83,7 +87,7 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
     id: "pro",
     displayName: "Pro",
     monthlyPriceLabel: "$19.99/month",
-    description: "Recurring reviews, mistake heatmaps, benchmark percentiles, and next-upload targets.",
+    description: "Recurring reviews, mistake heatmaps, full drilldowns, and next-upload targets.",
     limits: {
       maxReports: "unlimited",
       maxFullReports: "unlimited",
@@ -108,7 +112,7 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
       audit_exports: true,
       strategy_health_monitoring: true,
       review_cadence: true,
-      aggregate_benchmarks: true,
+      aggregate_benchmarks: false,
       mistake_heatmap: true
     },
     featureBullets: [
@@ -116,7 +120,6 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
       "Full drilldowns by symbol, session, setup, and time",
       "Weekly Edge Review loop",
       "Recurring review workflow",
-      "Aggregate benchmark percentiles",
       "Mistake heatmap",
       "Next-review checklist",
       "Regression and improvement tracking"
@@ -151,7 +154,7 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
       audit_exports: true,
       strategy_health_monitoring: true,
       review_cadence: true,
-      aggregate_benchmarks: true,
+      aggregate_benchmarks: false,
       mistake_heatmap: true
     },
     featureBullets: [
@@ -159,7 +162,6 @@ export const planConfigs: Record<PlanId, PlanConfig> = {
       "Full drilldowns by symbol, session, setup, and time",
       "Weekly Edge Review loop",
       "Recurring review workflow",
-      "Aggregate benchmark percentiles",
       "Mistake heatmap",
       "Next-review checklist",
       "Regression and improvement tracking"

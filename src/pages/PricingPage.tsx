@@ -29,12 +29,9 @@ const featureRows: Array<{ label: string; access: Record<PlanId, string> }> = [
   { label: "Full drilldowns by symbol, session, setup, and time", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Weekly Edge Review loop", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Regression / improvement tracking", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Benchmark percentile cards", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Mistake heatmap", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Next-review checklist", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Review cadence status", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Aggregate benchmark intelligence", access: { free: "-", pro: "Included", advanced: "Included" } },
-  { label: "Cost-drag cohort percentiles", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "R-capture comparisons", access: { free: "-", pro: "Included", advanced: "Included" } },
   { label: "Expectancy and profit-factor context", access: { free: "-", pro: "Included", advanced: "Included" } }
 ];
@@ -47,7 +44,7 @@ const faqs = [
   },
   {
     question: "What does Pro unlock?",
-    answer: `Pro is the ${proMonthlyPriceLabel} investigation and review layer: full drilldowns, weekly Edge Reviews, mistake heatmaps, benchmark percentile cards, next-review checklists, review cadence status, and regression / improvement tracking.`
+    answer: `Pro is the ${proMonthlyPriceLabel} investigation and review layer: full drilldowns, weekly Edge Reviews, mistake heatmaps, next-review checklists, review cadence status, and regression / improvement tracking.`
   },
   {
     question: "Can I compare reports on Free?",
@@ -68,8 +65,8 @@ const faqs = [
 
 const trustItems: Array<{ title: string; body: string; icon: LucideIcon; accent: "cyan" | "purple" | "amber" }> = [
   {
-    title: "Aggregate-ready insights",
-    body: "Trade data can support richer benchmarks and strategy intelligence.",
+    title: "Visible import review",
+    body: "Review the detected source, mapped fields, excluded rows, and warnings before a report is created.",
     icon: Database,
     accent: "cyan"
   },
@@ -488,7 +485,7 @@ function FinalCta({
       </div>
       <div>
         <h2>Ready to review your trading data?</h2>
-        <p>Start with the free workflow, then upgrade to Pro when you want recurring review targets, heatmaps, and benchmark context.</p>
+        <p>Start with the free workflow, then upgrade to Pro when you want recurring review targets, heatmaps, and full drilldowns.</p>
       </div>
       <div>
         {isAuthenticated ? (

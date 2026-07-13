@@ -67,7 +67,8 @@ import {
   canUseBrokerAdapter,
   getPlanConfig
 } from "../src/lib/entitlements";
-import { normalizePlanId } from "../src/lib/plans";
+import { AGGREGATE_BENCHMARKS_ENABLED, normalizePlanId } from "../src/lib/plans";
+import { NON_ESSENTIAL_ANALYTICS_ENABLED } from "../src/lib/releasePolicy";
 import type { FeedbackItem, FeedbackStatus, ImportProvenance } from "../src/types";
 import {
   planUpgradeResponse,
@@ -521,6 +522,10 @@ app.get("/api/me/activation", async (req, res) => {
 });
 
 app.post("/api/events", async (req, res) => {
+  if (!NON_ESSENTIAL_ANALYTICS_ENABLED) {
+    res.status(404).json({ error: "NOT_FOUND" });
+    return;
+  }
   const eventName = sanitizeEventName(req.body?.eventName);
   if (!eventName) {
     res.status(400).json({
@@ -938,6 +943,10 @@ app.post("/api/reports/archive", async (req, res) => {
 });
 
 app.get("/api/diagnostics/:id/benchmarks", async (req, res) => {
+  if (!AGGREGATE_BENCHMARKS_ENABLED) {
+    res.status(404).json({ error: "NOT_FOUND" });
+    return;
+  }
   try {
     const userId = getUserId(req);
     const plan = getPlanConfig((await getOrCreateUserProfile(userId)).planId);
@@ -1783,9 +1792,9 @@ function contentSecurityPolicy() {
     "img-src 'self' data: blob: https:",
     "font-src 'self' data:",
     "style-src 'self' 'unsafe-inline'",
-    "script-src 'self' 'unsafe-inline' https://*.clerk.accounts.dev https://*.clerk.com https://clerk.edgetrace.app https://js.stripe.com https://va.vercel-scripts.com",
+    "script-src 'self' 'unsafe-inline' https://*.clerk.accounts.dev https://*.clerk.com https://clerk.edgetrace.app https://js.stripe.com",
     "worker-src 'self' blob:",
-    "connect-src 'self' https://edgetrace-production.up.railway.app https://*.clerk.accounts.dev https://*.clerk.com https://clerk.edgetrace.app https://api.clerk.com https://*.stripe.com https://api.stripe.com https://vitals.vercel-insights.com",
+    "connect-src 'self' https://edgetrace-production.up.railway.app https://*.clerk.accounts.dev https://*.clerk.com https://clerk.edgetrace.app https://api.clerk.com https://*.stripe.com https://api.stripe.com",
     "frame-src https://js.stripe.com https://hooks.stripe.com https://*.clerk.accounts.dev https://*.clerk.com https://clerk.edgetrace.app",
     "form-action 'self' https://*.stripe.com",
     "upgrade-insecure-requests"

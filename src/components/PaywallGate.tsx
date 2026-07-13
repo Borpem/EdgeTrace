@@ -121,16 +121,16 @@ function FeaturePaywallTeaser({ feature }: { feature: FeatureKey | string }) {
         <em>3 issues to verify</em>
       </div>
       <div className="EdgeTrace-paywall-teaser-gauge">
-        <strong>38th</strong>
-        <span>Cost drag percentile</span>
+        <strong>Weekly</strong>
+        <span>Review cadence</span>
       </div>
       <div className="EdgeTrace-paywall-teaser-gauge is-blue">
-        <strong>59th</strong>
-        <span>R-capture benchmark</span>
+        <strong>3 checks</strong>
+        <span>Open review items</span>
       </div>
       <div className="EdgeTrace-paywall-teaser-gauge is-blue">
-        <strong>63rd</strong>
-        <span>Expectancy benchmark</span>
+        <strong>Ready</strong>
+        <span>Next review</span>
       </div>
       <div className="EdgeTrace-paywall-teaser-list">
         <b />
@@ -156,5 +156,5 @@ function requiredPlanForFeature(_feature: FeatureKey | string): "pro" | "advance
 
 function shouldUseGeneratedPreview(feature: FeatureKey | string) {
   const value = String(feature);
-  return value === "review_cadence" || value === "aggregate_benchmarks" || value === "mistake_heatmap";
+  return value === "review_cadence" || value === "mistake_heatmap";
 }

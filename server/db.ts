@@ -11,6 +11,7 @@ import type {
   SavedComparisonInput
 } from "../src/types";
 import type { BillingStateInput, DatabaseAdapter, UserEventInput, UserProfileInput } from "./database/types";
+import { NON_ESSENTIAL_ANALYTICS_ENABLED } from "../src/lib/releasePolicy";
 
 const provider = getDatabaseProvider();
 const adapter: DatabaseAdapter = provider === "postgres" ? postgres : sqlite;
@@ -167,6 +168,7 @@ export async function deleteCollectionReviewState(
 }
 
 export async function trackUserEvent(userId: string, input: UserEventInput) {
+  if (!NON_ESSENTIAL_ANALYTICS_ENABLED) return null;
   return adapter.trackUserEvent(userId, input);
 }
 

@@ -73,7 +73,8 @@ assert(!mixedComparison, "User B must not create a saved comparison with User A 
 const { trackEvent } = await import("../src/lib/analytics");
 trackEvent("landing_page_viewed");
 
-await db.trackUserEvent("anonymous:anon-security", {
+const analyticsBefore = await db.getAnalyticsSummary();
+const storedEvent = await db.trackUserEvent("anonymous:anon-security", {
   eventName: "upload_failed",
   properties: {
     category: "csv_parse",
@@ -83,12 +84,11 @@ await db.trackUserEvent("anonymous:anon-security", {
     route: "/app/upload"
   }
 });
-const analytics = await db.getAnalyticsSummary();
-const storedEvent = analytics.recentEvents.find((event) => event.eventName === "upload_failed");
-assert(storedEvent, "Stored analytics event should appear in admin summary.");
-assert(storedEvent?.properties.category === "csv_parse", "Safe analytics property should be retained.");
-assert(!("csv" in (storedEvent?.properties ?? {})), "Raw CSV content must not be retained in analytics.");
-assert(!("symbol" in (storedEvent?.properties ?? {})), "Trade symbols must not be retained in analytics.");
-assert(!("pnl" in (storedEvent?.properties ?? {})), "P&L must not be retained in analytics.");
+const analyticsAfter = await db.getAnalyticsSummary();
+assert(storedEvent === null, "Server-side non-essential analytics storage must stay disabled for launch.");
+assert(
+  analyticsAfter.recentEvents.length === analyticsBefore.recentEvents.length,
+  "Disabled analytics storage must not add an event."
+);
 
 console.log("Security isolation checks passed.");

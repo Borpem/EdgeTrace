@@ -12,6 +12,8 @@ import {
   resolveSeoRoute,
   type SeoRoute
 } from "../src/lib/seo";
+import { AGGREGATE_BENCHMARKS_ENABLED, planConfigs } from "../src/lib/plans";
+import { NON_ESSENTIAL_ANALYTICS_ENABLED } from "../src/lib/releasePolicy";
 
 const ROOT_DIR = resolve(process.cwd());
 const DIST_DIR = resolve(ROOT_DIR, "dist");
@@ -96,6 +98,61 @@ test.describe("generated metadata and initial HTML", () => {
     await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
     await expect(page.locator("h1")).toContainText("workspace");
     expect(response?.headers()["x-robots-tag"]).toContain("noindex");
+    await context.close();
+  });
+
+  test("aggregate benchmark features and public mentions remain out of this launch", async ({ browser }) => {
+    expect(AGGREGATE_BENCHMARKS_ENABLED).toBe(false);
+    expect(planConfigs.pro.features.aggregate_benchmarks).toBe(false);
+    expect(planConfigs.advanced.features.aggregate_benchmarks).toBe(false);
+
+    for (const path of indexedPaths) {
+      const { context, page } = await openWithoutJavaScript(browser, path);
+      expect(normalizeText(await page.locator("#root").textContent()), path).not.toMatch(
+        /aggregate benchmark|benchmark percentile|cohort percentile|benchmark movement|benchmark context/i
+      );
+      await context.close();
+    }
+  });
+
+  test("non-essential analytics remain disabled in the browser", async ({ browser }) => {
+    expect(NON_ESSENTIAL_ANALYTICS_ENABLED).toBe(false);
+    expect(readFileSync(resolve(ROOT_DIR, "src", "main.tsx"), "utf8")).not.toContain("@vercel/analytics");
+    expect(readFileSync(resolve(ROOT_DIR, "vercel.json"), "utf8")).not.toMatch(
+      /va\.vercel-scripts\.com|vitals\.vercel-insights\.com/
+    );
+
+    const productionJavaScript = readdirSync(resolve(DIST_DIR, "assets"))
+      .filter((name) => name.endsWith(".js"))
+      .map((name) => readFileSync(resolve(DIST_DIR, "assets", name), "utf8"))
+      .join("\n");
+    expect(productionJavaScript).not.toMatch(/_vercel\/insights|va\.vercel-scripts\.com|vitals\.vercel-insights\.com/);
+
+    const context = await browser.newContext();
+    const page = await context.newPage();
+    const analyticsRequests: string[] = [];
+    page.on("request", (request) => {
+      const url = new URL(request.url());
+      if (
+        url.pathname === "/api/events" ||
+        url.pathname.startsWith("/_vercel/insights") ||
+        url.hostname === "va.vercel-scripts.com" ||
+        url.hostname === "vitals.vercel-insights.com"
+      ) {
+        analyticsRequests.push(request.url());
+      }
+    });
+
+    await page.goto("/");
+    await page.getByRole("link", { name: "Create Free Account", exact: true }).click();
+    for (const path of ["/pricing", "/broker-csv-trade-analysis", "/login", "/signup"]) {
+      await page.goto(path);
+    }
+    await page.waitForTimeout(750);
+
+    expect(analyticsRequests).toEqual([]);
+    await expect(page.locator('script[src*="/_vercel/insights"], script[src*="va.vercel-scripts.com"]')).toHaveCount(0);
+    expect(await page.evaluate(() => window.localStorage.getItem("edgetrace.analyticsId"))).toBeNull();
     await context.close();
   });
 
@@ -353,6 +410,18 @@ test.describe("status codes, redirects, and response directives", () => {
         "public, max-age=86400, stale-while-revalidate=604800"
       );
       expect(response.headers()["x-robots-tag"], path).toBeUndefined();
+    }
+  });
+
+  test("retired aggregate benchmark marketing assets are not published", async ({ request }) => {
+    for (const path of [
+      "/graphics/edgetrace-how-pro-review-loop-thin-gauge.png",
+      "/marketing/edgetrace-pro-review-loop-thin-gauge.png",
+      "/marketing/edgetrace-review-loop.svg"
+    ]) {
+      const response = await request.get(path);
+      expect(response.status(), path).toBe(404);
+      expect(response.headers()["x-robots-tag"], path).toContain("noindex");
     }
   });
 

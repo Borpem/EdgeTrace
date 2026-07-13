@@ -132,7 +132,7 @@ export function upgradeMessageForFeature(feature: EntitlementFeature, _requiredP
     full_compare: "Report compare is included on Free.",
     strategy_health_monitoring: "Strategy health monitoring is included on Free.",
     review_cadence: "Upgrade to Pro to unlock the weekly Edge Review loop.",
-    aggregate_benchmarks: "Upgrade to Pro to unlock aggregate benchmark intelligence."
+    aggregate_benchmarks: "This feature is unavailable in the current release."
   };
   return messages[feature] ?? "Upgrade to Pro to unlock this feature.";
 }

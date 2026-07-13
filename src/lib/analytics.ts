@@ -1,13 +1,19 @@
 import { postUserEvent } from "./api";
+import { NON_ESSENTIAL_ANALYTICS_ENABLED } from "./releasePolicy";
 
 const ANONYMOUS_ID_KEY = "edgetrace.analyticsId";
 let analyticsContext: Record<string, unknown> = {};
 
 export function setAnalyticsContext(context: Record<string, unknown>) {
+  if (!NON_ESSENTIAL_ANALYTICS_ENABLED) {
+    analyticsContext = {};
+    return;
+  }
   analyticsContext = sanitizeClientProperties(context) ?? {};
 }
 
 export function trackEvent(eventName: string, properties?: Record<string, unknown>) {
+  if (!NON_ESSENTIAL_ANALYTICS_ENABLED) return;
   const anonymousId = getAnonymousId();
   void postUserEvent(eventName, buildEventProperties(properties), { anonymousId }).catch(() => {
     // Activation analytics must never block the product workflow.

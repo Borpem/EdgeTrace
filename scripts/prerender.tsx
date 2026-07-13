@@ -1,4 +1,4 @@
-import { copyFile, mkdir, readFile, writeFile } from "node:fs/promises";
+import { copyFile, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import React, { type ReactElement, type ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -37,6 +37,12 @@ const legalRoutes: Array<{ path: LegalPageKind; file: string }> = [
   { path: "privacy", file: "privacy.html" },
   { path: "terms", file: "terms.html" },
   { path: "disclaimer", file: "disclaimer.html" }
+];
+
+const unpublishedBenchmarkAssets = [
+  "graphics/edgetrace-how-pro-review-loop-thin-gauge.png",
+  "marketing/edgetrace-pro-review-loop-thin-gauge.png",
+  "marketing/edgetrace-review-loop.svg"
 ];
 
 const outputRoutes: OutputRoute[] = [
@@ -114,6 +120,7 @@ async function main() {
 
   await writeFile(resolve(DIST_DIR, "sitemap.xml"), renderSitemap(), "utf8");
   await copyFile(resolve(process.cwd(), "public", "robots.txt"), resolve(DIST_DIR, "robots.txt"));
+  await Promise.all(unpublishedBenchmarkAssets.map((asset) => rm(resolve(DIST_DIR, asset), { force: true })));
   process.stdout.write(`Prerendered ${outputRoutes.length} EdgeTrace route shells.\n`);
 }
 

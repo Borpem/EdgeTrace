@@ -40,10 +40,10 @@ type HowSection = {
 };
 
 const valueStrip: FeatureItem[] = [
-  { icon: BarChart3, title: "Aggregate intelligence", body: "Trade history becomes sharper diagnostics and benchmark insight." },
+  { icon: BarChart3, title: "Completed-trade diagnostics", body: "Review expectancy, costs, R-capture, and performance segments from imported history." },
   { icon: ShieldCheck, title: "Secure access", body: "Encrypted transport and account-scoped access controls." },
   { icon: FileSearch, title: "Transparent analysis", body: "Key report inputs and diagnostic logic stay visible in the workflow." },
-  { icon: Activity, title: "Free core, paid loop", body: "Use the full workflow free. Upgrade for heatmaps, benchmarks, and recurring review pressure." }
+  { icon: Activity, title: "Free core, paid review layer", body: "Use the core reporting workflow free. Upgrade for drilldowns, heatmaps, and recurring reviews." }
 ];
 
 export function FeatureEducationPage({
@@ -139,13 +139,15 @@ export function FeatureEducationPage({
       kicker: "06 / Review Loop",
       title: "Measure whether the fix worked.",
       body:
-        "Pro adds the recurring review layer: mistake heatmaps, benchmark movement, next-upload targets, and review prompts that make EdgeTrace useful after every new report.",
-      points: ["Mistake heatmap", "Review targets", "Benchmark movement", "Recurring improvement loop"],
+        "Pro adds the recurring review layer: mistake heatmaps, report-to-report checks, next-upload targets, and review prompts that make EdgeTrace useful after every new report.",
+      points: ["Mistake heatmap", "Review targets", "Report comparison", "Recurring review loop"],
       reverse: true,
       visual: (
         <HowGraphic
-          src="/graphics/edgetrace-how-pro-review-loop-thin-gauge.png"
-          alt="EdgeTrace Pro review loop graphic with benchmark gauges and next review targets."
+          src="/marketing/edgetrace-signal-board.svg"
+          alt="EdgeTrace action plan showing diagnostic priorities and a measure-again review step."
+          width={1200}
+          height={720}
         />
       )
     }
