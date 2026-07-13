@@ -11,7 +11,7 @@ export type SeoRoute = {
   description: string;
   robots: "index,follow" | "noindex,follow" | "noindex,nofollow,noarchive";
   canonical?: string;
-  structuredData?: "home" | "software" | "broker";
+  structuredData?: "home" | "software";
 };
 
 export const indexedSeoRoutes: SeoRoute[] = [
@@ -23,15 +23,6 @@ export const indexedSeoRoutes: SeoRoute[] = [
     robots: "index,follow",
     canonical: SITE_URL,
     structuredData: "home"
-  },
-  {
-    path: "/broker-csv-trade-analysis",
-    title: "Broker CSV Trade Analysis for Completed Trades | EdgeTrace",
-    description:
-      "Analyze completed trades from supported IBKR, Robinhood, Schwab, Fidelity, Webull, E*TRADE, or generic CSV exports with mapping review and diagnostics.",
-    robots: "index,follow",
-    canonical: `${SITE_URL}/broker-csv-trade-analysis`,
-    structuredData: "broker"
   },
   {
     path: "/pricing",
@@ -140,26 +131,6 @@ export function structuredDataForRoute(route: SeoRoute) {
     },
     application
   ];
-
-  if (route.structuredData === "broker") {
-    graph.push({
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        {
-          "@type": "ListItem",
-          position: 1,
-          name: "Home",
-          item: SITE_URL
-        },
-        {
-          "@type": "ListItem",
-          position: 2,
-          name: "Broker CSV Trade Analysis",
-          item: route.canonical
-        }
-      ]
-    });
-  }
 
   return {
     "@context": "https://schema.org",

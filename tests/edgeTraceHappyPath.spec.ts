@@ -19,9 +19,9 @@ test.describe.serial("EdgeTrace happy path", () => {
     await page.goto("/");
     const publicHeader = page.locator("header.EdgeTrace-topbar");
 
-    await expect(page.getByRole("heading", { name: /Trade performance analytics for completed trades/i })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Stop guessing why your trades are losing money/i })).toBeVisible();
     await expect(publicHeader.getByRole("link", { name: "How It Works" })).toBeVisible();
-    await expect(publicHeader.getByRole("link", { name: "Broker CSV" })).toBeVisible();
+    await expect(publicHeader.getByRole("link", { name: "Broker CSV" })).toHaveCount(0);
     await expect(publicHeader.getByRole("link", { name: "Pricing" })).toBeVisible();
     await expect(publicHeader.getByRole("link", { name: "Sample Report" })).toHaveCount(0);
     await expect(publicHeader.getByRole("link", { name: "Login" })).toBeVisible();
@@ -67,10 +67,10 @@ test.describe.serial("EdgeTrace happy path", () => {
 
     await expect(page).toHaveURL(/\/pricing/);
     await expect(topbar).toBeVisible();
-    await expect(page.getByRole("heading", { name: /Trade analytics pricing. Start with the core workflow free./i })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Simple pricing. Serious edge." })).toBeVisible();
     await expect(page.locator(".EdgeTrace-pricing-nav")).toHaveCount(0);
     await expect(topbar.getByRole("link", { name: "How It Works" })).toBeVisible();
-    await expect(topbar.getByRole("link", { name: "Broker CSV" })).toBeVisible();
+    await expect(topbar.getByRole("link", { name: "Broker CSV" })).toHaveCount(0);
     await expect(topbar.getByRole("link", { name: "Pricing" })).toHaveClass(/EdgeTrace-nav-link-active/);
     await expect(topbar.getByRole("link", { name: "Login" })).toBeVisible();
     await expect(topbar.getByRole("link", { name: "Sign Up" })).toBeVisible();

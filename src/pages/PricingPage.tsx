@@ -47,19 +47,14 @@ const faqs = [
     answer: `Pro is the ${proMonthlyPriceLabel} investigation and review layer: full drilldowns, weekly Edge Reviews, mistake heatmaps, next-review checklists, review cadence status, and regression / improvement tracking.`
   },
   {
-    question: "Can I compare reports on Free?",
+    question: "Can I use Free long term?",
     answer:
-      "Yes. Free includes report comparison and strategy sets. Pro adds full segment drilldowns and the recurring review layer."
+      "Yes. The core product stays free. Pro is for traders who want a recurring review layer that measures whether each new upload improved."
   },
   {
     question: "Is my data secure?",
     answer:
-      "EdgeTrace sends production traffic over HTTPS and uses account-scoped access controls. Only upload trade data you are authorized to use."
-  },
-  {
-    question: "Do I need to connect my brokerage account?",
-    answer:
-      "No automatic broker sync is required or claimed. EdgeTrace starts with a supported broker export or generic CSV that you review before analysis."
+      "EdgeTrace uses encrypted HTTPS transport, managed production infrastructure, and account-scoped access controls for the diagnostic workflow."
   }
 ];
 
@@ -71,8 +66,8 @@ const trustItems: Array<{ title: string; body: string; icon: LucideIcon; accent:
     accent: "cyan"
   },
   {
-    title: "Account-scoped access",
-    body: "Production traffic uses HTTPS and report access is scoped to the signed-in account.",
+    title: "Secure access",
+    body: "Encrypted transport and account-scoped access controls.",
     icon: ShieldCheck,
     accent: "purple"
   },
@@ -308,10 +303,9 @@ export function PricingPage({
     <main id="main-content" tabIndex={-1} className="EdgeTrace-pricing-page">
       <section className="EdgeTrace-pricing-hero">
         <h1>
-          <span>Trade analytics pricing.</span>
-          <span>Start with the core workflow free.</span>
+          <span>Simple pricing.</span>
+          <span>Serious edge.</span>
         </h1>
-        <p>Build completed-trade reports on Free, then add deeper drilldowns and a recurring review layer with Pro.</p>
       </section>
 
       <StatusMessages billingConfigured={billingConfigured} notice={notice} error={error} />
@@ -418,6 +412,7 @@ function PlanColumnHeader({
     <div className={`EdgeTrace-pricing-column-head ${isActive ? "active" : ""}`} role="columnheader">
       <div className="EdgeTrace-pricing-column-title">
         <span>{config.displayName}</span>
+        {planId === "pro" && <small>Most Popular</small>}
         {isCurrent && <em>Current</em>}
       </div>
       <div className="EdgeTrace-pricing-column-price">

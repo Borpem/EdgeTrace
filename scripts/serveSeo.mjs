@@ -14,6 +14,7 @@ const legacyRedirects = new Map([
   ["/reports", "/app/reports"],
   ["/collections", "/app/collections"],
   ["/compare", "/app/compare"],
+  ["/broker-csv-trade-analysis", "/"],
   ["/how-it-works", "/"],
   ["/demo", "/"],
   ["/sample-report", "/"]

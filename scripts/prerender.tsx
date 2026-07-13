@@ -3,7 +3,6 @@ import { dirname, resolve } from "node:path";
 import React, { type ReactElement, type ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { FeatureEducationPage } from "../src/pages/FeatureEducationPage";
-import { BrokerCsvPage } from "../src/pages/BrokerCsvPage";
 import { LegalPage, type LegalPageKind } from "../src/pages/LegalPage";
 import { PricingPage } from "../src/pages/PricingPage";
 import {
@@ -59,12 +58,6 @@ const outputRoutes: OutputRoute[] = [
         onSignup={noop}
       />
     )
-  },
-  {
-    path: "/broker-csv-trade-analysis",
-    file: "broker-csv-trade-analysis.html",
-    seo: resolveSeoRoute("/broker-csv-trade-analysis"),
-    content: <BrokerCsvPage onHome={noop} onStart={noop} />
   },
   {
     path: "/pricing",
@@ -210,7 +203,6 @@ function PublicDocumentShell({ currentPath, children }: { currentPath: string; c
 
 const primaryNavigation = [
   { href: "/", label: "How It Works" },
-  { href: "/broker-csv-trade-analysis", label: "Broker CSV" },
   { href: "/pricing", label: "Pricing" },
   { href: "/login", label: "Login" }
 ];
@@ -222,11 +214,11 @@ function StaticHeader({ currentPath }: { currentPath: string }) {
         <a className="EdgeTrace-public-logo-button flex shrink-0 items-center justify-center lg:justify-start" href="/" aria-label="EdgeTrace home">
           <span className="flex items-center justify-center gap-4">
             <img
-              src="/brand/edgetrace-mark.svg"
+              src="/brand/edgetrace_icon_monochrome_white_transparent.png"
               alt=""
               aria-hidden="true"
               className="h-7 w-auto object-contain opacity-85"
-              width="28"
+              width="40"
               height="28"
             />
             <img
@@ -251,7 +243,7 @@ function StaticHeader({ currentPath }: { currentPath: string }) {
           ))}
           <a
             className={`EdgeTrace-secondary-button px-4 py-2 ${currentPath === "/signup" ? "border-cyan/70" : ""}`}
-            href="/signup?next=/app/upload"
+            href="/signup"
             aria-current={currentPath === "/signup" ? "page" : undefined}
           >
             Sign Up
@@ -265,7 +257,6 @@ function StaticHeader({ currentPath }: { currentPath: string }) {
 function StaticFooter({ currentPath }: { currentPath: string }) {
   const links = [
     { href: "/", label: "How It Works" },
-    { href: "/broker-csv-trade-analysis", label: "Broker CSV" },
     { href: "/pricing", label: "Pricing" },
     { href: "/signup?next=/app/feedback", label: "Support", path: "/signup" },
     { href: "/privacy", label: "Privacy" },
@@ -352,7 +343,6 @@ function NotFoundPage() {
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <a className="EdgeTrace-primary-button" href="/">Go to EdgeTrace home</a>
-            <a className="EdgeTrace-secondary-button" href="/broker-csv-trade-analysis">Review broker CSV imports</a>
             <a className="EdgeTrace-secondary-button" href="/pricing">View pricing</a>
           </div>
         </section>

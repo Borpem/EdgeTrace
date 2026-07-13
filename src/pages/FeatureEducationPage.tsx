@@ -65,10 +65,8 @@ export function FeatureEducationPage({
       points: ["Broker and generic CSV imports", "Mapping review before diagnostics", "Clean workflow from upload to report"],
       visual: (
         <HowGraphic
-          src="/graphics/edgetrace-how-report-builder-workflow-clean.svg"
+          src="/graphics/edgetrace-how-report-builder-workflow-clean.png"
           alt="EdgeTrace import workflow showing source file, normalized inputs, and generated report."
-          width={1200}
-          height={690}
         />
       )
     },
@@ -77,7 +75,7 @@ export function FeatureEducationPage({
       kicker: "02 / Diagnose",
       title: "Find what is degrading your edge.",
       body:
-        "The report turns the import into a quick read on health, expectancy, cost drag, R-capture, and the primary issue to inspect before the next upload.",
+        "The report turns the import into a quick read on health, expectancy, cost drag, R-capture, and the primary issue most likely to improve the next upload.",
       points: ["Primary diagnosis", "Edge health score", "Top performance drivers"],
       reverse: true,
       visual: (
@@ -96,10 +94,8 @@ export function FeatureEducationPage({
       points: ["Symbol-level readouts", "Cost and net PnL context", "Diagnostic flags for weak segments"],
       visual: (
         <HowGraphic
-          src="/marketing/edgetrace-segment-analysis-readout-polished.png"
+          src="/graphics/edgetrace-how-segment-analysis-readout-polished.png"
           alt="EdgeTrace segment analysis readout with symbol metrics and diagnostic flags."
-          width={1200}
-          height={720}
         />
       )
     },
@@ -113,10 +109,8 @@ export function FeatureEducationPage({
       reverse: true,
       visual: (
         <HowGraphic
-          src="/graphics/edgetrace-how-recommended-actions-nextmove-clean.svg"
+          src="/graphics/edgetrace-how-recommended-actions-nextmove-clean.png"
           alt="EdgeTrace recommended actions graphic with priorities and next move."
-          width={1200}
-          height={720}
         />
       )
     },
@@ -179,12 +173,12 @@ export function FeatureEducationPage({
       <section className="how-hero">
         <div className="how-hero-copy">
           <h1 className="how-title">
-            <span>Trade performance analytics</span>
-            <span>for completed trades.</span>
+            <span>Stop guessing why your</span>
+            <span>trades are losing money.</span>
           </h1>
           <p className="how-body">
-            Import broker or generic CSV history to review expectancy, cost drag, R-capture, weak symbols and
-            sessions, and the changes between diagnostic reports.
+            Upload your trades and EdgeTrace shows where money is being lost, where you're making money, and what to
+            look at next.
           </p>
           <div className="how-cta-row">
             <a
@@ -194,9 +188,6 @@ export function FeatureEducationPage({
             >
               {accountLabel}
               <ArrowRight size={16} />
-            </a>
-            <a className="EdgeTrace-secondary-button" href="/broker-csv-trade-analysis">
-              Review Supported CSV Sources
             </a>
           </div>
         </div>

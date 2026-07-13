@@ -8922,40 +8922,6 @@ textarea:focus-visible {
     height: 3.5rem;
   }
 
-  .EdgeTrace-pricing-compare {
-    overflow-x: auto;
-    padding-bottom: 0.65rem;
-  }
-
-  .EdgeTrace-pricing-board {
-    min-width: 720px;
-    grid-template-columns: minmax(15rem, 0.78fr) repeat(2, minmax(0, 1fr));
-  }
-
-  .EdgeTrace-pricing-board-label,
-  .EdgeTrace-pricing-column-head {
-    padding: 0.9rem 0.8rem;
-  }
-
-  .EdgeTrace-pricing-column-title small,
-  .EdgeTrace-pricing-column-title em,
-  .EdgeTrace-pricing-feature-column-label {
-    font-size: 0.72rem;
-  }
-
-  .EdgeTrace-pricing-column-head :is(.EdgeTrace-pricing-primary, .EdgeTrace-pricing-secondary) {
-    min-height: 2.75rem;
-    padding-inline: 0.7rem;
-    font-size: 0.78rem;
-  }
-
-  .EdgeTrace-pricing-feature-name,
-  .EdgeTrace-pricing-feature-access {
-    min-height: 3.25rem;
-    padding: 0.75rem 0.7rem;
-    font-size: 0.8rem;
-    line-height: 1.35;
-  }
 }
 
 .EdgeTrace-account-page {

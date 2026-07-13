@@ -25,6 +25,7 @@ const legacyRedirects = new Map([
   ["/reports", "/app/reports"],
   ["/collections", "/app/collections"],
   ["/compare", "/app/compare"],
+  ["/broker-csv-trade-analysis", "/"],
   ["/how-it-works", "/"],
   ["/demo", "/"],
   ["/sample-report", "/"]
@@ -64,7 +65,7 @@ test.describe("generated metadata and initial HTML", () => {
       const initialText = normalizeText(await page.locator("#root").textContent());
       expect(initialText.length).toBeGreaterThan(120);
       expect(initialText).not.toMatch(/^loading edgeTrace/i);
-      await expect(page.locator('nav[aria-label="Primary navigation"] a[href]')).toHaveCount(5);
+      await expect(page.locator('nav[aria-label="Primary navigation"] a[href]')).toHaveCount(4);
       await context.close();
     });
   }
@@ -145,7 +146,7 @@ test.describe("generated metadata and initial HTML", () => {
 
     await page.goto("/");
     await page.getByRole("link", { name: "Create Free Account", exact: true }).click();
-    for (const path of ["/pricing", "/broker-csv-trade-analysis", "/login", "/signup"]) {
+    for (const path of ["/pricing", "/login", "/signup"]) {
       await page.goto(path);
     }
     await page.waitForTimeout(750);
@@ -169,7 +170,6 @@ test.describe("structured data", () => {
       expect(data["@context"]).toBe("https://schema.org");
       const types = collectValuesForKey(data, "@type");
       expect(types).toContain("WebApplication");
-      if (route.path === "/broker-csv-trade-analysis") expect(types).toContain("BreadcrumbList");
 
       const forbiddenKeys = collectObjectKeys(data).filter((key) =>
         ["aggregaterating", "ratingvalue", "review", "reviewrating", "ratingcount", "reviewcount"].includes(
@@ -401,8 +401,8 @@ test.describe("status codes, redirects, and response directives", () => {
   test("public imagery is cached for one day without blocking image indexing", async ({ request }) => {
     for (const path of [
       "/brand/edgetrace-marketing-hero-v2.png",
-      "/graphics/edgetrace-how-report-builder-workflow-clean.svg",
-      "/marketing/edgetrace-segment-analysis-readout-polished.png"
+      "/graphics/edgetrace-how-report-builder-workflow-clean.png",
+      "/graphics/edgetrace-how-segment-analysis-readout-polished.png"
     ]) {
       const response = await request.get(path);
       expect(response.status(), path).toBe(200);
@@ -432,7 +432,7 @@ test.describe("crawlability, links, accessibility, and layout", () => {
     for (const path of indexedPaths) {
       const context = await browser.newContext();
       const page = await context.newPage();
-      await page.route(/\/assets\/(?:BrokerCsvPage|PricingPage)-.*\.js$/i, async (route) => {
+      await page.route(/\/assets\/PricingPage-.*\.js$/i, async (route) => {
         await new Promise((resolveDelay) => setTimeout(resolveDelay, 1_800));
         await route.continue();
       });
@@ -615,7 +615,7 @@ test.describe("production performance budgets", () => {
     expect(metrics.lcp, "representative LCP (ms)").toBeLessThanOrEqual(2_500);
     expect(Number.isFinite(metrics.cls)).toBe(true);
     expect(metrics.cls, "representative CLS").toBeLessThanOrEqual(0.1);
-    await expect(page.locator("h1")).toContainText("Trade performance analytics");
+    await expect(page.locator("h1")).toContainText(/Stop guessing why your\s*trades are losing money/i);
     await context.close();
   });
 

@@ -28,7 +28,6 @@ import {
   setApiAuth
 } from "./lib/api";
 import { FeatureEducationPage } from "./pages/FeatureEducationPage";
-import { BrokerCsvPage } from "./pages/BrokerCsvPage";
 import { PricingPage } from "./pages/PricingPage";
 import { applySeoMetadata } from "./lib/seo";
 import { LegalPage, type LegalPageKind } from "./pages/LegalPage";
@@ -53,7 +52,7 @@ const SignupPage = lazy(() => import("./pages/SignupPage").then((module) => ({ d
 const StrategyDashboardPage = lazy(() => import("./pages/StrategyDashboardPage").then((module) => ({ default: module.StrategyDashboardPage })));
 const UploadPage = lazy(() => import("./pages/UploadPage").then((module) => ({ default: module.UploadPage })));
 
-type Page = "home" | "brokerCsv" | "pricing" | "privacy" | "terms" | "disclaimer" | "login" | "signup" | "strategyDashboard" | "upload" | "reports" | "collections" | "collectionDetail" | "collectionAttribution" | "collectionReviewWorkspace" | "compare" | "features" | "feedback" | "adminFeedback" | "adminAnalytics" | "account" | "dashboard" | "drilldown" | "compareDrilldown" | "reconstructionAudit" | "notFound";
+type Page = "home" | "pricing" | "privacy" | "terms" | "disclaimer" | "login" | "signup" | "strategyDashboard" | "upload" | "reports" | "collections" | "collectionDetail" | "collectionAttribution" | "collectionReviewWorkspace" | "compare" | "features" | "feedback" | "adminFeedback" | "adminAnalytics" | "account" | "dashboard" | "drilldown" | "compareDrilldown" | "reconstructionAudit" | "notFound";
 type DrilldownSelection = { dimension: BreakdownDimension; group: string };
 type CompareDrilldownSelection = {
   reportA: DiagnosticsResult;
@@ -116,8 +115,6 @@ export function App() {
         return "/";
       case "pricing":
         return "/pricing";
-      case "brokerCsv":
-        return "/broker-csv-trade-analysis";
       case "privacy":
         return "/privacy";
       case "terms":
@@ -391,10 +388,6 @@ export function App() {
 
     if (pathname === "/") {
       setPage("home");
-      return;
-    }
-    if (pathname === "/broker-csv-trade-analysis") {
-      setPage("brokerCsv");
       return;
     }
     if (pathname === "/pricing") {
@@ -707,11 +700,11 @@ export function App() {
           >
             <span className="flex items-center justify-center gap-4">
               <img
-                src="/brand/edgetrace-mark.svg"
+                src="/brand/edgetrace_icon_monochrome_white_transparent.png"
                 alt=""
                 aria-hidden="true"
                 className="h-7 w-auto object-contain opacity-85"
-                width="28"
+                width="40"
                 height="28"
               />
               <img
@@ -760,18 +753,6 @@ export function App() {
                 How It Works
               </a>
               <a
-                className={`EdgeTrace-nav-link ${page === "brokerCsv" ? "EdgeTrace-nav-link-active" : ""}`}
-                href="/broker-csv-trade-analysis"
-                aria-current={page === "brokerCsv" ? "page" : undefined}
-                onClick={(event) => {
-                  if (!shouldHandleClientNavigation(event)) return;
-                  event.preventDefault();
-                  navigate("brokerCsv", "/broker-csv-trade-analysis");
-                }}
-              >
-                Broker CSV
-              </a>
-              <a
                 className={`EdgeTrace-nav-link ${page === "pricing" ? "EdgeTrace-nav-link-active" : ""}`}
                 href="/pricing"
                 aria-current={page === "pricing" ? "page" : undefined}
@@ -797,12 +778,12 @@ export function App() {
               </a>
               <a
                 className={`EdgeTrace-secondary-button px-4 py-2 ${page === "signup" ? "border-cyan/70" : ""}`}
-                href="/signup?next=/app/upload"
+                href="/signup"
                 aria-current={page === "signup" ? "page" : undefined}
                 onClick={(event) => {
                   if (!shouldHandleClientNavigation(event)) return;
                   event.preventDefault();
-                  navigate("signup", "/signup?next=/app/upload");
+                  navigate("signup", "/signup");
                 }}
               >
                 Sign Up
@@ -874,12 +855,6 @@ export function App() {
             }
           }}
           onCreateStrategySet={() => navigate("collections")}
-        />
-      )}
-      {page === "brokerCsv" && (
-        <BrokerCsvPage
-          onHome={() => navigate("home", "/")}
-          onStart={() => navigate(isAuthenticated ? "upload" : "signup", isAuthenticated ? "/app/upload" : "/signup?next=/app/upload")}
         />
       )}
       {page === "pricing" && (
@@ -1195,7 +1170,6 @@ export function App() {
       {showPublicFooter && (
         <PublicFooter
           onHome={() => navigate("home", "/")}
-          onBroker={() => navigate("brokerCsv", "/broker-csv-trade-analysis")}
           onPricing={() => navigate("pricing", "/pricing")}
           onPrivacy={() => navigate("privacy", "/privacy")}
           onTerms={() => navigate("terms", "/terms")}
@@ -1212,7 +1186,6 @@ export function App() {
 
 function PublicFooter({
   onHome,
-  onBroker,
   onPricing,
   onPrivacy,
   onTerms,
@@ -1220,7 +1193,6 @@ function PublicFooter({
   onContact
 }: {
   onHome: () => void;
-  onBroker: () => void;
   onPricing: () => void;
   onPrivacy: () => void;
   onTerms: () => void;
@@ -1236,7 +1208,6 @@ function PublicFooter({
         </div>
         <nav aria-label="Footer navigation">
           <a href="/" onClick={(event) => navigateFooterLink(event, onHome)}>How It Works</a>
-          <a href="/broker-csv-trade-analysis" onClick={(event) => navigateFooterLink(event, onBroker)}>Broker CSV</a>
           <a href="/pricing" onClick={(event) => navigateFooterLink(event, onPricing)}>Pricing</a>
           <a href="/signup?next=/app/feedback" onClick={(event) => navigateFooterLink(event, onContact)}>Support</a>
           <a href="/privacy" onClick={(event) => navigateFooterLink(event, onPrivacy)}>Privacy</a>
@@ -1314,7 +1285,7 @@ function AuthenticatedTopbar({
     <div className="EdgeTrace-auth-topbar-shell EdgeTrace-command-shell">
       <header className={`EdgeTrace-auth-topbar EdgeTrace-command-nav ${isMobileNavOpen ? "is-mobile-open" : ""}`}>
         <button className="EdgeTrace-command-brand" onClick={onDashboard} aria-label="EdgeTrace dashboard">
-          <img src="/brand/edgetrace-mark.svg" alt="" aria-hidden="true" width="32" height="32" />
+          <img src="/brand/edgetrace_icon_monochrome_white_transparent.png" alt="" aria-hidden="true" width="32" height="32" />
           <img src="/brand/edgetrace_wordmark_monochrome_white.png" alt="EdgeTrace" width="188" height="26" />
         </button>
         <nav aria-label="Application navigation" className="EdgeTrace-auth-command-nav">
@@ -1533,7 +1504,6 @@ function NotFoundPage({ onHome }: { onHome: () => void }) {
 
 function initialPageFromPath(pathname: string): Page {
   if (pathname === "/") return "home";
-  if (pathname === "/broker-csv-trade-analysis") return "brokerCsv";
   if (pathname === "/pricing") return "pricing";
   if (pathname === "/privacy") return "privacy";
   if (pathname === "/terms") return "terms";
@@ -1547,7 +1517,6 @@ function initialPageFromPath(pathname: string): Page {
 function isPublicPath(pathname: string) {
   return isClerkLoginPath(pathname) || isClerkSignupPath(pathname) || [
     "/",
-    "/broker-csv-trade-analysis",
     "/pricing",
     "/privacy",
     "/terms",
@@ -1564,7 +1533,7 @@ function isClerkSignupPath(pathname: string) {
 }
 
 function isPublicPage(page: Page) {
-  return ["home", "brokerCsv", "pricing", "privacy", "terms", "disclaimer", "login", "signup", "notFound"].includes(page);
+  return ["home", "pricing", "privacy", "terms", "disclaimer", "login", "signup", "notFound"].includes(page);
 }
 
 function isAuthenticatedAppPage(page: Page) {

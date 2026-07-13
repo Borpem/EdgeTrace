@@ -7,6 +7,16 @@
   "trailingSlash": false,
   "redirects": [
     {
+      "source": "/broker-csv-trade-analysis/",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/broker-csv-trade-analysis",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
       "source": "/dashboard/",
       "destination": "/app/dashboard",
       "statusCode": 301
