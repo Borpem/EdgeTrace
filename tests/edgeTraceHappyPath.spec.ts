@@ -19,13 +19,14 @@ test.describe.serial("EdgeTrace happy path", () => {
     await page.goto("/");
     const publicHeader = page.locator("header.EdgeTrace-topbar");
 
-    await expect(page.getByRole("heading", { name: /Stop guessing why your trades are losing money/i })).toBeVisible();
-    await expect(publicHeader.getByRole("button", { name: "How It Works" })).toBeVisible();
-    await expect(publicHeader.getByRole("button", { name: "Pricing" })).toBeVisible();
-    await expect(publicHeader.getByRole("button", { name: "Sample Report" })).toHaveCount(0);
-    await expect(publicHeader.getByRole("button", { name: "Login" })).toBeVisible();
-    await expect(publicHeader.getByRole("button", { name: "Sign Up" })).toBeVisible();
-    await page.getByRole("button", { name: "Create Free Account", exact: true }).click();
+    await expect(page.getByRole("heading", { name: /Trade performance analytics for completed trades/i })).toBeVisible();
+    await expect(publicHeader.getByRole("link", { name: "How It Works" })).toBeVisible();
+    await expect(publicHeader.getByRole("link", { name: "Broker CSV" })).toBeVisible();
+    await expect(publicHeader.getByRole("link", { name: "Pricing" })).toBeVisible();
+    await expect(publicHeader.getByRole("link", { name: "Sample Report" })).toHaveCount(0);
+    await expect(publicHeader.getByRole("link", { name: "Login" })).toBeVisible();
+    await expect(publicHeader.getByRole("link", { name: "Sign Up" })).toBeVisible();
+    await page.getByRole("link", { name: "Create Free Account", exact: true }).click();
 
     await expect(page.getByText("Create a strategy diagnostics workspace.")).toBeVisible();
     await page.getByRole("button", { name: "Create Account" }).click();
@@ -36,15 +37,15 @@ test.describe.serial("EdgeTrace happy path", () => {
     await page.goto("/");
 
     const footer = page.locator("footer.EdgeTrace-public-footer");
-    await footer.getByRole("button", { name: "Privacy" }).click();
+    await footer.getByRole("link", { name: "Privacy" }).click();
     await expect(page).toHaveURL(/\/privacy/);
     await expect(page.getByRole("heading", { name: "Privacy Policy" })).toBeVisible();
 
-    await footer.getByRole("button", { name: "Terms" }).click();
+    await footer.getByRole("link", { name: "Terms" }).click();
     await expect(page).toHaveURL(/\/terms/);
     await expect(page.getByRole("heading", { name: "Terms of Service" })).toBeVisible();
 
-    await footer.getByRole("button", { name: "Disclaimer" }).click();
+    await footer.getByRole("link", { name: "Disclaimer" }).click();
     await expect(page).toHaveURL(/\/disclaimer/);
     await expect(page.getByRole("heading", { name: "Financial and Trading Disclaimer" })).toBeVisible();
   });
@@ -62,18 +63,19 @@ test.describe.serial("EdgeTrace happy path", () => {
   test("Public pricing keeps the shared site header", async ({ page }) => {
     await page.goto("/");
     const topbar = page.locator("header.EdgeTrace-topbar");
-    await topbar.getByRole("button", { name: "Pricing" }).click();
+    await topbar.getByRole("link", { name: "Pricing" }).click();
 
     await expect(page).toHaveURL(/\/pricing/);
     await expect(topbar).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Simple pricing. Serious edge." })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Trade analytics pricing. Start with the core workflow free./i })).toBeVisible();
     await expect(page.locator(".EdgeTrace-pricing-nav")).toHaveCount(0);
-    await expect(topbar.getByRole("button", { name: "How It Works" })).toBeVisible();
-    await expect(topbar.getByRole("button", { name: "Pricing" })).toHaveClass(/EdgeTrace-nav-link-active/);
-    await expect(topbar.getByRole("button", { name: "Login" })).toBeVisible();
-    await expect(topbar.getByRole("button", { name: "Sign Up" })).toBeVisible();
-    await expect(topbar.getByRole("button", { name: "Resources" })).toHaveCount(0);
-    await expect(topbar.getByRole("button", { name: "About" })).toHaveCount(0);
+    await expect(topbar.getByRole("link", { name: "How It Works" })).toBeVisible();
+    await expect(topbar.getByRole("link", { name: "Broker CSV" })).toBeVisible();
+    await expect(topbar.getByRole("link", { name: "Pricing" })).toHaveClass(/EdgeTrace-nav-link-active/);
+    await expect(topbar.getByRole("link", { name: "Login" })).toBeVisible();
+    await expect(topbar.getByRole("link", { name: "Sign Up" })).toBeVisible();
+    await expect(topbar.getByRole("link", { name: "Resources" })).toHaveCount(0);
+    await expect(topbar.getByRole("link", { name: "About" })).toHaveCount(0);
   });
 
   test("Upload sample CSV flow", async ({ page }) => {
@@ -161,7 +163,7 @@ test.describe.serial("EdgeTrace happy path", () => {
       await expect(page.getByRole("menuitem", { name: /Log out/i })).toBeVisible();
       await page.getByRole("menuitem", { name: /Log out/i }).click();
       await expect(page).toHaveURL(/\/$/);
-      await expect(page.getByRole("button", { name: "Login" })).toBeVisible();
+      await expect(page.getByRole("link", { name: "Login" })).toBeVisible();
       await login(page, route);
       await expect(topbar.getByRole("button", { name: "Guide" })).toHaveCount(0);
       if (route === "/app/collections") {
@@ -197,12 +199,15 @@ async function createReportFromUpload(page: Page, name: string) {
 
 async function login(page: Page, nextPath = "/app/dashboard") {
   await page.goto(`/login?next=${encodeURIComponent(nextPath)}`);
+  const destination = new RegExp(nextPath.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
   const continueButton = page.getByRole("button", { name: "Continue to App" });
-  if (await continueButton.isVisible()) {
+  await expect
+    .poll(async () => destination.test(new URL(page.url()).pathname) || (await continueButton.isVisible()))
+    .toBeTruthy();
+  if (!destination.test(new URL(page.url()).pathname)) {
     await continueButton.click();
-  } else {
-    await expect(page).toHaveURL(new RegExp(nextPath.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
+  await expect(page).toHaveURL(destination);
   await dismissFeatureIntro(page);
 }
 

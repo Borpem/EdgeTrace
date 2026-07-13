@@ -8343,6 +8343,10 @@ textarea:focus-visible {
     rgba(7, 13, 23, 0.72);
 }
 
+.EdgeTrace-pricing-header-row {
+  display: contents;
+}
+
 .EdgeTrace-pricing-board-label {
   display: grid;
   min-height: 100%;
@@ -8916,6 +8920,41 @@ textarea:focus-visible {
   .EdgeTrace-pricing-final-icon {
     width: 3.5rem;
     height: 3.5rem;
+  }
+
+  .EdgeTrace-pricing-compare {
+    overflow-x: auto;
+    padding-bottom: 0.65rem;
+  }
+
+  .EdgeTrace-pricing-board {
+    min-width: 720px;
+    grid-template-columns: minmax(15rem, 0.78fr) repeat(2, minmax(0, 1fr));
+  }
+
+  .EdgeTrace-pricing-board-label,
+  .EdgeTrace-pricing-column-head {
+    padding: 0.9rem 0.8rem;
+  }
+
+  .EdgeTrace-pricing-column-title small,
+  .EdgeTrace-pricing-column-title em,
+  .EdgeTrace-pricing-feature-column-label {
+    font-size: 0.72rem;
+  }
+
+  .EdgeTrace-pricing-column-head :is(.EdgeTrace-pricing-primary, .EdgeTrace-pricing-secondary) {
+    min-height: 2.75rem;
+    padding-inline: 0.7rem;
+    font-size: 0.78rem;
+  }
+
+  .EdgeTrace-pricing-feature-name,
+  .EdgeTrace-pricing-feature-access {
+    min-height: 3.25rem;
+    padding: 0.75rem 0.7rem;
+    font-size: 0.8rem;
+    line-height: 1.35;
   }
 }
 
@@ -9798,14 +9837,33 @@ textarea:focus-visible {
   gap: 0.85rem 1.1rem;
 }
 
-.EdgeTrace-public-footer button {
+.EdgeTrace-public-footer a {
   color: var(--command-text-secondary);
   font-size: 0.82rem;
   font-weight: 650;
 }
 
-.EdgeTrace-public-footer button:hover {
+.EdgeTrace-public-footer a:hover {
   color: var(--command-text);
+}
+
+.EdgeTrace-skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 100;
+  transform: translateY(-180%);
+  border: 1px solid var(--command-blue);
+  border-radius: 0.25rem;
+  background: #050b12;
+  color: var(--command-text);
+  padding: 0.7rem 1rem;
+  font-weight: 700;
+  transition: transform 120ms ease;
+}
+
+.EdgeTrace-skip-link:focus {
+  transform: translateY(0);
 }
 
 .EdgeTrace-legal-page {

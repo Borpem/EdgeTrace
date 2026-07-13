@@ -24,7 +24,7 @@ export function LoginPage({
   }, []);
 
   return (
-    <PageShell className="pb-16 md:py-16">
+    <PageShell id="main-content" className="pb-16 md:py-16">
       <section className="relative z-10 overflow-hidden border-b border-white/[0.08] pb-12 md:pb-16">
         <div className="pointer-events-none absolute left-1/2 top-0 h-80 w-[54rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(34,197,245,0.1),rgba(124,92,255,0.065)_44%,transparent_72%)] blur-[118px]" />
         <div className="relative grid gap-9 lg:grid-cols-[0.92fr_0.78fr] lg:items-center">

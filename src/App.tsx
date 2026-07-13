@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState, type MouseEvent } from "react";
 import { UserButton } from "@clerk/clerk-react";
 import {
   LogOut,
@@ -10,6 +10,7 @@ import { useAuth } from "./context/AuthContext";
 import { FeatureIntroPrompt } from "./components/FeatureIntroPrompt";
 import { ProFeaturePrompt } from "./components/ProFeaturePrompt";
 import { setAnalyticsContext, trackEvent } from "./lib/analytics";
+import { shouldHandleClientNavigation } from "./lib/navigation";
 import type { BreakdownDimension } from "./lib/breakdowns";
 import { canUseFeature, getPlanConfig } from "./lib/entitlements";
 import {
@@ -26,30 +27,33 @@ import {
   listReports,
   setApiAuth
 } from "./lib/api";
-import { AccountPage } from "./pages/AccountPage";
-import { AdminAnalyticsPage } from "./pages/AdminAnalyticsPage";
-import { AdminFeedbackPage } from "./pages/AdminFeedbackPage";
-import { ComparePage } from "./pages/ComparePage";
-import { CompareDrilldownPage } from "./pages/CompareDrilldownPage";
-import { CollectionAttributionPage } from "./pages/CollectionAttributionPage";
-import { CollectionDetailPage } from "./pages/CollectionDetailPage";
-import { CollectionReviewWorkspacePage } from "./pages/CollectionReviewWorkspacePage";
-import { CollectionsPage } from "./pages/CollectionsPage";
-import { DashboardPage } from "./pages/DashboardPage";
-import { DrilldownPage } from "./pages/DrilldownPage";
 import { FeatureEducationPage } from "./pages/FeatureEducationPage";
-import { FeedbackPage } from "./pages/FeedbackPage";
-import { LegalPage, type LegalPageKind } from "./pages/LegalPage";
-import { LoginPage } from "./pages/LoginPage";
+import { BrokerCsvPage } from "./pages/BrokerCsvPage";
 import { PricingPage } from "./pages/PricingPage";
-import { ReconstructionAuditPage } from "./pages/ReconstructionAuditPage";
-import { ReportsPage } from "./pages/ReportsPage";
-import { SignupPage } from "./pages/SignupPage";
-import { StrategyDashboardPage } from "./pages/StrategyDashboardPage";
-import { UploadPage } from "./pages/UploadPage";
+import { applySeoMetadata } from "./lib/seo";
+import { LegalPage, type LegalPageKind } from "./pages/LegalPage";
 import type { DiagnosticsResult, ReportSummary, UserProfile } from "./types";
 
-type Page = "home" | "pricing" | "privacy" | "terms" | "disclaimer" | "login" | "signup" | "strategyDashboard" | "upload" | "reports" | "collections" | "collectionDetail" | "collectionAttribution" | "collectionReviewWorkspace" | "compare" | "features" | "feedback" | "adminFeedback" | "adminAnalytics" | "account" | "dashboard" | "drilldown" | "compareDrilldown" | "reconstructionAudit";
+const AccountPage = lazy(() => import("./pages/AccountPage").then((module) => ({ default: module.AccountPage })));
+const AdminAnalyticsPage = lazy(() => import("./pages/AdminAnalyticsPage").then((module) => ({ default: module.AdminAnalyticsPage })));
+const AdminFeedbackPage = lazy(() => import("./pages/AdminFeedbackPage").then((module) => ({ default: module.AdminFeedbackPage })));
+const ComparePage = lazy(() => import("./pages/ComparePage").then((module) => ({ default: module.ComparePage })));
+const CompareDrilldownPage = lazy(() => import("./pages/CompareDrilldownPage").then((module) => ({ default: module.CompareDrilldownPage })));
+const CollectionAttributionPage = lazy(() => import("./pages/CollectionAttributionPage").then((module) => ({ default: module.CollectionAttributionPage })));
+const CollectionDetailPage = lazy(() => import("./pages/CollectionDetailPage").then((module) => ({ default: module.CollectionDetailPage })));
+const CollectionReviewWorkspacePage = lazy(() => import("./pages/CollectionReviewWorkspacePage").then((module) => ({ default: module.CollectionReviewWorkspacePage })));
+const CollectionsPage = lazy(() => import("./pages/CollectionsPage").then((module) => ({ default: module.CollectionsPage })));
+const DashboardPage = lazy(() => import("./pages/DashboardPage").then((module) => ({ default: module.DashboardPage })));
+const DrilldownPage = lazy(() => import("./pages/DrilldownPage").then((module) => ({ default: module.DrilldownPage })));
+const FeedbackPage = lazy(() => import("./pages/FeedbackPage").then((module) => ({ default: module.FeedbackPage })));
+const LoginPage = lazy(() => import("./pages/LoginPage").then((module) => ({ default: module.LoginPage })));
+const ReconstructionAuditPage = lazy(() => import("./pages/ReconstructionAuditPage").then((module) => ({ default: module.ReconstructionAuditPage })));
+const ReportsPage = lazy(() => import("./pages/ReportsPage").then((module) => ({ default: module.ReportsPage })));
+const SignupPage = lazy(() => import("./pages/SignupPage").then((module) => ({ default: module.SignupPage })));
+const StrategyDashboardPage = lazy(() => import("./pages/StrategyDashboardPage").then((module) => ({ default: module.StrategyDashboardPage })));
+const UploadPage = lazy(() => import("./pages/UploadPage").then((module) => ({ default: module.UploadPage })));
+
+type Page = "home" | "brokerCsv" | "pricing" | "privacy" | "terms" | "disclaimer" | "login" | "signup" | "strategyDashboard" | "upload" | "reports" | "collections" | "collectionDetail" | "collectionAttribution" | "collectionReviewWorkspace" | "compare" | "features" | "feedback" | "adminFeedback" | "adminAnalytics" | "account" | "dashboard" | "drilldown" | "compareDrilldown" | "reconstructionAudit" | "notFound";
 type DrilldownSelection = { dimension: BreakdownDimension; group: string };
 type CompareDrilldownSelection = {
   reportA: DiagnosticsResult;
@@ -72,17 +76,22 @@ export function App() {
   const [initialComparePair, setInitialComparePair] = useState<{ reportAId?: string; reportBId?: string } | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [createdReportId, setCreatedReportId] = useState<string | null>(null);
-  const [isRouteResolving, setIsRouteResolving] = useState(true);
+  const [isRouteResolving, setIsRouteResolving] = useState(() => !isPublicPath(window.location.pathname));
   const [proFeaturePrompt, setProFeaturePrompt] = useState<ProFeaturePromptState | null>(null);
   const [activeFeatureIntro, setActiveFeatureIntro] = useState<FeatureIntroId | null>(null);
   const [sessionDismissedFeatureIntros, setSessionDismissedFeatureIntros] = useState<FeatureIntroId[]>([]);
   const wasAuthenticatedRef = useRef(false);
+  const shouldFocusRouteRef = useRef(false);
 
   useEffect(() => {
     if ("scrollRestoration" in window.history) {
       window.history.scrollRestoration = "manual";
     }
   }, []);
+
+  useEffect(() => {
+    applySeoMetadata(window.location.pathname);
+  }, [page]);
 
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => {
@@ -107,6 +116,8 @@ export function App() {
         return "/";
       case "pricing":
         return "/pricing";
+      case "brokerCsv":
+        return "/broker-csv-trade-analysis";
       case "privacy":
         return "/privacy";
       case "terms":
@@ -137,12 +148,15 @@ export function App() {
         return "/app/admin/analytics";
       case "account":
         return "/app/account";
+      case "notFound":
+        return window.location.pathname;
       default:
         return "/app/dashboard";
     }
   };
 
   const navigate = (target: Page, path = defaultPathForPage(target), replace = false) => {
+    shouldFocusRouteRef.current = true;
     setPage(target);
     if (window.location.pathname + window.location.search !== path) {
       window.history[replace ? "replaceState" : "pushState"](null, "", path);
@@ -379,6 +393,10 @@ export function App() {
       setPage("home");
       return;
     }
+    if (pathname === "/broker-csv-trade-analysis") {
+      setPage("brokerCsv");
+      return;
+    }
     if (pathname === "/pricing") {
       setPage("pricing");
       return;
@@ -566,7 +584,7 @@ export function App() {
       return;
     }
 
-    navigate(authOverride ? "strategyDashboard" : "home", authOverride ? "/app/dashboard" : "/", true);
+    setPage("notFound");
   };
 
   useEffect(() => {
@@ -643,6 +661,11 @@ export function App() {
 
   return (
     <div className={rootClassName}>
+      {!useAuthenticatedAppShell && !useReportDashboardShell && (
+        <a className="EdgeTrace-skip-link" href="#main-content">
+          Skip to main content
+        </a>
+      )}
       {useAuthenticatedAppShell && (
         <AuthenticatedTopbar
           activeNavPage={activeNavPage}
@@ -668,9 +691,12 @@ export function App() {
       {!useReportDashboardShell && !useAuthenticatedAppShell && (
       <header className={`EdgeTrace-topbar sticky top-0 z-40 ${!isAuthenticated ? "EdgeTrace-public-topbar" : ""}`}>
         <div className="EdgeTrace-shell EdgeTrace-public-topbar-inner relative flex h-auto flex-col items-center gap-4 py-4 lg:h-16 lg:flex-row lg:justify-end lg:py-0">
-          <button
+          <a
             className="EdgeTrace-public-logo-button flex shrink-0 items-center justify-center lg:justify-start"
-            onClick={() => {
+            href={isAuthenticated ? "/app/dashboard" : "/"}
+            onClick={(event) => {
+              if (!shouldHandleClientNavigation(event)) return;
+              event.preventDefault();
               if (isAuthenticated) {
                 void openLatestReportDashboard();
               } else {
@@ -681,18 +707,22 @@ export function App() {
           >
             <span className="flex items-center justify-center gap-4">
               <img
-                src="/brand/edgetrace_icon_monochrome_white_transparent.png"
-                alt="EdgeTrace"
+                src="/brand/edgetrace-mark.svg"
+                alt=""
+                aria-hidden="true"
                 className="h-7 w-auto object-contain opacity-85"
+                width="28"
+                height="28"
               />
               <img
                 src="/brand/edgetrace_wordmark_monochrome_white.png"
-                alt=""
-                aria-hidden="true"
+                alt="EdgeTrace"
                 className="h-[26px] w-auto object-contain opacity-85"
+                width="188"
+                height="26"
               />
             </span>
-          </button>
+          </a>
           {isAuthenticated ? (
             <nav className="flex flex-wrap items-center justify-center gap-4 text-sm lg:flex-1 lg:justify-start xl:pl-2">
               {appNavItems.map(({ target, label }) => {
@@ -716,31 +746,67 @@ export function App() {
               })}
             </nav>
           ) : (
-            <nav className="EdgeTrace-public-nav flex flex-wrap items-center justify-center gap-6 text-sm lg:ml-auto lg:justify-end">
-              <button
+            <nav aria-label="Primary navigation" className="EdgeTrace-public-nav flex flex-wrap items-center justify-center gap-6 text-sm lg:ml-auto lg:justify-end">
+              <a
                 className={`EdgeTrace-nav-link ${page === "home" ? "EdgeTrace-nav-link-active" : ""}`}
-                onClick={() => navigate("home", "/")}
+                href="/"
+                aria-current={page === "home" ? "page" : undefined}
+                onClick={(event) => {
+                  if (!shouldHandleClientNavigation(event)) return;
+                  event.preventDefault();
+                  navigate("home", "/");
+                }}
               >
                 How It Works
-              </button>
-              <button
+              </a>
+              <a
+                className={`EdgeTrace-nav-link ${page === "brokerCsv" ? "EdgeTrace-nav-link-active" : ""}`}
+                href="/broker-csv-trade-analysis"
+                aria-current={page === "brokerCsv" ? "page" : undefined}
+                onClick={(event) => {
+                  if (!shouldHandleClientNavigation(event)) return;
+                  event.preventDefault();
+                  navigate("brokerCsv", "/broker-csv-trade-analysis");
+                }}
+              >
+                Broker CSV
+              </a>
+              <a
                 className={`EdgeTrace-nav-link ${page === "pricing" ? "EdgeTrace-nav-link-active" : ""}`}
-                onClick={() => navigate("pricing")}
+                href="/pricing"
+                aria-current={page === "pricing" ? "page" : undefined}
+                onClick={(event) => {
+                  if (!shouldHandleClientNavigation(event)) return;
+                  event.preventDefault();
+                  navigate("pricing");
+                }}
               >
                 Pricing
-              </button>
-              <button
+              </a>
+              <a
                 className={`EdgeTrace-nav-link ${page === "login" ? "EdgeTrace-nav-link-active" : ""}`}
-                onClick={() => navigate("login")}
+                href="/login"
+                aria-current={page === "login" ? "page" : undefined}
+                onClick={(event) => {
+                  if (!shouldHandleClientNavigation(event)) return;
+                  event.preventDefault();
+                  navigate("login");
+                }}
               >
                 Login
-              </button>
-              <button
+              </a>
+              <a
                 className={`EdgeTrace-secondary-button px-4 py-2 ${page === "signup" ? "border-cyan/70" : ""}`}
-                onClick={() => navigate("signup")}
+                href="/signup?next=/app/upload"
+                aria-current={page === "signup" ? "page" : undefined}
+                onClick={(event) => {
+                  if (!shouldHandleClientNavigation(event)) return;
+                  event.preventDefault();
+                  navigate("signup", "/signup?next=/app/upload");
+                }}
               >
                 Sign Up
-              </button>
+              </a>
             </nav>
           )}
           {isAuthenticated ? (
@@ -789,6 +855,7 @@ export function App() {
       </header>
       )}
 
+      <Suspense fallback={<RouteContentLoading />}>
       {page === "home" && (
         <FeatureEducationPage
           profile={userProfile}
@@ -807,6 +874,12 @@ export function App() {
             }
           }}
           onCreateStrategySet={() => navigate("collections")}
+        />
+      )}
+      {page === "brokerCsv" && (
+        <BrokerCsvPage
+          onHome={() => navigate("home", "/")}
+          onStart={() => navigate(isAuthenticated ? "upload" : "signup", isAuthenticated ? "/app/upload" : "/signup?next=/app/upload")}
         />
       )}
       {page === "pricing" && (
@@ -1103,6 +1176,9 @@ export function App() {
           }}
         />
       )}
+      {page === "notFound" && <NotFoundPage onHome={() => navigate("home", "/")} />}
+      <RouteFocus page={page} shouldFocusRef={shouldFocusRouteRef} />
+      </Suspense>
       {proFeaturePrompt && (
         <ProFeaturePrompt
           feature={proFeaturePrompt.feature}
@@ -1119,6 +1195,7 @@ export function App() {
       {showPublicFooter && (
         <PublicFooter
           onHome={() => navigate("home", "/")}
+          onBroker={() => navigate("brokerCsv", "/broker-csv-trade-analysis")}
           onPricing={() => navigate("pricing", "/pricing")}
           onPrivacy={() => navigate("privacy", "/privacy")}
           onTerms={() => navigate("terms", "/terms")}
@@ -1135,6 +1212,7 @@ export function App() {
 
 function PublicFooter({
   onHome,
+  onBroker,
   onPricing,
   onPrivacy,
   onTerms,
@@ -1142,6 +1220,7 @@ function PublicFooter({
   onContact
 }: {
   onHome: () => void;
+  onBroker: () => void;
   onPricing: () => void;
   onPrivacy: () => void;
   onTerms: () => void;
@@ -1156,16 +1235,23 @@ function PublicFooter({
           <p>Trade analytics for reviewing completed trade history. Educational and informational use only.</p>
         </div>
         <nav aria-label="Footer navigation">
-          <button onClick={onHome}>How It Works</button>
-          <button onClick={onPricing}>Pricing</button>
-          <button onClick={onContact}>Support</button>
-          <button onClick={onPrivacy}>Privacy</button>
-          <button onClick={onTerms}>Terms</button>
-          <button onClick={onDisclaimer}>Disclaimer</button>
+          <a href="/" onClick={(event) => navigateFooterLink(event, onHome)}>How It Works</a>
+          <a href="/broker-csv-trade-analysis" onClick={(event) => navigateFooterLink(event, onBroker)}>Broker CSV</a>
+          <a href="/pricing" onClick={(event) => navigateFooterLink(event, onPricing)}>Pricing</a>
+          <a href="/signup?next=/app/feedback" onClick={(event) => navigateFooterLink(event, onContact)}>Support</a>
+          <a href="/privacy" onClick={(event) => navigateFooterLink(event, onPrivacy)}>Privacy</a>
+          <a href="/terms" onClick={(event) => navigateFooterLink(event, onTerms)}>Terms</a>
+          <a href="/disclaimer" onClick={(event) => navigateFooterLink(event, onDisclaimer)}>Disclaimer</a>
         </nav>
       </div>
     </footer>
   );
+}
+
+function navigateFooterLink(event: MouseEvent<HTMLAnchorElement>, action: () => void) {
+  if (!shouldHandleClientNavigation(event)) return;
+  event.preventDefault();
+  action();
 }
 
 function featureIntroForPage(page: Page): FeatureIntroId | null {
@@ -1228,8 +1314,8 @@ function AuthenticatedTopbar({
     <div className="EdgeTrace-auth-topbar-shell EdgeTrace-command-shell">
       <header className={`EdgeTrace-auth-topbar EdgeTrace-command-nav ${isMobileNavOpen ? "is-mobile-open" : ""}`}>
         <button className="EdgeTrace-command-brand" onClick={onDashboard} aria-label="EdgeTrace dashboard">
-          <img src="/brand/edgetrace_icon_monochrome_white_transparent.png" alt="" aria-hidden="true" />
-          <img src="/brand/edgetrace_wordmark_monochrome_white.png" alt="EdgeTrace" />
+          <img src="/brand/edgetrace-mark.svg" alt="" aria-hidden="true" width="32" height="32" />
+          <img src="/brand/edgetrace_wordmark_monochrome_white.png" alt="EdgeTrace" width="188" height="26" />
         </button>
         <nav aria-label="Application navigation" className="EdgeTrace-auth-command-nav">
           {navItems.map(({ target, label, action }) => (
@@ -1394,19 +1480,74 @@ function RouteLoadingShell({ isAuthenticated }: { isAuthenticated: boolean }) {
   );
 }
 
+function RouteContentLoading() {
+  return (
+    <main id="main-content" tabIndex={-1} className="EdgeTrace-shell py-10" aria-live="polite">
+      <section className="EdgeTrace-command-card p-6">
+        <p className="text-sm text-muted">Loading page…</p>
+      </section>
+    </main>
+  );
+}
+
+function RouteFocus({ page, shouldFocusRef }: { page: Page; shouldFocusRef: { current: boolean } }) {
+  useEffect(() => {
+    if (!shouldFocusRef.current) return;
+    const frame = window.requestAnimationFrame(() => {
+      const heading = document.querySelector<HTMLElement>("#main-content h1, main h1");
+      if (heading) {
+        heading.tabIndex = -1;
+        heading.focus({ preventScroll: true });
+      }
+      shouldFocusRef.current = false;
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [page, shouldFocusRef]);
+  return null;
+}
+
+function NotFoundPage({ onHome }: { onHome: () => void }) {
+  return (
+    <main id="main-content" tabIndex={-1} className="EdgeTrace-shell py-16">
+      <section className="EdgeTrace-command-card mx-auto max-w-3xl p-8 text-center">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-cyan">404 / Page not found</p>
+        <h1 className="mt-4 text-4xl font-semibold tracking-[-0.04em] text-ink">This page does not exist.</h1>
+        <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-muted">
+          The address may be outdated, or the page may have moved. Return to EdgeTrace trade performance analytics.
+        </p>
+        <a
+          className="EdgeTrace-primary-button mt-7"
+          href="/"
+          onClick={(event) => {
+            if (!shouldHandleClientNavigation(event)) return;
+            event.preventDefault();
+            onHome();
+          }}
+        >
+          Return Home
+        </a>
+      </section>
+    </main>
+  );
+}
+
 function initialPageFromPath(pathname: string): Page {
+  if (pathname === "/") return "home";
+  if (pathname === "/broker-csv-trade-analysis") return "brokerCsv";
   if (pathname === "/pricing") return "pricing";
   if (pathname === "/privacy") return "privacy";
   if (pathname === "/terms") return "terms";
   if (pathname === "/disclaimer") return "disclaimer";
   if (isClerkLoginPath(pathname)) return "login";
   if (isClerkSignupPath(pathname)) return "signup";
-  return "home";
+  if (pathname === "/app" || pathname.startsWith("/app/")) return "strategyDashboard";
+  return "notFound";
 }
 
 function isPublicPath(pathname: string) {
   return isClerkLoginPath(pathname) || isClerkSignupPath(pathname) || [
     "/",
+    "/broker-csv-trade-analysis",
     "/pricing",
     "/privacy",
     "/terms",
@@ -1423,7 +1564,7 @@ function isClerkSignupPath(pathname: string) {
 }
 
 function isPublicPage(page: Page) {
-  return ["home", "pricing", "privacy", "terms", "disclaimer", "login", "signup"].includes(page);
+  return ["home", "brokerCsv", "pricing", "privacy", "terms", "disclaimer", "login", "signup", "notFound"].includes(page);
 }
 
 function isAuthenticatedAppPage(page: Page) {

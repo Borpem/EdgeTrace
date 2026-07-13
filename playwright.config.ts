@@ -4,6 +4,8 @@ const useManagedServer = process.env.PW_MANAGED_SERVER === "1";
 
 export default defineConfig({
   testDir: "./tests",
+  testMatch: "edgeTraceHappyPath.spec.ts",
+  outputDir: "test-results/e2e",
   timeout: 60_000,
   expect: {
     timeout: 15_000

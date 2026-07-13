@@ -11,6 +11,7 @@ import {
 import { confirmCheckoutSession, createBillingPortalSession, createCheckoutSession, getMe } from "../lib/api";
 import { trackEvent } from "../lib/analytics";
 import { getPlanConfig } from "../lib/entitlements";
+import { shouldHandleClientNavigation } from "../lib/navigation";
 import { planOrder, type PlanId } from "../lib/plans";
 import type { UserProfile } from "../types";
 
@@ -49,14 +50,19 @@ const faqs = [
     answer: `Pro is the ${proMonthlyPriceLabel} investigation and review layer: full drilldowns, weekly Edge Reviews, mistake heatmaps, benchmark percentile cards, next-review checklists, review cadence status, and regression / improvement tracking.`
   },
   {
-    question: "Can I use Free long term?",
+    question: "Can I compare reports on Free?",
     answer:
-      "Yes. The core product stays free. Pro is for traders who want a recurring review layer that measures whether each new upload improved."
+      "Yes. Free includes report comparison and strategy sets. Pro adds full segment drilldowns and the recurring review layer."
   },
   {
     question: "Is my data secure?",
     answer:
-      "EdgeTrace uses encrypted HTTPS transport, managed production infrastructure, and account-scoped access controls for the diagnostic workflow."
+      "EdgeTrace sends production traffic over HTTPS and uses account-scoped access controls. Only upload trade data you are authorized to use."
+  },
+  {
+    question: "Do I need to connect my brokerage account?",
+    answer:
+      "No automatic broker sync is required or claimed. EdgeTrace starts with a supported broker export or generic CSV that you review before analysis."
   }
 ];
 
@@ -68,8 +74,8 @@ const trustItems: Array<{ title: string; body: string; icon: LucideIcon; accent:
     accent: "cyan"
   },
   {
-    title: "Secure access",
-    body: "Encrypted transport and account-scoped access controls.",
+    title: "Account-scoped access",
+    body: "Production traffic uses HTTPS and report access is scoped to the signed-in account.",
     icon: ShieldCheck,
     accent: "purple"
   },
@@ -233,9 +239,17 @@ export function PricingPage({
 
     if (!hasSignedInAccount) {
       return (
-        <button className={planId === "pro" ? "EdgeTrace-pricing-primary mt-7 w-full" : "EdgeTrace-pricing-secondary mt-7 w-full"} onClick={onStart}>
+        <a
+          className={planId === "pro" ? "EdgeTrace-pricing-primary mt-7 w-full" : "EdgeTrace-pricing-secondary mt-7 w-full"}
+          href="/signup?next=/app/upload"
+          onClick={(event) => {
+            if (!shouldHandleClientNavigation(event)) return;
+            event.preventDefault();
+            onStart();
+          }}
+        >
           {planId === "free" ? "Start Free" : planId === "pro" ? "Create Account for Pro" : "Join Early Access"}
-        </button>
+        </a>
       );
     }
 
@@ -294,12 +308,13 @@ export function PricingPage({
   };
 
   return (
-    <main className="EdgeTrace-pricing-page">
+    <main id="main-content" tabIndex={-1} className="EdgeTrace-pricing-page">
       <section className="EdgeTrace-pricing-hero">
         <h1>
-          <span>Simple pricing.</span>
-          <span>Serious edge.</span>
+          <span>Trade analytics pricing.</span>
+          <span>Start with the core workflow free.</span>
         </h1>
+        <p>Build completed-trade reports on Free, then add deeper drilldowns and a recurring review layer with Pro.</p>
       </section>
 
       <StatusMessages billingConfigured={billingConfigured} notice={notice} error={error} />
@@ -326,14 +341,14 @@ function StatusMessages({
   error: string;
 }) {
   return (
-    <section className="EdgeTrace-pricing-status">
+    <section className="EdgeTrace-pricing-status" aria-live="polite">
       {!billingConfigured && (
-        <div className="tone-warning">
+        <div className="tone-warning" role="status">
           Billing is not configured in this environment. Add Stripe test keys and price IDs to enable checkout.
         </div>
       )}
-      {notice && <div className="tone-info">{notice}</div>}
-      {error && <div className="tone-error">{error}</div>}
+      {notice && <div className="tone-info" role="status">{notice}</div>}
+      {error && <div className="tone-error" role="alert">{error}</div>}
     </section>
   );
 }
@@ -348,28 +363,36 @@ function FeatureComparison({
   renderPlanAction: (planId: PlanId) => ReactNode;
 }) {
   return (
-    <section className="EdgeTrace-pricing-compare">
-      <div className="EdgeTrace-pricing-board">
-        <div className="EdgeTrace-pricing-board-label plan-intro">
-          <div>
-            <ShieldCheck size={18} aria-hidden="true" />
-            <span>Plans</span>
+    <section className="EdgeTrace-pricing-compare" aria-labelledby="pricing-comparison-title">
+      <h2 id="pricing-comparison-title" className="sr-only">EdgeTrace plan comparison</h2>
+      <div className="EdgeTrace-pricing-board" role="table" aria-label="EdgeTrace Free and Pro feature comparison">
+        <div className="EdgeTrace-pricing-header-row" role="row">
+          <div className="EdgeTrace-pricing-board-label plan-intro" role="columnheader">
+            <div>
+              <ShieldCheck size={18} aria-hidden="true" />
+              <span>Plans</span>
+            </div>
           </div>
+          {planOrder.map((planId) => (
+            <PlanColumnHeader
+              key={planId}
+              planId={planId}
+              isActive={activePlanId === planId}
+              isCurrent={currentPlanId === planId}
+              action={renderPlanAction(planId)}
+            />
+          ))}
         </div>
-        {planOrder.map((planId) => (
-          <PlanColumnHeader
-            key={planId}
-            planId={planId}
-            isActive={activePlanId === planId}
-            isCurrent={currentPlanId === planId}
-            action={renderPlanAction(planId)}
-          />
-        ))}
         {featureRows.map((row) => (
-          <div className="EdgeTrace-pricing-feature-row" key={row.label}>
-            <div className="EdgeTrace-pricing-feature-name">{row.label}</div>
+          <div className="EdgeTrace-pricing-feature-row" key={row.label} role="row">
+            <div className="EdgeTrace-pricing-feature-name" role="rowheader">{row.label}</div>
             {planOrder.map((planId) => (
-              <div key={planId} className={`EdgeTrace-pricing-feature-access ${activePlanId === planId ? "active" : ""}`}>
+              <div
+                key={planId}
+                className={`EdgeTrace-pricing-feature-access ${activePlanId === planId ? "active" : ""}`}
+                role="cell"
+                aria-label={`${row.label}, ${getPlanConfig(planId).displayName}: ${row.access[planId]}`}
+              >
                 <AccessValue value={row.access[planId]} planId={planId} />
               </div>
             ))}
@@ -395,10 +418,9 @@ function PlanColumnHeader({
   const price = config.monthlyPriceLabel.replace("/month", "");
 
   return (
-    <div className={`EdgeTrace-pricing-column-head ${isActive ? "active" : ""}`}>
+    <div className={`EdgeTrace-pricing-column-head ${isActive ? "active" : ""}`} role="columnheader">
       <div className="EdgeTrace-pricing-column-title">
         <span>{config.displayName}</span>
-        {planId === "pro" && <small>Most Popular</small>}
         {isCurrent && <em>Current</em>}
       </div>
       <div className="EdgeTrace-pricing-column-price">
@@ -469,18 +491,42 @@ function FinalCta({
         <p>Start with the free workflow, then upgrade to Pro when you want recurring review targets, heatmaps, and benchmark context.</p>
       </div>
       <div>
-        <button className="EdgeTrace-pricing-primary" onClick={onPro}>
-          {activeAction === "pro"
-            ? "Redirecting..."
-            : isAuthenticated
-              ? profile?.planId === "free"
+        {isAuthenticated ? (
+          <button className="EdgeTrace-pricing-primary" onClick={onPro}>
+            {activeAction === "pro"
+              ? "Redirecting..."
+              : profile?.planId === "free"
                 ? "Upgrade to Pro"
-                : "Manage Billing"
-              : "Create Account for Pro"}
-        </button>
-        <button className="EdgeTrace-pricing-secondary" onClick={onStart}>
-          {profile ? "Import Trades" : "Start Free"}
-        </button>
+                : "Manage Billing"}
+          </button>
+        ) : (
+          <a
+            className="EdgeTrace-pricing-primary"
+            href="/signup?next=/app/upload"
+            onClick={(event) => {
+              if (!shouldHandleClientNavigation(event)) return;
+              event.preventDefault();
+              onPro();
+            }}
+          >
+            Create Account for Pro
+          </a>
+        )}
+        {profile ? (
+          <button className="EdgeTrace-pricing-secondary" onClick={onStart}>Import Trades</button>
+        ) : (
+          <a
+            className="EdgeTrace-pricing-secondary"
+            href="/signup?next=/app/upload"
+            onClick={(event) => {
+              if (!shouldHandleClientNavigation(event)) return;
+              event.preventDefault();
+              onStart();
+            }}
+          >
+            Start Free
+          </a>
+        )}
       </div>
     </section>
   );

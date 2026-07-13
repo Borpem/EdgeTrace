@@ -29,8 +29,20 @@ const accentGlow: Record<Accent, string> = {
   neutral: "from-white/[0.07]"
 };
 
-export function PageShell({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return <main className={`EdgeTrace-shell py-8 md:py-12 ${className}`}>{children}</main>;
+export function PageShell({
+  children,
+  className = "",
+  id
+}: {
+  children: ReactNode;
+  className?: string;
+  id?: string;
+}) {
+  return (
+    <main id={id} tabIndex={id ? -1 : undefined} className={`EdgeTrace-shell py-8 md:py-12 ${className}`}>
+      {children}
+    </main>
+  );
 }
 
 export function PageHeader({

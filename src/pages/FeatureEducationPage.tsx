@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from "react";
+import { useEffect, type MouseEvent, type ReactNode } from "react";
 import {
   Activity,
   ArrowRight,
@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { PageShell } from "../components/ui/Primitives";
 import { trackEvent } from "../lib/analytics";
+import { shouldHandleClientNavigation } from "../lib/navigation";
 import type { UserProfile } from "../types";
 
 type FeatureEducationPageProps = {
@@ -64,8 +65,10 @@ export function FeatureEducationPage({
       points: ["Broker and generic CSV imports", "Mapping review before diagnostics", "Clean workflow from upload to report"],
       visual: (
         <HowGraphic
-          src="/graphics/edgetrace-how-report-builder-workflow-clean.png"
+          src="/graphics/edgetrace-how-report-builder-workflow-clean.svg"
           alt="EdgeTrace import workflow showing source file, normalized inputs, and generated report."
+          width={1200}
+          height={690}
         />
       )
     },
@@ -74,7 +77,7 @@ export function FeatureEducationPage({
       kicker: "02 / Diagnose",
       title: "Find what is degrading your edge.",
       body:
-        "The report turns the import into a quick read on health, expectancy, cost drag, R-capture, and the primary issue most likely to improve the next upload.",
+        "The report turns the import into a quick read on health, expectancy, cost drag, R-capture, and the primary issue to inspect before the next upload.",
       points: ["Primary diagnosis", "Edge health score", "Top performance drivers"],
       reverse: true,
       visual: (
@@ -93,8 +96,10 @@ export function FeatureEducationPage({
       points: ["Symbol-level readouts", "Cost and net PnL context", "Diagnostic flags for weak segments"],
       visual: (
         <HowGraphic
-          src="/graphics/edgetrace-how-segment-analysis-readout-polished.png"
+          src="/marketing/edgetrace-segment-analysis-readout-polished.png"
           alt="EdgeTrace segment analysis readout with symbol metrics and diagnostic flags."
+          width={1200}
+          height={720}
         />
       )
     },
@@ -108,8 +113,10 @@ export function FeatureEducationPage({
       reverse: true,
       visual: (
         <HowGraphic
-          src="/graphics/edgetrace-how-recommended-actions-nextmove-clean.png"
+          src="/graphics/edgetrace-how-recommended-actions-nextmove-clean.svg"
           alt="EdgeTrace recommended actions graphic with priorities and next move."
+          width={1200}
+          height={720}
         />
       )
     },
@@ -158,29 +165,37 @@ export function FeatureEducationPage({
     });
   }, []);
 
+  const handleAccountAction = (event: MouseEvent<HTMLAnchorElement>, source: "primary" | "secondary") => {
+    if (!shouldHandleClientNavigation(event)) return;
+    event.preventDefault();
+    trackEvent(source === "primary" ? "landing_primary_cta_clicked" : "landing_secondary_cta_clicked");
+    accountAction();
+  };
+
   return (
-    <PageShell className={`${isAuthenticated ? "EdgeTrace-auth-education" : ""} how-page relative z-10`}>
+    <PageShell id="main-content" className={`${isAuthenticated ? "EdgeTrace-auth-education" : ""} how-page relative z-10`}>
       <section className="how-hero">
         <div className="how-hero-copy">
           <h1 className="how-title">
-            <span>Stop guessing why your</span>
-            <span>trades are losing money.</span>
+            <span>Trade performance analytics</span>
+            <span>for completed trades.</span>
           </h1>
           <p className="how-body">
-            Upload your trades and EdgeTrace shows where money is being lost, where you're making money, and what to
-            look at next.
+            Import broker or generic CSV history to review expectancy, cost drag, R-capture, weak symbols and
+            sessions, and the changes between diagnostic reports.
           </p>
           <div className="how-cta-row">
-            <button
+            <a
               className="EdgeTrace-primary-button"
-              onClick={() => {
-                trackEvent("landing_primary_cta_clicked");
-                accountAction();
-              }}
+              href={isAuthenticated ? "/app/upload" : "/signup?next=/app/upload"}
+              onClick={(event) => handleAccountAction(event, "primary")}
             >
               {accountLabel}
               <ArrowRight size={16} />
-            </button>
+            </a>
+            <a className="EdgeTrace-secondary-button" href="/broker-csv-trade-analysis">
+              Review Supported CSV Sources
+            </a>
           </div>
         </div>
       </section>
@@ -199,16 +214,14 @@ export function FeatureEducationPage({
           <h2>Build your first diagnostic report.</h2>
           <p>Import completed trades and see the drivers behind your edge.</p>
         </div>
-        <button
+        <a
           className="EdgeTrace-primary-button"
-          onClick={() => {
-            trackEvent("landing_secondary_cta_clicked");
-            accountAction();
-          }}
+          href={isAuthenticated ? "/app/upload" : "/signup?next=/app/upload"}
+          onClick={(event) => handleAccountAction(event, "secondary")}
         >
           Create a Report
           <ArrowRight size={16} />
-        </button>
+        </a>
       </section>
     </PageShell>
   );
@@ -254,11 +267,15 @@ function HowEditorialSection({ section }: { section: HowSection }) {
 function HowGraphic({
   src,
   alt,
-  hero = false
+  hero = false,
+  width = 1672,
+  height = 941
 }: {
   src: string;
   alt: string;
   hero?: boolean;
+  width?: number;
+  height?: number;
 }) {
   return (
     <img
@@ -267,6 +284,10 @@ function HowGraphic({
       className={`how-graphic ${hero ? "how-graphic--hero" : ""}`}
       draggable={false}
       loading={hero ? "eager" : "lazy"}
+      decoding="async"
+      width={width}
+      height={height}
+      sizes="(max-width: 1100px) 100vw, 50vw"
     />
   );
 }

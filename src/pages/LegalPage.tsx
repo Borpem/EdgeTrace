@@ -107,7 +107,7 @@ export function LegalPage({ kind, onContact }: LegalPageProps) {
   const content = legalContent[kind];
 
   return (
-    <PageShell className="EdgeTrace-legal-page relative z-10">
+    <PageShell id="main-content" className="EdgeTrace-legal-page relative z-10">
       <section className="EdgeTrace-legal-hero">
         <p className="EdgeTrace-legal-eyebrow">{content.eyebrow}</p>
         <h1>{content.title}</h1>
